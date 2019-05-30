@@ -1,6 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
+import logo from '../testimg.png'
+
+const LOGO_HEIGHT = "100px";
 
 const Banner = styled.nav`
     background: #00aad3;
@@ -18,9 +21,13 @@ const StatelessFuncComponent = ({text}) => (
     </div>
 )
 
+const Logo = () => {
+    return <img src={logo} alt="Logo" height={LOGO_HEIGHT}/>;
+}
+
 ReactDOM.render(
         <div>
-            <Banner>Connexta</Banner>
+            <Banner><Logo /></Banner>
             <StatelessFuncComponent text='Heyo'/>
         </div>
 
