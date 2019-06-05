@@ -12,6 +12,9 @@ const Banner = styled.nav`
   border-bottom: solid black 3px;
   border-top: solid black 3px;
   height: 125px;
+
+  font-size: 2em;
+  color: white
 `
 
 const RightBox = styled.nav`
@@ -19,7 +22,7 @@ const RightBox = styled.nav`
   padding: 3%;
   font-size: 30px;
   border-left: solid black 3px;
-
+  
   position: absolute;
   top: 131px;
   bottom: 0;
