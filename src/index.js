@@ -5,15 +5,14 @@ import logo from '../resources/logo-white.png'
 import Clock from 'react-live-clock';
 
 const Banner = styled.nav`
-  background: #00add2;
-  padding: 1%;
-  padding-left: 4%;
-  padding-right: 4%;
-  margin: 0%;
-  font-size: 25px;
-  border-bottom: solid black 3px;
-  border-top: solid black 3px;
-  height: 10vh;
+    background: #00add2;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin: 0%;
+    font-size: 2em;
+    border-bottom: solid black 3px;
+    border-top: solid black 3px;
+    max-height: 125px;
 `
 
 const RightBox = styled.nav`
@@ -74,7 +73,7 @@ const StatelessFuncComponent = ({text}) => (
 )
 
 const Logo = () => {
-  return <img src={logo} alt="Logo" height="75px" />;
+  return <img src={logo} alt="Logo" height="100vh" />;
 }
 
 class ClockComponent extends React.Component {
