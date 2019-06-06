@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import logo from '../resources/logo-white.png'
-import Clock from 'react-live-clock';
+import ClockFull from './clock.js'
 
 const Banner = styled.nav`
   background: #00add2;
@@ -12,9 +12,6 @@ const Banner = styled.nav`
   border-bottom: solid black 3px;
   border-top: solid black 3px;
   height: 125px;
-
-  font-size: 2em;
-  color: white
 `
 
 const RightBox = styled.nav`
@@ -28,7 +25,7 @@ const RightBox = styled.nav`
 =======
   font-size: 30px;
   border-left: solid black 3px;
-  
+
   position: absolute;
   top: 131px;
   bottom: 0;
@@ -72,6 +69,7 @@ const MainGridVert = styled.div`
   flex-direction: column;
 `
 
+<<<<<<< HEAD
 const ClockGridVert = styled.div`
   font-size: 1.3em;
   display: flex;
@@ -91,6 +89,8 @@ const ClockGridHorz = styled.div`
   justify-content: space-evenly;
 `
 
+=======
+>>>>>>> Fixed scaling issues on banner and changed how the clocks looked
 const BannerGrid = styled.div`
   display: flex;
   flex-direction: row;
@@ -98,33 +98,8 @@ const BannerGrid = styled.div`
   padding: 10px
 `
 
-const StatelessFuncComponent = ({text}) => (
-  <div>
-    <p>-=- {text} -=-</p>
-  </div>
-)
-
 const Logo = () => {
   return <img src={logo} alt="Logo" height="100vh" />;
-}
-
-class ClockComponent extends React.Component {
-  render() {
-    return (
-      <div>
-        <ClockGridHorz>
-          <ClockGridVert>
-            <div>PST: <Clock format={'HH:mm'} ticking={true} timezone={'US/Pacific'} /></div>
-            <div>EST: <Clock format={'HH:mm'} ticking={true} timezone={'US/Eastern'} /></div>
-          </ClockGridVert>
-          <ClockGridVert>
-            <div>CST: <Clock format={'HH:mm'} ticking={true} timezone={'US/Central'} /></div>
-            <div>ACT: <Clock format={'HH:mm'} ticking={true} timezone={'Australia/Sydney'} /></div>
-          </ClockGridVert>
-        </ClockGridHorz>
-      </div>
-    );
-  }
 }
 
 ReactDOM.render(
@@ -133,7 +108,11 @@ ReactDOM.render(
       <Banner>
         <BannerGrid>
           <Logo />
-          <ClockComponent />
+          <ClockFull timezone="US/Arizona" place="PHX"/>
+          <ClockFull timezone="US/Mountain" place="COL"/>
+          <ClockFull timezone="US/Eastern" place="BOS"/>
+          <ClockFull timezone="US/Eastern" place="DC"/>
+          <ClockFull timezone="Australia/Sydney" place="AUS"/>
         </BannerGrid>
       </Banner>
       <ContentHorz>
