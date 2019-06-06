@@ -12,9 +12,6 @@ const Banner = styled.nav`
   border-bottom: solid black 3px;
   border-top: solid black 3px;
   height: 125px;
-
-  font-size: 2em;
-  color: white
 `
 
 const RightBox = styled.nav`
@@ -22,7 +19,7 @@ const RightBox = styled.nav`
   padding: 3%;
   font-size: 30px;
   border-left: solid black 3px;
-  
+
   position: absolute;
   top: 131px;
   bottom: 0;
@@ -51,22 +48,6 @@ const ContentHorz = styled.div`
 const MainGridVert = styled.div`
   display: flex;
   flex-direction: column;
-`
-
-const ClockGridVert = styled.div`
-  font-size: 1.3em;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-`
-
-const ClockGridHorz = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
 `
 
 const BannerGrid = styled.div`
