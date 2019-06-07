@@ -2,43 +2,47 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import logo from '../resources/logo-white.png'
-import Clock from 'react-live-clock';
+import ClockFull from './clock.js'
 
 const Banner = styled.nav`
   background: #00add2;
-  padding: 1%;
-  padding-left: 4%;
-  padding-right: 4%;
+  padding-left: 40px;
+  padding-right: 40px;
   margin: 0%;
-  font-size: 25px;
   border-bottom: solid black 3px;
   border-top: solid black 3px;
-  height: 10vh;
+  height: 125px;
 `
 
 const RightBox = styled.nav`
   background: #f2f2f2;
   padding: 3%;
-  padding-left: 4%;
   font-size: 30px;
   border-left: solid black 3px;
-  width: 33vw;
+
+  position: absolute;
+  top: 131px;
+  bottom: 0;
+  left: 66vw;
+  right: 0;
 `
 
 const LeftBox = styled.nav`
   background: #658398;
   padding: 3%;
-  padding-left: 4%;
   font-size: 30px;
   border-right: solid black 3px;
-  width: 66vw;
+
+  position: absolute;
+  top: 131px;
+  bottom: 0;
+  left: 0;
+  right: 33vw;
 `
 
 const ContentHorz = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: stretch;
-  height: 90vh;
 `
 
 const MainGridVert = styled.div`
@@ -52,6 +56,8 @@ const ClockGridVert = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
 `
 
 const ClockGridHorz = styled.div`
@@ -67,33 +73,8 @@ const BannerGrid = styled.div`
   padding: 10px
 `
 
-const StatelessFuncComponent = ({text}) => (
-  <div>
-    <p>-=- {text} -=-</p>
-  </div>
-)
-
 const Logo = () => {
-  return <img src={logo} alt="Logo" height="75px" />;
-}
-
-class ClockComponent extends React.Component {
-  render() {
-    return (
-      <div>
-        <ClockGridHorz>
-          <ClockGridVert>
-            <div>PST: <Clock format={'HH:mm'} ticking={true} timezone={'US/Pacific'} /></div>
-            <div>EST: <Clock format={'HH:mm'} ticking={true} timezone={'US/Eastern'} /></div>
-          </ClockGridVert>
-          <ClockGridVert>
-            <div>CST: <Clock format={'HH:mm'} ticking={true} timezone={'US/Central'} /></div>
-            <div>ACT: <Clock format={'HH:mm'} ticking={true} timezone={'Australia/Sydney'} /></div>
-          </ClockGridVert>
-        </ClockGridHorz>
-      </div>
-    );
-  }
+  return <img src={logo} alt="Logo" height="100vh" />;
 }
 
 ReactDOM.render(
@@ -102,15 +83,19 @@ ReactDOM.render(
       <Banner>
         <BannerGrid>
           <Logo />
-          <ClockComponent />
+          <ClockFull timezone="US/Arizona" place="PHX"/>
+          <ClockFull timezone="US/Mountain" place="COL"/>
+          <ClockFull timezone="US/Eastern" place="BOS"/>
+          <ClockFull timezone="US/Eastern" place="DC"/>
+          <ClockFull timezone="Australia/Sydney" place="AUS"/>
         </BannerGrid>
       </Banner>
       <ContentHorz>
         <LeftBox>
-          Left Box
+          {/* Left box content */}
         </LeftBox>
         <RightBox>
-          Right Box
+          {/* Right box content */}
         </RightBox>
       </ContentHorz>
     </MainGridVert>
