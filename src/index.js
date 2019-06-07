@@ -17,12 +17,6 @@ const Banner = styled.nav`
 const RightBox = styled.nav`
   background: #f2f2f2;
   padding: 3%;
-<<<<<<< HEAD
-  padding-left: 4%;
-  font-size: 30px;
-  border-left: solid black 3px;
-  width: 33vw;
-=======
   font-size: 30px;
   border-left: solid black 3px;
 
@@ -31,18 +25,11 @@ const RightBox = styled.nav`
   bottom: 0;
   left: 66vw;
   right: 0;
->>>>>>> Fixed issue where banner would resize when page size changed
 `
 
 const LeftBox = styled.nav`
   background: #658398;
   padding: 3%;
-<<<<<<< HEAD
-  padding-left: 4%;
-  font-size: 30px;
-  border-right: solid black 3px;
-  width: 66vw;
-=======
   font-size: 30px;
   border-right: solid black 3px;
 
@@ -51,17 +38,11 @@ const LeftBox = styled.nav`
   bottom: 0;
   left: 0;
   right: 33vw;
->>>>>>> Fixed issue where banner would resize when page size changed
 `
 
 const ContentHorz = styled.div`
   display: flex;
   flex-direction: row;
-<<<<<<< HEAD
-  align-items: stretch;
-  height: 90vh;
-=======
->>>>>>> Fixed issue where banner would resize when page size changed
 `
 
 const MainGridVert = styled.div`
@@ -69,18 +50,14 @@ const MainGridVert = styled.div`
   flex-direction: column;
 `
 
-<<<<<<< HEAD
 const ClockGridVert = styled.div`
   font-size: 1.3em;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   padding: 10px;
-<<<<<<< HEAD
-=======
   padding-left: 20px;
   padding-right: 20px;
->>>>>>> Fixed issue where banner would resize when page size changed
 `
 
 const ClockGridHorz = styled.div`
@@ -89,8 +66,6 @@ const ClockGridHorz = styled.div`
   justify-content: space-evenly;
 `
 
-=======
->>>>>>> Fixed scaling issues on banner and changed how the clocks looked
 const BannerGrid = styled.div`
   display: flex;
   flex-direction: row;
@@ -117,17 +92,10 @@ ReactDOM.render(
       </Banner>
       <ContentHorz>
         <LeftBox>
-<<<<<<< HEAD
-          Left Box
-        </LeftBox>
-        <RightBox>
-          Right Box
-=======
           {/* Left box content */}
         </LeftBox>
         <RightBox>
           {/* Right box content */}
->>>>>>> Fixed issue where banner would resize when page size changed
         </RightBox>
       </ContentHorz>
     </MainGridVert>
