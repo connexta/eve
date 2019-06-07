@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import logo from '../resources/logo-white.png'
 import ClockFull from './clock.js'
+import BuildStatus from './BuildStatus'
 
 const Banner = styled.nav`
   background: #00add2;
@@ -32,6 +33,10 @@ const LeftBox = styled.nav`
   padding: 3%;
   font-size: 30px;
   border-right: solid black 3px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   position: absolute;
   top: 131px;
@@ -77,6 +82,8 @@ ReactDOM.render(
       <ContentHorz>
         <LeftBox>
           {/* Left box content */}
+          <BuildStatus/>
+          <BuildStatus/>
         </LeftBox>
         <RightBox>
           {/* Right box content */}
