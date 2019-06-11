@@ -36,12 +36,12 @@ class BuildStatus extends React.Component {
 
   // updates the build status every 60 sec
   componentDidMount() {
+    this.setState({ data: [], isLoading: true })
     this.refreshBuildStatus();
     setInterval(() => this.refreshBuildStatus(), 60000);
   }
 
   refreshBuildStatus() {
-      this.setState({ data: [], isLoading: true });
       this.updateBuildStatus();
   }
 
