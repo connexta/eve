@@ -1,23 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
 import BuildIcon from './BuildIcon';
-import sun from '../resources/sun.png';
-import cloud from '../resources/sun_cloud.png';
-import storm from '../resources/thunder.png';
 
-const BASE_URL = 'https://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/';
+const BUILD_LIST = ['alliance', 'aus', 'ddf', 'gsr', 'dib'];
 
-const Box = styled.div`
-    width: 50vw;
-    height: 30vh;
-    background-color: #f2f2f2;
-    border-radius: 5%;
-    border: solid black 3px;
+const URL = 'https://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/';
 
-`
-
+const FONT="\"Open Sans\", \"Arial\"";
 const Builds = styled.div`
+  width: 55vw;
+  height: 200px;
+  border: solid black 3px;
+  border-radius: 20px;
+  padding: 20px;
+  background-color: #f2f2f2;
 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+
+  font-size: 2em;
+  font-family: ${FONT};
 `
 
 class BuildStatus extends React.Component {
@@ -41,7 +46,7 @@ class BuildStatus extends React.Component {
   }
 
   updateBuildStatus() {
-    fetch(BASE_URL)
+    fetch(URL)
       .then(response => response.json())
       .then(jsonData => {
         this.setState({ data: jsonData, isLoading: false});
@@ -49,26 +54,21 @@ class BuildStatus extends React.Component {
       .catch(e => console.log('error', e));
   }
 
-  logWeather() {
-    console.log("Clicked");
-    console.log("Weather: " + this.state.data[0].weatherScore);
-    console.log("Name: " + this.state.data[0].displayName);
-  }
-
   render() {
     return (
       this.state.isLoading 
       ?
-      <Box>
+      <Builds>
       Loading. . .
-      </Box>
+      </Builds>
       :
-      <div>
-        {this.state.data.map((item, index) => {
-          console.log("status: " + item.weatherScore);
-          return (<div key={index}>{item.displayName}: <BuildIcon name={item.displayName} score={item.weatherScore}/>  </div>);
+      <Builds>
+        {this.state.data.map((item) => {
+          if (BUILD_LIST.includes(item.displayName.toLowerCase())){
+            return (<BuildIcon score={item.weatherScore} name={item.displayName} />);
+          }
         })}
-      </div>
+      </Builds>
       );
   }
 }

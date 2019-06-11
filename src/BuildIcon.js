@@ -1,26 +1,44 @@
 import React from 'react';
-import sun from '../resources/sun.png'
-import cloud from '../resources/sun_cloud.png'
-import storm from '../resources/thunder.png'
+import styled from 'styled-components';
+import sun from '../resources/sun.png';
+import cloud from '../resources/sun_cloud.png';
+import storm from '../resources/thunder.png';
+
+const IconContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`
+
+const IconStyle = styled.div`
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    background-color: black;
+    margin-left: 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`
 
 class BuildIcon extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            score: '',
+            name: props.name,
+            score: props.score,
         }
     }
 
     render() {
-        console.log(this.state.score);
         return (
             (this.state.score == 100) ?
-                <div>{this.state.score} <img src={sun} alt="sun"/></div>
+                <IconContainer>{this.state.name} <IconStyle>{/*this.state.score*/} <img src={sun} alt="sun" height="50px"/></IconStyle></IconContainer>
             : (this.state.score > 50) ?
-                <div>{this.state.score} <img src={cloud} alt="cloud"/></div>
+                <IconContainer>{this.state.name} <IconStyle>{/*this.state.score*/} <img src={cloud} alt="cloud" height="50px"/></IconStyle></IconContainer>
             :
-                <div>{this.state.score} <img src={storm} alt="storm"/></div>
+                <IconContainer> {this.state.name} <IconStyle>{/*this.state.score*/} <img src={storm} alt="storm" height="50px"/></IconStyle> </IconContainer>
         );
     }
 }
