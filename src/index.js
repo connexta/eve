@@ -66,6 +66,8 @@ const Logo = () => {
   return <img src={logo} alt="Logo" height="100vh" />;
 }
 
+
+
 ReactDOM.render(
   <div>
     <MainGridVert>
@@ -73,16 +75,14 @@ ReactDOM.render(
         <BannerGrid>
           <Logo />
           <ClockFull timezone="US/Arizona" place="PHX"/>
-          <ClockFull timezone="US/Mountain" place="COL"/>
-          <ClockFull timezone="US/Eastern" place="BOS"/>
-          <ClockFull timezone="US/Eastern" place="DC"/>
-          <ClockFull timezone="Australia/Sydney" place="AUS"/>
+          <ClockFull timezone="US/Mountain" place="DEN"/>
+          <ClockFull timezone="US/Eastern" place="BOS/DC"/>
+          <ClockFull timezone="Australia/Sydney" place="MEL (+1)"/>
         </BannerGrid>
       </Banner>
       <ContentHorz>
         <LeftBox>
           {/* Left box content */}
-          <BuildStatus/>
           <BuildStatus/>
         </LeftBox>
         <RightBox>

@@ -2,9 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 import Clock from 'react-live-clock';
 
+const FONT="\"Open Sans\", \"Arial\"";
+const FONT_COLOR="#f2f2f2";
+const FONT_STYLE="bold";
+
 const ClockHrStyle = styled.nav`
   font-size: 6em;
-  color: black;
+  color: ${FONT_COLOR};
+  font-family: ${FONT};
+  font-style: ${FONT_STYLE};
 `
 
 const ClockHr = ({timezone}) => {
@@ -13,7 +19,9 @@ const ClockHr = ({timezone}) => {
 
 const ClockMinStyle = styled.nav`
   font-size: 3em;
-  color: black;
+  color: ${FONT_COLOR};
+  font-family: ${FONT};
+  font-style: ${FONT_STYLE};
 `
 
 const ClockMin = ({timezone}) => {
@@ -32,6 +40,9 @@ const ClockFullStyle = styled.div`
 
 const PlaceStyle = styled.div`
   font-size: 2em;
+  color: ${FONT_COLOR};
+  font-family: ${FONT};
+  font-style: ${FONT_STYLE};
 `
 
 const ClockFull = ({timezone, place}) => {
