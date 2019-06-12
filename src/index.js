@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import logo from '../resources/logo-white.png'
 import ClockFull from './clock.js'
+import BuildStatus from './BuildStatus'
 
 const Banner = styled.nav`
   background: #00add2;
@@ -33,6 +34,10 @@ const LeftBox = styled.nav`
   font-size: 30px;
   border-right: solid black 3px;
 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   position: absolute;
   top: 131px;
   bottom: 0;
@@ -50,22 +55,6 @@ const MainGridVert = styled.div`
   flex-direction: column;
 `
 
-const ClockGridVert = styled.div`
-  font-size: 1.3em;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-`
-
-const ClockGridHorz = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-`
-
 const BannerGrid = styled.div`
   display: flex;
   flex-direction: row;
@@ -77,6 +66,8 @@ const Logo = () => {
   return <img src={logo} alt="Logo" height="100vh" />;
 }
 
+
+
 ReactDOM.render(
   <div>
     <MainGridVert>
@@ -84,15 +75,15 @@ ReactDOM.render(
         <BannerGrid>
           <Logo />
           <ClockFull timezone="US/Arizona" place="PHX"/>
-          <ClockFull timezone="US/Mountain" place="COL"/>
-          <ClockFull timezone="US/Eastern" place="BOS"/>
-          <ClockFull timezone="US/Eastern" place="DC"/>
-          <ClockFull timezone="Australia/Sydney" place="AUS"/>
+          <ClockFull timezone="US/Mountain" place="DEN"/>
+          <ClockFull timezone="US/Eastern" place="BOS/DC"/>
+          <ClockFull timezone="Australia/Sydney" place="MEL (+1)"/>
         </BannerGrid>
       </Banner>
       <ContentHorz>
         <LeftBox>
           {/* Left box content */}
+          <BuildStatus/>
         </LeftBox>
         <RightBox>
           {/* Right box content */}
