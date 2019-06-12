@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import * as consts from "./Constants.js";
+import { CX_OFF_WHITE, CX_FONT } from "./Constants.js";
 import BuildIcon from "./BuildIcon";
 
 const BUILD_LIST = ["alliance", "aus", "ddf", "gsr", "dib"];
@@ -14,7 +14,7 @@ const Builds = styled.div`
   border: solid black 3px;
   border-radius: 20px;
   padding: 20px;
-  background-color: ${consts.CX_OFF_WHITE};
+  background-color: ${CX_OFF_WHITE};
 
   display: flex;
   flex-direction: column;
@@ -23,7 +23,7 @@ const Builds = styled.div`
   flex-wrap: wrap;
 
   font-size: 2em;
-  font-family: ${consts.CX_FONT};
+  font-family: ${CX_FONT};
 `;
 
 class BuildStatus extends React.Component {

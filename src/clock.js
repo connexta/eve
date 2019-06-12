@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import * as consts from "./Constants.js";
+import { CX_OFF_WHITE, CX_FONT } from "./Constants.js";
 import Clock from "react-live-clock";
 
 const FONT_STYLE = "bold";
 
 const ClockHrStyle = styled.nav`
   font-size: 6em;
-  color: ${consts.CX_OFF_WHITE};
-  font-family: ${consts.CX_FONT};
+  color: ${CX_OFF_WHITE};
+  font-family: ${CX_FONT};
   font-style: ${FONT_STYLE};
 `;
 
@@ -22,8 +22,8 @@ const ClockHr = ({ timezone }) => {
 
 const ClockMinStyle = styled.nav`
   font-size: 3em;
-  color: ${consts.CX_OFF_WHITE};
-  font-family: ${consts.CX_FONT};
+  color: ${CX_OFF_WHITE};
+  font-family: ${CX_FONT};
   font-style: ${FONT_STYLE};
 `;
 
@@ -47,8 +47,8 @@ const ClockFullStyle = styled.div`
 
 const PlaceStyle = styled.div`
   font-size: 2em;
-  color: ${consts.CX_OFF_WHITE};
-  font-family: ${consts.CX_FONT};
+  color: ${CX_OFF_WHITE};
+  font-family: ${CX_FONT};
   font-style: ${FONT_STYLE};
 `;
 

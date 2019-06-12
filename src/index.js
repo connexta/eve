@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
-import * as consts from "./Constants";
+import { CX_OFF_WHITE, CX_DARK_BLUE, CX_GRAY_BLUE } from "./Constants";
 import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
 
 const Banner = styled.nav`
-  background: ${consts.CX_DARK_BLUE};
+  background: ${CX_DARK_BLUE};
   padding-left: 40px;
   padding-right: 40px;
   margin: 0%;
@@ -17,7 +17,7 @@ const Banner = styled.nav`
 `;
 
 const RightBox = styled.nav`
-  background: ${consts.CX_OFF_WHITE};
+  background: ${CX_OFF_WHITE};
   padding: 3%;
   font-size: 30px;
   border-left: solid black 3px;
@@ -30,7 +30,7 @@ const RightBox = styled.nav`
 `;
 
 const LeftBox = styled.nav`
-  background: ${consts.CX_GRAY_BLUE};
+  background: ${CX_GRAY_BLUE};
   padding: 3%;
   font-size: 30px;
   border-right: solid black 3px;
