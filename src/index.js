@@ -70,7 +70,7 @@ const BannerGrid = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px
+  padding: 10px;
 `
 
 const Logo = () => {
