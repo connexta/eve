@@ -34,28 +34,24 @@ class BuildIcon extends React.Component {
   render() {
     return this.state.score == 100 ? (
       <IconContainer>
-        {this.state.name}{" "}
+        {this.state.name}
         <IconStyle>
-          {" "}
           <img src={sun} alt="sun" height="50px" />
         </IconStyle>
       </IconContainer>
     ) : this.state.score > 50 ? (
       <IconContainer>
-        {this.state.name}{" "}
+        {this.state.name}
         <IconStyle>
-          {" "}
           <img src={cloud} alt="cloud" height="50px" />
         </IconStyle>
       </IconContainer>
     ) : (
       <IconContainer>
-        {" "}
-        {this.state.name}{" "}
+        {this.state.name}
         <IconStyle>
-          {" "}
           <img src={storm} alt="storm" height="50px" />
-        </IconStyle>{" "}
+        </IconStyle>
       </IconContainer>
     );
   }
