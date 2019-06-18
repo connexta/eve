@@ -7,6 +7,11 @@ yarn build
 yarn start
 ```
 
+## Setting up Slack
+The slack integration relies on the environment variable ```SLACK_TOKEN``` being set before use. 
+To do this, create a file called ```.env``` containing the line ```export SLACK_TOKEN=xxxxxxxx```, 
+replacing the value with a valid slack token. You may need to ```source .env``` for the variable to load.
+
 ## Format Code
 Use `prettier` for code formatting through yarn:  
 ```

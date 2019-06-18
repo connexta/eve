@@ -63,7 +63,11 @@ class BuildStatus extends React.Component {
         {this.state.data.map(item => {
           if (BUILD_LIST.includes(item.displayName.toLowerCase())) {
             return (
-              <BuildIcon score={item.weatherScore} name={item.displayName} />
+              <BuildIcon
+                score={item.weatherScore}
+                name={item.displayName}
+                key={item.displayName}
+              />
             );
           }
         })}
