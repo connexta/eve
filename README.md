@@ -1,4 +1,6 @@
 # Project EVE
+[![Known Vulnerabilities](https://snyk.io//test/github/connexta/eve/badge.svg?targetFile=package.json)](https://snyk.io//test/github/connexta/eve?targetFile=package.json)
+
 The new wallboard project
 
 ## Build
