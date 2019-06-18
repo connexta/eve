@@ -5,7 +5,7 @@ import emojis from "./emojis";
 import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
 
 const TOKEN = process.env.SLACK_TOKEN;
-const CHANNEL = "CKJBH2KQV";
+const CHANNEL = process.env.SLACK_CHANNEL;
 
 const MAX_MSGS = 5;
 const SLACK_FONT_SIZE = "20px";

@@ -42,7 +42,8 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      "process.env.SLACK_TOKEN": JSON.stringify(process.env.SLACK_TOKEN)
+      "process.env.SLACK_TOKEN": JSON.stringify(process.env.SLACK_TOKEN),
+      "process.env.SLACK_CHANNEL": JSON.stringify(process.env.SLACK_CHANNEL)
     })
   ],
   devServer: {
