@@ -5,7 +5,7 @@ import { CX_OFF_WHITE, CX_DARK_BLUE, CX_GRAY_BLUE } from "./Constants";
 import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
-import SlackCard from "./SlackCard";
+import SlackComponent from "./SlackComponent";
 
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
@@ -87,7 +87,7 @@ ReactDOM.render(
         </LeftBox>
         <RightBox>
           {/* Right box content */}
-          <SlackCard />
+          <SlackComponent />
         </RightBox>
       </ContentHorz>
     </MainGridVert>

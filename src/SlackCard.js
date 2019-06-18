@@ -2,30 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import Parser from "html-react-parser";
 import emojis from "./emojis";
-import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
+import { CX_OFF_WHITE } from "./Constants";
 
-const TOKEN = process.env.SLACK_TOKEN;
-const CHANNEL = process.env.SLACK_CHANNEL;
-
-const MAX_MSGS = 5;
 const SLACK_FONT_SIZE = "20px";
-
-const CardContainer = styled.div`
-  border: 2px solid black;
-  background-color: ${CX_DARK_BLUE};
-
-  font-family: ${CX_FONT};
-  font-size: 50px;
-  color: ${CX_OFF_WHITE};
-
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-`;
 
 const CardStyle = styled.div`
   border-radius: 5px;
@@ -43,75 +22,10 @@ const CardStyle = styled.div`
 `;
 
 class SlackCard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      emojis: {},
-      messages: [],
-      slackUsers: [],
-      isLoading: true
-    };
-  }
-
-  // refresh messages every 30 sec and user-list every 2 hours
-  componentDidMount() {
-    this.setUserList();
-    this.setEmojiList();
-    this.setMessages();
-    setInterval(() => this.setMessages(), 30000);
-    setInterval(() => this.setUserList(), 72000000);
-  }
-
-  // fetch latest messages
-  setMessages() {
-    console.log("Fetching latest slack messages...");
-    fetch(
-      "https://slack.com/api/channels.history?token=" +
-        TOKEN +
-        "&channel=" +
-        CHANNEL
-    )
-      .then(response => response.json())
-      .then(data => {
-        var messageList = [];
-        var msgCount = 0;
-        data.messages.forEach(message => {
-          msgCount++;
-          if (msgCount > MAX_MSGS) return;
-          messageList.push(message);
-        });
-        this.setState({
-          messages: messageList,
-          isLoading: false
-        });
-      })
-      .catch(e => console.log("error", e));
-  }
-
-  // fetch user list
-  setUserList() {
-    console.log("Fetching slack users...");
-    fetch("https://slack.com/api/users.list?token=" + TOKEN)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ slackUsers: data.members });
-      });
-  }
-
-  // fetch custom emoji list
-  setEmojiList() {
-    console.log("Fetching emojis...");
-    fetch("https://slack.com/api/emoji.list?token=" + TOKEN)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ emojis: data.emoji });
-      });
-  }
-
   // replace slack specific tags with different text style and emoji
   getSlackStyleMessage(messageText) {
     // set connexta cutom emojis
-    const customEmojis = this.state.emojis;
+    const customEmojis = this.props.emojis;
 
     if (!messageText) {
       messageText = "Could not find message :sad_octopus_monkey:!";
@@ -149,7 +63,7 @@ class SlackCard extends React.Component {
     messageText.replace(/<(.*?)>/g, (match, phrase) => {
       const id = phrase.slice(1, phrase.length);
 
-      const user = this.state.slackUsers.find(user => {
+      const user = this.props.slackUsers.find(user => {
         return user.id === id;
       });
 
@@ -193,29 +107,31 @@ class SlackCard extends React.Component {
 
   // return name from given user ID
   userIdToName(id) {
-    var members = this.state.slackUsers;
-    for (var i = 0; i < members.length; i++) {
-      if (members[i].id == id) {
-        return members[i].profile.real_name;
+    var name;
+    this.props.slackUsers.forEach(member => {
+      if (member.id == id) {
+        name = member.profile.real_name;
+        return;
       }
-    }
-    return undefined;
+    });
+    return name;
   }
 
   // return the avatar associated with the given user ID
   userIdToAvatar(id) {
-    var members = this.state.slackUsers;
-    for (var i = 0; i < members.length; i++) {
-      if (members[i].id == id) {
-        return members[i].profile.image_48;
+    var avatar;
+    this.props.slackUsers.forEach(member => {
+      if (member.id == id) {
+        avatar = member.profile.image_48;
+        return;
       }
-    }
-    return undefined;
+    });
+    return avatar;
   }
 
   // returns relative time since msg posted
   getRelativeMsgLife(index) {
-    var msgTime = this.state.messages[index].ts;
+    var msgTime = this.props.messages[index].ts;
     var data = new Date();
     var currTime = data.getTime();
 
@@ -226,23 +142,23 @@ class SlackCard extends React.Component {
 
     if (timeDiff < 60) {
       return Math.round(timeDiff) + " min";
-    } else if (timeDiff < 1440) {
-      return timeDiffHrs + (timeDiffHrs == 1 ? " hour" : " hours");
+    } else if (timeDiffHrs < 24) {
+      return timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago");
     } else {
-      return timeDiffDays + (timeDiffDays == 1 ? " day" : " days");
+      return timeDiffDays + (timeDiffDays == 1 ? " day ago" : " days ago");
     }
   }
 
   cardInfo(index) {
-    if (this.state.messages[index] == undefined) {
+    if (this.props.messages[index] == undefined) {
       return "No message";
     }
-    var author = this.userIdToName(this.state.messages[index].user);
+    var author = this.userIdToName(this.props.messages[index].user);
     if (author == undefined) {
       return "Unknown user";
     }
 
-    var avatar = this.userIdToAvatar(this.state.messages[index].user);
+    var avatar = this.userIdToAvatar(this.props.messages[index].user);
     return (
       `<img height="50" style="border-radius: 50%; margin-right: 10px; margin-left: 5px; margin-top: 5px; display: inline;" src=${avatar} alt=${author} />` +
       `<div style="font-weight: bolder; display: inline; padding-bottom: 10px;">${author}</div>` +
@@ -250,24 +166,13 @@ class SlackCard extends React.Component {
         index
       )}</div>` +
       `<div style="margin-left: 10px; margin-top: 5px;">${this.getSlackStyleMessage(
-        this.state.messages[index].text
-      )}</div`
+        this.props.messages[index].text
+      )}</div>`
     );
   }
 
   render() {
-    return this.state.isLoading ? (
-      <CardContainer>Loading...</CardContainer>
-    ) : (
-      <CardContainer>
-        {Parser(`<div style="margin-left: 10px;">Recent Messages</div>`)}
-        <CardStyle>{Parser(this.cardInfo(0))}</CardStyle>
-        <CardStyle>{Parser(this.cardInfo(1))}</CardStyle>
-        <CardStyle>{Parser(this.cardInfo(2))}</CardStyle>
-        <CardStyle>{Parser(this.cardInfo(3))}</CardStyle>
-        <CardStyle>{Parser(this.cardInfo(4))}</CardStyle>
-      </CardContainer>
-    );
+    return <CardStyle>{Parser(this.cardInfo(this.props.index))}</CardStyle>;
   }
 }
 

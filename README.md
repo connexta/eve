@@ -8,12 +8,19 @@ yarn start
 ```
 
 ## Setting up Slack
-The slack integration relies on the environment variable ```SLACK_TOKEN``` being set before use. 
-To do this, create a file called ```.env``` containing the line ```export SLACK_TOKEN=xxxxxxxx```, 
-replacing the value with a valid slack token. You may need to ```source .env``` for the variable to load.
+Using Slack on the wallboard relies on setting the ```SLACK_TOKEN``` and ```SLACK_CHANNEL```
+environment variables. Assign ```SLACK_TOKEN``` to the token for the workspace. Assign ```SLACK_CHANNEL```
+to the channel ID of the channel you want to connect to.
   
-To specify the channel you want to connect to, add ```export SLACK_CHANNEL=xxxxxx``` to your ```.env```
-file, using your slack channel ID as the value.
+Set both of these variables before running ```yarn start```.
+  
+*Windows:* You can set env variables by using the command ```setx -m <Var_Name> <Var_Value```  
+Note that the ```-m``` flag makes it a system property so the command line shell must be run in 
+administrator mode.  
+Example: ```setx -m SLACK_TOKEN 12345```
+  
+*UNIX:* You can set env variables by using the command ```export <Var_Name>=<Var_Value>```  
+Example: ```export SLACK_TOKEN=12345```
 
 ## Format Code
 Use `prettier` for code formatting through yarn:  
