@@ -75,7 +75,8 @@ class SlackCard extends React.Component {
       .then(data => {
         var messageList = [];
         var msgCount = 0;
-        data.messages.forEach(message => {
+        data.messages.forEach(message, count => {
+          if (count > MAX_MSGS) return;
           msgCount++;
           if (msgCount > MAX_MSGS) return;
           messageList.push(message);
