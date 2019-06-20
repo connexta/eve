@@ -1,15 +1,15 @@
-const url = require("url");
 const emojis = require("./characters");
 
 exports.unicode = input => {
   return replace(input, unicodeForEmoji);
 };
 
-exports.html = (input, baseUrl) => {
-  return replace(input, htmlForEmoji, baseUrl);
+exports.html = input => {
+  return replace(input, htmlForEmoji); // pass in function htmlForEmoji
 };
 
-function replace(input, fn, baseUrl) {
+// fn -> function to be used
+function replace(input, fn) {
   const tokens = input.split(":"); // tokens split by colon
   const parsed = []; // parsed tokens
   let emojiBefore = true; // flag indicating if previous iteration token is an emoji
@@ -25,7 +25,7 @@ function replace(input, fn, baseUrl) {
 
     if (emojiCurrent) {
       // if current iteration token is an emoji
-      parsed.push(fn(tokens[i], baseUrl)); // parses the emoji and push it to the parsed array
+      parsed.push(fn(tokens[i])); // parses the emoji and push it to the parsed array
     } else {
       // if current iteration token isn't an emoji
       parsed.push(tokens[i]); // push it without any parsing
@@ -44,7 +44,7 @@ function unicodeForEmoji(token) {
   return emojis[token];
 }
 
-function htmlForEmoji(token, baseUrl) {
+function htmlForEmoji(token) {
   const src = require("../../resources/emojis/" + token + ".png");
   return `<img class="emoji" width="25" height="25" style="display: inline;" src=${src} alt="${token}">`;
 }

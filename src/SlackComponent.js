@@ -59,8 +59,7 @@ class SlackComponent extends React.Component {
       .then(response => response.json())
       .then(data => {
         var messageList = [];
-        var msgCount = 0;
-        data.messages.forEach(message => {
+        data.messages.forEach((message, msgCount) => {
           msgCount++;
           if (msgCount > MAX_MSGS) return;
           messageList.push(message);
@@ -103,14 +102,10 @@ class SlackComponent extends React.Component {
   }
 
   getChannelName(id) {
-    var name = "";
-    this.state.channels.forEach(channel => {
-      if (channel.id == id) {
-        name = channel.name;
-        return;
-      }
+    var channel = this.state.channels.find(chan => {
+      return chan.id == id;
     });
-    return name;
+    return channel == undefined ? undefined : channel.name;
   }
 
   render() {

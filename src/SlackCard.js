@@ -61,6 +61,39 @@ const preformatTextStyle =
   white-space: pre; \
 ";
 
+const emojiStyle =
+  " \
+  margin-left: .25em; \
+  margin-right: .25em; \
+  display: inline; \
+";
+
+const userChanStyle =
+  " \
+  color: #4c8dac; \
+  margin-left: .10em; \
+  margin-right: .10em; \
+  font-size: " +
+  SLACK_FONT_SIZE +
+  ";";
+
+const msgLifeStyle =
+  " \
+  font-size: 15px; \
+  color: gray; \
+  display: inline; \
+  margin-left: 10px; \
+  ";
+
+const avatarStyle =
+  " \
+  border-radius: 50%; \
+  margin-right: 10px; \
+  margin-left: 5px; \
+  margin-top: 5px; \
+  display: inline; \
+  ";
+
 class SlackCard extends React.Component {
   // replace slack specific tags with different text style and emoji
   getSlackStyleMessage(messageText) {
@@ -78,14 +111,14 @@ class SlackCard extends React.Component {
         if (customEmojis[name].includes("alias:")) {
           messageText = messageText.replace(
             `:${name}:`,
-            `<img height="25" width="25" style="margin-left: .25em; margin-right: .25em; display: inline;" src=${
+            `<img height="25" width="25" style="${emojiStyle}" src=${
               customEmojis[customEmojis[name].split(":")[1]]
             } alt=${name}/>`
           );
         } else {
           messageText = messageText.replace(
             `:${name}:`,
-            `<img height="25" width="25" style="margin-left: .25em; margin-right: .25em; display: inline;" src=${customEmojis[name]} alt=${name}/>`
+            `<img height="25" width="25" style="${emojiStyle}" src=${customEmojis[name]} alt=${name}/>`
           );
         }
       }
@@ -110,7 +143,7 @@ class SlackCard extends React.Component {
       );
     });
 
-    // decode anyone user tagged
+    // decode any user/channel tagged
     messageText.replace(/<(.*?)>/g, (match, phrase) => {
       const id = phrase.slice(1, phrase.length);
 
@@ -121,16 +154,14 @@ class SlackCard extends React.Component {
       if (user) {
         messageText = messageText.replace(
           `<${phrase}>`,
-          `<small style="color: #4c8dac; margin-left: .10em; margin-right: .10em; font-size: ${SLACK_FONT_SIZE}">@${user.profile.display_name}</small>`
+          `<small style="${userChanStyle}">@${user.profile.display_name}</small>`
         );
       } else {
         // handle tags to other channels
         if (!phrase.includes("img") && phrase.includes("|")) {
           messageText = messageText.replace(
             `<${phrase}>`,
-            `<small style="color: #4c8dac; margin-left: .10em; margin-right: .10em; font-size: ${SLACK_FONT_SIZE}">#${
-              phrase.split("|")[1]
-            }</small>`
+            `<small style="${userChanStyle}">#${phrase.split("|")[1]}</small>`
           );
         }
       }
@@ -156,31 +187,23 @@ class SlackCard extends React.Component {
     );
 
     // set slack built in emojis
-    return emojis.html(messageText, "resources/emojis/");
+    return emojis.html(messageText);
   }
 
   // return name from given user ID
   userIdToName(id) {
-    var name;
-    this.props.slackUsers.forEach(member => {
-      if (member.id == id) {
-        name = member.profile.real_name;
-        return;
-      }
+    var user = this.props.slackUsers.find(member => {
+      return member.id == id;
     });
-    return name;
+    return user == undefined ? undefined : user.profile.real_name;
   }
 
   // return the avatar associated with the given user ID
   userIdToAvatar(id) {
-    var avatar;
-    this.props.slackUsers.forEach(member => {
-      if (member.id == id) {
-        avatar = member.profile.image_48;
-        return;
-      }
+    var user = this.props.slackUsers.find(member => {
+      return member.id == id;
     });
-    return avatar;
+    return user == undefined ? undefined : user.profile.image_48;
   }
 
   // returns relative time since msg posted
@@ -215,11 +238,9 @@ class SlackCard extends React.Component {
 
     var avatar = this.userIdToAvatar(this.props.messages[index].user);
     return (
-      `<img height="50" style="border-radius: 50%; margin-right: 10px; margin-left: 5px; margin-top: 5px; display: inline;" src=${avatar} alt=${author} />` +
-      `<div style="font-weight: bolder; display: inline; padding-bottom: 10px;">${author}</div>` +
-      `<div style="font-size: 15px; color: gray; display: inline; margin-left: 10px;">${this.getRelativeMsgLife(
-        index
-      )}</div>` +
+      `<img height="50" style="${avatarStyle}" src=${avatar} alt=${author} />` +
+      `<div style="font-weight: bold; display: inline; padding-bottom: 10px;">${author}</div>` +
+      `<div style="${msgLifeStyle}">${this.getRelativeMsgLife(index)}</div>` +
       `<div style="margin-left: 10px; margin-top: 5px;">${this.getSlackStyleMessage(
         this.props.messages[index].text
       )}</div>`
