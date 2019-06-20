@@ -196,7 +196,7 @@ class SlackCard extends React.Component {
     var timeDiffDays = Math.round(timeDiff / 1440);
 
     if (timeDiff < 60) {
-      return timeDiffMin + (timeDiffMin == 0 ? "now" : " min ago");
+      return timeDiffMin == 0 ? "now" : timeDiffMin + " min ago";
     } else if (timeDiffHrs < 24) {
       return timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago");
     } else {
