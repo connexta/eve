@@ -14,12 +14,52 @@ const CardStyle = styled.div`
   margin-bottom: 5px;
   background-color: ${CX_OFF_WHITE};
 
+  max-height: 25%;
   height: 100%;
+  overflow: hidden;
 
-  font-family: Consolas, monaco, "Ubuntu Mono", courier, monospace !important;
+  font-family: NotoSansJP, Slack-Lato, appleLogo, sans-serif;
   font-size: ${SLACK_FONT_SIZE};
   color: black;
+
+  position: relative;
+
+  ::before {
+    content: "";
+    position: absolute;
+    top: 80%;
+    left: 0;
+    height: 20%;
+    width: 100%;
+    background: linear-gradient(transparent, ${CX_OFF_WHITE});
+  }
 `;
+
+const inlineCodeStyle =
+  "color: red; \
+  border: solid gray 1px; \
+  border-radius: 5px; \
+  padding-left: .25em; \
+  padding-right: .25em; \
+  display: inline; \
+  font-family: monospace; \
+  font-size: 18px; \
+  background-color: #f8f8f8; \
+";
+
+const preformatTextStyle =
+  "color: black; \
+  border: solid gray 1px; \
+  border-radius: 5px; \
+  padding-left: .25em; \
+  padding-right: .25em; \
+  margin-right: 10px; \
+  margin-top: 5px; \
+  font-family: monospace; \
+  font-size: 18px; \
+  background-color: #f8f8f8; \
+  white-space: pre; \
+";
 
 class SlackCard extends React.Component {
   // replace slack specific tags with different text style and emoji
@@ -28,7 +68,7 @@ class SlackCard extends React.Component {
     const customEmojis = this.props.emojis;
 
     if (!messageText) {
-      messageText = "Could not find message :sad_octopus_monkey:!";
+      messageText = "Error: Could not find message :(";
     }
 
     // replace custom emojis found
@@ -52,10 +92,21 @@ class SlackCard extends React.Component {
     });
 
     // set any `` messages
-    messageText.replace(/`(.*?)`/g, (match, phrase) => {
+    messageText.replace(
+      /(?<![`|a-z|A-Z])`(?!`)(.+?)(?<!`)`(?![`|a-z|A-Z])/g,
+      (match, phrase) => {
+        messageText = messageText.replace(
+          `\`${phrase}\``,
+          `<div style="${inlineCodeStyle}">${phrase}</div>`
+        );
+      }
+    );
+
+    // set any ``` ``` messages
+    messageText.replace(/```(.*?)```/gs, (match, phrase) => {
       messageText = messageText.replace(
-        `\`${phrase}\``,
-        `<div style="color: red; margin-left: .25em; margin-right: .25em;">${phrase}</div>`
+        `\`\`\`${phrase}\`\`\``,
+        `<div style="${preformatTextStyle}">${phrase}</div>`
       );
     });
 
@@ -94,12 +145,15 @@ class SlackCard extends React.Component {
     });
 
     // set any _italic_ messages
-    messageText.replace(/_(.*?)_/g, (match, phrase) => {
-      messageText = messageText.replace(
-        `_${phrase}_`,
-        `<div style="font-style: italic; display: inline;">${phrase}</div>`
-      );
-    });
+    messageText.replace(
+      /(?<![a-z|A-Z])_(.*?)_(?![a-z|A-Z])/g,
+      (match, phrase) => {
+        messageText = messageText.replace(
+          `_${phrase}_`,
+          `<div style="font-style: italic; display: inline;">${phrase}</div>`
+        );
+      }
+    );
 
     // set slack built in emojis
     return emojis.html(messageText, "resources/emojis/");
@@ -137,11 +191,12 @@ class SlackCard extends React.Component {
 
     var timeDiff = (currTime - msgTime * 1000) / 60000; // time diff in min
 
+    var timeDiffMin = Math.round(timeDiff);
     var timeDiffHrs = Math.round(timeDiff / 60);
     var timeDiffDays = Math.round(timeDiff / 1440);
 
     if (timeDiff < 60) {
-      return Math.round(timeDiff) + " min";
+      return timeDiffMin + (timeDiffMin == 0 ? "now" : " min ago");
     } else if (timeDiffHrs < 24) {
       return timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago");
     } else {

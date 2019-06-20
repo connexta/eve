@@ -19,7 +19,7 @@ const Banner = styled.nav`
 
 const RightBox = styled.nav`
   background: ${CX_OFF_WHITE};
-  padding: 2%;
+  padding: 0%;
   font-size: 30px;
   border-left: solid black 3px;
 
@@ -28,6 +28,7 @@ const RightBox = styled.nav`
   bottom: 0;
   left: 66vw;
   right: 0;
+  overflow: hidden;
 `;
 
 const LeftBox = styled.nav`

@@ -10,7 +10,6 @@ const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 5;
 
 const CardContainer = styled.div`
-  border: 2px solid black;
   background-color: ${CX_DARK_BLUE};
 
   font-family: ${CX_FONT};
@@ -33,6 +32,7 @@ class SlackComponent extends React.Component {
       emojis: {},
       messages: [],
       slackUsers: [],
+      channels: [],
       isLoading: true
     };
   }
@@ -42,6 +42,7 @@ class SlackComponent extends React.Component {
     this.setUserList();
     this.setEmojiList();
     this.setMessages();
+    this.setChannels();
     setInterval(() => this.setMessages(), 1000 * 30);
     setInterval(() => this.setUserList(), 1000 * 60 * 60 * 2);
   }
@@ -92,12 +93,36 @@ class SlackComponent extends React.Component {
       });
   }
 
+  // fetch channel list
+  setChannels() {
+    fetch("https://slack.com/api/channels.list?token=" + TOKEN)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ channels: data.channels });
+      });
+  }
+
+  getChannelName(id) {
+    var name = "";
+    this.state.channels.forEach(channel => {
+      if (channel.id == id) {
+        name = channel.name;
+        return;
+      }
+    });
+    return name;
+  }
+
   render() {
     return this.state.isLoading ? (
       <CardContainer>Loading...</CardContainer>
     ) : (
       <CardContainer>
-        {Parser(`<div style="margin-left: 10px;">Recent Messages</div>`)}
+        {Parser(
+          `<div style="margin-left: 10px;"># ${this.getChannelName(
+            CHANNEL
+          )}</div>`
+        )}
         <SlackCard
           index={0}
           slackUsers={this.state.slackUsers}
@@ -118,12 +143,6 @@ class SlackComponent extends React.Component {
         />
         <SlackCard
           index={3}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={4}
           slackUsers={this.state.slackUsers}
           messages={this.state.messages}
           emojis={this.state.emojis}
