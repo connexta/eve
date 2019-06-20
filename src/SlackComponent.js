@@ -7,7 +7,7 @@ import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 
-const MAX_MSGS = 5;
+const MAX_MSGS = 4;
 
 const CardContainer = styled.div`
   background-color: ${CX_DARK_BLUE};
