@@ -105,23 +105,18 @@ class SlackCard extends React.Component {
     }
 
     // replace custom emojis found
-    messageText.replace(/:(.*?):/g, (match, name) => {
+    messageText = messageText.replace(/:(.*?):/g, (match, name) => {
       if (customEmojis[name]) {
         // alias points to actual
         if (customEmojis[name].includes("alias:")) {
-          messageText = messageText.replace(
-            `:${name}:`,
-            `<img height="25" width="25" style="${emojiStyle}" src=${
-              customEmojis[customEmojis[name].split(":")[1]]
-            } alt=${name}/>`
-          );
+          return `<img height="25" width="25" style="margin-left: .25em; margin-right: .25em; display: inline;" src=${
+            customEmojis[customEmojis[name].split(":")[1]]
+          } alt=${name}/>`;
         } else {
-          messageText = messageText.replace(
-            `:${name}:`,
-            `<img height="25" width="25" style="${emojiStyle}" src=${customEmojis[name]} alt=${name}/>`
-          );
+          return `<img height="25" width="25" style="margin-left: .25em; margin-right: .25em; display: inline;" src=${customEmojis[name]} alt=${name}/>`;
         }
       }
+      return name;
     });
 
     // set any `` messages
