@@ -5,6 +5,7 @@ import { CX_OFF_WHITE, CX_DARK_BLUE, CX_GRAY_BLUE } from "./Constants";
 import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
+import SlackComponent from "./SlackComponent";
 
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
@@ -18,7 +19,7 @@ const Banner = styled.nav`
 
 const RightBox = styled.nav`
   background: ${CX_OFF_WHITE};
-  padding: 3%;
+  padding: 0%;
   font-size: 30px;
   border-left: solid black 3px;
 
@@ -27,6 +28,7 @@ const RightBox = styled.nav`
   bottom: 0;
   left: 66vw;
   right: 0;
+  overflow: hidden;
 `;
 
 const LeftBox = styled.nav`
@@ -84,7 +86,10 @@ ReactDOM.render(
           {/* Left box content */}
           <BuildStatus />
         </LeftBox>
-        <RightBox>{/* Right box content */}</RightBox>
+        <RightBox>
+          {/* Right box content */}
+          <SlackComponent />
+        </RightBox>
       </ContentHorz>
     </MainGridVert>
   </div>,
