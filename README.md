@@ -32,3 +32,12 @@ yarn prettier --write <file>
   
 Prettier can also be used through extensions in your IDE.   
 More information can be found [here](https://prettier.io/).  
+  
+## Docker
+On linux run ```make image``` to generate the image.  
+  
+To push, run ```make push```
+  
+To run the image, run ```docker run -d -e SLACK_TOKEN=<token> -e SLACK_CHANNEL=<channel> -p 3000:3000 <image-id>```
+  
+Once the image is running, you can connect to the wallboard app by going to ```0.0.0.0:3000``` in your web browser.
