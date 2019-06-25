@@ -1,16 +1,15 @@
 REGISTRY=registry.phx.connexta.com:5000
 IMAGE_OWNER=connexta
-IMAGE_NAME=eve-wallboard-testing
+IMAGE_NAME=eve-wallboard-testing2
 GIT_BRANCH:=$(shell git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,' 2>/dev/null)
 ifneq (${GIT_BRANCH}, master)
 	IMAGE_TAG=${GIT_BRANCH}
 else
-	@echo ${GIT_BRANCH}
 	IMAGE_TAG=latest
 endif
 BUILD_TAG:=$(REGISTRY)/$(IMAGE_OWNER)/$(IMAGE_NAME):$(IMAGE_TAG)
 
-PHONY: help
+.PHONY: help
 help: ## Display help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 

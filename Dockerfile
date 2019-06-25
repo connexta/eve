@@ -6,8 +6,8 @@ WORKDIR /app
 
 COPY ./ /app
 
-RUN chmod +x /app/run && yarn install
-
 EXPOSE 3000
 
-ENTRYPOINT ["/app/run"]
+RUN chmod +x /app/run.sh && yarn install
+
+ENTRYPOINT ["/app/run.sh"]
