@@ -1,12 +1,12 @@
 REGISTRY=registry.phx.connexta.com:5000
-IMAGE_OWNER=devops
-IMAGE_NAME=blue-ocean-wallboard
+IMAGE_OWNER=connexta
+IMAGE_NAME=eve-wallboard-testing
 GIT_BRANCH:=$(shell git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,' 2>/dev/null)
 ifneq (${GIT_BRANCH}, master)
 	IMAGE_TAG=${GIT_BRANCH}
 else
 	@echo ${GIT_BRANCH}
-	IMAGE_TAG=origin
+	IMAGE_TAG=latest
 endif
 BUILD_TAG:=$(REGISTRY)/$(IMAGE_OWNER)/$(IMAGE_NAME):$(IMAGE_TAG)
 

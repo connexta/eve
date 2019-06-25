@@ -17,7 +17,7 @@ pipeline {
 }
 
 // pipeline {
-//   agent { label 'dind' }
+//   agent { label 'Wallboard' }
 //   options {
 //     buildDiscarder(logRotator(numToKeepStr:'25'))
 //     disableConcurrentBuilds()
@@ -51,8 +51,8 @@ pipeline {
 //     // that is tied to it, so that marathon reschedules it. This is to get around the annoying dc/os auth issues
 //     stage('Deploy Marathon Service') {
 //       environment {
-//         DOCKER_HOST="tcp://swarm.phx.connexta.com:2375"
-//         DOCKER_API_VERSION=1.23
+//         DOCKER_HOST="tcp://swarm.phx.connexta.com:2375" //{}
+//         DOCKER_API_VERSION=1.23 //{}
 //       }
 //       when {
 //         allOf {
