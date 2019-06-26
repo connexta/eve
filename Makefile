@@ -1,6 +1,6 @@
 REGISTRY=registry.phx.connexta.com:5000
-IMAGE_OWNER=connexta
-IMAGE_NAME=eve-wallboard-testing2
+IMAGE_OWNER=devops
+IMAGE_NAME=eve-wallboard
 GIT_BRANCH:=$(shell git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,' 2>/dev/null)
 ifneq (${GIT_BRANCH}, master)
 	IMAGE_TAG=${GIT_BRANCH}
