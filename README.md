@@ -16,12 +16,12 @@ to the channel ID of the channel you want to connect to.
   
 Set both of these variables before running ```yarn start```.
   
-*Windows:* You can set env variables by using the command ```setx -m <Var_Name> <Var_Value```  
+**Windows:** You can set env variables by using the command ```setx -m <Var_Name> <Var_Value```  
 Note that the ```-m``` flag makes it a system property so the command line shell must be run in 
 administrator mode.  
 Example: ```setx -m SLACK_TOKEN 12345```
   
-*UNIX:* You can set env variables by using the command ```export <Var_Name>=<Var_Value>```  
+**UNIX:** You can set env variables by using the command ```export <Var_Name>=<Var_Value>```  
 Example: ```export SLACK_TOKEN=12345```
 
 ## Format Code
@@ -32,3 +32,16 @@ yarn prettier --write <file>
   
 Prettier can also be used through extensions in your IDE.   
 More information can be found [here](https://prettier.io/).  
+  
+## Docker
+On linux run ```make image``` to generate the image.  
+**NOTE:** You must set your environment variables before building the image for the app to work. 
+See the **Setting up Slack** section for more details  
+  
+To push, run ```make push```
+  
+To start the container, run ```docker run --rm -p 3000:3000 --name wallboard -d <image-id>```  
+  
+Once the image is running, you can connect to the wallboard app by going to ```0.0.0.0:3000``` in your web browser.
+  
+You can kill the container through the command ```docker kill wallboard```  
