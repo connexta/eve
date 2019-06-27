@@ -9,11 +9,7 @@ else
 endif
 BUILD_TAG:=$(REGISTRY)/$(IMAGE_OWNER)/$(IMAGE_NAME):$(IMAGE_TAG)
 
-<<<<<<< HEAD
-.PHONY: help
-=======
 PHONY: help
->>>>>>> 3599bcefa6296a10ec1d068dbd63822c8e8d406f
 help: ## Display help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
@@ -25,8 +21,4 @@ image: ## Build docker image
 .PHONY: push
 push: ## Push docker image
 	@echo "\nPushing image: $(BUILD_TAG)\n"
-<<<<<<< HEAD
 	@docker push $(BUILD_TAG)
-=======
-	@docker push $(BUILD_TAG)
->>>>>>> 3599bcefa6296a10ec1d068dbd63822c8e8d406f
