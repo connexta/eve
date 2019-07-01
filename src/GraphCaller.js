@@ -77,12 +77,28 @@ class GraphCaller extends React.Component {
               </Router>
           );
           }
-          else return <p>Error</p>;
+          else return (
+            <Router>
+                  <div>
+                    <LogInOut isAuthenticated={this.state.isAuthenticated}
+                              logIn={this.login.bind(this)}
+                              logOut={this.logout.bind(this)}
+                                />
+                    <Calendar
+                      localizer={localizer}
+                      defaultDate={new Date()}
+                      defaultView="month"
+                      events={[]}
+                      style={{ height: "55vh" }}
+                    />
+                  </div>
+              </Router>
+          )
     }
 
     updateEvents(eventData){
       if(eventData != null) {
-        //eventData = eventData.map(event => ({"title": event.subject, "start": event.start, "end": event.end}));
+        eventData = eventData.map(event => ({"title": event.subject, "start": event.start, "end": event.end}));
         for (var i = 0; i < eventData.length; i++){
           eventData[i].start = localizeTime(eventData[i].start.dateTime, eventData[i].start.timeZone);
           eventData[i].end = localizeTime(eventData[i].end.dateTime, eventData[i].end.timeZone);
@@ -98,7 +114,7 @@ class GraphCaller extends React.Component {
 
     // Refresh user information/calendar events
     componentDidMount() {
-        setInterval(() => this.getUserInfo(), 1000 * 60 * 60);
+        setInterval(() => this.getUserInfo(), 1000 * 20);
     }
 
     // Pop up to log in user and acquire credentials
