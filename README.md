@@ -50,5 +50,5 @@ You can kill the container through the command ```docker kill wallboard```
 
 Required setup:
 
-- Github Webhook setup : needs admin access to Github repo setting
-- Jenkins setup: In Jenkins service website, create multibranch pipeline project to detect github SCM repo.
+- Github Webhook setup : An admin needs to add a webhook to the Jenkins service in the Github repository settings.
+- Jenkins setup: In the Jenkins service website, create multibranch pipeline project to detect github SCM repo.
