@@ -9,7 +9,17 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import ErrorMessage from './ErrorMessage';
+import styled from "styled-components";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment, { calendarFormat } from "moment";
 
+import '!style-loader!css-loader!./BoardCalendar.css';
+
+const localizer = momentLocalizer(moment);
+
+function localizeTime(time, timezone){
+  return new Date(time.split("T") + " " + timezone);
+}
 
 function LogInOut(props) {
     return props.isAuthenticated ? <button onClick={props.logOut}>Log Out</button> :
@@ -47,30 +57,43 @@ class GraphCaller extends React.Component {
     }
 
     render() {
-        let error = null;
-        let event = null;
-        if (this.state.error) {
-            error = <ErrorMessage message={this.state.error.message} debug={this.state.error.debug} />;
-        }
-        else {
-            var str = this.state.events.length + " events loaded.";
-            event = <p>{str}</p>;
-        }
+          if(!(Object.keys(this.state.events).length === 0)) {
+            console.log(this.state.events)
+            return (
+              <Router>
+                  <div>
+                    <LogInOut isAuthenticated={this.state.isAuthenticated}
+                              logIn={this.login.bind(this)}
+                              logOut={this.logout.bind(this)}
+                                />
+                    <Calendar
+                      localizer={localizer}
+                      defaultDate={new Date()}
+                      defaultView="month"
+                      events={this.state.events}
+                      style={{ height: "55vh" }}
+                    />
+                  </div>
+              </Router>
+          );
+          }
+          else return <p>Error</p>;
+    }
 
-        return (
-            <Router>
-                <div>
-                    <Container>
-                        {error}
-                        {event}
-                        <LogInOut isAuthenticated={this.state.isAuthenticated}
-                                  logIn={this.login.bind(this)}
-                                  logOut={this.logout.bind(this)}
-                                   />
-                    </Container>
-                </div>
-            </Router>
-        );
+    updateEvents(eventData){
+      if(eventData != null) {
+        //eventData = eventData.map(event => ({"title": event.subject, "start": event.start, "end": event.end}));
+        for (var i = 0; i < eventData.length; i++){
+          eventData[i].start = localizeTime(eventData[i].start.dateTime, eventData[i].start.timeZone);
+          eventData[i].end = localizeTime(eventData[i].end.dateTime, eventData[i].end.timeZone);
+        }
+        this.setState({
+          isAuthenticated: true,
+          events: eventData,
+          error: null
+        })
+      }
+      
     }
 
     // Refresh user information/calendar events
@@ -127,14 +150,10 @@ class GraphCaller extends React.Component {
           });
       
           if (accessToken) {
+            
             // Get the user's profile from Graph
             var calEvents = await getCalendarEvents(accessToken);
-
-            this.setState({
-              isAuthenticated: true,
-              events: calEvents.value,
-              error: null
-            });
+            this.updateEvents(calEvents.value);
           }
         }
         catch(err) {

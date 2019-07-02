@@ -14,13 +14,19 @@
     "@primer/octicons-react": "^9.1.1",
     "axios": "^0.19.0",
     "@microsoft/microsoft-graph-client": "^1.7.0",
+    "css-loader": "^3.0.0",
     "html-react-parser": "^0.7.1",
+    "json-loader": "^0.5.7",
+    "moment": "^2.24.0",
     "msal": "^1.0.2",
     "react": "^16.8.6",
+    "react-big-calendar": "^0.22.0",
     "react-dom": "^16.8.6",
     "react-live-clock": "^3.1.0",
     "react-router-dom": "^5.0.1",
-    "reactstrap": "^8.0.0"
+    "reactstrap": "^8.0.0",
+    "react-scripts": "^3.0.1",
+    "style-loader": "^0.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
