@@ -7,6 +7,7 @@ import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
 import SlackComponent from "./SlackComponent";
 import GraphCaller from "./GraphCaller";
+import BoardCalendar from "./BoardCalendar";
 
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
