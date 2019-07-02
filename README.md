@@ -45,3 +45,10 @@ To start the container, run ```docker run --rm -p 3000:3000 --name wallboard -d 
 Once the image is running, you can connect to the wallboard app by going to ```0.0.0.0:3000``` in your web browser.
   
 You can kill the container through the command ```docker kill wallboard```  
+
+## Jenkins
+
+Required setup:
+
+- Github Webhook setup : An admin needs to add a webhook to the Jenkins service in the Github repository settings.
+- Jenkins setup: In the Jenkins service website, create multibranch pipeline project to detect github SCM repo.
