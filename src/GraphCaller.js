@@ -9,7 +9,6 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import ErrorMessage from './ErrorMessage';
-import styled from "styled-components";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment, { calendarFormat } from "moment";
 
