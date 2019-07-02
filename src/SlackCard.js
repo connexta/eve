@@ -156,30 +156,30 @@ class SlackCard extends React.Component {
           return `<img height="20" width="20" style="${emojiStyle}" src=${customEmojis[name]} alt=${name}/>`;
         }
       }
-      return `:${name}:`;
+      return match;
     });
 
     // set any `` messages
-    messageText.replace(/`([^``].+?[^``])`[^\S]/gm, (match, phrase) => {
-      messageText = messageText.replace(
-        `\`${phrase}\``,
-        `<div style="${inlineCodeStyle}">${phrase}</div>`
-      );
-    });
+    messageText = messageText.replace(
+      /`([^``].+?[^``])`(?!\S)/gm,
+      (match, phrase) => {
+        return `<div style="${inlineCodeStyle}">${phrase}</div>`;
+      }
+    );
 
     // set any ``` ``` messages
-    messageText.replace(/`{3}(.+?)`{3}(?!\S)/gm, (match, phrase) => {
-      messageText = messageText.replace(
-        `\`\`\`${phrase}\`\`\``,
-        `<div style="${preformatTextStyle}">${phrase}</div>`
-      );
-    });
+    messageText = messageText.replace(
+      /`{3}(.+?)`{3}(?!\S)/gm,
+      (match, phrase) => {
+        return `<div style="${preformatTextStyle}">${phrase}</div>`;
+      }
+    );
 
     // decode any user/channel tagged
-    messageText.replace(/<(.+?)>/g, (match, phrase) => {
+    messageText = messageText.replace(/<(.+?)>/g, (match, phrase) => {
       const id = phrase.slice(1, phrase.length);
 
-      var user;
+      let user;
       if (this.props.slackUsers != undefined) {
         user = this.props.slackUsers.find(user => {
           return user.id === id;
@@ -187,41 +187,33 @@ class SlackCard extends React.Component {
       }
 
       if (user) {
-        messageText = messageText.replace(
-          `<${phrase}>`,
-          `<small style="${userChanStyle}">@${user.profile.display_name}</small>`
-        );
+        return `<small style="${userChanStyle}">@${user.profile.display_name}</small>`;
       } else {
         // handle tags to other channels
         if (!phrase.includes("img") && phrase.includes("|")) {
-          messageText = messageText.replace(
-            `<${phrase}>`,
-            `<small style="${userChanStyle}">#${phrase.split("|")[1]}</small>`
-          );
+          return `<small style="${userChanStyle}">#${
+            phrase.split("|")[1]
+          }</small>`;
         }
       }
+      return match;
     });
 
     // decode any <http(s)> links, removing '< >' to avoid issues with html parser
     // treating as tag
-    messageText.replace(/<(http.*?)>/g, (match, phrase) => {
-      messageText = messageText.replace(`<${phrase}>`, phrase);
-    });
+    messageText = messageText.replace(
+      /<(http.*?)>/g,
+      (match, phrase) => phrase
+    );
 
     // set any *bold* messages
-    messageText.replace(/\*(.+?)\*[^\S]/g, (match, phrase) => {
-      messageText = messageText.replace(
-        `*${phrase}*`,
-        `<div style="font-weight: bolder; display: inline;">${phrase}</div>`
-      );
+    messageText = messageText.replace(/\*(.+?)\*(?!\S)/g, (match, phrase) => {
+      return `<div style="font-weight: bolder; display: inline;">${phrase}</div>`;
     });
 
     // set any _italic_ messages
-    messageText.replace(/_(.+?)_[^\S]/g, (match, phrase) => {
-      messageText = messageText.replace(
-        `_${phrase}_`,
-        `<div style="font-style: italic; display: inline;">${phrase}</div>`
-      );
+    messageText = messageText.replace(/_(.+?)_(?!\S)/g, (match, phrase) => {
+      return `<div style="font-style: italic; display: inline;">${phrase}</div>`;
     });
 
     // set slack built in emojis
@@ -234,7 +226,7 @@ class SlackCard extends React.Component {
       return undefined;
     }
 
-    var user = this.props.slackUsers.find(member => {
+    let user = this.props.slackUsers.find(member => {
       return member.id == id;
     });
     return user == undefined ? undefined : user.profile.real_name;
@@ -246,7 +238,7 @@ class SlackCard extends React.Component {
       return undefined;
     }
 
-    var user = this.props.slackUsers.find(member => {
+    let user = this.props.slackUsers.find(member => {
       return member.id == id;
     });
 
@@ -259,47 +251,37 @@ class SlackCard extends React.Component {
       return undefined;
     }
 
-    var message = this.props.messages[index];
-    var msgTime =
+    let message = this.props.messages[index];
+    let msgTime =
       message.attachments == undefined ? message.ts : message.attachments[0].ts;
     msgTime = msgTime == undefined ? message.ts : msgTime;
 
-    var data = new Date();
-    var currTime = data.getTime();
+    let data = new Date();
+    let currTime = data.getTime();
 
-    var timeDiff = (currTime - msgTime * 1000) / 60000; // time diff in min
+    let timeDiff = (currTime - msgTime * 1000) / 60000; // time diff in min
 
-    var timeDiffMin = Math.round(timeDiff);
-    var timeDiffHrs = Math.round(timeDiff / 60);
-    var timeDiffDays = Math.round(timeDiff / 1440);
-
-    // check for additional footer info
-    var footer =
-      message.attachments == undefined
-        ? ""
-        : " | " + message.attachments[0].footer;
+    let timeDiffMin = Math.round(timeDiff);
+    let timeDiffHrs = Math.round(timeDiff / 60);
+    let timeDiffDays = Math.round(timeDiff / 1440);
 
     if (timeDiff < 60) {
-      return (timeDiffMin == 0 ? "now" : timeDiffMin + " min ago") + footer;
+      return timeDiffMin == 0 ? "now" : timeDiffMin + " min ago";
     } else if (timeDiffHrs < 24) {
-      return (
-        timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago") + footer
-      );
+      return timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago");
     } else {
-      return (
-        timeDiffDays + (timeDiffDays == 1 ? " day ago" : " days ago") + footer
-      );
+      return timeDiffDays + (timeDiffDays == 1 ? " day ago" : " days ago");
     }
   }
 
   getCardHeader(index) {
-    var message = this.props.messages[index];
+    let message = this.props.messages[index];
     if (message == undefined) {
       return "Error: No message";
     }
 
     // check if author is bot or unknown
-    var author =
+    let author =
       message.attachments == undefined
         ? this.userIdToName(message.user)
         : message.attachments[0].author_name;
@@ -309,31 +291,39 @@ class SlackCard extends React.Component {
       author = "Unknown User";
     }
 
-    const unknown = `<img style="${avatarStyle}" src=${circle_logo} alt=${author} />`;
-    var avatar =
+    // get avatar for user
+    const unknownAvatar = `<img style="${avatarStyle}" src=${circle_logo} alt=${author} />`;
+    let avatar =
       message.attachments == undefined
         ? this.userIdToAvatar(message.user)
         : message.attachments[0].author_icon;
-    var icon =
+    let icon =
       avatar == undefined
-        ? unknown
+        ? unknownAvatar
         : `<img style="${avatarStyle}" src=${avatar} alt=${author} />`;
+
+    // check for additional footer info
+    let footer =
+      message.attachments == undefined
+        ? ""
+        : " | " + message.attachments[0].footer;
 
     return (
       icon +
       `<div style="font-weight: bold; display: inline; padding-bottom: 10px;">${author}</div>` +
-      `<div style="${msgLifeStyle}">${this.getRelativeMsgLife(index)}</div>`
+      `<div style="${msgLifeStyle}">${this.getRelativeMsgLife(index) +
+        footer}</div>`
     );
   }
 
   getCardText(index) {
-    var message = this.props.messages[index];
+    let message = this.props.messages[index];
     if (message == undefined) {
       message = "No message";
     }
 
     // account for message being shared message
-    var messageText =
+    let messageText =
       message.attachments == undefined
         ? message.text
         : message.attachments[0].text;
@@ -343,23 +333,27 @@ class SlackCard extends React.Component {
   }
 
   getCardMedia(index) {
-    var message = this.props.messages[index];
+    let message = this.props.messages[index];
 
-    // check if media comes from attachment or file in api call
-    var image =
+    // check if message has attachments (message is link to another message)
+    let media =
       message.attachments == undefined
         ? message.image_url
         : message.attachments[0].image_url;
-    image =
-      image == undefined
+
+    // check if message has media, creating html snippet if it does
+    media =
+      media == undefined
         ? ""
-        : `<img style="${fileImgStyle}" src=${image} alt="image"/>`;
-    image =
+        : `<img style="${fileImgStyle}" src=${media} alt="media"/>`;
+
+    // check if message has file, creating html snippet if it does
+    media =
       message.files == undefined
-        ? image
+        ? media
         : `<img style="${fileImgStyle}" src=${message.files[0].url_private} alt="file" />`;
 
-    return image;
+    return media;
   }
 
   render() {
