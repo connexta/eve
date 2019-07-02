@@ -15,7 +15,7 @@ pipeline {
   stages {
     stage('Build Image') {
       steps {
-        sh 'make image'
+        sh 'make image GIT_BRANCH=' + env.BRANCH_NAME
       }
     }
     stage('Push Image') {
