@@ -6,6 +6,7 @@ import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
 import SlackComponent from "./SlackComponent";
+import Github from "./githubCaller";
 
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
@@ -85,6 +86,7 @@ ReactDOM.render(
         <LeftBox>
           {/* Left box content */}
           <BuildStatus />
+          <Github />
         </LeftBox>
         <RightBox>
           {/* Right box content */}
