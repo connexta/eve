@@ -1,17 +1,11 @@
-// GraphService holds calls to Microsoft Graph API
-import { getUserDetails } from './GraphService';
 import { getCalendarEvents } from './GraphService';
-
-// GraphConfig holds specifications to be passed into API call
 import config from './GraphConfig';
 import { UserAgentApplication } from 'msal';
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Container } from 'reactstrap';
+import React from 'react';
+import { BrowserRouter as Router} from 'react-router-dom';
 import ErrorMessage from './ErrorMessage';
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment, { calendarFormat } from "moment";
-
+import moment from "moment";
 import '!style-loader!css-loader!./BoardCalendar.css';
 
 const localizer = momentLocalizer(moment);
@@ -49,50 +43,35 @@ class GraphCaller extends React.Component {
             error: null
         };
 
-        if (user) {
-            // Enhance user object with data from Graph
-            this.getUserInfo();
-        }
+        this.getUserInfo();
     }
 
     render() {
-          if(!(Object.keys(this.state.events).length === 0)) {
-            console.log(this.state.events)
-            return (
-              <Router>
-                  <div>
-                    <LogInOut isAuthenticated={this.state.isAuthenticated}
-                              logIn={this.login.bind(this)}
-                              logOut={this.logout.bind(this)}
-                                />
-                    <Calendar
-                      localizer={localizer}
-                      defaultDate={new Date()}
-                      defaultView="month"
-                      events={this.state.events}
-                      style={{ height: "55vh" }}
-                    />
-                  </div>
-              </Router>
-          );
-          }
-          else return (
-            <Router>
-                  <div>
-                    <LogInOut isAuthenticated={this.state.isAuthenticated}
-                              logIn={this.login.bind(this)}
-                              logOut={this.logout.bind(this)}
-                                />
-                    <Calendar
-                      localizer={localizer}
-                      defaultDate={new Date()}
-                      defaultView="month"
-                      events={[]}
-                      style={{ height: "55vh" }}
-                    />
-                  </div>
-              </Router>
-          )
+      let error = null;
+      if (this.state.error) {
+        error = <ErrorMessage message={this.state.error.message} debug={this.state.error.debug} />;
+      }
+
+      var calEvents = Object.keys(this.state.events).length === 0 ? [] : this.state.events;
+                    
+      return (
+        <Router>
+            <div>
+              {error}
+              <LogInOut isAuthenticated={this.state.isAuthenticated}
+                        logIn={this.login.bind(this)}
+                        logOut={this.logout.bind(this)}
+              />
+              <Calendar
+                localizer={localizer}
+                defaultDate={new Date()}
+                defaultView="month"
+                events={calEvents}
+                style={{ height: "55vh" }}
+              />
+            </div>
+        </Router>
+      );
     }
 
     updateEvents(eventData){
@@ -154,6 +133,8 @@ class GraphCaller extends React.Component {
 
     //Fetch user information and calendar events
     async getUserInfo() {
+        if(!(this.state.isAuthenticated)) return;
+
         try {
           // Get the access token silently
           // If the cache contains a non-expired token, this function
