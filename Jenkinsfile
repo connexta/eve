@@ -1,3 +1,5 @@
+@Library('github.com/connexta/cx-pipeline-library@master') _
+
 pipeline {
   agent { label 'dind' }
   options {
@@ -13,6 +15,12 @@ pipeline {
     cron(BRANCH_NAME == "master" ? "H 5 * * 1" : "")
   }
   stages {
+    stage('Setup') {
+      steps {
+        dockerd {}
+        slackSend channel: '#cmp-build-bots', color: 'GREY', message: "STARTED: ${JOB_NAME} ${BUILD_NUMBER} ${BUILD_URL}"
+      }
+    }
     stage('Build Image') {
       steps {
         sh 'make image GIT_BRANCH=' + env.BRANCH_NAME
@@ -26,7 +34,7 @@ pipeline {
         }
       }
       steps {
-        sh 'make push'
+        sh 'make push GIT_BRANCH=' + env.BRANCH_NAME
       }
     }
     // The following stage doesn't actually re-deploy the marathon service, but actually kills the existing docker container
@@ -62,12 +70,6 @@ pipeline {
     }
     aborted {
       slackSend channel: '#cmp-build-bots', color: 'warning', message: "Hmm, it seems that '${JOB_NAME} [#${BUILD_NUMBER}]' was aborted. \nSomebody might want to take a look here: ${RUN_DISPLAY_URL}"
-    }
-    cleanup {
-      echo "cleaning up build node..."
-      wrap([$class: 'MesosSingleUseSlave']) {
-        sh 'echo "...Shutting down Jenkins slave: `hostname`"'
-      }
     }
   }
 }
