@@ -1,13 +1,25 @@
-FROM node:latest
+# build environment
 
-RUN apt-get update && apt-get install xsel
+FROM node:latest as build-stage
 
 WORKDIR /app
 
-COPY ./ /app
+ENV PATH /app/node_modules/.bin:$PATH
 
-RUN chmod +x /app/run.sh && yarn install
+COPY package.json /app/package.json
+
+RUN yarn install --silent
+
+COPY . /app
+
+RUN yarn build
+
+# production environment
+
+FROM nginx
+
+COPY --from=build-stage /app /usr/share/nginx/html
 
 EXPOSE 3000
 
-ENTRYPOINT ["/app/run.sh"]
+CMD ["nginx", "-g", "daemon off;"]
