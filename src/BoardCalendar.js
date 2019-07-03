@@ -3,21 +3,20 @@ import styled from "styled-components";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment, { calendarFormat } from "moment";
 
-import '!style-loader!css-loader!./BoardCalendar.css';
+import "!style-loader!css-loader!./BoardCalendar.css";
 
 const localizer = momentLocalizer(moment);
 
 const CalendarStyle = styled.div`
-display: flex;
+  display: flex;
 `;
 
-function localizeTime(time, timezone){
+function localizeTime(time, timezone) {
   return new Date(time.split("T") + " " + timezone);
 }
 
 //date: inclusive:exclusive. month needs to be -1
-class BoardCalendar extends React.Component{
-
+class BoardCalendar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -28,20 +27,24 @@ class BoardCalendar extends React.Component{
     this.updateEvents(this.props.events);
   }
 
-  updateEvents(eventData){
-
-    if(eventData != null) {
+  updateEvents(eventData) {
+    if (eventData != null) {
       //eventData = eventData.map(event => ({"title": event.subject, "start": event.start, "end": event.end}));
-      for (var i = 0; i < eventData.length; i++){
-        eventData[i].start = localizeTime(eventData[i].start.dateTime, eventData[i].start.timeZone);
-        eventData[i].end = localizeTime(eventData[i].end.dateTime, eventData[i].end.timeZone);
+      for (var i = 0; i < eventData.length; i++) {
+        eventData[i].start = localizeTime(
+          eventData[i].start.dateTime,
+          eventData[i].start.timeZone
+        );
+        eventData[i].end = localizeTime(
+          eventData[i].end.dateTime,
+          eventData[i].end.timeZone
+        );
       }
-  
+
       this.setState({
         events: eventData
-      })
+      });
     }
-    
   }
 
   render() {
