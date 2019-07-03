@@ -42,8 +42,8 @@ class GraphCaller extends React.Component {
             events: {},
             error: null
         };
-
-        this.getUserInfo();
+        
+        if(user) this.getUserInfo();
     }
 
     render() {
@@ -92,7 +92,7 @@ class GraphCaller extends React.Component {
 
     // Refresh user information/calendar events
     componentDidMount() {
-        setInterval(() => this.getUserInfo(), 1000 * 20);
+        setInterval(() => {if(this.state.isAuthenticated) this.getUserInfo()}, 1000 * 20);
     }
 
     // Pop up to log in user and acquire credentials
@@ -133,7 +133,6 @@ class GraphCaller extends React.Component {
 
     //Fetch user information and calendar events
     async getUserInfo() {
-        if(!(this.state.isAuthenticated)) return;
 
         try {
           // Get the access token silently
