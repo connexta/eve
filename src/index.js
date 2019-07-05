@@ -7,6 +7,9 @@ import ClockFull from "./clock.js";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { wallboards } from "./wallboards/Home";
 import NullWallboard from "./wallboards/NullWallboard";
+import BuildStatus from "./BuildStatus";
+import SlackComponent from "./SlackComponent";
+import GraphCaller from "./GraphCaller";
 
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
