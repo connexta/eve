@@ -285,9 +285,8 @@ class SlackCard extends React.Component {
       message.attachments == undefined
         ? this.userIdToName(message.user)
         : message.attachments[0].author_name;
-    if (message.bot_id != undefined) {
-      author = "Bot";
-    } else if (author == undefined) {
+    // Got rid of bot check, since all wallboard posts come from bot
+    if (author == undefined) {
       author = "Unknown User";
     }
 
