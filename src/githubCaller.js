@@ -114,7 +114,7 @@ export default class Github extends React.Component {
   callGithub() {
     axios
       .get(
-        "https://api.github.com/repos/connexta/ddf/pulls?client_id=" +
+        "https://api.github.com/repos/codice/ddf/pulls?client_id=" +
           CLIENT_ID +
           "&client_secret=" +
           CLIENT_SECRET
