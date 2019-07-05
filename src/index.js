@@ -86,11 +86,11 @@ ReactDOM.render(
         <LeftBox>
           {/* Left box content */}
           <BuildStatus />
-          <Github />
         </LeftBox>
         <RightBox>
           {/* Right box content */}
           <SlackComponent />
+          <Github />
         </RightBox>
       </ContentHorz>
     </MainGridVert>

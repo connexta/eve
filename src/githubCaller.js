@@ -9,8 +9,8 @@ const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
 const Box = styled.div`
-  width: 660px;
-  height: 472px;
+  width: 100%;
+  height: 40%;
   border-radius: 20px;
   padding: 20px;
   background-color: ${CX_OFF_WHITE};
@@ -23,7 +23,7 @@ const Box = styled.div`
   font-size: 0.75em;
   font-family: ${CX_FONT};
 
-  margin-top: 100px;
+  margin-top: 0px;
 `;
 
 const PRTitle = styled.span`
@@ -96,8 +96,8 @@ export default class Github extends React.Component {
         author: data[i].user.login,
         number: data[i].number,
         title:
-          data[i].title.length > 45
-            ? data[i].title.substring(0, 42) + "..."
+          data[i].title.length > 110
+            ? data[i].title.substring(0, 107) + "..."
             : data[i].title,
         timeCreated: parseDate(data[i].created_at)
       };

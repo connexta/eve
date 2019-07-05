@@ -16,7 +16,7 @@ const CardContainer = styled.div`
   font-size: 50px;
   color: ${CX_OFF_WHITE};
 
-  height: 100%;
+  height: 60%;
   width: 100%;
 
   display: flex;
