@@ -10,6 +10,8 @@ import {
 } from "./Constants.js";
 
 const NUMPULLS = 5;
+const CHAR_LIMIT = 60;
+const CALL_FREQ = 1000 * 60 * 60;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
@@ -101,8 +103,8 @@ export default class Github extends React.Component {
         author: data[i].user.login,
         number: data[i].number,
         title:
-          data[i].title.length > 110
-            ? data[i].title.substring(0, 107) + "..."
+          data[i].title.length > CHAR_LIMIT
+            ? data[i].title.substring(0, CHAR_LIMIT - 3) + "..."
             : data[i].title,
         timeCreated: parseDate(data[i].created_at)
       };
@@ -113,7 +115,7 @@ export default class Github extends React.Component {
 
   componentDidMount() {
     this.callGithub();
-    setInterval(() => this.callGithub(), 1000 * 10);
+    setInterval(() => this.callGithub(), CALL_FREQ);
   }
 
   callGithub() {
