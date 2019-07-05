@@ -5,7 +5,8 @@ import styled from "styled-components";
 import { CX_OFF_WHITE, CX_FONT } from "./Constants.js";
 
 const NUMPULLS = 5;
-const TOKEN = process.env.GITHUB_TOKEN;
+const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
 const Box = styled.div`
   width: 660px;
@@ -21,6 +22,8 @@ const Box = styled.div`
 
   font-size: 0.75em;
   font-family: ${CX_FONT};
+
+  margin-top: 100px;
 `;
 
 const PRTitle = styled.span`
@@ -84,33 +87,38 @@ export default class Github extends React.Component {
     );
   }
 
+  loadUserData(data) {
+    console.log("hello");
+    console.log(data);
+    var pulls = [];
+    for (var i = 0; i < data.length && i < NUMPULLS; i++) {
+      pulls[i] = {
+        author: data[i].user.login,
+        number: data[i].number,
+        title:
+          data[i].title.length > 45
+            ? data[i].title.substring(0, 42) + "..."
+            : data[i].title,
+        timeCreated: parseDate(data[i].created_at)
+      };
+    }
+
+    this.setState({ data: pulls });
+  }
+
   componentDidMount() {
     this.callGithub();
     setInterval(() => this.callGithub(), 1000 * 10);
   }
 
   callGithub() {
-    console.log("Fetching Github Data");
-    const header = "Authorization: token " + TOKEN;
     axios
-      .get("https://api.github.com/repos/connexta/ddf/pulls", {
-        headers: { header }
-      })
-      .then(res => {
-        var pulls = [];
-        for (var i = 0; i < res.data.length && i < NUMPULLS; i++) {
-          pulls[i] = {
-            author: res.data[i].user.login,
-            number: res.data[i].number,
-            title:
-              res.data[i].title.length > 45
-                ? res.data[i].title.substring(0, 42) + "..."
-                : res.data[i].title,
-            timeCreated: parseDate(res.data[i].created_at)
-          };
-        }
-
-        this.setState({ data: pulls });
-      });
+      .get(
+        "https://api.github.com/repos/connexta/ddf/pulls?client_id=" +
+          CLIENT_ID +
+          "&client_secret=" +
+          CLIENT_SECRET
+      )
+      .then(res => this.loadUserData(res.data));
   }
 }
