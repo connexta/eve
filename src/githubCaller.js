@@ -2,15 +2,20 @@ import axios from "axios";
 import React from "react";
 import Octicon, { GitPullRequest } from "@primer/octicons-react";
 import styled from "styled-components";
-import { CX_OFF_WHITE, CX_FONT } from "./Constants.js";
+import {
+  CX_OFF_WHITE,
+  CX_FONT,
+  CX_LIGHT_BLUE,
+  CX_DARK_BLUE
+} from "./Constants.js";
 
 const NUMPULLS = 5;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
 const Box = styled.div`
-  width: 100%;
-  height: 40%;
+  width: 93%;
+  height: 89%;
   border-radius: 20px;
   padding: 20px;
   background-color: ${CX_OFF_WHITE};
@@ -20,10 +25,10 @@ const Box = styled.div`
   align-items: left;
   flex-wrap: wrap;
 
-  font-size: 0.75em;
+  font-size: 0.745em;
   font-family: ${CX_FONT};
 
-  margin-top: 0px;
+  margin: 8px;
 `;
 
 const PRTitle = styled.span`
@@ -80,16 +85,16 @@ export default class Github extends React.Component {
     }
 
     return (
-      <Box>
-        <h2>DDF Pull Requests</h2>
-        {prList}
-      </Box>
+      <div style={{ backgroundColor: CX_DARK_BLUE }}>
+        <Box>
+          <h2>DDF Pull Requests</h2>
+          {prList}
+        </Box>
+      </div>
     );
   }
 
   loadUserData(data) {
-    console.log("hello");
-    console.log(data);
     var pulls = [];
     for (var i = 0; i < data.length && i < NUMPULLS; i++) {
       pulls[i] = {

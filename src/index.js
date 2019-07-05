@@ -25,6 +25,9 @@ const RightBox = styled.nav`
   border-left: solid black 3px;
 
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   top: 131px;
   bottom: 0;
   left: 66vw;
