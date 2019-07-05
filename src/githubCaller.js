@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { CX_OFF_WHITE, CX_FONT } from "./Constants.js";
 
 const NUMPULLS = 5;
+const TOKEN = process.env.GITHUB_TOKEN;
 
 const Box = styled.div`
   width: 660px;
@@ -49,46 +50,17 @@ export default class Github extends React.Component {
     this.state = {
       data: []
     };
-
-    this.callGithub();
   }
 
   localizeTime(time) {
     return new Date(time.split("T"));
   }
 
-  callGithub() {
-    console.log("test");
-    const header =
-      "Authorization: token d9707e33396f3772b0b50702fb906d1cd3984e98";
-    axios
-      .get("https://api.github.com/repos/connexta/ddf/pulls", {
-        headers: { header }
-      })
-      .then(res => {
-        console.log(res.data);
-        var pulls = [];
-        for (var i = 0; i < res.data.length && i < NUMPULLS; i++) {
-          pulls[i] = {
-            author: res.data[i].user.login,
-            number: res.data[i].number,
-            title:
-              res.data[i].title.length > 45
-                ? res.data[i].title.substring(0, 42) + "..."
-                : res.data[i].title,
-            timeCreated: parseDate(res.data[i].created_at)
-          };
-        }
-
-        this.setState({ data: pulls });
-      });
-  }
-
   render() {
     let prList = [];
     for (var i = 0; i < this.state.data.length; i++) {
       prList.push(
-        <div>
+        <div key={i}>
           <Octicon icon={GitPullRequest} size="medium" />
           <PRTitle>
             {this.state.data[i].title}
@@ -110,5 +82,35 @@ export default class Github extends React.Component {
         {prList}
       </Box>
     );
+  }
+
+  componentDidMount() {
+    this.callGithub();
+    setInterval(() => this.callGithub(), 1000 * 10);
+  }
+
+  callGithub() {
+    console.log("Fetching Github Data");
+    const header = "Authorization: token " + TOKEN;
+    axios
+      .get("https://api.github.com/repos/connexta/ddf/pulls", {
+        headers: { header }
+      })
+      .then(res => {
+        var pulls = [];
+        for (var i = 0; i < res.data.length && i < NUMPULLS; i++) {
+          pulls[i] = {
+            author: res.data[i].user.login,
+            number: res.data[i].number,
+            title:
+              res.data[i].title.length > 45
+                ? res.data[i].title.substring(0, 42) + "..."
+                : res.data[i].title,
+            timeCreated: parseDate(res.data[i].created_at)
+          };
+        }
+
+        this.setState({ data: pulls });
+      });
   }
 }
