@@ -10,7 +10,6 @@ import {
 } from "./Constants.js";
 
 const NUMPULLS = 5;
-const CHAR_LIMIT = 60;
 const CALL_FREQ = 1000 * 60 * 60;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
@@ -34,6 +33,15 @@ const Box = styled.div`
 `;
 
 const PRTitle = styled.span`
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+  vertical-align: bottom;
+`;
+
+const PRMainLine = styled.span`
   margin-left: 8px;
   padding: 0px;
 `;
@@ -58,7 +66,8 @@ export default class Github extends React.Component {
     super(props);
 
     this.state = {
-      data: []
+      data: [],
+      intervalId: 0
     };
   }
 
@@ -67,24 +76,21 @@ export default class Github extends React.Component {
   }
 
   render() {
-    let prList = [];
-    for (var i = 0; i < this.state.data.length; i++) {
-      prList.push(
-        <div key={i}>
-          <Octicon icon={GitPullRequest} size="medium" />
-          <PRTitle>
-            {this.state.data[i].title}
-            <em style={{ color: "#477081" }}>
-              {" #" + this.state.data[i].number}
-            </em>
-          </PRTitle>
-          <PRSubline>
-            {this.state.data[i].author}
-            {" (" + this.state.data[i].timeCreated + ")"}
-          </PRSubline>
-        </div>
-      );
-    }
+    let prList = this.state.data.map((pr, i) => (
+      <div key={i}>
+        <Octicon icon={GitPullRequest} size="medium" />
+        <PRMainLine>
+          <PRTitle>{this.state.data[i].title}</PRTitle>
+          <em style={{ color: "#477081" }}>
+            {" #" + this.state.data[i].number}
+          </em>
+        </PRMainLine>
+        <PRSubline>
+          {this.state.data[i].author}
+          {" (" + this.state.data[i].timeCreated + ")"}
+        </PRSubline>
+      </div>
+    ));
 
     return (
       <div style={{ backgroundColor: CX_DARK_BLUE }}>
@@ -102,10 +108,7 @@ export default class Github extends React.Component {
       pulls[i] = {
         author: data[i].user.login,
         number: data[i].number,
-        title:
-          data[i].title.length > CHAR_LIMIT
-            ? data[i].title.substring(0, CHAR_LIMIT - 3) + "..."
-            : data[i].title,
+        title: data[i].title,
         timeCreated: parseDate(data[i].created_at)
       };
     }
@@ -115,7 +118,13 @@ export default class Github extends React.Component {
 
   componentDidMount() {
     this.callGithub();
-    setInterval(() => this.callGithub(), CALL_FREQ);
+    this.setState({
+      intervalId: setInterval(() => this.callGithub(), CALL_FREQ)
+    });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalId);
   }
 
   callGithub() {
