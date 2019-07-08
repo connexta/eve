@@ -5,8 +5,8 @@ import styled from "styled-components";
 import {
   CX_OFF_WHITE,
   CX_FONT,
-  CX_LIGHT_BLUE,
-  CX_DARK_BLUE
+  CX_DARK_BLUE,
+  CX_GRAY_BLUE
 } from "./Constants.js";
 
 const NUMPULLS = 5;
@@ -71,17 +71,13 @@ export default class Github extends React.Component {
     };
   }
 
-  localizeTime(time) {
-    return new Date(time.split("T"));
-  }
-
   render() {
     let prList = this.state.data.map((pr, i) => (
       <div key={i}>
         <Octicon icon={GitPullRequest} size="medium" />
         <PRMainLine>
           <PRTitle>{this.state.data[i].title}</PRTitle>
-          <em style={{ color: "#477081" }}>
+          <em style={{ color: CX_GRAY_BLUE }}>
             {" #" + this.state.data[i].number}
           </em>
         </PRMainLine>
