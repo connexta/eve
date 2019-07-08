@@ -76,14 +76,12 @@ export default class Github extends React.Component {
       <div key={i}>
         <Octicon icon={GitPullRequest} size="medium" />
         <PRMainLine>
-          <PRTitle>{this.state.data[i].title}</PRTitle>
-          <em style={{ color: CX_GRAY_BLUE }}>
-            {" #" + this.state.data[i].number}
-          </em>
+          <PRTitle>{pr.title}</PRTitle>
+          <em style={{ color: CX_GRAY_BLUE }}>{" #" + pr.number}</em>
         </PRMainLine>
         <PRSubline>
-          {this.state.data[i].author}
-          {" (" + this.state.data[i].timeCreated + ")"}
+          {pr.author}
+          {" (" + pr.timeCreated + ")"}
         </PRSubline>
       </div>
     ));
@@ -114,9 +112,7 @@ export default class Github extends React.Component {
 
   componentDidMount() {
     this.callGithub();
-    this.setState({
-      intervalId: setInterval(() => this.callGithub(), CALL_FREQ)
-    });
+    this.interval = setInterval(() => this.callGithub(), CALL_FREQ);
   }
 
   componentWillUnmount() {
