@@ -1,4 +1,4 @@
-import { getCalendarEvents } from "./GraphService";
+import { callApi } from "./GraphService";
 import config from "./GraphConfig";
 import { UserAgentApplication } from "msal";
 import React from "react";
@@ -45,7 +45,9 @@ class GraphCaller extends React.Component {
       error: null
     };
 
-    if (user) this.getUserInfo();
+    if (user) {
+      this.getUserInfo();
+    }
   }
 
   render() {
@@ -83,10 +85,18 @@ class GraphCaller extends React.Component {
     );
   }
 
-  updateEvents(eventData) {
-    if (eventData != null) {
-      console.log(eventData);
+  // Refresh user information/calendar events
+  componentDidMount() {
+    setInterval(() => {
+      if (this.state.isAuthenticated) this.getUserInfo();
+    }, 1000 * 20);
+  }
 
+  // clean up event data so it works with calendar library
+  updateEvents(eventData) {
+    console.log(eventData);
+
+    if (eventData != null) {
       eventData = eventData.map(event => ({
         title: event.subject,
         start: event.start,
@@ -112,13 +122,6 @@ class GraphCaller extends React.Component {
     }
   }
 
-  // Refresh user information/calendar events
-  componentDidMount() {
-    setInterval(() => {
-      if (this.state.isAuthenticated) this.getUserInfo();
-    }, 1000 * 20);
-  }
-
   // Pop up to log in user and acquire credentials
   async login() {
     try {
@@ -126,6 +129,7 @@ class GraphCaller extends React.Component {
         scopes: config.scopes,
         prompt: "select_account"
       });
+      console.log("testing");
       await this.getUserInfo();
       document.location.reload();
     } catch (err) {
@@ -169,8 +173,14 @@ class GraphCaller extends React.Component {
 
       if (accessToken) {
         // Get the user's profile from Graph
-        var calEvents = await getCalendarEvents(accessToken);
-        this.updateEvents(calEvents.value);
+        var call =
+          '/me/messages?$search="kind:meetings"&$select=id&$expand=microsoft.graph.eventMessage/event&$top=200';
+        var ret = await callApi(accessToken, call);
+
+        let events = ret.value.map(i => i.event);
+        events = events.filter(i => i.hasOwnProperty("id"));
+
+        this.updateEvents(events);
       }
     } catch (err) {
       var error = {};
