@@ -9,12 +9,15 @@ yarn build
 yarn start
 ```
 
-## Setting up Slack
+## Setting up Slack and GitHub API Calls
 Using Slack on the wallboard relies on setting the ```SLACK_TOKEN``` and ```SLACK_CHANNEL```
 environment variables. Assign ```SLACK_TOKEN``` to the token for the workspace. Assign ```SLACK_CHANNEL```
 to the channel ID of the channel you want to connect to.
+
+Similarly, assign ```GITHUB_CLIENT_ID``` to be the ID of the client application you wish to use and
+```GITHUB_CLIENT_SECRET``` to be the corresponding client secret.
   
-Set both of these variables before running ```yarn start```.
+Set all of these variables before running ```yarn start```.
   
 **Windows:** You can set env variables by using the command ```setx -m <Var_Name> <Var_Value```  
 Note that the ```-m``` flag makes it a system property so the command line shell must be run in 
