@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import {
   CX_OFF_WHITE,
   CX_FONT,
@@ -11,26 +10,6 @@ import CardHeader from "@material-ui/core/CardHeader";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-
-const Builds = styled.div`
-  width: 55vw;
-  height: 200px;
-  border: solid black 3px;
-  border-radius: 20px;
-  padding: 20px;
-  background-color: ${CX_OFF_WHITE};
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  font-size: 2em;
-  font-family: ${CX_FONT};
-`;
-
-const BuildAFDetail = styled.ul`
-  display: flex;
-`;
 
 const styles = {
   card: {
@@ -80,20 +59,16 @@ class BuildAF extends React.Component {
       isLoading: true,
       failedData: []
     });
-    this.refreshBuildStatus();
-    this.refreshIntervalID = setInterval(() => this.refreshBuildStatus(), 60000);
+    this.updateBuildStatus();
+    this.refreshIntervalID = setInterval(() => this.updateBuildStatus(), 60000);
   }
 
   componentWillUnmount(){
     clearInterval(this.refreshIntervalID);
   }
 
-  refreshBuildStatus() {
-    this.updateBuildStatus();
-  }
-
   updateBuildStatus() {
-    fetch(this.props.URL + "/runs/")
+    fetch(this.props.URL + "runs/")
       .then(response => response.json())
       .then(jsonData => {
         this.setState({
