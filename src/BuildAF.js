@@ -12,17 +12,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
-//URL for the AF team main repo to keep track of
-const AFURL =
-  "https://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/HAART-Jobs/pipelines/";
-
-//Specific AF team Git build pipeline to keep track of
-const AFpipeline = "SOAESB_Nightly_Release_Builder";
-
-//URL for the AF team main repo Jenkins
-const AFJenkinLink =
-  "http://jenkins.phx.connexta.com/service/jenkins/job/HAART-Jobs/job/SOAESB_Nightly_Release_Builder/";
-
 const Builds = styled.div`
   width: 55vw;
   height: 200px;
@@ -47,7 +36,6 @@ const styles = {
   card: {
     top: "20px",
     position: "relative",
-    boxShadow: `0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)`,
     background: CX_OFF_WHITE,
     fontFamily: CX_FONT,
     color: BATMAN_GRAY
@@ -210,9 +198,9 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={styles.card}>Loading. . .</Card>
+      <Card style={styles.card} raised="true">Loading. . .</Card>
     ) : (
-      <Card style={styles.card}>
+      <Card style={styles.card} raised="true">
         <CardHeader
           title={this.props.pipeline}
           subheader="Display failed build from most recent up to the last successful build"
