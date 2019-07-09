@@ -44,9 +44,15 @@ class SlackComponent extends React.Component {
     this.setEmojiList();
     this.setMessages();
     this.setChannels();
-    setInterval(() => this.setMessages(), 1000 * 30);
-    setInterval(() => this.setUserList(), 1000 * 60 * 60 * 2);
-    setInterval(() => this.refreshAll(), 1000 * 5);
+    this.messageIntervalID = setInterval(() => this.setMessages(), 1000 * 30);
+    this.userListIntervalID = setInterval(() => this.setUserList(), 1000 * 60 * 60 * 2);
+    this.refreshIntervalID = setInterval(() => this.refreshAll(), 1000 * 5);
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.messageIntervalID);
+    clearInterval(this.userListIntervalID);
+    clearInterval(this.refreshIntervalID);
   }
 
   refreshAll() {
