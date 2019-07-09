@@ -9,6 +9,7 @@
     "start": "webpack-dev-server --open --mode development --env.NODE_ENV=local"
   },
   "dependencies": {
+    "@material-ui/core": "^4.2.0",
     "html-react-parser": "^0.7.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
