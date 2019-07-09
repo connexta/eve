@@ -11,7 +11,8 @@ help: ## Display help.
 .PHONY: image
 image: ## Build docker image
 	@echo "\nBuilding image: $(BUILD_TAG)\n"
-	@docker build --pull -t $(BUILD_TAG) --build-arg SLACK_CHANNEL=$(SLACK_CHANNEL) --build-arg SLACK_TOKEN=$(SLACK_TOKEN) .
+	@docker build --pull -t $(BUILD_TAG) --build-arg SLACK_CHANNEL=$(SLACK_CHANNEL) --build-arg SLACK_TOKEN=$(SLACK_TOKEN) \
+	--build-arg GITHUB_CLIENT_ID=$(GITHUB_CLIENT_ID) --build-arg GITHUB_CLIENT_SECRET=$(GITHUB_CLIENT_SECRET) .
 
 .PHONY: push
 push: ## Push docker image
