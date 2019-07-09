@@ -64,10 +64,10 @@ function parseDate(date) {
 export default class Github extends React.Component {
   constructor(props) {
     super(props);
+    this.interval = 0;
 
     this.state = {
-      data: [],
-      intervalId: 0
+      data: []
     };
   }
 
@@ -116,7 +116,7 @@ export default class Github extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+    clearInterval(this.interval);
   }
 
   callGithub() {
