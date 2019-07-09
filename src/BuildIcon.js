@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import sun from "../resources/sun.png";
-import cloud from "../resources/sun_cloud.png";
-import storm from "../resources/thunder.png";
+import Done from "@material-ui/icons/Done";
+import Clear from "@material-ui/icons/Clear";
+import Remove from "@material-ui/icons/Remove";
+import CardContent from "@material-ui/core/CardContent";
+import { CX_GRAY_BLUE, BATMAN_GRAY, CX_OFF_WHITE } from "./Constants";
 
 const IconContainer = styled.div`
   display: flex;
@@ -12,14 +14,18 @@ const IconContainer = styled.div`
 
 const IconStyle = styled.div`
   border-radius: 50%;
+  /* border: 1px solid black; */
   width: 60px;
   height: 60px;
-  background-color: black;
+  background-color: ${CX_OFF_WHITE};
   margin-left: 15px;
+  color: green;
 
-  display: flex;
+  vertical-align: baseline;
+
+  /* display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center; */
 `;
 
 class BuildIcon extends React.Component {
@@ -33,26 +39,25 @@ class BuildIcon extends React.Component {
 
   render() {
     return this.state.score == 100 ? (
-      <IconContainer>
+      <CardContent>
+        <Done fontSize="inherit" style={{ color: "green" }} />
         {this.state.name}
-        <IconStyle>
-          <img src={sun} alt="sun" height="50px" />
-        </IconStyle>
-      </IconContainer>
+      </CardContent>
     ) : this.state.score > 50 ? (
-      <IconContainer>
+      <CardContent fontSize="large">
+        <Remove fontSize="inherit" style={{ color: "yellow" }} />
         {this.state.name}
-        <IconStyle>
-          <img src={cloud} alt="cloud" height="50px" />
-        </IconStyle>
-      </IconContainer>
+      </CardContent>
     ) : (
-      <IconContainer>
+      <CardContent style={{ fontSize: "50px", border: "1px solid black" }}>
+        {/* <Done
+          fontSize="inherit"
+          style={{ color: "green", display: "inline" }}
+        /> */}
+        {/* <Remove fontSize="inherit" style={{ color: "orange" }} /> */}
+        <Clear fontSize="inherit" style={{ color: "red" }} />
         {this.state.name}
-        <IconStyle>
-          <img src={storm} alt="storm" height="50px" />
-        </IconStyle>
-      </IconContainer>
+      </CardContent>
     );
   }
 }
