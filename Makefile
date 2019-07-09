@@ -11,11 +11,9 @@ help: ## Display help.
 .PHONY: image
 image: ## Build docker image
 	@echo "\nBuilding image: $(BUILD_TAG)\n"
-	@export DOCKER_API_VERSION=1.23
-	@env DOCKER_API_VERSION=1.23 docker build --pull -t $(BUILD_TAG) .
+	@docker build --pull -t $(BUILD_TAG) --build-arg SLACK_CHANNEL=$(SLACK_CHANNEL) --build-arg SLACK_TOKEN=$(SLACK_TOKEN) .
 
 .PHONY: push
 push: ## Push docker image
 	@echo "\nPushing image: $(BUILD_TAG)\n"
-	@export DOCKER_API_VERSION=1.23
-	@env DOCKER_API_VERSION=1.23 docker push $(BUILD_TAG)
+	@docker push $(BUILD_TAG)

@@ -52,3 +52,4 @@ Required setup:
 
 - Github Webhook setup : An admin needs to add a webhook to the Jenkins service in the Github repository settings.
 - Jenkins setup: In the Jenkins service website, create multibranch pipeline project to detect github SCM repo.
+- Environment variable setup: In the Jenkins service website, Create secret text in Credentials for SLACK_TOKEN and SLACK_CHANNEL
