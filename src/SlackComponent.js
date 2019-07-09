@@ -33,24 +33,26 @@ class SlackComponent extends React.Component {
       messages: [],
       slackUsers: [],
       channels: [],
-      isLoading: true,
-      allLoaded: true
+      msgLoading: true,
+      userLoading: true,
+      emojiLoading: true,
+      chanLoading: true
     };
   }
 
-  // refresh messages every 30 sec and user-list every 2 hours
+  // refresh messages every 60 sec and user-list every 2 hours
   componentDidMount() {
     this.setUserList();
     this.setEmojiList();
     this.setMessages();
     this.setChannels();
-    setInterval(() => this.setMessages(), 1000 * 30);
+    setInterval(() => this.setMessages(), 1000 * 60);
     setInterval(() => this.setUserList(), 1000 * 60 * 60 * 2);
-    setInterval(() => this.refreshAll(), 1000 * 5);
+    setInterval(() => this.refreshAll(), 1000 * 30);
   }
 
   refreshAll() {
-    if (this.state.allLoaded) {
+    if (!this.stillLoading()) {
       return;
     }
     console.log("Refreshing all...");
@@ -58,7 +60,6 @@ class SlackComponent extends React.Component {
     this.setEmojiList();
     this.setMessages();
     this.setChannels();
-    this.setState({ allLoaded: true });
   }
 
   // fetch latest messages
@@ -72,7 +73,8 @@ class SlackComponent extends React.Component {
     )
       .then(response => {
         if (!response.ok) {
-          this.setState({ allLoaded: false });
+          console.log("Failed to fetch slack messages");
+          return;
         }
         return response.json();
       })
@@ -85,7 +87,7 @@ class SlackComponent extends React.Component {
         });
         this.setState({
           messages: messageList,
-          isLoading: false
+          msgLoading: false
         });
       })
       .catch(e => console.log("error", e));
@@ -97,12 +99,13 @@ class SlackComponent extends React.Component {
     fetch("https://slack.com/api/users.list?token=" + TOKEN)
       .then(response => {
         if (!response.ok) {
-          this.setState({ allLoaded: false });
+          console.log("Failed to fetch slack users");
+          return;
         }
         return response.json();
       })
       .then(data => {
-        this.setState({ slackUsers: data.members });
+        this.setState({ slackUsers: data.members, userLoading: false });
       })
       .catch(e => console.log("error", e));
   }
@@ -113,12 +116,13 @@ class SlackComponent extends React.Component {
     fetch("https://slack.com/api/emoji.list?token=" + TOKEN)
       .then(response => {
         if (!response.ok) {
-          this.setState({ allLoaded: false });
+          console.log("Failed to fetch slack emojis");
+          return;
         }
         return response.json();
       })
       .then(data => {
-        this.setState({ emojis: data.emoji });
+        this.setState({ emojis: data.emoji, emojiLoading: false });
       })
       .catch(e => console.log("error", e));
   }
@@ -128,12 +132,13 @@ class SlackComponent extends React.Component {
     fetch("https://slack.com/api/channels.list?token=" + TOKEN)
       .then(response => {
         if (!response.ok) {
-          this.setState({ allLoaded: false });
+          console.log("Failed to fetch slack channels");
+          return;
         }
         return response.json();
       })
       .then(data => {
-        this.setState({ channels: data.channels });
+        this.setState({ channels: data.channels, chanLoading: false });
       })
       .catch(e => console.log("error", e));
   }
@@ -145,8 +150,18 @@ class SlackComponent extends React.Component {
     return channel == undefined ? undefined : channel.name;
   }
 
+  // check if anything is still loading
+  stillLoading() {
+    return (
+      this.state.msgLoading ||
+      this.state.userLoading ||
+      this.state.chanLoading ||
+      this.state.emojiLoading
+    );
+  }
+
   render() {
-    return this.state.isLoading ? (
+    return this.stillLoading() ? (
       <CardContainer>Loading...</CardContainer>
     ) : (
       <CardContainer>
