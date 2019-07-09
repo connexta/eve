@@ -55,7 +55,7 @@ const styles = {
   cardheader: {
     background: CX_DARK_BLUE,
     textDecoration: "none",
-    color: BATMAN_GRAY
+    color: CX_OFF_WHITE
   },
   listitemtext: {
     color: BATMAN_GRAY
@@ -219,7 +219,7 @@ class BuildAF extends React.Component {
           component="a"
           href={AFJenkinLink}
           titleTypographyProps={{ variant: "h4" }}
-          subheaderTypographyProps={{ variant: "h6" }}
+          subheaderTypographyProps={{ variant: "h6", color: CX_OFF_WHITE }}
         ></CardHeader>
         {this.getListContents()}
       </Card>
