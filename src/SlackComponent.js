@@ -16,7 +16,7 @@ const CardContainer = styled.div`
   font-size: 50px;
   color: ${CX_OFF_WHITE};
 
-  height: 100%;
+  height: 60%;
   width: 100%;
 
   display: flex;
@@ -46,9 +46,18 @@ class SlackComponent extends React.Component {
     this.setEmojiList();
     this.setMessages();
     this.setChannels();
-    setInterval(() => this.setMessages(), 1000 * 60);
-    setInterval(() => this.setUserList(), 1000 * 60 * 60 * 2);
-    setInterval(() => this.refreshAll(), 1000 * 30);
+    this.messageIntervalID = setInterval(() => this.setMessages(), 1000 * 60);
+    this.userListIntervalID = setInterval(
+      () => this.setUserList(),
+      1000 * 60 * 60 * 2
+    );
+    this.refreshIntervalID = setInterval(() => this.refreshAll(), 1000 * 30);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.messageIntervalID);
+    clearInterval(this.userListIntervalID);
+    clearInterval(this.refreshIntervalID);
   }
 
   refreshAll() {
