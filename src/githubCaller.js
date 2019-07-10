@@ -1,7 +1,9 @@
 import axios from "axios";
 import React from "react";
 import Octicon, { GitPullRequest } from "@primer/octicons-react";
-import styled from "styled-components";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
 import {
   CX_OFF_WHITE,
   CX_FONT,
@@ -14,45 +16,62 @@ const CALL_FREQ = 1000 * 60 * 60;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
-const Box = styled.div`
-  width: 93%;
-  height: 89%;
-  border-radius: 20px;
-  padding: 20px;
-  background-color: ${CX_OFF_WHITE};
+// const PRTitle = styledComponents.span`
+//   display: inline-block;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   max-width: 90%;
+//   vertical-align: bottom;
+// `;
 
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  flex-wrap: wrap;
+// const PRMainLine = styledComponents.span`
+//   margin-left: 8px;
+//   padding: 0px;
+// `;
 
-  font-size: 0.745em;
-  font-family: ${CX_FONT};
+// // const PRSubline = styledComponents.div`
+// //   margin-left: 32px;
+// //   margin-bottom: 16px;
+// //   padding: 0px;
+// //   font-style: italic;
+// //   font-size: 0.8em;
+// // `;
 
-  margin: 8px;
-`;
+// const PRSubline = styled("div")({});
 
-const PRTitle = styled.span`
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90%;
-  vertical-align: bottom;
-`;
-
-const PRMainLine = styled.span`
-  margin-left: 8px;
-  padding: 0px;
-`;
-
-const PRSubline = styled.div`
-  margin-left: 32px;
-  margin-bottom: 16px;
-  padding: 0px;
-  font-style: italic;
-  font-size: 0.8em;
-`;
+const styles = {
+  box: {
+    backgroundColor: CX_OFF_WHITE,
+    fontFamily: CX_FONT,
+    height: "40%",
+    margin: "12px 12px 12px 12px",
+    padding: "12px 12px 12px 24px"
+  },
+  header: {
+    padding: "0px",
+    margin: "12px 0px 0px 0px"
+  },
+  PRTitle: {
+    display: "inline-block",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "80%",
+    verticalAlign: "bottom"
+  },
+  PRMainLine: {
+    margin: "0 0 0 8px",
+    padding: "0px",
+    fontSize: "0.8em"
+  },
+  PRSubline: {
+    margin: "0 0 16px 32px",
+    padding: "0px",
+    fontStyle: "italic",
+    fontSize: "0.6em"
+  }
+};
 
 function parseDate(date) {
   var year = date.substring(2, 4);
@@ -75,24 +94,22 @@ export default class Github extends React.Component {
     let prList = this.state.data.map((pr, i) => (
       <div key={i}>
         <Octicon icon={GitPullRequest} size="medium" />
-        <PRMainLine>
-          <PRTitle>{pr.title}</PRTitle>
+        <span style={styles.PRMainLine}>
+          <span style={styles.PRTitle}>{pr.title}</span>
           <em style={{ color: CX_GRAY_BLUE }}>{" #" + pr.number}</em>
-        </PRMainLine>
-        <PRSubline>
+        </span>
+        <div style={styles.PRSubline}>
           {pr.author}
           {" (" + pr.timeCreated + ")"}
-        </PRSubline>
+        </div>
       </div>
     ));
 
     return (
-      <div style={{ backgroundColor: CX_DARK_BLUE }}>
-        <Box>
-          <h2>DDF Pull Requests</h2>
-          {prList}
-        </Box>
-      </div>
+      <Card style={styles.box}>
+        <h3 style={styles.header}>DDF Pull Requests</h3>
+        <CardContent>{prList}</CardContent>
+      </Card>
     );
   }
 
