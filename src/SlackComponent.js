@@ -33,123 +33,92 @@ class SlackComponent extends React.Component {
       messages: [],
       slackUsers: [],
       channels: [],
-      msgLoading: true,
-      userLoading: true,
-      emojiLoading: true,
-      chanLoading: true
+      isLoading: true
     };
   }
 
   // refresh messages every 60 sec and user-list every 2 hours
-  componentDidMount() {
-    this.setUserList();
-    this.setEmojiList();
-    this.setMessages();
-    this.setChannels();
+  async componentDidMount() {
+    await this.setUserList();
+    await this.setEmojiList();
+    await this.setMessages();
+    await this.setChannels();
+    this.setState({ isLoading: false });
+
     this.messageIntervalID = setInterval(() => this.setMessages(), 1000 * 60);
     this.userListIntervalID = setInterval(
       () => this.setUserList(),
       1000 * 60 * 60 * 2
     );
-    this.refreshIntervalID = setInterval(() => this.refreshAll(), 1000 * 30);
   }
 
+  // clean up intervals
   componentWillUnmount() {
     clearInterval(this.messageIntervalID);
     clearInterval(this.userListIntervalID);
-    clearInterval(this.refreshIntervalID);
   }
 
-  refreshAll() {
-    if (!this.stillLoading()) {
-      return;
-    }
-    console.log("Refreshing all...");
-    this.setUserList();
-    this.setEmojiList();
-    this.setMessages();
-    this.setChannels();
-  }
-
-  // fetch latest messages
-  setMessages() {
+  // fetch latest slack messages
+  async setMessages() {
     console.log("Fetching latest slack messages...");
-    fetch(
+    const response = await fetch(
       "https://slack.com/api/channels.history?token=" +
         TOKEN +
-        "&channel=" +
+        "&channel" +
         CHANNEL
-    )
-      .then(response => {
-        if (!response.ok) {
-          console.log("Failed to fetch slack messages");
-          return;
-        }
-        return response.json();
-      })
-      .then(data => {
-        var messageList = [];
-        data.messages.forEach((message, msgCount) => {
-          msgCount++;
-          if (msgCount > MAX_MSGS) return;
-          messageList.push(message);
-        });
-        this.setState({
-          messages: messageList,
-          msgLoading: false
-        });
-      })
-      .catch(e => console.log("error", e));
+    );
+
+    if (!response.ok) {
+      console.log("Failed to fetch slack messages");
+    } else {
+      let messageList = [];
+      response.json().messages.forEach((message, msgCount) => {
+        msgCount++;
+        if (msgCount > MAX_MSGS) return;
+        messageList.push(message);
+      });
+      this.setState({ messages: messageList });
+    }
   }
 
   // fetch user list
-  setUserList() {
+  async setUserList() {
     console.log("Fetching slack users...");
-    fetch("https://slack.com/api/users.list?token=" + TOKEN)
-      .then(response => {
-        if (!response.ok) {
-          console.log("Failed to fetch slack users");
-          return;
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.setState({ slackUsers: data.members, userLoading: false });
-      })
-      .catch(e => console.log("error", e));
+    const response = await fetch(
+      "https://slack.com/api/users.list?token=" + TOKEN
+    );
+
+    if (!response.ok) {
+      console.log("Failed to fetch slack users");
+    } else {
+      this.setState({ slackUsers: response.json().members });
+    }
   }
 
   // fetch custom emoji list
-  setEmojiList() {
+  async setEmojiList() {
     console.log("Fetching emojis...");
-    fetch("https://slack.com/api/emoji.list?token=" + TOKEN)
-      .then(response => {
-        if (!response.ok) {
-          console.log("Failed to fetch slack emojis");
-          return;
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.setState({ emojis: data.emoji, emojiLoading: false });
-      })
-      .catch(e => console.log("error", e));
+    const response = await fetch(
+      "https://slack.com/api/emoji.list?token=" + TOKEN
+    );
+
+    if (!response.ok) {
+      console.log("Failed to fetch slack emojis");
+    } else {
+      this.setState({ emojis: response.json().emoji });
+    }
   }
 
-  // fetch channel list
-  setChannels() {
-    fetch("https://slack.com/api/channels.list?token=" + TOKEN)
-      .then(response => {
-        if (!response.ok) {
-          console.log("Failed to fetch slack channels");
-          return;
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.setState({ channels: data.channels, chanLoading: false });
-      })
-      .catch(e => console.log("error", e));
+  async setChannels() {
+    const response = await fetch(
+      "https://slack.com/api/channels.list?token=" + TOKEN
+    );
+
+    if (!response.ok) {
+      console.log("Failed to fetch slack channels");
+    } else {
+      this.setState({ channels: response.json().channels });
+    }
   }
 
   getChannelName(id) {
@@ -159,19 +128,9 @@ class SlackComponent extends React.Component {
     return channel == undefined ? undefined : channel.name;
   }
 
-  // check if anything is still loading
-  stillLoading() {
-    return (
-      this.state.msgLoading ||
-      this.state.userLoading ||
-      this.state.chanLoading ||
-      this.state.emojiLoading
-    );
-  }
-
   render() {
-    return this.stillLoading() ? (
-      <CardContainer>Loading...</CardContainer>
+    return this.state.isLoading ? (
+      <CardContainer>Loading Slack...</CardContainer>
     ) : (
       <CardContainer>
         {Parser(
