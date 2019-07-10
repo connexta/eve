@@ -66,7 +66,9 @@ export default class Github extends React.Component {
         <Octicon icon={GitPullRequest} size="medium" />
         <span style={styles.PRMainLine}>
           <span style={styles.PRTitle}>{pr.title}</span>
-          <em style={{ color: CX_GRAY_BLUE }}>{" #" + pr.number}</em>
+          <em style={{ color: CX_GRAY_BLUE, verticalAlign: "bottom" }}>
+            {" #" + pr.number}
+          </em>
         </span>
         <div style={styles.PRSubline}>
           {pr.author}
