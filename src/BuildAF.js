@@ -53,7 +53,7 @@ class BuildAF extends React.Component {
     };
   }
 
-  // updates the build status every 24 hour
+  // updates the build status around every midnight with timer checking current hour every 1 hour.
   componentDidMount() {
     this.setState({
       data: [],
@@ -61,11 +61,20 @@ class BuildAF extends React.Component {
       failedData: []
     });
     this.updateBuildStatus();
-    this.refreshIntervalID = setInterval(() => this.updateBuildStatus(), 60000);
+    this.timerIntervalID = setInterval(() => this.timer(), 1 * 1000 * 60 * 60); //1 hour interval
   }
 
   componentWillUnmount(){
-    clearInterval(this.refreshIntervalID);
+    clearInterval(this.timerIntervalID);
+  }
+
+  //if and only if the current time is 0 hour (midnight), trigger to update build status.
+  timer(){
+    let today = new Date();
+    let currentHour = today.getHours();
+    if (currentHour === 0){
+      this.updateBuildStatus();
+    }
   }
 
   updateBuildStatus() {
