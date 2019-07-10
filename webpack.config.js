@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 
 module.exports = {
-  entry: ["babel-polyfill", "flavor-fetch", "./src/index.js"],
+  entry: ["babel-polyfill", "whatwg-fetch", "./src/index.js"],
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "target")
