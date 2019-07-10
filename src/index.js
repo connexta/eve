@@ -7,7 +7,11 @@ import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
 import SlackComponent from "./SlackComponent";
+<<<<<<< HEAD
 import BuildAF from "./BuildAF";
+=======
+import Github from "./githubCaller";
+>>>>>>> 0a927996666d989593d3a18bd7f3b48f98cf582b
 
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
@@ -26,6 +30,9 @@ const RightBox = styled.nav`
   border-left: solid black 3px;
 
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   top: 131px;
   bottom: 0;
   left: 66vw;
@@ -41,7 +48,6 @@ const LeftBox = styled.nav`
 
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
   justify-content: flex-start;
 
   position: absolute;
@@ -93,6 +99,7 @@ ReactDOM.render(
         <RightBox>
           {/* Right box content */}
           <SlackComponent />
+          <Github />
         </RightBox>
       </ContentHorz>
     </MainGridVert>
