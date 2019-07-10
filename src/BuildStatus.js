@@ -4,7 +4,7 @@ import BuildIcon from "./BuildIcon";
 import Card from "@material-ui/core/Card";
 import { CardHeader, CardContent } from "@material-ui/core";
 
-const BUILD_LIST = ["alliance", "aus", "ddf", "gsr", "dib"];
+const BUILD_LIST = ["alliance", "ddf", "gsr", "dib"];
 
 const URL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/";
