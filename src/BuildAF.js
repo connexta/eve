@@ -15,6 +15,7 @@ const styles = {
   card: {
     top: "20px",
     position: "relative",
+    boxShadow: `0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)`,
     background: CX_OFF_WHITE,
     fontFamily: CX_FONT,
     color: BATMAN_GRAY
@@ -173,9 +174,9 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={styles.card} raised="true">Loading. . .</Card>
+      <Card style={styles.card}>Loading. . .</Card>
     ) : (
-      <Card style={styles.card} raised="true">
+      <Card style={styles.card}>
         <CardHeader
           title={this.props.pipeline}
           subheader="Display failed build from most recent up to the last successful build"
