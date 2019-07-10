@@ -1,45 +1,31 @@
 import React from "react";
-import styled from "styled-components";
-import {
-  CX_OFF_WHITE,
-  CX_FONT,
-  CX_GRAY_BLUE,
-  CX_DARK_BLUE,
-  BATMAN_GRAY
-} from "./Constants.js";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants.js";
 import BuildIcon from "./BuildIcon";
 import Card from "@material-ui/core/Card";
-import { CardHeader, Grid, GridList } from "@material-ui/core";
-import { blue } from "@material-ui/core/colors";
+import { CardHeader, CardContent } from "@material-ui/core";
 
 const BUILD_LIST = ["alliance", "aus", "ddf", "gsr", "dib"];
 
 const URL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/";
 
-const Builds = styled.div`
-  width: 55vw;
-  height: 200px;
-  padding: 20px;
-  background-color: ${CX_OFF_WHITE};
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-
-  font-size: 2em;
-  font-family: ${CX_FONT};
-  color: ${BATMAN_GRAY};
-
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-`;
-
 const styles = {
-  card: {},
+  card: {
+    background: CX_OFF_WHITE,
+    fontSize: "50px",
+    color: BATMAN_GRAY,
+    "font-family": CX_FONT
+  },
   cardheader: {
-    background: "#f2f2f2"
+    background: CX_OFF_WHITE,
+    color: BATMAN_GRAY,
+    "font-family": CX_FONT
+  },
+  cardContent: {
+    display: "flex",
+    "flex-direction": "row",
+    "justify-content": "space-between",
+    "flex-wrap": "wrap"
   }
 };
 
@@ -73,11 +59,17 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card>Loading. . .</Card>
+      <Card raised="true" style={styles.card}>
+        Loading Build Health. . .
+      </Card>
     ) : (
-      <Card raised="true">
-        <CardHeader title="Build Status" style={styles.cardheader} />
-        <GridList>
+      <Card raised="true" style={styles.card}>
+        <CardHeader
+          title="Build Health"
+          style={styles.cardheader}
+          titleTypographyProps={{ variant: "h3" }}
+        />
+        <CardContent style={styles.cardContent}>
           {this.state.data.map(item => {
             if (BUILD_LIST.includes(item.displayName.toLowerCase())) {
               return (
@@ -89,7 +81,7 @@ class BuildStatus extends React.Component {
               );
             }
           })}
-        </GridList>
+        </CardContent>
       </Card>
     );
   }

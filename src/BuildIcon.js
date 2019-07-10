@@ -1,32 +1,8 @@
 import React from "react";
-import styled from "styled-components";
-import Done from "@material-ui/icons/Done";
-import Clear from "@material-ui/icons/Clear";
-import Remove from "@material-ui/icons/Remove";
+import GoodState from "@material-ui/icons/CheckCircleOutline";
+import NeutralState from "@material-ui/icons/RemoveCircleOutline";
+import BadState from "@material-ui/icons/HighlightOff";
 import CardContent from "@material-ui/core/CardContent";
-import { CX_GRAY_BLUE, BATMAN_GRAY, CX_OFF_WHITE } from "./Constants";
-
-const IconContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const IconStyle = styled.div`
-  border-radius: 50%;
-  /* border: 1px solid black; */
-  width: 60px;
-  height: 60px;
-  background-color: ${CX_OFF_WHITE};
-  margin-left: 15px;
-  color: green;
-
-  vertical-align: baseline;
-
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center; */
-`;
 
 class BuildIcon extends React.Component {
   constructor(props) {
@@ -40,22 +16,29 @@ class BuildIcon extends React.Component {
   render() {
     return this.state.score == 100 ? (
       <CardContent>
-        <Done fontSize="inherit" style={{ color: "green" }} />
+        <GoodState
+          fontSize="inherit"
+          style={{ color: "green", verticalAlign: "top" }}
+        />
         {this.state.name}
       </CardContent>
     ) : this.state.score > 50 ? (
-      <CardContent fontSize="large">
-        <Remove fontSize="inherit" style={{ color: "yellow" }} />
+      <CardContent>
+        <NeutralState
+          fontSize="inherit"
+          style={{ color: "orange", verticalAlign: "top" }}
+        />
         {this.state.name}
       </CardContent>
     ) : (
-      <CardContent style={{ fontSize: "50px", border: "1px solid black" }}>
-        {/* <Done
+      <CardContent>
+        <BadState
           fontSize="inherit"
-          style={{ color: "green", display: "inline" }}
-        /> */}
-        {/* <Remove fontSize="inherit" style={{ color: "orange" }} /> */}
-        <Clear fontSize="inherit" style={{ color: "red" }} />
+          style={{
+            color: "red",
+            verticalAlign: "top"
+          }}
+        />
         {this.state.name}
       </CardContent>
     );
