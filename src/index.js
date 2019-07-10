@@ -7,11 +7,8 @@ import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
 import SlackComponent from "./SlackComponent";
-<<<<<<< HEAD
 import BuildAF from "./BuildAF";
-=======
 import Github from "./githubCaller";
->>>>>>> 0a927996666d989593d3a18bd7f3b48f98cf582b
 
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
