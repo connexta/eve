@@ -53,7 +53,7 @@ class BuildAF extends React.Component {
     };
   }
 
-  // updates the build status every 60 sec
+  // updates the build status every 24 hour
   componentDidMount() {
     this.setState({
       data: [],
@@ -119,7 +119,7 @@ class BuildAF extends React.Component {
             data.description === "..." ? (
               <ListItem key={index}>
                 <ListItemText
-                  primary={"\u22EE"}
+                  primary={"\u22EE"} //\u22EE: Vertical Ellipsis to represent trimmed data
                   primaryTypographyProps={{ variant: "h5" }}
                   style={styles.listitemtextdots}
                 ></ListItemText>
@@ -133,7 +133,9 @@ class BuildAF extends React.Component {
               >
                 <ListItemText
                   primary={
-                    (data.result === "SUCCESS" ? "	\u2705 (" : " \u274C (") +
+                    //\u2705: WHITE HEAVY CHECK MARK to represent successful build
+                    //\u274C: CROSS MARK to represent failed build
+                    (data.result === "SUCCESS" ? "	\u2705 (" : " \u274C (") + 
                     data.result +
                     ") " +
                     (data.description
