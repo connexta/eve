@@ -23,7 +23,14 @@ pipeline {
     }
     stage('Build Image') {
       steps {
-        sh 'make image GIT_BRANCH=' + env.BRANCH_NAME
+        withCredentials([
+          string(credentialsId: 'SLACK_TOKEN', variable: 'SLACK_TOKEN'),
+          string(credentialsId: 'SLACK_CHANNEL', variable: 'SLACK_CHANNEL'),
+          string(credentialsId: 'GITHUB_CLIENT_ID', variable: 'GITHUB_CLIENT_ID'),
+          string(credentialsId: 'GITHUB_CLIENT_SECRET', variable: 'GITHUB_CLIENT_SECRET')
+        ]) {
+          sh 'make image SLACK_TOKEN=${SLACK_TOKEN} SLACK_CHANNEL=${SLACK_CHANNEL} GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID} GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}'
+        }
       }
     }
     stage('Push Image') {
@@ -34,7 +41,7 @@ pipeline {
         }
       }
       steps {
-        sh 'make push GIT_BRANCH=' + env.BRANCH_NAME
+        sh 'make push'
       }
     }
     // The following stage doesn't actually re-deploy the marathon service, but actually kills the existing docker container
