@@ -1,44 +1,13 @@
-import axios from "axios";
 import React from "react";
 import Octicon, { GitPullRequest } from "@primer/octicons-react";
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import {
-  CX_OFF_WHITE,
-  CX_FONT,
-  CX_DARK_BLUE,
-  CX_GRAY_BLUE
-} from "./Constants.js";
+import { CX_OFF_WHITE, CX_FONT, CX_GRAY_BLUE } from "./Constants.js";
 
 const NUMPULLS = 5;
 const CALL_FREQ = 1000 * 60 * 60;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-
-// const PRTitle = styledComponents.span`
-//   display: inline-block;
-//   white-space: nowrap;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   max-width: 90%;
-//   vertical-align: bottom;
-// `;
-
-// const PRMainLine = styledComponents.span`
-//   margin-left: 8px;
-//   padding: 0px;
-// `;
-
-// // const PRSubline = styledComponents.div`
-// //   margin-left: 32px;
-// //   margin-bottom: 16px;
-// //   padding: 0px;
-// //   font-style: italic;
-// //   font-size: 0.8em;
-// // `;
-
-// const PRSubline = styled("div")({});
 
 const styles = {
   box: {
@@ -46,7 +15,8 @@ const styles = {
     fontFamily: CX_FONT,
     height: "40%",
     margin: "12px 12px 12px 12px",
-    padding: "12px 12px 12px 24px"
+    padding: "12px 12px 12px 24px",
+    overflow: "hidden"
   },
   header: {
     padding: "0px",
@@ -57,7 +27,7 @@ const styles = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "80%",
+    maxWidth: "85%",
     verticalAlign: "bottom"
   },
   PRMainLine: {
@@ -137,13 +107,20 @@ export default class Github extends React.Component {
   }
 
   callGithub() {
-    axios
-      .get(
-        "https://api.github.com/repos/codice/ddf/pulls?client_id=" +
-          CLIENT_ID +
-          "&client_secret=" +
-          CLIENT_SECRET
-      )
-      .then(res => this.loadUserData(res.data));
+    fetch(
+      "https://api.github.com/repos/codice/ddf/pulls?client_id=" +
+        CLIENT_ID +
+        "&client_secret=" +
+        CLIENT_SECRET
+    )
+      .then(res => {
+        if (!res.ok) {
+          console.log("Failed to fetch GitHub data");
+          return;
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => this.loadUserData(res));
   }
 }
