@@ -23,6 +23,11 @@ const styles = {
     margin: "12px 0px 0px 0px",
     fontSize: "0.85em"
   },
+  PRMainLine: {
+    margin: "0 0 0 8px",
+    padding: "0px",
+    fontSize: "0.65em"
+  },
   PRTitle: {
     display: "inline-block",
     whiteSpace: "nowrap",
@@ -30,11 +35,6 @@ const styles = {
     textOverflow: "ellipsis",
     maxWidth: "80%",
     verticalAlign: "bottom"
-  },
-  PRMainLine: {
-    margin: "0 0 0 8px",
-    padding: "0px",
-    fontSize: "0.65em"
   },
   PRSubline: {
     margin: "0 0 16px 32px",
@@ -55,7 +55,6 @@ export default class Github extends React.Component {
   constructor(props) {
     super(props);
     this.interval = 0;
-
     this.state = {
       data: []
     };
