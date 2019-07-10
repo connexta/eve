@@ -20,26 +20,27 @@ const styles = {
   },
   header: {
     padding: "0px",
-    margin: "12px 0px 0px 0px"
+    margin: "12px 0px 0px 0px",
+    fontSize: "0.85em"
   },
   PRTitle: {
     display: "inline-block",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "85%",
+    maxWidth: "80%",
     verticalAlign: "bottom"
   },
   PRMainLine: {
     margin: "0 0 0 8px",
     padding: "0px",
-    fontSize: "0.8em"
+    fontSize: "0.65em"
   },
   PRSubline: {
     margin: "0 0 16px 32px",
     padding: "0px",
     fontStyle: "italic",
-    fontSize: "0.6em"
+    fontSize: "0.45em"
   }
 };
 
@@ -63,7 +64,11 @@ export default class Github extends React.Component {
   render() {
     let prList = this.state.data.map((pr, i) => (
       <div key={i}>
-        <Octicon icon={GitPullRequest} size="medium" />
+        <Octicon
+          icon={GitPullRequest}
+          size="medium"
+          verticalAlign="text-bottom"
+        />
         <span style={styles.PRMainLine}>
           <span style={styles.PRTitle}>{pr.title}</span>
           <em style={{ color: CX_GRAY_BLUE }}>{" #" + pr.number}</em>
