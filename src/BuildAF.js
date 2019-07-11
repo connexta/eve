@@ -108,8 +108,11 @@ class BuildAF extends React.Component {
     return icon + " ( " + data.result + " ) " + description;
   }
 
+  //@param:
+  //  causes: name for the userID value pair in JSON format
   //@return:
-  //  builder if specified, else "timer"
+  //  return builder if specified, else "timer"
+  //  If causes is not defined at all, then return "unknown causes beyond our control"
   formatCauses(causes) {
     if (causes) {
       return causes[0].userId ? causes[0].userId : "timer";
