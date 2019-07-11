@@ -59,11 +59,11 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card raised="true" style={styles.card}>
+      <Card raised={true} style={styles.card}>
         Loading Build Health. . .
       </Card>
     ) : (
-      <Card raised="true" style={styles.card}>
+      <Card raised={true} style={styles.card}>
         <CardHeader
           title="Build Health"
           style={styles.cardheader}
