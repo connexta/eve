@@ -78,7 +78,7 @@ export default class Github extends React.Component {
     ));
 
     return (
-      <Card style={styles.box} raised="true">
+      <Card style={styles.box} raised={true}>
         <h3 style={styles.header}>DDF Pull Requests</h3>
         <CardContent>{prList}</CardContent>
       </Card>
