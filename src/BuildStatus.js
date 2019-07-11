@@ -6,11 +6,11 @@ import { CardHeader, CardContent } from "@material-ui/core";
 import { AllianceURL, DDFURL, DIBURL, GSRURL, AFURL } from "./lib/Link";
 import { extractTime } from "./utilities/utility";
 
-const BUILD_LIST = ["alliance", "ddf", "gsr", "dib", "haart jobs"];
+const BUILD_LIST = ["alliance", "ddf", "gsr", "dib"];
 
-const URL_LIST = [AllianceURL, DDFURL, DIBURL, GSRURL, AFURL];
+const URL_LIST = [AllianceURL, DDFURL, GSRURL, DIBURL, AFURL];
 
-const URL =
+const overviewURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/";
 
 const styles = {
@@ -38,9 +38,6 @@ class BuildStatus extends React.Component {
     super(props);
     this.state = {
       data: [],
-      fetchedData: [],
-      //big dataset wrapped up alliance, etc..
-      teamData: [],
       isLoading: true
     };
   }
@@ -55,119 +52,73 @@ class BuildStatus extends React.Component {
     clearInterval(this.intervalId);
   }
 
-  refreshBuildStatus() {
-    let overallData = [];
-    //fetch initial data such as displayName, weatherScore
-    this.fetchData(URL);
-    overallData = this.setDataInitialInfo();
 
-    // fetch most recent build time for each team repo
-    for (let i = 0; i < URL_LIST.length; i++){
-      this.fetchData(URL_LIST[i]);
-      this.setDataTimeInfo();
-    }
-
-
-    // fetch(URL)
-    //   .then(response => response.json())
-    //   .then(jsonData => {
-    //     this.setState({ overviewData: jsonData});
-    //   })
-    //   .catch(e => console.log("error", e));
-
-    // fetch(AllianceURL)
-    //   .then(response => response.json())
-    //   .then(jsonData => {
-    //     this.setState({ teamData: jsonData});
-    //   })
-    //   .catch(e => console.log("error", e));
-
-      // this.compactData();
-
-  }
-
-  //fetch data from jenkin url
-  async fetchData(URL){
-    await fetch(URL)
-      .then(response => response.json())
-      .then(jsonData => {
-        this.setState({ fetchedData: jsonData});
-        // console.log("inside");
-        // console.log(jsonData);
-      })
-      .catch(e => console.log("error", e));
-
-  }
-
-  getMostrecentRun(){
-
-  }
-
-  //set data info such as displayName, weatherScore, time (placeholder for now)
-  setDataInitialInfo(){
-    let tempdata = [];
-    let index = 0;
-    if (this.state.fetchedData.length > 0){
-      this.state.fetchedData.map(item => {
-        if (BUILD_LIST.includes(item.displayName.toLowerCase())) {
-          tempdata[index] = {
-            displayName: item.displayName,
-            weatherScore: item.weatherScore,
-            time: ""
-          };
-          index++;
-        }
-      })
-    }
-
-    console.log(tempdata);
-    return tempdata;
-    // this.setState({ data: tempdata });
-
-  }
-
-  setDataTimeInfo(overallData){
-    // for (let i = 0; i < overallData.length; i++){
-    //   // if (overallData.displayName === ){
-
-    //   // }
-    // }
-  }
-
-
-//isLoading: false
- compactData() {
-    let tempdata = [];
-    let index = 0;
-    this.state.overviewData.map(item => {
-      if (BUILD_LIST.includes(item.displayName.toLowerCase())) {
-        tempdata[index] = {
+  findAndUpdateData(values, overallData, index){
+    values.map(item => {
+      if (BUILD_LIST.includes(item.displayName.toLowerCase())){
+        overallData[index] = {
           displayName: item.displayName,
           weatherScore: item.weatherScore,
           time: ""
-        };
+        }
         index++;
       }
     })
-    
-    for (let i = 0; i < tempdata.length; i++){
-      tempdata[i].time = extractTime(this.state.teamData[0].startTime);
-    }
-
-
-    this.setState({ data: tempdata, isLoading: false });
-    console.log(this.state.data);
+    return overallData, index;
   }
 
+  updateData(item, overallData, index){
+    overallData[index] = {
+      displayName: item.displayName,
+      weatherScore: item.weatherScore,
+      time: ""
+    }
+    index++;
+    return overallData, index;
+  }
+  
+  async refreshBuildStatus() {
+    let overallData = [];
+    let index = 0;
+
+    let promise = this.fetchData(overviewURL);
+    await promise.then((values)=>{
+      values.map(item => {
+        if (BUILD_LIST.includes(item.displayName.toLowerCase())){
+          overallData, index = this.updateData(item, overallData, index);
+        }
+      })
+    });
+
+    promise = this.fetchData(AFURL);
+    await promise.then((item)=>{
+      overallData, index = this.updateData(item, overallData, index);
+    })
+
+    //fetch initial data such as displayName, weatherScore
+    let promises = [];
+    for (let i = 0; i < URL_LIST.length; i++){
+      promises.push(this.fetchData(URL_LIST[i]));
+
+    }
+    await Promise.all(promises)
+      .then((values) => {
+        for (let i = 0; i < values.length; i++){
+          overallData[i].time = extractTime(values[i].latestRun.startTime);
+        }
+      });
+      this.setState({ data: overallData, isLoading: false });
+  }
+
+
+  //NOTICE: error testing.. catch added.
+  //fetch data from the jenkin url
+  fetchData(URL){
+    return fetch(URL).then(response=>response.json()).catch(e=>console.log("error", e));
+  }
+
+
   render() {
-    // if (this.state.allianceData.length > 1 ){
-    //   console.log(extractTime(this.state.allianceData[0].startTime));
-    // }
-    // console.log(this.state.data);
-    // console.log(this.state.allianceData);
-
-    // console.log(this.state.data);
-
     return this.state.isLoading ? (
       <Card raised={true} style={styles.card}>
         Loading Build Health. . .
@@ -181,7 +132,6 @@ class BuildStatus extends React.Component {
         />
         <CardContent style={styles.cardContent}>
           {this.state.data.map(item => {
-            // if (BUILD_LIST.includes(item.displayName.toLowerCase())) {
               return (
                 <BuildIcon
                   score={item.weatherScore}
@@ -191,7 +141,6 @@ class BuildStatus extends React.Component {
                 />
               );
             })
-          // })
           }
         </CardContent>
       </Card>
