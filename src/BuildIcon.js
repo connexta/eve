@@ -9,7 +9,8 @@ class BuildIcon extends React.Component {
     super(props);
     this.state = {
       name: props.name,
-      score: props.score
+      score: props.score,
+      time: props.time
     };
   }
 
@@ -21,6 +22,7 @@ class BuildIcon extends React.Component {
           style={{ color: "green", verticalAlign: "top" }}
         />
         {this.state.name}
+        {this.state.time}
       </CardContent>
     ) : this.state.score > 50 ? (
       <CardContent>
@@ -29,6 +31,7 @@ class BuildIcon extends React.Component {
           style={{ color: "orange", verticalAlign: "top" }}
         />
         {this.state.name}
+        {this.state.time}
       </CardContent>
     ) : (
       <CardContent>
@@ -40,6 +43,7 @@ class BuildIcon extends React.Component {
           }}
         />
         {this.state.name}
+        {this.state.time}
       </CardContent>
     );
   }
