@@ -64,15 +64,15 @@ class BuildAF extends React.Component {
     this.timerIntervalID = setInterval(() => this.timer(), 1 * 1000 * 60 * 60); //1 hour interval
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.timerIntervalID);
   }
 
   //if and only if the current time is 0 hour (midnight), trigger to update build status.
-  timer(){
+  timer() {
     let today = new Date();
     let currentHour = today.getHours();
-    if (currentHour === 0){
+    if (currentHour === 0) {
       this.updateBuildStatus();
     }
   }
@@ -100,72 +100,65 @@ class BuildAF extends React.Component {
         break;
       }
     }
-    return this.trimFailedData(failedData);
+    return failedData;
   }
 
-  //trim the number of failed build data equals to numOfListItemstoKeep
-  //display the most recent failed data equal to numOfLatestItemstoShow
-  trimFailedData(failedData) {
-    let numOfListItemstoKeep = 4;
-    let numOfLatestItemstoShow = 2;
-    if (failedData.length > numOfListItemstoKeep) {
-      failedData.splice(
-        numOfLatestItemstoShow,
-        failedData.length - numOfListItemstoKeep,
-        { description: "..." }
-      );
+  formatData(data) {
+    //\u2705: WHITE HEAVY CHECK MARK to represent successful build
+    //\u274C: CROSS MARK to represent failed build
+    const icon = data.result === "SUCCESS" ? "	\u2705" : " \u274C";
+    const description = data.description
+      ? data.description
+      : "build title not provided";
+
+    return icon + " ( " + data.result + " ) " + description;
+  }
+
+  formatCauses(causes) {
+    if (causes) {
+      return causes[0].userId ? causes[0].userId : "timer";
     }
-    return failedData;
+    return "unknown causes beyond our control";
   }
 
   //return bullet format of failed Data and its content for display
   //if failed data has been trimmed for too many data, it will show ... for trimmed off data.
-  getListContents() {
-    if (this.state.failedData.length > 0) {
+  getListContents(maxNum) {
+    const { failedData } = this.state;
+    if (failedData.length > 0) {
       return (
         <List>
-          {this.state.failedData.map((data, index) =>
-            data.description === "..." ? (
-              <ListItem key={index}>
-                <ListItemText
-                  primary={"\u22EE"} //\u22EE: Vertical Ellipsis to represent trimmed data
-                  primaryTypographyProps={{ variant: "h5" }}
-                  style={styles.listitemtextdots}
-                ></ListItemText>
-              </ListItem>
-            ) : (
-              <ListItem
-                key={index}
-                button
-                component="a"
-                href={this.props.jenkinlink + data.id}
-              >
-                <ListItemText
-                  primary={
-                    //\u2705: WHITE HEAVY CHECK MARK to represent successful build
-                    //\u274C: CROSS MARK to represent failed build
-                    (data.result === "SUCCESS" ? "	\u2705 (" : " \u274C (") + 
-                    data.result +
-                    ") " +
-                    (data.description
-                      ? data.description
-                      : "build title not provided")
-                  }
-                  secondary={
-                    extractTime(data.startTime) +
-                    " Triggered by " +
-                    (data.causes
-                      ? data.causes[0].userId
-                        ? data.causes[0].userId
-                        : "timer"
-                      : "")
-                  }
-                  primaryTypographyProps={{ variant: "h5" }}
-                  secondaryTypographyProps={{ variant: "h6" }}
-                  style={styles.listitemtext}
-                ></ListItemText>
-              </ListItem>
-            )
+          {failedData.slice(0, maxNum).map((data, index) => (
+            <ListItem
+              key={index}
+              button
+              component="a"
+              href={this.props.jenkinlink + data.id}
+            >
+              <ListItemText
+                primary={formatData(data)}
+                secondary={
+                  extractTime(data.startTime) +
+                  " Triggered by " +
+                  formatCauses(data.causes)
+                }
+                primaryTypographyProps={{ variant: "h5" }}
+                secondaryTypographyProps={{ variant: "h6" }}
+                style={styles.listitemtext}
+              ></ListItemText>
+            </ListItem>
+          ))}
+
+          {failed.length >= maxNum ? (
+            <ListItem key={index}>
+              <ListItemText
+                primary={"\u22EE"} //\u22EE: Vertical Ellipsis to represent trimmed data
+                primaryTypographyProps={{ variant: "h5" }}
+                style={styles.listitemtextdots}
+              ></ListItemText>
+            </ListItem>
+          ) : (
+            undefined
           )}
         </List>
       );
@@ -197,7 +190,7 @@ class BuildAF extends React.Component {
           titleTypographyProps={{ variant: "h4" }}
           subheaderTypographyProps={{ variant: "h6", color: "inherit" }}
         ></CardHeader>
-        {this.getListContents()}
+        {this.getListContents(4)}
       </Card>
     );
   }
