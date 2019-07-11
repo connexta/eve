@@ -1,13 +1,21 @@
-import React from "react";
 import ReactDOM from "react-dom";
-import styled from "styled-components";
-import { CX_OFF_WHITE, CX_DARK_BLUE, CX_GRAY_BLUE } from "./Constants";
+import React from "react";
+import {
+  CX_OFF_WHITE,
+  CX_DARK_BLUE,
+  CX_GRAY_BLUE,
+  CX_LIGHT_BLUE
+} from "./Constants";
 import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
 import SlackComponent from "./SlackComponent";
+import Grid from "@material-ui/core/Grid";
+import { flexbox } from "@material-ui/system";
 import Github from "./githubCaller";
+import { CX_FONT } from "./Constants";
 
+/*
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
   padding-left: 40px;
@@ -25,9 +33,6 @@ const RightBox = styled.nav`
   border-left: solid black 3px;
 
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   top: 131px;
   bottom: 0;
   left: 66vw;
@@ -43,7 +48,7 @@ const LeftBox = styled.nav`
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
 
   position: absolute;
   top: 131px;
@@ -68,36 +73,69 @@ const BannerGrid = styled.div`
   justify-content: space-between;
   padding: 10px;
 `;
+*/
 
 const Logo = () => {
   return <img src={logo} alt="Logo" height="100vh" />;
 };
 
-ReactDOM.render(
-  <div>
-    <MainGridVert>
-      <Banner>
-        <BannerGrid>
-          <Logo />
-          <ClockFull timezone="US/Arizona" place="PHX" />
-          <ClockFull timezone="US/Mountain" place="DEN" />
-          <ClockFull timezone="US/Eastern" place="BOS/DC" />
-          <ClockFull timezone="Australia/Sydney" place="MEL (+1)" />
-        </BannerGrid>
-      </Banner>
-      <ContentHorz>
-        <LeftBox>
+const BOTTOM_HEIGHT = window.innerHeight - 124;
+
+const styles = {
+  root: {
+    height: "100%",
+    fontFamily: CX_FONT
+  },
+  banner: {
+    background: CX_DARK_BLUE,
+    height: "124px",
+    width: "100%",
+    margin: "0px",
+    padding: "0 40px 0 40px",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  bottom: {
+    background: CX_GRAY_BLUE,
+    width: "100%",
+    height: BOTTOM_HEIGHT
+  },
+  leftBox: {
+    padding: "40px 40px 40px 40px",
+    height: "100%",
+    width: "75%"
+  },
+  rightBox: {
+    height: "100%",
+    width: "15%"
+  }
+};
+
+function Main() {
+  return (
+    <Grid container style={{ height: "100%" }}>
+      <Grid container style={styles.banner}>
+        <Logo />
+        <ClockFull timezone="US/Arizona" place="PHX" />
+        <ClockFull timezone="US/Mountain" place="DEN" />
+        <ClockFull timezone="US/Eastern" place="BOS/DC" />
+        <ClockFull timezone="Australia/Sydney" place="MEL (+1)" />
+      </Grid>
+      <Grid container style={styles.bottom}>
+        <Grid item style={styles.leftBox}>
           {/* Left box content */}
           <BuildStatus />
-        </LeftBox>
-        <RightBox>
+        </Grid>
+        <Grid item style={styles.rightBox}>
           {/* Right box content */}
           <SlackComponent />
-          <Github />
-        </RightBox>
-      </ContentHorz>
-    </MainGridVert>
-  </div>,
+          {/* <Github /> */}
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+}
 
-  document.getElementById("iamroot")
-);
+ReactDOM.render(<Main />, document.getElementById("iamroot"));
