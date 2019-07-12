@@ -105,11 +105,11 @@ const styles = {
   leftBox: {
     padding: "40px 40px 40px 40px",
     height: "100%",
-    width: "75%"
+    width: "66%"
   },
   rightBox: {
     height: "100%",
-    width: "15%"
+    width: "34%"
   }
 };
 

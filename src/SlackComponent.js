@@ -11,18 +11,34 @@ import USERS from "./sampleslackmessages.json";
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 
-const MAX_MSGS = 4;
+export const MAX_MSGS = 6;
 
 const styles = {
   CardContainer: {
+    margin: "8px 8px 8px 8px",
     fontSize: "50px",
-    color: CX_OFF_WHITE,
+    color: "black",
     height: "60%",
-    width: "100%",
+
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
-    flex: 1
+    justifyContent: "flex-start",
+    backgroundColor: CX_OFF_WHITE
+  },
+  cardHeader: {
+    fontFamily: CX_FONT,
+    margin: "12px 0 12px 16px",
+    height: "40px"
+  },
+  fadeElement: {
+    //content: "",
+    //position: "absolute",
+    top: "80%",
+    right: 0,
+    height: "20%",
+    width: "100%",
+    background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
+    zIndex: 1
   }
 };
 
@@ -30,29 +46,29 @@ class SlackComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      emojis: EMOJIS,
-      messages: MESSAGES,
-      slackUsers: USERS,
-      channels: "#wallboard",
-      msgLoading: false,
-      userLoading: false,
-      emojiLoading: false,
-      chanLoading: false
+      emojis: [],
+      messages: [],
+      slackUsers: [],
+      channels: [],
+      msgLoading: true,
+      userLoading: true,
+      emojiLoading: true,
+      chanLoading: true
     };
   }
 
   // refresh messages every 60 sec and user-list every 2 hours
   componentDidMount() {
-    // this.setUserList();
-    // this.setEmojiList();
-    // this.setMessages();
-    // this.setChannels();
-    // this.messageIntervalID = setInterval(() => this.setMessages(), 1000 * 60);
-    // this.userListIntervalID = setInterval(
-    //   () => this.setUserList(),
-    //   1000 * 60 * 60 * 2
-    // );
-    // this.refreshIntervalID = setInterval(() => this.refreshAll(), 1000 * 30);
+    this.setUserList();
+    this.setEmojiList();
+    this.setMessages();
+    this.setChannels();
+    this.messageIntervalID = setInterval(() => this.setMessages(), 1000 * 60);
+    this.userListIntervalID = setInterval(
+      () => this.setUserList(),
+      1000 * 60 * 60 * 2
+    );
+    this.refreshIntervalID = setInterval(() => this.refreshAll(), 1000 * 30);
   }
 
   componentWillUnmount() {
@@ -171,15 +187,11 @@ class SlackComponent extends React.Component {
   }
 
   render() {
-    // console.log(this.state.emojis);
-    // console.log(this.state.messages);
-    // console.log(this.state.slackUsers);
-    // console.log(this.state.channels);
     return this.stillLoading() ? (
       <p>Loading...</p>
     ) : (
-      <Card style={styles.CardContainer}>
-        {this.state.channels}
+      <Card style={styles.CardContainer} raised={true}>
+        <span style={styles.cardHeader}>#{this.getChannelName(CHANNEL)}</span>
         <SlackCard
           index={0}
           slackUsers={this.state.slackUsers}
@@ -200,6 +212,18 @@ class SlackComponent extends React.Component {
         />
         <SlackCard
           index={3}
+          slackUsers={this.state.slackUsers}
+          messages={this.state.messages}
+          emojis={this.state.emojis}
+        />
+        <SlackCard
+          index={4}
+          slackUsers={this.state.slackUsers}
+          messages={this.state.messages}
+          emojis={this.state.emojis}
+        />
+        <SlackCard
+          index={5}
           slackUsers={this.state.slackUsers}
           messages={this.state.messages}
           emojis={this.state.emojis}
