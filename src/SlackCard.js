@@ -4,6 +4,7 @@ import Parser from "html-react-parser";
 import emojis from "./emojis";
 import { CX_OFF_WHITE } from "./Constants";
 import circle_logo from "../resources/circle_logo.png";
+import { minute, second } from "./TimeUtils";
 
 const SLACK_FONT_SIZE = "20px";
 
@@ -259,7 +260,7 @@ class SlackCard extends React.Component {
     let data = new Date();
     let currTime = data.getTime();
 
-    let timeDiff = (currTime - msgTime * 1000) / 60000; // time diff in min
+    let timeDiff = (currTime - msgTime * second) / minute; // time diff in min
 
     let timeDiffMin = Math.round(timeDiff);
     let timeDiffHrs = Math.round(timeDiff / 60);
