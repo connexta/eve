@@ -22,12 +22,20 @@ pipeline {
       }
     }
     stage('Build Image') {
+      when {
+        allOf {
+          expression { env.CHANGE_ID == null }
+          expression { env.BRANCH_NAME == "master" || "DEV" }
+        }
+      }
       steps {
         withCredentials([
           string(credentialsId: 'SLACK_TOKEN', variable: 'SLACK_TOKEN'),
-          string(credentialsId: 'SLACK_CHANNEL', variable: 'SLACK_CHANNEL')
+          string(credentialsId: 'SLACK_CHANNEL', variable: 'SLACK_CHANNEL'),
+          string(credentialsId: 'GITHUB_CLIENT_ID', variable: 'GITHUB_CLIENT_ID'),
+          string(credentialsId: 'GITHUB_CLIENT_SECRET', variable: 'GITHUB_CLIENT_SECRET')
         ]) {
-          sh 'make image SLACK_TOKEN=${SLACK_TOKEN} SLACK_CHANNEL=${SLACK_CHANNEL}'
+          sh 'make image SLACK_TOKEN=${SLACK_TOKEN} SLACK_CHANNEL=${SLACK_CHANNEL} GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID} GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET} GIT_BRANCH=' + env.BRANCH_NAME
         }
       }
     }
@@ -35,11 +43,11 @@ pipeline {
       when {
         allOf {
           expression { env.CHANGE_ID == null }
-          expression { env.BRANCH_NAME == "master" }
+          expression { env.BRANCH_NAME == "master" || "DEV" }
         }
       }
       steps {
-        sh 'make push'
+        sh 'make push GIT_BRANCH=' + env.BRANCH_NAME
       }
     }
     // The following stage doesn't actually re-deploy the marathon service, but actually kills the existing docker container
@@ -52,7 +60,7 @@ pipeline {
       when {
         allOf {
           expression { env.CHANGE_ID == null }
-          expression { env.BRANCH_NAME == "master" }
+          expression { env.BRANCH_NAME == "master" || "DEV" }
         }
       }
       steps {

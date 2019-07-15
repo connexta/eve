@@ -734,10 +734,11 @@
     react-transition-group "^4.0.0"
     warning "^4.0.1"
 
-"@material-ui/styles@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.2.0.tgz#dafb8a271cb6772354aece15d3e43af33844f692"
-  integrity sha512-VpPCNWYK1KjpurFh1gH02xpAmCqKZrC/rmiBosZcCRDl8AOcUkSxBMNU0rziHgSQ/jYTEh3MdKNs3Gq0vGCQ/w==
+
+"@material-ui/icons@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-4.2.1.tgz#fe2f1c4f60c24256d244a69d86d0c00e8ed4037e"
+  integrity sha512-FvSD5lUBJ66frI4l4AYAPy2CH14Zs2Dgm0o3oOMr33BdQtOAjCgbdOcvPBeaD1w6OQl31uNW3CKOE8xfPNxvUQ==
   dependencies:
     "@babel/runtime" "^7.2.0"
     "@emotion/hash" "^0.7.1"
@@ -783,7 +784,6 @@
     "@babel/runtime" "^7.2.0"
     prop-types "^15.7.2"
     react-is "^16.8.0"
-
 "@primer/octicons-react@^9.1.1":
   version "9.1.1"
   resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-9.1.1.tgz#bee3d091c6ecc179c5e46d4716929b987b07baf7"
@@ -3037,13 +3037,6 @@ findup-sync@^2.0.0:
     is-glob "^3.1.0"
     micromatch "^3.0.4"
     resolve-dir "^1.0.1"
-
-flavor-fetch@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/flavor-fetch/-/flavor-fetch-0.1.0.tgz#1ac7295abb99cd3e1296903302169cf6c03f578e"
-  integrity sha512-+H6vVNKJQ+F9Wda4Uf/R38hnDDeYJ2ONGy2Sd22LNjGj5ulEVF4xHknJ2iHdoaWtN2bLvxgnUQtQkCkeS4PleQ==
-  dependencies:
-    whatwg-fetch "^3.0.0"
 
 flush-write-stream@^1.0.0:
   version "1.1.1"
