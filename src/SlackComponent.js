@@ -84,68 +84,82 @@ class SlackComponent extends React.Component {
   // fetch latest slack messages
   async setMessages() {
     console.log("Fetching latest slack messages...");
-    const response = await fetch(
+    fetch(
       "https://slack.com/api/channels.history?token=" +
         TOKEN +
-        "&channel" +
+        "&channel=" +
         CHANNEL
-    ).catch(e => console.log("error", e));
-
-    if (response.json().ok) {
-      let messageList = [];
-      response.json().messages.forEach((message, msgCount) => {
-        msgCount++;
-        if (msgCount > MAX_MSGS) return;
-        messageList.push(message);
-      });
-      this.setState({ messages: messageList, msgLoading: false });
-    } else {
-      console.log("Failed to fetch slack messages");
-    }
+    )
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw Error("setMessages response not ok");
+        }
+      })
+      .then(data => {
+        let messageList = [];
+        data.messages.forEach((message, msgCount) => {
+          msgCount++;
+          if (msgCount > MAX_MSGS) return;
+          messageList.push(message);
+        });
+        this.setState({
+          messages: messageList,
+          msgLoading: false
+        });
+      })
+      .catch(e => console.log("error", e));
   }
 
   // fetch user list
   async setUserList() {
     console.log("Fetching slack users...");
-    const response = await fetch(
-      "https://slack.com/api/users.list?token=" + TOKEN
-    ).catch(e => console.log("error", e));
-
-    if (response.json().ok) {
-      this.setState({
-        slackUsers: response.json().members,
-        userLoading: false
-      });
-    } else {
-      console.log("Failed to fetch slack users");
-    }
+    fetch("https://slack.com/api/users.list?token=" + TOKEN)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw Error("setUserList response not ok");
+        }
+      })
+      .then(data => {
+        this.setState({ slackUsers: data.members, userLoading: false });
+      })
+      .catch(e => console.log("error", e));
   }
 
   // fetch custom emoji list
   async setEmojiList() {
     console.log("Fetching emojis...");
-    const response = await fetch(
-      "https://slack.com/api/emoji.list?token=" + TOKEN
-    ).catch(e => console.log("error", e));
-
-    if (response.json().ok) {
-      this.setState({ emojis: response.json().emoji, emojiLoading: false });
-    } else {
-      console.log("Failed to fetch slack emojis");
-    }
+    fetch("https://slack.com/api/emoji.list?token=" + TOKEN)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw Error("setEmoji response not ok");
+        }
+      })
+      .then(data => {
+        this.setState({ emojis: data.emoji, emojiLoading: false });
+      })
+      .catch(e => console.log("error", e));
   }
 
   async setChannels() {
     console.log("Fetching slack channels...");
-    const response = await fetch(
-      "https://slack.com/api/channels.list?token=" + TOKEN
-    ).catch(e => console.log("error", e));
-
-    if (response.json().ok) {
-      this.setState({ channels: response.json().channels, chanLoading: false });
-    } else {
-      console.log("Failed to fetch slack channels");
-    }
+    fetch("https://slack.com/api/channels.list?token=" + TOKEN)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw Error("setChannels response not ok");
+        }
+      })
+      .then(data => {
+        this.setState({ channels: data.channels, chanLoading: false });
+      })
+      .catch(e => console.log("error", e));
   }
 
   getChannelName(id) {
