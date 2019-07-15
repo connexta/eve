@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import Parser from "html-react-parser";
 import emojis from "./emojis";
 import { CX_OFF_WHITE } from "./Constants";
@@ -30,7 +31,7 @@ const styles = {
   },
   headerAndContent: {
     display: "inline-block",
-    width: "90%"
+    width: "80%"
   },
   cardText: {
     fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
@@ -412,22 +413,37 @@ class SlackCard extends React.Component {
   }
 
   render() {
+    // const CardText = this.props.last
+    //   ? styled.div`
+    //       font-family: NotoSansJP, Slack-Lato, appleLogo, sans-serif;
+    //       font-size: ${SLACK_FONT_SIZE};
+    //       color: black;
+    //       min-height: 100%;
+    //       width: 100%;
+    //       ::before {
+    //         content: "";
+    //         position: absolute;
+    //         top: 40%;
+    //         right: 0;
+    //         height: 50%;
+    //         width: 100%;
+    //         background: linear-gradient(transparent, ${CX_OFF_WHITE});
+    //         z-index: 1;
+    //       }
+    //     `
+    //   : styled.div`
+    //       font-family: NotoSansJP, Slack-Lato, appleLogo, sans-serif;
+    //       font-size: ${SLACK_FONT_SIZE};
+    //       color: black;
+    //       min-height: 100%;
+    //       width: 100%;
+    //     `;
     const CardText = styled.div`
       font-family: NotoSansJP, Slack-Lato, appleLogo, sans-serif;
       font-size: ${SLACK_FONT_SIZE};
       color: black;
       min-height: 100%;
       width: 100%;
-      ::before {
-        content: "";
-        position: absolute;
-        top: 80%;
-        right: 0;
-        height: 20%;
-        width: 100%;
-        background: linear-gradient(transparent, ${CX_OFF_WHITE});
-        z-index: 1;
-      }
     `;
 
     return (

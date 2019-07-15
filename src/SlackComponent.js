@@ -2,6 +2,7 @@ import React from "react";
 import Parser from "html-react-parser";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
+import styled from "styled-components";
 import Card from "@material-ui/core/Card";
 
 import MESSAGES from "./sampleslackmessages.json";
@@ -11,14 +12,14 @@ import USERS from "./sampleslackmessages.json";
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 
-export const MAX_MSGS = 6;
+export const MAX_MSGS = 9;
 
 const styles = {
   CardContainer: {
     margin: "8px 8px 8px 8px",
     fontSize: "50px",
     color: "black",
-    height: "60%",
+    height: "50%",
 
     display: "flex",
     flexDirection: "column",
@@ -187,47 +188,83 @@ class SlackComponent extends React.Component {
   }
 
   render() {
+    const SlackCardContainer = styled.div`
+      position: relative;
+      height: 100%;
+      background: transparent;
+      ::before {
+        content: "";
+        position: absolute;
+        top: 70%;
+        right: 0;
+        height: 30%;
+        width: 100%;
+        background: linear-gradient(rgba(0, 0, 0, 0), rgba(242, 242, 242, 1));
+        z-index: 1;
+      }
+    `;
+
     return this.stillLoading() ? (
       <p>Loading...</p>
     ) : (
       <Card style={styles.CardContainer} raised={true}>
         <span style={styles.cardHeader}>#{this.getChannelName(CHANNEL)}</span>
-        <SlackCard
-          index={0}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={1}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={2}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={3}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={4}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={5}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
+        <SlackCardContainer>
+          <SlackCard
+            index={0}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+          <SlackCard
+            index={1}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+          <SlackCard
+            index={2}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+          <SlackCard
+            index={3}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+          <SlackCard
+            index={4}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+          <SlackCard
+            index={5}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+          <SlackCard
+            index={6}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+          <SlackCard
+            index={7}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+          <SlackCard
+            index={8}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+        </SlackCardContainer>
       </Card>
     );
   }
