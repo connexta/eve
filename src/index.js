@@ -40,7 +40,6 @@ ReactDOM.render(
     <Router>
       <MainGridVert>
         <Banner>
-          {/* <BannerGrid> */}
           <Link to="/">
             <Logo />
           </Link>
@@ -48,7 +47,6 @@ ReactDOM.render(
           <ClockFull timezone="US/Mountain" place="DEN" />
           <ClockFull timezone="US/Eastern" place="BOS/DC" />
           <ClockFull timezone="Australia/Melbourne" place="MEL (+1)" />
-          {/* </BannerGrid> */}
         </Banner>
         <Switch>
           {/* Place new wallboard layouts here */}
