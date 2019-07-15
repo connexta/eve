@@ -186,27 +186,30 @@ class SlackComponent extends React.Component {
   }
 
   render() {
-    let cardList = [];
-    for (var i = 0; i < MAX_MSGS; i++) {
-      cardList.push(
-        <SlackCard
-          index={i}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
+    if (this.stillLoading()) {
+      return <p style={{ fontSize: "32px" }}>Loading...</p>;
+    } else {
+      let cardList = [];
+      for (var i = 0; i < MAX_MSGS; i++) {
+        cardList.push(
+          <SlackCard
+            key={i}
+            index={i}
+            slackUsers={this.state.slackUsers}
+            messages={this.state.messages}
+            emojis={this.state.emojis}
+          />
+        );
+      }
+
+      return (
+        <Card style={styles.CardContainer} raised={true}>
+          <span style={styles.cardHeader}>#{this.getChannelName(CHANNEL)}</span>
+          <div style={styles.GradientBlock}></div>
+          <div style={styles.SlackCardContainer}>{cardList}</div>
+        </Card>
       );
     }
-
-    return this.stillLoading() ? (
-      <p style={{ fontSize: "32px" }}>Loading...</p>
-    ) : (
-      <Card style={styles.CardContainer} raised={true}>
-        <span style={styles.cardHeader}>#{this.getChannelName(CHANNEL)}</span>
-        <div style={styles.GradientBlock}></div>
-        <div style={styles.SlackCardContainer}>{cardList}</div>
-      </Card>
-    );
   }
 }
 
