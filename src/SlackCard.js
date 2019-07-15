@@ -339,21 +339,19 @@ class SlackCard extends React.Component {
   render() {
     return (
       <div style={styles.cardStyle}>
-        <span>
-          <img
-            style={styles.avatarStyle}
-            src={this.getIcon(this.props.index)}
-          ></img>
-          <div style={styles.headerAndContent}>
-            {Parser(this.getCardHeader(this.props.index))}
-            <div style={styles.contentContainer}>
-              {Parser(this.getCardMedia(this.props.index))}
-              <div style={styles.cardText}>
-                {Parser(this.getCardText(this.props.index))}
-              </div>
+        <img
+          style={styles.avatarStyle}
+          src={this.getIcon(this.props.index)}
+        ></img>
+        <div style={styles.headerAndContent}>
+          {Parser(this.getCardHeader(this.props.index))}
+          <div style={styles.contentContainer}>
+            {Parser(this.getCardMedia(this.props.index))}
+            <div style={styles.cardText}>
+              {Parser(this.getCardText(this.props.index))}
             </div>
           </div>
-        </span>
+        </div>
       </div>
     );
   }
