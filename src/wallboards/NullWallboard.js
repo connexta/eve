@@ -1,28 +1,8 @@
 import React from "react";
-import styled from "styled-components";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { CX_OFF_WHITE, CX_GRAY_BLUE, CX_FONT, BATMAN_GRAY } from "../Constants";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../Constants";
+import { SolidBackground, WallboardButtons } from "./WallboardStyles";
 import Button from "@material-ui/core/Button";
-
-const Background = styled.div`
-  background: ${CX_GRAY_BLUE};
-  padding: 0%;
-  font-size: 30px;
-
-  position: absolute;
-  top: 131px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  overflow: hidden;
-`;
-
-const WallboardButtons = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
 
 const styles = {
   button: {
@@ -45,14 +25,14 @@ const styles = {
 export default class NullWallboard extends React.Component {
   render() {
     return (
-      <Background>
+      <SolidBackground>
         <h1 style={styles.title}>Wallboard Not Found!</h1>
         <WallboardButtons>
           <Link to="/" style={{ textDecoration: "none" }}>
             <Button style={styles.button}>Home</Button>
           </Link>
         </WallboardButtons>
-      </Background>
+      </SolidBackground>
     );
   }
 }

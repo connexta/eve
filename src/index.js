@@ -18,21 +18,17 @@ const Banner = styled.nav`
   padding-left: 40px;
   padding-right: 40px;
   margin: 0%;
-  border-bottom: solid black 3px;
-  border-top: solid black 3px;
   height: 125px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
 `;
 
 const MainGridVert = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const BannerGrid = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 10px;
 `;
 
 const Logo = () => {
@@ -44,15 +40,15 @@ ReactDOM.render(
     <Router>
       <MainGridVert>
         <Banner>
-          <BannerGrid>
-            <Link to="/">
-              <Logo />
-            </Link>
-            <ClockFull timezone="US/Arizona" place="PHX" />
-            <ClockFull timezone="US/Mountain" place="DEN" />
-            <ClockFull timezone="US/Eastern" place="BOS/DC" />
-            <ClockFull timezone="Australia/Melbourne" place="MEL (+1)" />
-          </BannerGrid>
+          {/* <BannerGrid> */}
+          <Link to="/">
+            <Logo />
+          </Link>
+          <ClockFull timezone="US/Arizona" place="PHX" />
+          <ClockFull timezone="US/Mountain" place="DEN" />
+          <ClockFull timezone="US/Eastern" place="BOS/DC" />
+          <ClockFull timezone="Australia/Melbourne" place="MEL (+1)" />
+          {/* </BannerGrid> */}
         </Banner>
         <Switch>
           {/* Place new wallboard layouts here */}

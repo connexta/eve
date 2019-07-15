@@ -1,31 +1,11 @@
 import React from "react";
-import styled from "styled-components";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { CX_OFF_WHITE, CX_GRAY_BLUE, CX_FONT, BATMAN_GRAY } from "../Constants";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../Constants";
+import { SolidBackground, WallboardButtons } from "./WallboardStyles";
 import Button from "@material-ui/core/Button";
 
 // Add name of wallboard variant here
 const VARIANTS = ["tv", "airforce", "gsr"];
-
-const Background = styled.div`
-  background: ${CX_GRAY_BLUE};
-  padding: 0%;
-  font-size: 30px;
-
-  position: absolute;
-  top: 131px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  overflow: hidden;
-`;
-
-const WallboardButtons = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-`;
 
 const styles = {
   button: {
@@ -48,20 +28,24 @@ const styles = {
 export default class Home extends React.Component {
   render() {
     return (
-      <Background>
+      <SolidBackground>
         <h1 style={styles.title}>Choose Wallboard Variant</h1>
         <WallboardButtons>
           {/* generate links and paths through VARIANTS list */}
           {VARIANTS.map(wallboard => {
             let path = "/" + wallboard + "/";
             return (
-              <Link to={path} style={{ textDecoration: "none" }}>
+              <Link
+                to={path}
+                style={{ textDecoration: "none" }}
+                key={wallboard}
+              >
                 <Button style={styles.button}>{wallboard}</Button>
               </Link>
             );
           })}
         </WallboardButtons>
-      </Background>
+      </SolidBackground>
     );
   }
 }
