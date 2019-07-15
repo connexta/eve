@@ -65,7 +65,7 @@ function Main() {
         <Grid item style={styles.rightBox}>
           {/* Right box content */}
           <SlackComponent />
-          {/* <Github /> */}
+          <Github />
         </Grid>
       </Grid>
     </Grid>
