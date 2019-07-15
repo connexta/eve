@@ -2,7 +2,6 @@ import React from "react";
 import Parser from "html-react-parser";
 import emojis from "./emojis";
 import square_logo from "../resources/square_logo.png";
-import styled from "styled-components";
 
 const SLACK_FONT_SIZE = "20px";
 

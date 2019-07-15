@@ -1,6 +1,6 @@
 import React from "react";
 import SlackCard from "./SlackCard";
-import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
+import { CX_OFF_WHITE, CX_FONT } from "./Constants";
 import Card from "@material-ui/core/Card";
 
 const TOKEN = process.env.SLACK_TOKEN;
