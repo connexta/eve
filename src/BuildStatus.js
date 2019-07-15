@@ -64,9 +64,7 @@ class BuildStatus extends React.Component {
     await promise
       .then(values => {
         values.forEach(item => {
-          if (
-            Object.keys(jenkinsURLList).includes(item.displayName.toLowerCase())
-          ) {
+          if (jenkinsURLList[item.displayName.toLowerCase()]) {
             index = this.updateData(item, overallData, index);
           }
         });
