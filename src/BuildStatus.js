@@ -4,18 +4,9 @@ import BuildIcon from "./BuildIcon";
 import Card from "@material-ui/core/Card";
 import { CardHeader, CardContent } from "@material-ui/core";
 import {
-  overviewURL,
-  AllianceURL,
-  DDFURL,
-  DIBURL,
-  GSRURL,
-  AFURL
+  overviewURL, jenkinsURLList
 } from "./lib/Link";
 import { getRelativeTime } from "./utilities/utility";
-
-const BUILD_LIST = ["alliance", "ddf", "gsr", "dib"];
-
-const URL_LIST = [AllianceURL, DDFURL, GSRURL, DIBURL, AFURL];
 
 const oneHour = 1000 * 60 * 60;
 
@@ -71,7 +62,7 @@ class BuildStatus extends React.Component {
     await promise
       .then(values => {
         values.map(item => {
-          if (BUILD_LIST.includes(item.displayName.toLowerCase())) {
+          if (Object.keys(jenkinsURLList).includes(item.displayName.toLowerCase())) {
             overallData, (index = this.updateData(item, overallData, index));
           }
         });
@@ -79,7 +70,7 @@ class BuildStatus extends React.Component {
       .catch(e => console.log("error", e));
 
     //fetch/update overview data for AF team for displayName and weatherScore
-    promise = this.fetchData(AFURL);
+    promise = this.fetchData(jenkinsURLList["af"]);
     await promise
       .then(item => {
         overallData, (index = this.updateData(item, overallData, index));
@@ -88,9 +79,10 @@ class BuildStatus extends React.Component {
 
     //fetch/update last time build status for each team
     let promises = [];
-    for (let i = 0; i < URL_LIST.length; i++) {
-      promises.push(this.fetchData(URL_LIST[i]));
+    for (URL in jenkinsURLList){
+      promises.push(this.fetchData(jenkinsURLList[URL]));
     }
+
     await Promise.all(promises)
       .then(values => {
         for (let i = 0; i < values.length; i++) {
