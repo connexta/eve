@@ -89,7 +89,7 @@ class BuildStatus extends React.Component {
       .then(values => {
         for (let i = 0; i < values.length; i++) {
           overallData[i].time =
-            "Last: " + getRelativeTime(new Date(values[i].latestRun.startTime));
+            "Built " + getRelativeTime(new Date(values[i].latestRun.startTime));
         }
       })
       .catch(e => console.log("error", e));
