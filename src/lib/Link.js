@@ -22,7 +22,10 @@ const GSRURL =
 const AFURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/HAART-Jobs/pipelines/SOAESB_Nightly_Release_Builder/";
 
-
-export const jenkinsURLList = {"alliance":AllianceURL, "ddf":DDFURL, "dib":DIBURL, "gsr":GSRURL, "af":AFURL};
-
-
+export const jenkinsURLList = {
+  alliance: AllianceURL,
+  ddf: DDFURL,
+  dib: DIBURL,
+  gsr: GSRURL,
+  af: AFURL
+};

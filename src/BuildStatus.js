@@ -3,9 +3,7 @@ import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants.js";
 import BuildIcon from "./BuildIcon";
 import Card from "@material-ui/core/Card";
 import { CardHeader, CardContent } from "@material-ui/core";
-import {
-  overviewURL, jenkinsURLList
-} from "./lib/Link";
+import { overviewURL, jenkinsURLList } from "./lib/Link";
 import { getRelativeTime } from "./utilities/utility";
 
 const oneHour = 1000 * 60 * 60;
@@ -32,7 +30,7 @@ const styles = {
 
 const aliases = {
   SOAESB_Nightly_Release_Builder: "AF"
-}
+};
 
 class BuildStatus extends React.Component {
   constructor(props) {
@@ -66,7 +64,9 @@ class BuildStatus extends React.Component {
     await promise
       .then(values => {
         values.forEach(item => {
-          if (Object.keys(jenkinsURLList).includes(item.displayName.toLowerCase())) {
+          if (
+            Object.keys(jenkinsURLList).includes(item.displayName.toLowerCase())
+          ) {
             index = this.updateData(item, overallData, index);
           }
         });
@@ -83,7 +83,7 @@ class BuildStatus extends React.Component {
 
     //fetch/update last time build status for each team
     let promises = [];
-    for (URL in jenkinsURLList){
+    for (URL in jenkinsURLList) {
       promises.push(this.fetchData(jenkinsURLList[URL]));
     }
 
@@ -113,7 +113,7 @@ class BuildStatus extends React.Component {
   //  i.e. if name is AF specific repo name, convert to "AF" instead for easy display
   //  otherwise, display its original name.
   aliasOf(displayName) {
-    return (aliases[displayName]) ? aliases[displayName] : displayName
+    return aliases[displayName] ? aliases[displayName] : displayName;
   }
 
   //update overallData from item and return index for following array assignment
