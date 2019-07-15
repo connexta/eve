@@ -1,13 +1,7 @@
 import React from "react";
-import Parser from "html-react-parser";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
-import styled from "styled-components";
 import Card from "@material-ui/core/Card";
-
-import MESSAGES from "./sampleslackmessages.json";
-import EMOJIS from "./sampleslackmessages.json";
-import USERS from "./sampleslackmessages.json";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
@@ -24,22 +18,26 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    backgroundColor: CX_OFF_WHITE
+    backgroundColor: CX_OFF_WHITE,
+    position: "relative"
   },
   cardHeader: {
     fontFamily: CX_FONT,
     margin: "12px 0 12px 16px",
     height: "40px"
   },
-  fadeElement: {
-    //content: "",
-    //position: "absolute",
-    top: "80%",
-    right: 0,
-    height: "20%",
+  SlackCardContainer: {
+    top: "72px",
+    height: "100%",
+    position: "absolute"
+  },
+  GradientBlock: {
+    height: "15%",
     width: "100%",
+    bottom: 0,
     background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
-    zIndex: 1
+    position: "absolute",
+    zIndex: 10
   }
 };
 
@@ -188,28 +186,13 @@ class SlackComponent extends React.Component {
   }
 
   render() {
-    const SlackCardContainer = styled.div`
-      position: relative;
-      height: 100%;
-      background: transparent;
-      ::before {
-        content: "";
-        position: absolute;
-        top: 70%;
-        right: 0;
-        height: 30%;
-        width: 100%;
-        background: linear-gradient(rgba(0, 0, 0, 0), rgba(242, 242, 242, 1));
-        z-index: 1;
-      }
-    `;
-
     return this.stillLoading() ? (
-      <p>Loading...</p>
+      <p style={{ fontSize: "32px" }}>Loading...</p>
     ) : (
       <Card style={styles.CardContainer} raised={true}>
         <span style={styles.cardHeader}>#{this.getChannelName(CHANNEL)}</span>
-        <SlackCardContainer>
+        <div style={styles.GradientBlock}></div>
+        <div style={styles.SlackCardContainer}>
           <SlackCard
             index={0}
             slackUsers={this.state.slackUsers}
@@ -264,7 +247,7 @@ class SlackComponent extends React.Component {
             messages={this.state.messages}
             emojis={this.state.emojis}
           />
-        </SlackCardContainer>
+        </div>
       </Card>
     );
   }

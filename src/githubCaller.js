@@ -16,7 +16,7 @@ const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
 const Box = styled.div`
   width: 93%;
-  height: 89%;
+  height: 50%;
   border-radius: 20px;
   padding: 20px;
   background-color: ${CX_OFF_WHITE};

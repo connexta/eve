@@ -1,10 +1,7 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import Parser from "html-react-parser";
 import emojis from "./emojis";
-import { CX_OFF_WHITE } from "./Constants";
 import square_logo from "../resources/square_logo.png";
-import { MAX_MSGS } from "./SlackComponent";
 import styled from "styled-components";
 
 const SLACK_FONT_SIZE = "20px";
@@ -13,21 +10,12 @@ const styles = {
   cardStyle: {
     paddingBottom: "10px",
     margin: "0 10px 5px 10px",
-    //maxHeight: "33%",
-    //height: "100%",
-    //overflow: "hidden",
     fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
     fontSize: SLACK_FONT_SIZE,
     position: "relative"
   },
   contentContainer: {
-    //display: "flex",
-    //flexDirection: "row"
     verticalAlign: "top"
-  },
-  avatarContainer: {
-    display: "inline-block",
-    margin: "0 5px 0 0"
   },
   headerAndContent: {
     display: "inline-block",
@@ -36,50 +24,11 @@ const styles = {
   cardText: {
     fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
     fontSize: SLACK_FONT_SIZE,
-    //minHeight: "100%",
-    width: "100%"
-    // ::before {
-    //   content: "";
-    //   position: absolute;
-    //   top: 80%;
-    //   right: 0;
-    //   height: 20%;
-    //   width: 100%;
-    //   background: linear-gradient(transparent, ${CX_OFF_WHITE});
-    //   z-index: 1;
-    // }
-  },
-  inlineCodeStyle: {
-    color: "red",
-    border: "solid gray 1px",
-    borderRadius: "5px",
-    padding: "0 .25em 0 .25em",
-    display: "inline",
-    fontFamily: "monospace",
-    fontSize: "18px",
-    backgroundColor: "#f8f8f8"
-  },
-  preformatTextStyle: {
+    marginTop: "4px",
+    width: "100%",
     color: "black",
-    border: "solid gray 1px",
-    borderRadius: "5px",
-    padding: "0 .25em 0 .25em",
-    margin: "5px 10px 0 0",
-    fontFamily: "monospace",
-    fontSize: "18px",
-    backgroundColor: "#f8f8f8",
-    whiteSpace: "pre"
-  },
-  emojiStyle: {
-    margin: "0 0.25em 0 0.25em",
-    display: "inline"
-  },
-  userChanStyle: {
-    color: "#4c8dac",
-    margin: "0 .10em 0 .10em",
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-    fontSize: SLACK_FONT_SIZE
+    minHeight: "100%",
+    width: "100%"
   },
   avatarStyle: {
     borderRadius: "8%",
@@ -152,17 +101,6 @@ const msgLifeStyle =
   margin-left: 10px; \
   white-space: nowrap; \
   overflow: hidden; \
-  ";
-
-const avatarStyle =
-  " \
-  border-radius: 50%; \
-  margin-right: 10px; \
-  margin-left: 5px; \
-  margin-top: 5px; \
-  display: inline; \
-  height: 50px; \
-  width: 50px; \
   ";
 
 const fileImgStyle =
@@ -331,13 +269,6 @@ class SlackCard extends React.Component {
       author = "Unknown User";
     }
 
-    // get avatar for user
-    const unknownAvatar = `<img style="${avatarStyle}" src=${square_logo} alt=${author} />`;
-    let avatar =
-      message.attachments == undefined
-        ? this.userIdToAvatar(message.user)
-        : message.attachments[0].author_icon;
-
     // check for additional footer info
     let footer =
       message.attachments == undefined
@@ -353,9 +284,6 @@ class SlackCard extends React.Component {
 
   getIcon(index) {
     let message = this.props.messages[index];
-    if (message == undefined) {
-      return "Error: No message";
-    }
 
     // check if author is bot or unknown
     let author =
@@ -382,9 +310,6 @@ class SlackCard extends React.Component {
       message.attachments == undefined
         ? message.text
         : message.attachments[0].text;
-    // return `<div style="margin-left: 10px; margin-top: 5px;">${this.getSlackStyleMessage(
-    //   messageText
-    // )}</div>`;
     return this.getSlackStyleMessage(messageText);
   }
 
@@ -413,39 +338,6 @@ class SlackCard extends React.Component {
   }
 
   render() {
-    // const CardText = this.props.last
-    //   ? styled.div`
-    //       font-family: NotoSansJP, Slack-Lato, appleLogo, sans-serif;
-    //       font-size: ${SLACK_FONT_SIZE};
-    //       color: black;
-    //       min-height: 100%;
-    //       width: 100%;
-    //       ::before {
-    //         content: "";
-    //         position: absolute;
-    //         top: 40%;
-    //         right: 0;
-    //         height: 50%;
-    //         width: 100%;
-    //         background: linear-gradient(transparent, ${CX_OFF_WHITE});
-    //         z-index: 1;
-    //       }
-    //     `
-    //   : styled.div`
-    //       font-family: NotoSansJP, Slack-Lato, appleLogo, sans-serif;
-    //       font-size: ${SLACK_FONT_SIZE};
-    //       color: black;
-    //       min-height: 100%;
-    //       width: 100%;
-    //     `;
-    const CardText = styled.div`
-      font-family: NotoSansJP, Slack-Lato, appleLogo, sans-serif;
-      font-size: ${SLACK_FONT_SIZE};
-      color: black;
-      min-height: 100%;
-      width: 100%;
-    `;
-
     return (
       <div style={styles.cardStyle}>
         <span>
@@ -457,7 +349,9 @@ class SlackCard extends React.Component {
             {Parser(this.getCardHeader(this.props.index))}
             <div style={styles.contentContainer}>
               {Parser(this.getCardMedia(this.props.index))}
-              <CardText>{Parser(this.getCardText(this.props.index))}</CardText>
+              <div style={styles.cardText}>
+                {Parser(this.getCardText(this.props.index))}
+              </div>
             </div>
           </div>
         </span>
