@@ -5,12 +5,7 @@ import { CX_DARK_BLUE } from "./Constants";
 import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
-
-// Wallboards
-import Home from "./wallboards/Home";
-import TVWallboard from "./wallboards/TVWallboard";
-import AirforceWallboard from "./wallboards/AirforceWallboard";
-import GSRWallboard from "./wallboards/GSRWallboard";
+import { wallboards } from "./wallboards/Home";
 import NullWallboard from "./wallboards/NullWallboard";
 
 const Banner = styled.nav`
@@ -49,11 +44,9 @@ ReactDOM.render(
           <ClockFull timezone="Australia/Melbourne" place="MEL (+1)" />
         </Banner>
         <Switch>
-          {/* Place new wallboard layouts here */}
-          <Route path="/" exact component={Home} />
-          <Route path="/tv/" exact component={TVWallboard} />
-          <Route path="/airforce/" exact component={AirforceWallboard} />
-          <Route path="/gsr/" exact component={GSRWallboard} />
+          {wallboards.map(wallboard => {
+            return <Route {...wallboard} exact />;
+          })}
           <Route component={NullWallboard} />
         </Switch>
       </MainGridVert>

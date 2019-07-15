@@ -4,8 +4,20 @@ import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../Constants";
 import { SolidBackground, WallboardButtons } from "./WallboardStyles";
 import Button from "@material-ui/core/Button";
 
-// Add name of wallboard variant here
-const VARIANTS = ["tv", "airforce", "gsr"];
+// Wallboard Variants
+import GSRWallboard from "./GSRWallboard";
+import TVWallboard from "./TVWallboard";
+import AirforceWallboard from "./AirforceWallboard";
+
+const proxy = props => <Home {...props} />;
+
+// Add new wallboard variants here
+export const wallboards = [
+  { path: "/", component: proxy, key: "Home" },
+  { path: "/tv/", component: TVWallboard, key: "TV" },
+  { path: "/airforce/", component: AirforceWallboard, key: "Airforce" },
+  { path: "/gsr/", component: GSRWallboard, key: "GSR" }
+];
 
 const styles = {
   button: {
@@ -31,16 +43,16 @@ export default class Home extends React.Component {
       <SolidBackground>
         <h1 style={styles.title}>Choose Wallboard Variant</h1>
         <WallboardButtons>
-          {/* generate links and paths through VARIANTS list */}
-          {VARIANTS.map(wallboard => {
-            let path = "/" + wallboard + "/";
+          {/* generate links and paths through wallboards object */}
+          {wallboards.map(wallboard => {
+            if (wallboard.path == "/") return; // ignore Home link
             return (
               <Link
-                to={path}
+                to={wallboard.path}
                 style={{ textDecoration: "none" }}
-                key={wallboard}
+                key={wallboard.key}
               >
-                <Button style={styles.button}>{wallboard}</Button>
+                <Button style={styles.button}>{wallboard.key}</Button>
               </Link>
             );
           })}
