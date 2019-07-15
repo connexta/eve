@@ -6,7 +6,8 @@ module.exports = {
   entry: ["babel-polyfill", "whatwg-fetch", "./src/index.js"],
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "target")
+    path: path.resolve(__dirname, "target"),
+    publicPath: "/"
   },
   module: {
     rules: [
@@ -56,6 +57,7 @@ module.exports = {
     contentBase: path.join(__dirname, "target"),
     compress: true,
     port: 8080,
-    hot: true
+    hot: true,
+    historyApiFallback: true
   }
 };

@@ -1,17 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
-import {
-  CX_OFF_WHITE,
-  CX_DARK_BLUE,
-  CX_GRAY_BLUE,
-  CX_LIGHT_BLUE
-} from "./Constants";
+import { CX_DARK_BLUE } from "./Constants";
 import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
-import BuildStatus from "./BuildStatus";
-import SlackComponent from "./SlackComponent";
-import Github from "./githubCaller";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+
+// Wallboards
+import Home from "./wallboards/Home";
+import TVWallboard from "./wallboards/TVWallboard";
+import AirforceWallboard from "./wallboards/AirforceWallboard";
+import GSRWallboard from "./wallboards/GSRWallboard";
+import NullWallboard from "./wallboards/NullWallboard";
 
 const Banner = styled.nav`
   background: ${CX_DARK_BLUE};
@@ -21,45 +21,6 @@ const Banner = styled.nav`
   border-bottom: solid black 3px;
   border-top: solid black 3px;
   height: 125px;
-`;
-
-const RightBox = styled.nav`
-  background: ${CX_DARK_BLUE};
-  padding: 0%;
-  font-size: 30px;
-  border-left: solid black 3px;
-
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  top: 131px;
-  bottom: 0;
-  left: 66vw;
-  right: 0;
-  overflow: hidden;
-`;
-
-const LeftBox = styled.nav`
-  background: ${CX_GRAY_BLUE};
-  padding: 3%;
-  font-size: 30px;
-  border-right: solid black 3px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-
-  position: absolute;
-  top: 131px;
-  bottom: 0;
-  left: 0;
-  right: 33vw;
-`;
-
-const ContentHorz = styled.div`
-  display: flex;
-  flex-direction: row;
 `;
 
 const MainGridVert = styled.div`
@@ -80,28 +41,29 @@ const Logo = () => {
 
 ReactDOM.render(
   <div>
-    <MainGridVert>
-      <Banner>
-        <BannerGrid>
-          <Logo />
-          <ClockFull timezone="US/Arizona" place="PHX" />
-          <ClockFull timezone="US/Mountain" place="DEN" />
-          <ClockFull timezone="US/Eastern" place="BOS/DC" />
-          <ClockFull timezone="Australia/Sydney" place="MEL (+1)" />
-        </BannerGrid>
-      </Banner>
-      <ContentHorz>
-        <LeftBox>
-          {/* Left box content */}
-          <BuildStatus />
-        </LeftBox>
-        <RightBox>
-          {/* Right box content */}
-          <SlackComponent />
-          <Github />
-        </RightBox>
-      </ContentHorz>
-    </MainGridVert>
+    <Router>
+      <MainGridVert>
+        <Banner>
+          <BannerGrid>
+            <Link to="/">
+              <Logo />
+            </Link>
+            <ClockFull timezone="US/Arizona" place="PHX" />
+            <ClockFull timezone="US/Mountain" place="DEN" />
+            <ClockFull timezone="US/Eastern" place="BOS/DC" />
+            <ClockFull timezone="Australia/Melbourne" place="MEL (+1)" />
+          </BannerGrid>
+        </Banner>
+        <Switch>
+          {/* Place new wallboard layouts here */}
+          <Route path="/" exact component={Home} />
+          <Route path="/tv/" exact component={TVWallboard} />
+          <Route path="/airforce/" exact component={AirforceWallboard} />
+          <Route path="/gsr/" exact component={GSRWallboard} />
+          <Route component={NullWallboard} />
+        </Switch>
+      </MainGridVert>
+    </Router>
   </div>,
 
   document.getElementById("iamroot")
