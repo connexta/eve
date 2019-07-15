@@ -27,7 +27,7 @@ export function getRelativeTime(targetDate) {
   let timeDiffHrs = Math.round(timeDiff / 60);
   let timeDiffDays = Math.round(timeDiff / 1440);
 
-  if (timeDiff < 60) {
+  if (timeDiffMin < 60) {
     return timeDiffMin == 0 ? "now" : timeDiffMin + " min ago";
   } else if (timeDiffHrs < 24) {
     return timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago");

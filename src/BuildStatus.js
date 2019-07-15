@@ -30,6 +30,10 @@ const styles = {
   }
 };
 
+const aliases = {
+  SOAESB_Nightly_Release_Builder: "AF"
+}
+
 class BuildStatus extends React.Component {
   constructor(props) {
     super(props);
@@ -61,9 +65,9 @@ class BuildStatus extends React.Component {
     let promise = this.fetchData(overviewURL);
     await promise
       .then(values => {
-        values.map(item => {
+        values.forEach(item => {
           if (Object.keys(jenkinsURLList).includes(item.displayName.toLowerCase())) {
-            overallData, (index = this.updateData(item, overallData, index));
+            index = this.updateData(item, overallData, index);
           }
         });
       })
@@ -73,7 +77,7 @@ class BuildStatus extends React.Component {
     promise = this.fetchData(jenkinsURLList["af"]);
     await promise
       .then(item => {
-        overallData, (index = this.updateData(item, overallData, index));
+        index = this.updateData(item, overallData, index);
       })
       .catch(e => console.log("error", e));
 
@@ -103,30 +107,29 @@ class BuildStatus extends React.Component {
       .catch(e => console.log("error", e));
   }
 
-  //Fix AF repo build name to "AF"
+  //general function to convert name to alias for easy display if alias exists
   //@return:
-  //  if name is AF specific repo name, convert to "AF" instead for easy display
+  //  return alias if exists otherwise original name
+  //  i.e. if name is AF specific repo name, convert to "AF" instead for easy display
   //  otherwise, display its original name.
-  fixARName(displayName) {
-    return displayName === "SOAESB_Nightly_Release_Builder"
-      ? "AF"
-      : displayName;
+  aliasOf(displayName) {
+    return (aliases[displayName]) ? aliases[displayName] : displayName
   }
 
+  //update overallData from item and return index for following array assignment
   //@param:
   //  item: that contains information for array overallData to be updated
   //  overallData: array to pass down to keep each build information such as displayName
   //  index: used to assign for each build information in the array
   //@return:
-  //  overallData & index: to be passed down for next functions
+  //  index: to be passed down for next functions
   updateData(item, overallData, index) {
     overallData[index] = {
-      displayName: this.fixARName(item.displayName),
+      displayName: this.aliasOf(item.displayName),
       weatherScore: item.weatherScore,
       time: ""
     };
-    index++;
-    return overallData, index;
+    return ++index;
   }
 
   render() {
