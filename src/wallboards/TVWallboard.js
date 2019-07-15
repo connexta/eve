@@ -4,7 +4,7 @@ import SlackComponent from "../SlackComponent";
 import Github from "../githubCaller";
 import { RightBox, LeftBox, ContentHorz } from "./WallboardStyles";
 
-class DefaultWallboard extends React.Component {
+export default class DefaultWallboard extends React.Component {
   render() {
     return (
       <ContentHorz>
@@ -21,5 +21,3 @@ class DefaultWallboard extends React.Component {
     );
   }
 }
-
-export default DefaultWallboard;
