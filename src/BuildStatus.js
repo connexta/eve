@@ -4,8 +4,7 @@ import BuildIcon from "./BuildIcon";
 import Card from "@material-ui/core/Card";
 import { CardHeader, CardContent } from "@material-ui/core";
 import { overviewURL, jenkinsURLList } from "./lib/Link";
-import { getRelativeTime } from "./utilities/utility";
-import { hour } from "./TimeUtils.js";
+import { hour, getRelativeTime } from "./utilities/TimeUtils.js";
 
 const styles = {
   card: {
