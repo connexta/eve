@@ -4,7 +4,7 @@ import Parser from "html-react-parser";
 import emojis from "./emojis";
 import { CX_OFF_WHITE } from "./Constants";
 import circle_logo from "../resources/circle_logo.png";
-import { getRelativeTime } from "./utilities/TimeUtils.js";
+import { getRelativeTime } from "./utilities/TimeUtils";
 
 const SLACK_FONT_SIZE = "20px";
 
