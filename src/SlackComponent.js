@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Parser from "html-react-parser";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
-import { minute, time } from "./TimeUtils";
+import { minute, time } from "./utilites/TimeUtils";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
