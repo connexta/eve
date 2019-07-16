@@ -12,7 +12,7 @@ const time = ({ hours = 0, minutes = 0, seconds = 0 }) => {
 //  gets calculated relative time from current time.
 //  i.e. 19 hours ago
 const getRelativeTime = targetDate => {
-  if(targetDate.getTime == undefined) {
+  if (targetDate.getTime == undefined) {
     return "";
   }
 

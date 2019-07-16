@@ -5,7 +5,6 @@ import CardContent from "@material-ui/core/CardContent";
 import { CX_OFF_WHITE, CX_FONT, CX_GRAY_BLUE } from "./Constants.js";
 import { hour } from "./utilities/TimeUtils";
 
-
 const NUMPULLS = 5;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
