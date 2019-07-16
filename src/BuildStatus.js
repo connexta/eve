@@ -1,30 +1,36 @@
 import React from "react";
-import styled from "styled-components";
-import { CX_OFF_WHITE, CX_FONT } from "./Constants.js";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants.js";
 import BuildIcon from "./BuildIcon";
+import Card from "@material-ui/core/Card";
+import { CardHeader, CardContent } from "@material-ui/core";
+import { overviewURL, jenkinsURLList } from "./lib/Link";
+import { getRelativeTime } from "./utilities/utility";
 
-const BUILD_LIST = ["alliance", "aus", "ddf", "gsr", "dib"];
+const oneHour = 1000 * 60 * 60;
 
-const URL =
-  "https://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/";
+const styles = {
+  card: {
+    background: CX_OFF_WHITE,
+    fontSize: "50px",
+    color: BATMAN_GRAY,
+    fontFamily: CX_FONT
+  },
+  cardheader: {
+    background: CX_OFF_WHITE,
+    color: BATMAN_GRAY,
+    fontFamily: CX_FONT
+  },
+  cardContent: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap"
+  }
+};
 
-const Builds = styled.div`
-  width: 55vw;
-  height: 200px;
-  border: solid black 3px;
-  border-radius: 20px;
-  padding: 20px;
-  background-color: ${CX_OFF_WHITE};
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-
-  font-size: 2em;
-  font-family: ${CX_FONT};
-`;
+const aliases = {
+  SOAESB_Nightly_Release_Builder: "AF"
+};
 
 class BuildStatus extends React.Component {
   constructor(props) {
@@ -35,43 +41,120 @@ class BuildStatus extends React.Component {
     };
   }
 
-  // updates the build status every 60 sec
+  // updates the build status every 1 hour
   componentDidMount() {
-    this.setState({ data: [], isLoading: true });
     this.refreshBuildStatus();
-    setInterval(() => this.refreshBuildStatus(), 60000);
+    this.intervalId = setInterval(() => this.refreshBuildStatus(), oneHour);
   }
 
-  refreshBuildStatus() {
-    this.updateBuildStatus();
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
   }
 
-  updateBuildStatus() {
-    fetch(URL)
-      .then(response => response.json())
-      .then(jsonData => {
-        this.setState({ data: jsonData, isLoading: false });
+  //a function that continuously be called by each set interval in componentDidMount() to fetch/update each team status for display
+  //overallData: temporary array to collect each team status before pushing to setState: data
+  //index: to keep track of each team status in the array overallData.
+  //update data for displayName, weatherScore, last build time.
+  async refreshBuildStatus() {
+    let overallData = [];
+    let index = 0;
+
+    //fetch/update overview data for each team (except AF) for displayName and weatherScore
+    let promise = this.fetchData(overviewURL);
+    await promise
+      .then(values => {
+        values.forEach(item => {
+          if (jenkinsURLList[item.displayName.toLowerCase()]) {
+            index = this.updateData(item, overallData, index);
+          }
+        });
       })
       .catch(e => console.log("error", e));
+
+    //fetch/update overview data for AF team for displayName and weatherScore
+    promise = this.fetchData(jenkinsURLList["af"]);
+    await promise
+      .then(item => {
+        index = this.updateData(item, overallData, index);
+      })
+      .catch(e => console.log("error", e));
+
+    //fetch/update last time build status for each team
+    let promises = [];
+    for (URL in jenkinsURLList) {
+      promises.push(this.fetchData(jenkinsURLList[URL]));
+    }
+
+    await Promise.all(promises)
+      .then(values => {
+        for (let i = 0; i < values.length; i++) {
+          overallData[i].time =
+            "Built " + getRelativeTime(new Date(values[i].latestRun.startTime));
+        }
+      })
+      .catch(e => console.log("error", e));
+
+    //push all collected data to data state, and make it ready to display.
+    this.setState({ data: overallData, isLoading: false });
+  }
+
+  //fetch data from the jenkin url
+  fetchData(URL) {
+    return fetch(URL)
+      .then(response => response.json())
+      .catch(e => console.log("error", e));
+  }
+
+  //general function to convert name to alias for easy display if alias exists
+  //@return:
+  //  return alias if exists otherwise original name
+  //  i.e. if name is AF specific repo name, convert to "AF" instead for easy display
+  //  otherwise, display its original name.
+  aliasOf(displayName) {
+    return aliases[displayName] ? aliases[displayName] : displayName;
+  }
+
+  //update overallData from item and return index for following array assignment
+  //@param:
+  //  item: that contains information for array overallData to be updated
+  //  overallData: array to pass down to keep each build information such as displayName
+  //  index: used to assign for each build information in the array
+  //@return:
+  //  index: to be passed down for next functions
+  updateData(item, overallData, index) {
+    overallData[index] = {
+      displayName: this.aliasOf(item.displayName),
+      weatherScore: item.weatherScore,
+      time: ""
+    };
+    return ++index;
   }
 
   render() {
     return this.state.isLoading ? (
-      <Builds>Loading. . .</Builds>
+      <Card raised={true} style={styles.card}>
+        Loading Build Health. . .
+      </Card>
     ) : (
-      <Builds>
-        {this.state.data.map(item => {
-          if (BUILD_LIST.includes(item.displayName.toLowerCase())) {
+      <Card raised={true} style={styles.card}>
+        <CardHeader
+          title="Build Health"
+          style={styles.cardheader}
+          disableTypography={true} //disable to properly apply CX_FONT
+        />
+        <CardContent style={styles.cardContent}>
+          {this.state.data.map(item => {
             return (
               <BuildIcon
                 score={item.weatherScore}
                 name={item.displayName}
                 key={item.displayName}
+                time={item.time}
               />
             );
-          }
-        })}
-      </Builds>
+          })}
+        </CardContent>
+      </Card>
     );
   }
 }

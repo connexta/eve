@@ -1,58 +1,60 @@
 import React from "react";
-import styled from "styled-components";
-import sun from "../resources/sun.png";
-import cloud from "../resources/sun_cloud.png";
-import storm from "../resources/thunder.png";
+import GoodState from "@material-ui/icons/CheckCircleOutline";
+import NeutralState from "@material-ui/icons/RemoveCircleOutline";
+import BadState from "@material-ui/icons/HighlightOff";
+import CardContent from "@material-ui/core/CardContent";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants.js";
 
-const IconContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const IconStyle = styled.div`
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  background-color: black;
-  margin-left: 15px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
+const styles = {
+  date: {
+    background: CX_OFF_WHITE,
+    fontSize: "20px",
+    color: BATMAN_GRAY,
+    fontFamily: CX_FONT
+  }
+};
 
 class BuildIcon extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       name: props.name,
-      score: props.score
+      score: props.score,
+      time: props.time
     };
   }
 
   render() {
     return this.state.score == 100 ? (
-      <IconContainer>
+      <CardContent>
+        <GoodState
+          fontSize="inherit"
+          style={{ color: "green", verticalAlign: "top" }}
+        />
         {this.state.name}
-        <IconStyle>
-          <img src={sun} alt="sun" height="50px" />
-        </IconStyle>
-      </IconContainer>
+        <div style={styles.date}>{this.state.time}</div>
+      </CardContent>
     ) : this.state.score > 50 ? (
-      <IconContainer>
+      <CardContent>
+        <NeutralState
+          fontSize="inherit"
+          style={{ color: "orange", verticalAlign: "top" }}
+        />
         {this.state.name}
-        <IconStyle>
-          <img src={cloud} alt="cloud" height="50px" />
-        </IconStyle>
-      </IconContainer>
+        <div style={styles.date}>{this.state.time}</div>
+      </CardContent>
     ) : (
-      <IconContainer>
+      <CardContent>
+        <BadState
+          fontSize="inherit"
+          style={{
+            color: "red",
+            verticalAlign: "top"
+          }}
+        />
         {this.state.name}
-        <IconStyle>
-          <img src={storm} alt="storm" height="50px" />
-        </IconStyle>
-      </IconContainer>
+        <div style={styles.date}>{this.state.time}</div>
+      </CardContent>
     );
   }
 }

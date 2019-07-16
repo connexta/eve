@@ -1,13 +1,18 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import { CX_DARK_BLUE, CX_GRAY_BLUE } from "./Constants";
+import { CX_DARK_BLUE, CX_GRAY_BLUE, CX_FONT } from "./Constants";
+import {
+  CX_OFF_WHITE,
+  CX_DARK_BLUE,
+  CX_GRAY_BLUE,
+  CX_LIGHT_BLUE
+} from "./Constants";
 import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
 import SlackComponent from "./SlackComponent";
 import Grid from "@material-ui/core/Grid";
 import Github from "./githubCaller";
-import { CX_FONT } from "./Constants";
 
 const Logo = () => {
   return <img src={logo} alt="Logo" height="100vh" />;
