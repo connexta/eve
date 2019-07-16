@@ -1,11 +1,11 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import { CX_DARK_BLUE, CX_GRAY_BLUE, CX_FONT } from "./Constants";
 import {
-  CX_OFF_WHITE,
   CX_DARK_BLUE,
   CX_GRAY_BLUE,
-  CX_LIGHT_BLUE
+  CX_FONT,
+  CX_OFF_WHITE,
+  BATMAN_GRAY
 } from "./Constants";
 import logo from "../resources/logo-white.png";
 import ClockFull from "./clock.js";
@@ -18,12 +18,21 @@ const Logo = () => {
   return <img src={logo} alt="Logo" height="100vh" />;
 };
 
+export const BOX_STYLE = {
+  margin: "12px 12px 12px 12px",
+  fontSize: "50px",
+  color: BATMAN_GRAY,
+  backgroundColor: CX_OFF_WHITE,
+  fontFamily: CX_FONT
+};
+
 const BOTTOM_HEIGHT = window.innerHeight - 124;
 
 const styles = {
   root: {
     height: "100%",
-    fontFamily: CX_FONT
+    fontFamily: CX_FONT,
+    background: CX_GRAY_BLUE
   },
   banner: {
     background: CX_DARK_BLUE,
@@ -37,12 +46,10 @@ const styles = {
     alignItems: "center"
   },
   bottom: {
-    background: CX_GRAY_BLUE,
     width: "100%",
     height: BOTTOM_HEIGHT
   },
   leftBox: {
-    padding: "40px 40px 40px 40px",
     height: "100%",
     width: "66%"
   },
@@ -54,7 +61,7 @@ const styles = {
 
 function Main() {
   return (
-    <Grid container style={{ height: "100%" }}>
+    <Grid container style={styles.root}>
       <Grid container style={styles.banner}>
         <Logo />
         <ClockFull timezone="US/Arizona" place="PHX" />

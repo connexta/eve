@@ -1,25 +1,21 @@
 import React from "react";
 import SlackCard from "./SlackCard";
-import { CX_OFF_WHITE, CX_FONT } from "./Constants";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
 import Card from "@material-ui/core/Card";
+import { BOX_STYLE } from "./index";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
-
 const MAX_MSGS = 9;
+const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 18;
 
 const styles = {
   CardContainer: {
-    margin: "8px 8px 8px 8px",
-    fontSize: "50px",
-    color: "black",
-    height: "50%",
-
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    backgroundColor: CX_OFF_WHITE,
-    position: "relative"
+    position: "relative",
+    height: CARD_HEIGHT
   },
   cardHeader: {
     fontFamily: CX_FONT,
@@ -191,7 +187,11 @@ class SlackComponent extends React.Component {
 
   render() {
     if (this.anyStillLoading()) {
-      return <p style={{ fontSize: "32px" }}>Loading Slack...</p>;
+      return (
+        <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
+          Loading Slack...
+        </Card>
+      );
     } else {
       let cardList = [];
       for (var i = 0; i < MAX_MSGS; i++) {
@@ -207,7 +207,7 @@ class SlackComponent extends React.Component {
       }
 
       return (
-        <Card style={styles.CardContainer} raised={true}>
+        <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
           <span style={styles.cardHeader}>#{this.getChannelName(CHANNEL)}</span>
           <div style={styles.GradientBlock}></div>
           <div style={styles.WhiteBlock}></div>

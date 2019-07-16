@@ -2,31 +2,33 @@ import React from "react";
 import Octicon, { GitPullRequest } from "@primer/octicons-react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { CX_OFF_WHITE, CX_FONT, CX_GRAY_BLUE } from "./Constants.js";
+import {
+  CX_OFF_WHITE,
+  CX_FONT,
+  CX_GRAY_BLUE,
+  BATMAN_GRAY
+} from "./Constants.js";
+import { BOX_STYLE } from "./index";
 
 const NUMPULLS = 5;
 const CALL_FREQ = 1000 * 60 * 60;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 18;
 
 const styles = {
   box: {
-    backgroundColor: CX_OFF_WHITE,
-    fontFamily: CX_FONT,
-    height: "50%",
-    margin: "12px 12px 12px 12px",
-    padding: "12px 12px 12px 24px",
-    overflow: "hidden"
+    height: CARD_HEIGHT
   },
+  CardContent: {},
   header: {
-    padding: "0px",
-    margin: "12px 0px 0px 0px",
-    fontSize: "0.85em"
+    margin: "12px 0px 0px 12px",
+    fontSize: "50px"
   },
   PRMainLine: {
     margin: "0 0 0 8px",
     padding: "0px",
-    fontSize: "0.65em"
+    fontSize: "20px"
   },
   PRTitle: {
     display: "inline-block",
@@ -37,10 +39,10 @@ const styles = {
     verticalAlign: "bottom"
   },
   PRSubline: {
-    margin: "0 0 16px 32px",
+    margin: "0 0 0px 32px",
     padding: "0px",
     fontStyle: "italic",
-    fontSize: "0.45em"
+    fontSize: "20px"
   }
 };
 
@@ -58,31 +60,6 @@ export default class Github extends React.Component {
     this.state = {
       data: []
     };
-  }
-
-  render() {
-    let prList = this.state.data.map((pr, i) => (
-      <div key={i}>
-        <Octicon icon={GitPullRequest} size="medium" />
-        <span style={styles.PRMainLine}>
-          <span style={styles.PRTitle}>{pr.title}</span>
-          <em style={{ color: CX_GRAY_BLUE, verticalAlign: "bottom" }}>
-            {" #" + pr.number}
-          </em>
-        </span>
-        <div style={styles.PRSubline}>
-          {pr.author}
-          {" (" + pr.timeCreated + ")"}
-        </div>
-      </div>
-    ));
-
-    return (
-      <Card style={styles.box} raised={true}>
-        <h3 style={styles.header}>DDF Pull Requests</h3>
-        <CardContent>{prList}</CardContent>
-      </Card>
-    );
   }
 
   loadUserData(data) {
@@ -124,5 +101,30 @@ export default class Github extends React.Component {
         }
       })
       .then(res => this.loadUserData(res));
+  }
+
+  render() {
+    let prList = this.state.data.map((pr, i) => (
+      <div style={{ height: "60px" }} key={i}>
+        <Octicon icon={GitPullRequest} size="medium" />
+        <span style={styles.PRMainLine}>
+          <span style={styles.PRTitle}>{pr.title}</span>
+          <em style={{ color: CX_GRAY_BLUE, verticalAlign: "bottom" }}>
+            {" #" + pr.number}
+          </em>
+        </span>
+        <div style={styles.PRSubline}>
+          {pr.author}
+          {" (" + pr.timeCreated + ")"}
+        </div>
+      </div>
+    ));
+
+    return (
+      <Card style={{ ...styles.box, ...BOX_STYLE }} raised={true}>
+        <p style={styles.header}>DDF Pull Requests</p>
+        <CardContent style={styles.CardContent}>{prList}</CardContent>
+      </Card>
+    );
   }
 }
