@@ -194,6 +194,11 @@ class SlackCard extends React.Component {
       return `<div style="font-style: italic; display: inline;">${phrase}</div>`;
     });
 
+    // set any ~strikethrough~ messages
+    messageText = messageText.replace(/\~(.+?)\~(?!\S)/g, (match, phrase) => {
+      return `<div style="text-decoration: line-through; display: inline;">${phrase}</div>`;
+    });
+
     // set slack built in emojis
     return emojis.html(messageText);
   }
