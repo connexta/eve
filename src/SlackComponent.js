@@ -34,10 +34,18 @@ const styles = {
   GradientBlock: {
     height: "15%",
     width: "100%",
-    bottom: 0,
+    bottom: "10px",
     background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
     position: "absolute",
-    zIndex: 10
+    zIndex: 2
+  },
+  WhiteBlock: {
+    height: "10px",
+    width: "100%",
+    bottom: 0,
+    background: CX_OFF_WHITE,
+    position: "absolute",
+    zIndex: 3
   }
 };
 
@@ -206,6 +214,7 @@ class SlackComponent extends React.Component {
         <Card style={styles.CardContainer} raised={true}>
           <span style={styles.cardHeader}>#{this.getChannelName(CHANNEL)}</span>
           <div style={styles.GradientBlock}></div>
+          <div style={styles.WhiteBlock}></div>
           <div style={styles.SlackCardContainer}>{cardList}</div>
         </Card>
       );
