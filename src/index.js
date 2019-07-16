@@ -7,23 +7,25 @@ import {
   CX_OFF_WHITE,
   BATMAN_GRAY
 } from "./Constants";
-import logo from "../resources/logo-white.png";
+import logo from "../resources/logo-offwhite.png";
 import ClockFull from "./clock.js";
 import BuildStatus from "./BuildStatus";
 import SlackComponent from "./SlackComponent";
 import Grid from "@material-ui/core/Grid";
 import Github from "./githubCaller";
 
-const Logo = () => {
-  return <img src={logo} alt="Logo" height="100vh" />;
-};
-
 export const BOX_STYLE = {
-  margin: "12px 12px 12px 12px",
-  fontSize: "50px",
+  margin: "24px",
+  fontSize: "20px",
   color: BATMAN_GRAY,
   backgroundColor: CX_OFF_WHITE,
   fontFamily: CX_FONT
+};
+
+export const BOX_HEADER = {
+  fontSize: "32px",
+  color: CX_GRAY_BLUE,
+  margin: "12px 0 0 12px"
 };
 
 const BOTTOM_HEIGHT = window.innerHeight - 124;
@@ -32,7 +34,7 @@ const styles = {
   root: {
     height: "100%",
     fontFamily: CX_FONT,
-    background: CX_GRAY_BLUE
+    background: CX_OFF_WHITE
   },
   banner: {
     background: CX_DARK_BLUE,
@@ -56,7 +58,14 @@ const styles = {
   rightBox: {
     height: "100%",
     width: "34%"
+  },
+  logo: {
+    margin: "0 0 0 0"
   }
+};
+
+const Logo = () => {
+  return <img style={styles.logo} src={logo} alt="Logo" height="120px" />;
 };
 
 function Main() {

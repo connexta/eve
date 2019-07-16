@@ -6,7 +6,7 @@ import Clock from "react-live-clock";
 const FONT_STYLE = "bold";
 
 const ClockHrStyle = styled.nav`
-  font-size: 6em;
+  font-size: 90px;
   color: ${CX_OFF_WHITE};
   font-family: ${CX_FONT};
   font-style: ${FONT_STYLE};
@@ -25,6 +25,8 @@ const ClockMinStyle = styled.nav`
   color: ${CX_OFF_WHITE};
   font-family: ${CX_FONT};
   font-style: ${FONT_STYLE};
+  margin: 0;
+  padding: 0;
 `;
 
 const ClockMin = ({ timezone }) => {

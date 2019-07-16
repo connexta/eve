@@ -3,7 +3,7 @@ import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { overviewURL, jenkinsURLList } from "./lib/Link";
-import { BOX_STYLE } from "./index";
+import { BOX_STYLE, BOX_HEADER } from "./index";
 import { hour, getRelativeTime } from "./utilities/TimeUtils";
 
 const styles = {
@@ -124,15 +124,11 @@ class BuildStatus extends React.Component {
   render() {
     return this.state.isLoading ? (
       <Card style={BOX_STYLE} raised={true}>
-        Loading Build Health. . .
+        <p style={BOX_HEADER}>Loading Build Health. . .</p>
       </Card>
     ) : (
       <Card style={BOX_STYLE} raised={true}>
-        <CardHeader
-          title="Build Health"
-          style={styles.cardheader}
-          disableTypography={true} //disable to properly apply CX_FONT
-        />
+        <p style={BOX_HEADER}>Build Health</p>
         <CardContent style={styles.cardContent}>
           {this.state.data.map(item => {
             return (

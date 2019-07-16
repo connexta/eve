@@ -2,25 +2,26 @@ import React from "react";
 import Octicon, { GitPullRequest } from "@primer/octicons-react";
 import { Card, CardContent } from "@material-ui/core";
 import { CX_GRAY_BLUE } from "./Constants.js";
-import { BOX_STYLE } from "./index";
+import { BOX_STYLE, BOX_HEADER } from "./index";
 
 const NUMPULLS = 5;
 const CALL_FREQ = 1000 * 60 * 60;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 18;
+const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 36;
 
 const styles = {
   box: {
     height: CARD_HEIGHT
   },
+  cardContent: {
+    margin: "12px 0 0 12px"
+  },
   header: {
-    margin: "12px 0px 0px 12px",
-    fontSize: "50px"
+    margin: "12px 0px 0px 12px"
   },
   PRMainLine: {
     margin: "0 0 0 8px",
-    padding: "0px",
     fontSize: "20px"
   },
   PRTitle: {
@@ -98,7 +99,7 @@ export default class Github extends React.Component {
 
   render() {
     let prList = this.state.data.map((pr, i) => (
-      <div style={{ height: "60px" }} key={i}>
+      <div key={i}>
         <Octicon icon={GitPullRequest} size="medium" />
         <span style={styles.PRMainLine}>
           <span style={styles.PRTitle}>{pr.title}</span>
@@ -115,8 +116,8 @@ export default class Github extends React.Component {
 
     return (
       <Card style={{ ...styles.box, ...BOX_STYLE }} raised={true}>
-        <p style={styles.header}>DDF Pull Requests</p>
-        <CardContent>{prList}</CardContent>
+        <p style={BOX_HEADER}>DDF Pull Requests</p>
+        <div style={styles.cardContent}>{prList}</div>
       </Card>
     );
   }

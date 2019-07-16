@@ -2,13 +2,13 @@ import React from "react";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "./Constants";
 import Card from "@material-ui/core/Card";
-import { BOX_STYLE, RIGHT_CARD_HEIGHT } from "./index";
+import { BOX_STYLE, BOX_HEADER } from "./index";
 import { minute, time } from "./utilities/TimeUtils";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 9;
-const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 18;
+const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 36;
 
 const styles = {
   CardContainer: {
@@ -190,7 +190,7 @@ class SlackComponent extends React.Component {
     if (this.anyStillLoading()) {
       return (
         <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
-          Loading Slack...
+          <p style={BOX_HEADER}>Loading Slack...</p>
         </Card>
       );
     } else {
@@ -209,7 +209,7 @@ class SlackComponent extends React.Component {
 
       return (
         <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
-          <span style={styles.cardHeader}>#{this.getChannelName(CHANNEL)}</span>
+          <span style={BOX_HEADER}>#{this.getChannelName(CHANNEL)}</span>
           <div style={styles.GradientBlock}></div>
           <div style={styles.WhiteBlock}></div>
           <div style={styles.SlackCardContainer}>{cardList}</div>
