@@ -2,6 +2,9 @@ import React from "react";
 import Parser from "html-react-parser";
 import emojis from "./emojis";
 import square_logo from "../resources/square_logo.png";
+import { CX_OFF_WHITE } from "./Constants";
+import circle_logo from "../resources/circle_logo.png";
+import { getRelativeTime } from "./utilities/TimeUtils";
 
 const SLACK_FONT_SIZE = "20px";
 
@@ -239,22 +242,7 @@ class SlackCard extends React.Component {
       message.attachments == undefined ? message.ts : message.attachments[0].ts;
     msgTime = msgTime == undefined ? message.ts : msgTime;
 
-    let data = new Date();
-    let currTime = data.getTime();
-
-    let timeDiff = (currTime - msgTime * 1000) / 60000; // time diff in min
-
-    let timeDiffMin = Math.round(timeDiff);
-    let timeDiffHrs = Math.round(timeDiff / 60);
-    let timeDiffDays = Math.round(timeDiff / 1440);
-
-    if (timeDiff < 60) {
-      return timeDiffMin == 0 ? "now" : timeDiffMin + " min ago";
-    } else if (timeDiffHrs < 24) {
-      return timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago");
-    } else {
-      return timeDiffDays + (timeDiffDays == 1 ? " day ago" : " days ago");
-    }
+    return getRelativeTime(new Date(msgTime));
   }
 
   getCardHeader(index) {

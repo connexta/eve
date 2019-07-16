@@ -1,5 +1,5 @@
 import React from "react";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants.js";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
 import BuildIcon from "./BuildIcon";
 import Card from "@material-ui/core/Card";
 import { CardHeader, CardContent } from "@material-ui/core";
@@ -8,6 +8,7 @@ import { getRelativeTime } from "./utilities/utility";
 import { BOX_STYLE } from "./index";
 
 const oneHour = 1000 * 60 * 60;
+import { hour, getRelativeTime } from "./utilities/TimeUtils";
 
 const styles = {
   card: {},
@@ -37,10 +38,9 @@ class BuildStatus extends React.Component {
     };
   }
 
-  // updates the build status every 1 hour
   componentDidMount() {
     this.refreshBuildStatus();
-    this.intervalId = setInterval(() => this.refreshBuildStatus(), oneHour);
+    this.intervalId = setInterval(() => this.refreshBuildStatus(), hour);
   }
 
   componentWillUnmount() {
