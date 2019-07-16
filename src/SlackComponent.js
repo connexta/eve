@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Parser from "html-react-parser";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
+import { minute, time } from "./utilities/TimeUtils";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
@@ -47,14 +48,14 @@ class SlackComponent extends React.Component {
     await this.setMessages();
     await this.setChannels();
 
-    this.messageIntervalID = setInterval(() => this.setMessages(), 1000 * 60);
+    this.messageIntervalID = setInterval(() => this.setMessages(), minute);
     this.userListIntervalID = setInterval(
       () => this.setUserList(),
-      1000 * 60 * 60 * 2
+      time({ hours: 2 })
     );
     this.checkRefreshIntervalID = setInterval(
       () => this.checkRefresh(),
-      1000 * 60
+      minute
     );
   }
 
