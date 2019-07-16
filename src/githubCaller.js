@@ -3,7 +3,8 @@ import Octicon, { GitPullRequest } from "@primer/octicons-react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { CX_OFF_WHITE, CX_FONT, CX_GRAY_BLUE } from "./Constants.js";
-import { hour } from "./TimeUtils";
+import { hour } from "./utilities/TimeUtils";
+
 
 const NUMPULLS = 5;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
