@@ -1,9 +1,8 @@
 import React from "react";
 import SlackCard from "./SlackCard";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
+import { CX_OFF_WHITE, CX_FONT } from "./Constants";
 import Card from "@material-ui/core/Card";
-import { BOX_STYLE } from "./index";
-import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
+import { BOX_STYLE, RIGHT_CARD_HEIGHT } from "./index";
 import { minute, time } from "./utilities/TimeUtils";
 
 const TOKEN = process.env.SLACK_TOKEN;

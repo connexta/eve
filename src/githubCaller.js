@@ -1,13 +1,7 @@
 import React from "react";
 import Octicon, { GitPullRequest } from "@primer/octicons-react";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import {
-  CX_OFF_WHITE,
-  CX_FONT,
-  CX_GRAY_BLUE,
-  BATMAN_GRAY
-} from "./Constants.js";
+import { Card, CardContent } from "@material-ui/core";
+import { CX_GRAY_BLUE } from "./Constants.js";
 import { BOX_STYLE } from "./index";
 
 const NUMPULLS = 5;
@@ -20,7 +14,6 @@ const styles = {
   box: {
     height: CARD_HEIGHT
   },
-  CardContent: {},
   header: {
     margin: "12px 0px 0px 12px",
     fontSize: "50px"
@@ -123,7 +116,7 @@ export default class Github extends React.Component {
     return (
       <Card style={{ ...styles.box, ...BOX_STYLE }} raised={true}>
         <p style={styles.header}>DDF Pull Requests</p>
-        <CardContent style={styles.CardContent}>{prList}</CardContent>
+        <CardContent>{prList}</CardContent>
       </Card>
     );
   }

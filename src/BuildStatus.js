@@ -1,17 +1,12 @@
 import React from "react";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
 import BuildIcon from "./BuildIcon";
-import Card from "@material-ui/core/Card";
-import { CardHeader, CardContent } from "@material-ui/core";
+import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { overviewURL, jenkinsURLList } from "./lib/Link";
-import { getRelativeTime } from "./utilities/utility";
 import { BOX_STYLE } from "./index";
-
-const oneHour = 1000 * 60 * 60;
 import { hour, getRelativeTime } from "./utilities/TimeUtils";
 
 const styles = {
-  card: {},
   cardheader: {
     background: CX_OFF_WHITE,
     color: BATMAN_GRAY,
@@ -128,11 +123,11 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={{ ...styles.card, ...BOX_STYLE }} raised={true}>
+      <Card style={BOX_STYLE} raised={true}>
         Loading Build Health. . .
       </Card>
     ) : (
-      <Card style={{ ...styles.card, ...BOX_STYLE }} raised={true}>
+      <Card style={BOX_STYLE} raised={true}>
         <CardHeader
           title="Build Health"
           style={styles.cardheader}
