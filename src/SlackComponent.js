@@ -40,7 +40,7 @@ const styles = {
     zIndex: 2
   },
   WhiteBlock: {
-    height: "10px",
+    height: "12px",
     width: "100%",
     bottom: 0,
     background: CX_OFF_WHITE,
