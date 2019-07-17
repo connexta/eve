@@ -99,7 +99,7 @@ export default class Github extends React.Component {
 
   render() {
     let prList = this.state.data.map((pr, i) => (
-      <div key={i}>
+      <div key={i} style={{ marginBottom: "12px" }}>
         <Octicon icon={GitPullRequest} size="medium" />
         <span style={styles.PRMainLine}>
           <span style={styles.PRTitle}>{pr.title}</span>
