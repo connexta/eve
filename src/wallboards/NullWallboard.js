@@ -17,7 +17,7 @@ const styles = {
   },
   title: {
     textAlign: "center",
-    color: CX_OFF_WHITE,
+    color: BATMAN_GRAY,
     fontFamily: CX_FONT
   }
 };
