@@ -3,9 +3,10 @@ import Octicon, { GitPullRequest } from "@primer/octicons-react";
 import { Card } from "@material-ui/core";
 import { CX_GRAY_BLUE } from "./Constants.js";
 import { BOX_STYLE, BOX_HEADER } from "./styles";
+import { time } from "./utilities/TimeUtils";
 
 const NUMPULLS = 5;
-const CALL_FREQ = 1000 * 60 * 60;
+const CALL_FREQ = time(1, 0, 0);
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 36;
