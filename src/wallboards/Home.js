@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../Constants";
 import { HOMEBASE, WallBoardButtons } from "./WallboardStyles";
 import Button from "@material-ui/core/Button";
