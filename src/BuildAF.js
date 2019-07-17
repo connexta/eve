@@ -68,7 +68,7 @@ class BuildAF extends React.Component {
           failedData: this.getFailedData(jsonData)
         });
       })
-      .catch(e => console.log("error", e));
+      .catch(e => console.log("Failed to update build status ", e));
   }
 
   //obtain all failed build in Jenkins up to the last successful build,
