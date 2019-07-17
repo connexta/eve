@@ -46,7 +46,6 @@ const cardMedia =
   height: 14vh; \
   margin-right: 5px; \
   margin-top: 5px; \
-  z-index: 3 \
   ;";
 
 const inlineCodeStyle =
