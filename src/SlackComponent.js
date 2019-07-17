@@ -2,7 +2,7 @@ import React from "react";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "./Constants";
 import Card from "@material-ui/core/Card";
-import { BOX_STYLE, BOX_HEADER } from "./index";
+import { BOX_STYLE, BOX_HEADER } from "./styles";
 import { minute, time } from "./utilities/TimeUtils";
 
 const TOKEN = process.env.SLACK_TOKEN;

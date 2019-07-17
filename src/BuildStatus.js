@@ -1,9 +1,9 @@
 import React from "react";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
 import BuildIcon from "./BuildIcon";
-import { Card, CardHeader, CardContent } from "@material-ui/core";
+import { Card, CardContent } from "@material-ui/core";
 import { overviewURL, jenkinsURLList } from "./lib/Link";
-import { BOX_STYLE, BOX_HEADER } from "./index";
+import { BOX_STYLE, BOX_HEADER } from "./styles";
 import { hour, getRelativeTime } from "./utilities/TimeUtils";
 
 const styles = {
@@ -16,7 +16,8 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    fontSize: "32px"
   }
 };
 

@@ -1,8 +1,8 @@
 import React from "react";
 import Octicon, { GitPullRequest } from "@primer/octicons-react";
-import { Card, CardContent } from "@material-ui/core";
+import { Card } from "@material-ui/core";
 import { CX_GRAY_BLUE } from "./Constants.js";
-import { BOX_STYLE, BOX_HEADER } from "./index";
+import { BOX_STYLE, BOX_HEADER } from "./styles";
 
 const NUMPULLS = 5;
 const CALL_FREQ = 1000 * 60 * 60;
