@@ -93,8 +93,8 @@ class SlackComponent extends React.Component {
 
     if (response.ok) {
       let messageList = [];
-      let promise = await response.json();
-      promise.messages.forEach((message, msgCount) => {
+      let data = await response.json();
+      data.messages.forEach((message, msgCount) => {
         msgCount++;
         if (msgCount > MAX_MSGS) return;
         messageList.push(message);
@@ -113,9 +113,9 @@ class SlackComponent extends React.Component {
     ).catch(e => console.log("error", e));
 
     if (response.ok) {
-      let promise = await response.json();
+      let data = await response.json();
       this.setState({
-        slackUsers: promise.members,
+        slackUsers: data.members,
         userLoading: false
       });
     } else {
@@ -131,8 +131,8 @@ class SlackComponent extends React.Component {
     ).catch(e => console.log("error", e));
 
     if (response.ok) {
-      let promise = await response.json();
-      this.setState({ emojis: promise.emoji, emojiLoading: false });
+      let data = await response.json();
+      this.setState({ emojis: data.emoji, emojiLoading: false });
     } else {
       console.log("Failed to fetch slack emojis");
     }
@@ -145,8 +145,8 @@ class SlackComponent extends React.Component {
     ).catch(e => console.log("error", e));
 
     if (response.ok) {
-      let promise = await response.json();
-      this.setState({ channels: promise.channels, chanLoading: false });
+      let data = await response.json();
+      this.setState({ channels: data.channels, chanLoading: false });
     } else {
       console.log("Failed to fetch slack channels");
     }
