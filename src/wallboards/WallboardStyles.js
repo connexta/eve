@@ -1,6 +1,3 @@
-import styled from "styled-components";
-import { CX_OFF_WHITE, CX_GRAY_BLUE } from "../Constants";
-
 const BOTTOM_HEIGHT = window.innerHeight - 134;
 
 export const leftBox = {
@@ -13,12 +10,12 @@ export const rightBox = {
   width: "34%"
 };
 
-export const WallboardButtons = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
+export const WallBoardButtons = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center",
+  flexWrap: "wrap"
+};
 
 export const HOMEBASE = {
   fontSize: "30px",

@@ -1,7 +1,7 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Link } from "react-router-dom";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../Constants";
-import { SolidBackground, WallboardButtons } from "./WallboardStyles";
+import { HOMEBASE, WallBoardButtons } from "./WallboardStyles";
 import Button from "@material-ui/core/Button";
 
 const styles = {
@@ -25,14 +25,14 @@ const styles = {
 export default class NullWallboard extends React.Component {
   render() {
     return (
-      <SolidBackground>
+      <div style={HOMEBASE}>
         <h1 style={styles.title}>Wallboard Not Found!</h1>
-        <WallboardButtons>
+        <div style={WallBoardButtons}>
           <Link to="/" style={{ textDecoration: "none" }}>
             <Button style={styles.button}>Home</Button>
           </Link>
-        </WallboardButtons>
-      </SolidBackground>
+        </div>
+      </div>
     );
   }
 }

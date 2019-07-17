@@ -1,12 +1,6 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import {
-  CX_DARK_BLUE,
-  CX_GRAY_BLUE,
-  CX_FONT,
-  CX_OFF_WHITE,
-  BATMAN_GRAY
-} from "./Constants";
+import { CX_DARK_BLUE, CX_GRAY_BLUE, CX_FONT } from "./Constants";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { wallboards } from "./wallboards/Home";
 import NullWallboard from "./wallboards/NullWallboard";
@@ -20,7 +14,7 @@ const styles = {
   root: {
     height: "100%",
     fontFamily: CX_FONT,
-    background: CX_OFF_WHITE
+    background: CX_GRAY_BLUE
   },
   banner: {
     background: CX_DARK_BLUE,
