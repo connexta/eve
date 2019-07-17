@@ -1,25 +1,36 @@
 import React from "react";
-import Octicon, { GitPullRequest } from "@primer/octicons-react";
 import { Card } from "@material-ui/core";
 import { CX_GRAY_BLUE } from "./Constants.js";
 import { BOX_STYLE, BOX_HEADER } from "./styles";
-import { time } from "./utilities/TimeUtils";
+import pullRequest from "../resources/pullRequest.png";
+import { getRelativeTime, time } from "./utilities/TimeUtils";
 
 const NUMPULLS = 5;
 const CALL_FREQ = time(1, 0, 0);
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 36;
 
 const styles = {
   box: {
-    height: CARD_HEIGHT
+    height: "36vh"
   },
   cardContent: {
-    margin: "12px 0 0 12px"
+    margin: "12px 0 0 12px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-around",
+    height: "85%"
   },
   header: {
     margin: "12px 0px 0px 12px"
+  },
+  icon: {
+    height: "22px",
+    verticalAlign: "top"
+  },
+  mainAndSubline: {
+    display: "inline-block",
+    width: "90%"
   },
   PRMainLine: {
     margin: "0 0 0 8px",
@@ -34,7 +45,7 @@ const styles = {
     verticalAlign: "bottom"
   },
   PRSubline: {
-    margin: "0 0 0px 32px",
+    margin: "0 0 0px 8px",
     padding: "0px",
     fontStyle: "italic",
     fontSize: "20px"
@@ -53,22 +64,24 @@ export default class Github extends React.Component {
     super(props);
     this.interval = 0;
     this.state = {
-      data: []
+      prs: [],
+      repoPath: this.props.repoPath,
+      name: null
     };
   }
 
   loadUserData(data) {
     var pulls = [];
-    for (var i = 0; i < data.length && i < NUMPULLS; i++) {
+    for (let i = 0; i < data.length && i < NUMPULLS; i++) {
       pulls[i] = {
         author: data[i].user.login,
         number: data[i].number,
         title: data[i].title,
-        timeCreated: parseDate(data[i].created_at)
+        timeCreated: getRelativeTime(new Date(data[i].created_at))
       };
     }
 
-    this.setState({ data: pulls });
+    this.setState({ prs: pulls });
   }
 
   componentDidMount() {
@@ -80,9 +93,38 @@ export default class Github extends React.Component {
     clearInterval(this.interval);
   }
 
+  getRepoName() {
+    fetch(
+      "https://api.github.com/repos/" +
+        this.state.repoPath +
+        "?client_id=" +
+        CLIENT_ID +
+        "&client_secret=" +
+        CLIENT_SECRET
+    )
+      .then(res => {
+        if (!res.ok) {
+          console.log(
+            res.status +
+              ": " +
+              res.statusText +
+              " (Failed to fetch GitHub Data)"
+          );
+          return;
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => {
+        this.setState({ name: res.name.toUpperCase() });
+      });
+  }
+
   callGithub() {
     fetch(
-      "https://api.github.com/repos/codice/ddf/pulls?client_id=" +
+      "https://api.github.com/repos/" +
+        this.state.repoPath +
+        "/pulls?client_id=" +
         CLIENT_ID +
         "&client_secret=" +
         CLIENT_SECRET
@@ -99,25 +141,28 @@ export default class Github extends React.Component {
   }
 
   render() {
-    let prList = this.state.data.map((pr, i) => (
+    let prList = this.state.prs.map((pr, i) => (
       <div key={i} style={{ marginBottom: "12px" }}>
-        <Octicon icon={GitPullRequest} size="medium" />
-        <span style={styles.PRMainLine}>
-          <span style={styles.PRTitle}>{pr.title}</span>
-          <em style={{ color: CX_GRAY_BLUE, verticalAlign: "bottom" }}>
-            {" #" + pr.number}
-          </em>
-        </span>
-        <div style={styles.PRSubline}>
-          {pr.author}
-          {" (" + pr.timeCreated + ")"}
+        <img style={styles.icon} src={pullRequest}></img>
+        <div style={styles.mainAndSubline}>
+          <span style={styles.PRMainLine}>
+            <span style={styles.PRTitle}>{pr.title}</span>
+            <em style={{ color: CX_GRAY_BLUE, verticalAlign: "bottom" }}>
+              {" #" + pr.number}
+            </em>
+          </span>
+          <div style={styles.PRSubline}>
+            {pr.timeCreated} by {pr.author}
+          </div>
         </div>
       </div>
     ));
 
+    this.getRepoName();
+
     return (
       <Card style={{ ...styles.box, ...BOX_STYLE }} raised={true}>
-        <p style={BOX_HEADER}>DDF Pull Requests</p>
+        <p style={BOX_HEADER}>{this.state.name} Pull Requests</p>
         <div style={styles.cardContent}>{prList}</div>
       </Card>
     );

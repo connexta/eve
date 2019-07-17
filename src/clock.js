@@ -22,7 +22,9 @@ const styles = {
   },
   PlaceStyle: {
     fontSize: "28px",
-    marginLeft: "14px"
+    marginLeft: "14px",
+    position: "relative",
+    top: "6px"
   }
 };
 

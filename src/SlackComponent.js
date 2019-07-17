@@ -7,8 +7,7 @@ import { minute, time } from "./utilities/TimeUtils";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
-const MAX_MSGS = 9;
-const CARD_HEIGHT = (window.innerHeight - 124) / 2 - 36;
+const MAX_MSGS = 10;
 
 const styles = {
   CardContainer: {
@@ -16,7 +15,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "flex-start",
     position: "relative",
-    height: CARD_HEIGHT
+    height: "46vh"
   },
   cardHeader: {
     fontFamily: CX_FONT,
@@ -196,15 +195,7 @@ class SlackComponent extends React.Component {
     } else {
       let cardList = [];
       for (var i = 0; i < MAX_MSGS; i++) {
-        cardList.push(
-          <SlackCard
-            key={i}
-            index={i}
-            slackUsers={this.state.slackUsers}
-            messages={this.state.messages}
-            emojis={this.state.emojis}
-          />
-        );
+        cardList.push(<SlackCard key={i} index={i} {...this.state} />);
       }
 
       return (

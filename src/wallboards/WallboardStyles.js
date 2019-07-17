@@ -1,4 +1,4 @@
-const BOTTOM_HEIGHT = window.innerHeight - 134;
+import { BANNER_HEIGHT } from "../index";
 
 export const leftBox = {
   height: "100%",
@@ -20,8 +20,8 @@ export const WallBoardButtons = {
 export const HOMEBASE = {
   fontSize: "30px",
   position: "absolute",
-  top: "131px",
+  top: BANNER_HEIGHT,
+  bottom: 0,
   overflow: "hidden",
-  height: BOTTOM_HEIGHT,
   width: "100%"
 };
