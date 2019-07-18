@@ -74,7 +74,7 @@ ReactDOM.render(
         </Switch>
         <div style={styles.DevMessage}>
           <p>Project EVE: Work in Progress</p>
-          <p>For comments/questions, contact Matt or Vina!</p>
+          <p>For comments/questions, contact @vina or @matt</p>
         </div>
       </Grid>
     </Grid>
