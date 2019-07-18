@@ -43,11 +43,14 @@ class GraphCaller extends React.Component {
     this.state = {
       isAuthenticated: user !== null,
       events: {},
+      calendars: {},
+      chosenCal: null,
       error: null
     };
 
     if (user) {
       this.getUserInfo();
+      this.getCalendars();
     }
   }
 
@@ -60,8 +63,6 @@ class GraphCaller extends React.Component {
 
   // clean up event data so it works with calendar library
   updateEvents(eventData) {
-    console.log(eventData);
-
     if (eventData != null) {
       eventData = eventData.map(event => ({
         title: event.subject,
@@ -97,6 +98,7 @@ class GraphCaller extends React.Component {
       });
 
       await this.getUserInfo();
+      await this.getCalendars();
       document.location.reload();
     } catch (err) {
       var error = {};
@@ -123,6 +125,47 @@ class GraphCaller extends React.Component {
 
   async logout() {
     this.userAgentApplication.logout();
+  }
+
+  async getCalendars() {
+    try {
+      // Get the access token silently
+      // If the cache contains a non-expired token, this function
+      // will just return the cached token. Otherwise, it will
+      // make a request to the Azure OAuth endpoint to get a token
+
+      var accessToken = await this.userAgentApplication.acquireTokenSilent({
+        scopes: config.scopes
+      });
+
+      if (accessToken) {
+        // Get the user's profile from Graph
+        var call = "/me/calendars?select=name";
+        var ret = await callApi(accessToken, call);
+
+        this.setState({ calendars: ret.value });
+      }
+    } catch (err) {
+      var error = {};
+      if (typeof err === "string") {
+        var errParts = err.split("|");
+        error =
+          errParts.length > 1
+            ? { message: errParts, debug: errParts }
+            : { message: err };
+      } else {
+        error = {
+          message: err.message,
+          debug: JSON.stringify(err)
+        };
+      }
+
+      this.setState({
+        isAuthenticated: false,
+        events: {},
+        error: error
+      });
+    }
   }
 
   //Fetch user information and calendar events
@@ -171,6 +214,21 @@ class GraphCaller extends React.Component {
     }
   }
 
+  formatCalendar() {
+    let calCont = this.state.calendars.map((cal, i) => {
+      <button onClick={this.setState({ chosenCal: cal.name })}>
+        {cal.name}
+      </button>;
+    });
+
+    return (
+      <div>
+        <p>Calendars: </p>
+        {calCont}
+      </div>
+    );
+  }
+
   render() {
     let error = null;
     if (this.state.error) {
@@ -194,8 +252,12 @@ class GraphCaller extends React.Component {
             logIn={this.login.bind(this)}
             logOut={this.logout.bind(this)}
           />
-          <Popup trigger={<button> Trigger</button>} position="right center">
-            <div>CONTENT</div>
+          <Popup
+            trigger={<button>Select Calendar</button>}
+            modal
+            closeOnDocumentClick
+          >
+            <div>{this.state.calendars}</div>
           </Popup>
           <Calendar
             localizer={localizer}
