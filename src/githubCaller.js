@@ -18,7 +18,8 @@ const styles = {
     margin: "12px 0 0 12px",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
+    height: "84%"
   },
   header: {
     margin: "12px 0px 0px 12px"
