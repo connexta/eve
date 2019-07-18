@@ -4,7 +4,6 @@ import SlackComponent from "../SlackComponent";
 import Github from "../githubCaller";
 import { leftBox, rightBox } from "./WallboardStyles";
 import Grid from "@material-ui/core/Grid";
-import { CX_OFF_WHITE } from "../Constants";
 
 export default class TVWallboard extends React.Component {
   render() {
