@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import { CX_DARK_BLUE, CX_GRAY_BLUE, CX_FONT } from "./Constants";
+import { CX_DARK_BLUE, CX_GRAY_BLUE, CX_FONT, CX_OFF_WHITE } from "./Constants";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { wallboards } from "./wallboards/Home";
 import NullWallboard from "./wallboards/NullWallboard";
@@ -38,6 +38,14 @@ const styles = {
   },
   logo: {
     margin: "0 0 12px 0"
+  },
+  // For message in bottom left corner
+  DevMessage: {
+    color: CX_OFF_WHITE,
+    fontSize: "32px",
+    position: "absolute",
+    bottom: 0,
+    marginLeft: "24px"
   }
 };
 
@@ -64,6 +72,10 @@ ReactDOM.render(
           })}
           <Route component={NullWallboard} />
         </Switch>
+        <div style={styles.DevMessage}>
+          <p>Project EVE: Work in Progress</p>
+          <p>For comments/questions, contact Matt or Vina!</p>
+        </div>
       </Grid>
     </Grid>
   </Router>,
