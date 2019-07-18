@@ -1,32 +1,41 @@
 import React from "react";
-import Octicon, { GitPullRequest } from "@primer/octicons-react";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { CX_OFF_WHITE, CX_FONT, CX_GRAY_BLUE } from "./Constants.js";
-import { hour } from "./utilities/TimeUtils";
+import { Card } from "@material-ui/core";
+import { CX_GRAY_BLUE } from "./Constants.js";
+import { BOX_STYLE, BOX_HEADER } from "./styles";
+import pullRequest from "../resources/pullRequest.png";
+import { getRelativeTime, hour } from "./utilities/TimeUtils";
 
 const NUMPULLS = 5;
+const CALL_FREQ = hour;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+export const GITHUB_HEIGHT = 360;
 
 const styles = {
   box: {
-    backgroundColor: CX_OFF_WHITE,
-    fontFamily: CX_FONT,
-    height: "40%",
-    margin: "12px 12px 12px 12px",
-    padding: "12px 12px 12px 24px",
-    overflow: "hidden"
+    height: GITHUB_HEIGHT
+  },
+  cardContent: {
+    margin: "12px 0 0 12px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-around",
+    height: "84%"
   },
   header: {
-    padding: "0px",
-    margin: "12px 0px 0px 0px",
-    fontSize: "0.85em"
+    margin: "12px 0px 0px 12px"
+  },
+  icon: {
+    height: "22px",
+    verticalAlign: "top"
+  },
+  mainAndSubline: {
+    display: "inline-block",
+    width: "90%"
   },
   PRMainLine: {
     margin: "0 0 0 8px",
-    padding: "0px",
-    fontSize: "0.65em"
+    fontSize: "20px"
   },
   PRTitle: {
     display: "inline-block",
@@ -37,80 +46,81 @@ const styles = {
     verticalAlign: "bottom"
   },
   PRSubline: {
-    margin: "0 0 16px 32px",
+    margin: "0 0 0px 8px",
     padding: "0px",
     fontStyle: "italic",
-    fontSize: "0.45em"
+    fontSize: "20px"
   }
 };
-
-function parseDate(date) {
-  var year = date.substring(2, 4);
-  var month = date.substring(5, 7);
-  var day = date.substring(8, 10);
-  return month + "/" + day + "/" + year;
-}
 
 export default class Github extends React.Component {
   constructor(props) {
     super(props);
     this.interval = 0;
     this.state = {
-      data: []
+      prs: [],
+      repoPath: this.props.repoPath,
+      name: null
     };
-  }
 
-  render() {
-    let prList = this.state.data.map((pr, i) => (
-      <div key={i}>
-        <Octicon icon={GitPullRequest} size="medium" />
-        <span style={styles.PRMainLine}>
-          <span style={styles.PRTitle}>{pr.title}</span>
-          <em style={{ color: CX_GRAY_BLUE, verticalAlign: "bottom" }}>
-            {" #" + pr.number}
-          </em>
-        </span>
-        <div style={styles.PRSubline}>
-          {pr.author}
-          {" (" + pr.timeCreated + ")"}
-        </div>
-      </div>
-    ));
-
-    return (
-      <Card style={styles.box} raised={true}>
-        <h3 style={styles.header}>DDF Pull Requests</h3>
-        <CardContent>{prList}</CardContent>
-      </Card>
-    );
+    this.getRepoName();
   }
 
   loadUserData(data) {
     var pulls = [];
-    for (var i = 0; i < data.length && i < NUMPULLS; i++) {
+    for (let i = 0; i < data.length && i < NUMPULLS; i++) {
       pulls[i] = {
         author: data[i].user.login,
         number: data[i].number,
         title: data[i].title,
-        timeCreated: parseDate(data[i].created_at)
+        timeCreated: getRelativeTime(new Date(data[i].created_at))
       };
     }
 
-    this.setState({ data: pulls });
+    this.setState({ prs: pulls });
   }
 
   componentDidMount() {
     this.callGithub();
-    this.interval = setInterval(() => this.callGithub(), hour);
+    this.interval = setInterval(() => this.callGithub(), CALL_FREQ);
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
+  getRepoName() {
+    fetch(
+      "https://api.github.com/repos/" +
+        this.state.repoPath +
+        "?client_id=" +
+        CLIENT_ID +
+        "&client_secret=" +
+        CLIENT_SECRET
+    )
+      .then(res => {
+        if (!res.ok) {
+          console.log(
+            res.status +
+              ": " +
+              res.statusText +
+              " (Failed to fetch GitHub Data)"
+          );
+          return;
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => {
+        this.setState({ name: res.name.toUpperCase() });
+      });
+  }
+
   callGithub() {
     fetch(
-      "https://api.github.com/repos/codice/ddf/pulls?client_id=" +
+      "https://api.github.com/repos/" +
+        this.state.repoPath +
+        "/pulls?client_id=" +
         CLIENT_ID +
         "&client_secret=" +
         CLIENT_SECRET
@@ -124,5 +134,31 @@ export default class Github extends React.Component {
         }
       })
       .then(res => this.loadUserData(res));
+  }
+
+  render() {
+    let prList = this.state.prs.map((pr, i) => (
+      <div key={i} style={{ marginBottom: "12px" }}>
+        <img style={styles.icon} src={pullRequest}></img>
+        <div style={styles.mainAndSubline}>
+          <span style={styles.PRMainLine}>
+            <span style={styles.PRTitle}>{pr.title}</span>
+            <em style={{ color: CX_GRAY_BLUE, verticalAlign: "bottom" }}>
+              {" #" + pr.number}
+            </em>
+          </span>
+          <div style={styles.PRSubline}>
+            {pr.timeCreated} by {pr.author}
+          </div>
+        </div>
+      </div>
+    ));
+
+    return (
+      <Card style={{ ...styles.box, ...BOX_STYLE }} raised={true}>
+        <p style={BOX_HEADER}>{this.state.name} Pull Requests</p>
+        <div style={styles.cardContent}>{prList}</div>
+      </Card>
+    );
   }
 }
