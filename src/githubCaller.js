@@ -1,58 +1,48 @@
-import axios from "axios";
 import React from "react";
 import Octicon, { GitPullRequest } from "@primer/octicons-react";
-import styled from "styled-components";
-import {
-  CX_OFF_WHITE,
-  CX_FONT,
-  CX_DARK_BLUE,
-  CX_GRAY_BLUE
-} from "./Constants.js";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import { CX_OFF_WHITE, CX_FONT, CX_GRAY_BLUE } from "./Constants.js";
+import { hour } from "./utilities/TimeUtils";
 
 const NUMPULLS = 5;
-const CALL_FREQ = 1000 * 60 * 60;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
-const Box = styled.div`
-  width: 93%;
-  height: 89%;
-  border-radius: 20px;
-  padding: 20px;
-  background-color: ${CX_OFF_WHITE};
-
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  flex-wrap: wrap;
-
-  font-size: 0.745em;
-  font-family: ${CX_FONT};
-
-  margin: 8px;
-`;
-
-const PRTitle = styled.span`
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90%;
-  vertical-align: bottom;
-`;
-
-const PRMainLine = styled.span`
-  margin-left: 8px;
-  padding: 0px;
-`;
-
-const PRSubline = styled.div`
-  margin-left: 32px;
-  margin-bottom: 16px;
-  padding: 0px;
-  font-style: italic;
-  font-size: 0.8em;
-`;
+const styles = {
+  box: {
+    backgroundColor: CX_OFF_WHITE,
+    fontFamily: CX_FONT,
+    height: "40%",
+    margin: "12px 12px 12px 12px",
+    padding: "12px 12px 12px 24px",
+    overflow: "hidden"
+  },
+  header: {
+    padding: "0px",
+    margin: "12px 0px 0px 0px",
+    fontSize: "0.85em"
+  },
+  PRMainLine: {
+    margin: "0 0 0 8px",
+    padding: "0px",
+    fontSize: "0.65em"
+  },
+  PRTitle: {
+    display: "inline-block",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "80%",
+    verticalAlign: "bottom"
+  },
+  PRSubline: {
+    margin: "0 0 16px 32px",
+    padding: "0px",
+    fontStyle: "italic",
+    fontSize: "0.45em"
+  }
+};
 
 function parseDate(date) {
   var year = date.substring(2, 4);
@@ -65,7 +55,6 @@ export default class Github extends React.Component {
   constructor(props) {
     super(props);
     this.interval = 0;
-
     this.state = {
       data: []
     };
@@ -75,24 +64,24 @@ export default class Github extends React.Component {
     let prList = this.state.data.map((pr, i) => (
       <div key={i}>
         <Octicon icon={GitPullRequest} size="medium" />
-        <PRMainLine>
-          <PRTitle>{pr.title}</PRTitle>
-          <em style={{ color: CX_GRAY_BLUE }}>{" #" + pr.number}</em>
-        </PRMainLine>
-        <PRSubline>
+        <span style={styles.PRMainLine}>
+          <span style={styles.PRTitle}>{pr.title}</span>
+          <em style={{ color: CX_GRAY_BLUE, verticalAlign: "bottom" }}>
+            {" #" + pr.number}
+          </em>
+        </span>
+        <div style={styles.PRSubline}>
           {pr.author}
           {" (" + pr.timeCreated + ")"}
-        </PRSubline>
+        </div>
       </div>
     ));
 
     return (
-      <div style={{ backgroundColor: CX_DARK_BLUE }}>
-        <Box>
-          <h2>DDF Pull Requests</h2>
-          {prList}
-        </Box>
-      </div>
+      <Card style={styles.box} raised={true}>
+        <h3 style={styles.header}>DDF Pull Requests</h3>
+        <CardContent>{prList}</CardContent>
+      </Card>
     );
   }
 
@@ -112,7 +101,7 @@ export default class Github extends React.Component {
 
   componentDidMount() {
     this.callGithub();
-    this.interval = setInterval(() => this.callGithub(), CALL_FREQ);
+    this.interval = setInterval(() => this.callGithub(), hour);
   }
 
   componentWillUnmount() {
@@ -120,13 +109,20 @@ export default class Github extends React.Component {
   }
 
   callGithub() {
-    axios
-      .get(
-        "https://api.github.com/repos/codice/ddf/pulls?client_id=" +
-          CLIENT_ID +
-          "&client_secret=" +
-          CLIENT_SECRET
-      )
-      .then(res => this.loadUserData(res.data));
+    fetch(
+      "https://api.github.com/repos/codice/ddf/pulls?client_id=" +
+        CLIENT_ID +
+        "&client_secret=" +
+        CLIENT_SECRET
+    )
+      .then(res => {
+        if (!res.ok) {
+          console.log("Failed to fetch GitHub data");
+          return;
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => this.loadUserData(res));
   }
 }
