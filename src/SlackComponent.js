@@ -5,6 +5,7 @@ import Card from "@material-ui/core/Card";
 import { BOX_STYLE, BOX_HEADER } from "./styles";
 import { minute, time } from "./utilities/TimeUtils";
 import { GITHUB_HEIGHT } from "./githubCaller";
+import makeTrashable from "trashable";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
@@ -63,6 +64,7 @@ class SlackComponent extends React.Component {
 
   // refresh messages every 60 sec and user-list every 2 hours
   async componentDidMount() {
+    this.trashableRequestList = [];
     await this.setUserList();
     await this.setEmojiList();
     await this.setMessages();
@@ -84,6 +86,9 @@ class SlackComponent extends React.Component {
     clearInterval(this.messageIntervalID);
     clearInterval(this.userListIntervalID);
     clearInterval(this.checkRefreshIntervalID);
+    //clearing out left out promise during unmount.
+    if (this.trashableRequestList)
+      this.trashableRequestList.forEach(promise => promise.trash());
   }
 
   // checks if any components need to re-fetch data
@@ -105,16 +110,21 @@ class SlackComponent extends React.Component {
   // fetch latest slack messages
   async setMessages() {
     console.log("Fetching latest slack messages...");
-    const response = await fetch(
-      "https://slack.com/api/channels.history?token=" +
-        TOKEN +
-        "&channel=" +
-        CHANNEL
-    ).catch(e => console.log("error", e));
+    this.trashableRequestList[0] = makeTrashable(
+      fetch(
+        "https://slack.com/api/channels.history?token=" +
+          TOKEN +
+          "&channel=" +
+          CHANNEL
+      ).catch(e => console.log("error", e))
+    );
+
+    const response = await this.trashableRequestList[0];
 
     if (response.ok) {
       let messageList = [];
-      let data = await response.json();
+      this.trashableRequestList[1] = makeTrashable(response.json());
+      let data = await this.trashableRequestList[1];
       data.messages.forEach((message, msgCount) => {
         msgCount++;
         if (msgCount > MAX_MSGS) return;
@@ -129,12 +139,17 @@ class SlackComponent extends React.Component {
   // fetch user list
   async setUserList() {
     console.log("Fetching slack users...");
-    const response = await fetch(
-      "https://slack.com/api/users.list?token=" + TOKEN
-    ).catch(e => console.log("error", e));
+    this.trashableRequestList[2] = makeTrashable(
+      fetch("https://slack.com/api/users.list?token=" + TOKEN).catch(e =>
+        console.log("error", e)
+      )
+    );
+
+    const response = await this.trashableRequestList[2];
 
     if (response.ok) {
-      let data = await response.json();
+      this.trashableRequestList[3] = makeTrashable(response.json());
+      let data = await this.trashableRequestList[3];
       this.setState({
         slackUsers: data.members,
         userLoading: false
@@ -147,12 +162,17 @@ class SlackComponent extends React.Component {
   // fetch custom emoji list
   async setEmojiList() {
     console.log("Fetching emojis...");
-    const response = await fetch(
-      "https://slack.com/api/emoji.list?token=" + TOKEN
-    ).catch(e => console.log("error", e));
+    this.trashableRequestList[4] = makeTrashable(
+      fetch("https://slack.com/api/emoji.list?token=" + TOKEN).catch(e =>
+        console.log("error", e)
+      )
+    );
+
+    const response = await this.trashableRequestList[4];
 
     if (response.ok) {
-      let data = await response.json();
+      this.trashableRequestList[5] = makeTrashable(response.json());
+      let data = await this.trashableRequestList[5];
       this.setState({ emojis: data.emoji, emojiLoading: false });
     } else {
       console.log("Failed to fetch slack emojis");
@@ -161,12 +181,17 @@ class SlackComponent extends React.Component {
 
   async setChannels() {
     console.log("Fetching slack channels...");
-    const response = await fetch(
-      "https://slack.com/api/channels.list?token=" + TOKEN
-    ).catch(e => console.log("error", e));
+    this.trashableRequestList[6] = makeTrashable(
+      fetch("https://slack.com/api/channels.list?token=" + TOKEN).catch(e =>
+        console.log("error", e)
+      )
+    );
+
+    const response = await this.trashableRequestList[6];
 
     if (response.ok) {
-      let data = await response.json();
+      this.trashableRequestList[7] = makeTrashable(response.json());
+      let data = await this.trashableRequestList[7];
       this.setState({ channels: data.channels, chanLoading: false });
     } else {
       console.log("Failed to fetch slack channels");
