@@ -4,6 +4,7 @@ import { CX_OFF_WHITE, CX_FONT } from "./Constants";
 import Card from "@material-ui/core/Card";
 import { BOX_STYLE, BOX_HEADER } from "./styles";
 import { minute, time } from "./utilities/TimeUtils";
+import { GITHUB_HEIGHT } from "./githubCaller";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
@@ -15,7 +16,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "flex-start",
     position: "relative",
-    height: "46vh"
+    height: "calc(100% - " + GITHUB_HEIGHT + "px - 72px)" // Height of Slack Card is size of window beneath banner minus size of github card and margins
   },
   cardHeader: {
     fontFamily: CX_FONT,

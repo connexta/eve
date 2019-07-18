@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 export default class TVWallboard extends React.Component {
   render() {
     return (
-      <Grid container>
+      <Grid container style={{ height: "100%" }}>
         <Grid item style={leftBox}>
           <BuildStatus />
         </Grid>

@@ -9,10 +9,11 @@ const NUMPULLS = 5;
 const CALL_FREQ = hour;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+export const GITHUB_HEIGHT = 360;
 
 const styles = {
   box: {
-    height: "36vh"
+    height: GITHUB_HEIGHT
   },
   cardContent: {
     margin: "12px 0 0 12px",
