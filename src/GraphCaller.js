@@ -7,6 +7,7 @@ import ErrorMessage from "./ErrorMessage";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "!style-loader!css-loader!./BoardCalendar.css";
+import Popup from "reactjs-popup";
 
 const localizer = momentLocalizer(moment);
 
@@ -48,41 +49,6 @@ class GraphCaller extends React.Component {
     if (user) {
       this.getUserInfo();
     }
-  }
-
-  render() {
-    let error = null;
-    if (this.state.error) {
-      error = (
-        <ErrorMessage
-          message={this.state.error.message}
-          debug={this.state.error.debug}
-        />
-      );
-    }
-
-    var calEvents =
-      Object.keys(this.state.events).length === 0 ? [] : this.state.events;
-
-    return (
-      <Router>
-        <div>
-          {error}
-          <LogInOut
-            isAuthenticated={this.state.isAuthenticated}
-            logIn={this.login.bind(this)}
-            logOut={this.logout.bind(this)}
-          />
-          <Calendar
-            localizer={localizer}
-            defaultDate={new Date()}
-            defaultView="month"
-            events={calEvents}
-            style={{ height: "55vh" }}
-          />
-        </div>
-      </Router>
-    );
   }
 
   // Refresh user information/calendar events
@@ -129,7 +95,7 @@ class GraphCaller extends React.Component {
         scopes: config.scopes,
         prompt: "select_account"
       });
-      console.log("testing");
+
       await this.getUserInfo();
       document.location.reload();
     } catch (err) {
@@ -203,6 +169,44 @@ class GraphCaller extends React.Component {
         error: error
       });
     }
+  }
+
+  render() {
+    let error = null;
+    if (this.state.error) {
+      error = (
+        <ErrorMessage
+          message={this.state.error.message}
+          debug={this.state.error.debug}
+        />
+      );
+    }
+
+    var calEvents =
+      Object.keys(this.state.events).length === 0 ? [] : this.state.events;
+
+    return (
+      <Router>
+        <div>
+          {error}
+          <LogInOut
+            isAuthenticated={this.state.isAuthenticated}
+            logIn={this.login.bind(this)}
+            logOut={this.logout.bind(this)}
+          />
+          <Popup trigger={<button> Trigger</button>} position="right center">
+            <div>CONTENT</div>
+          </Popup>
+          <Calendar
+            localizer={localizer}
+            defaultDate={new Date()}
+            defaultView="month"
+            events={calEvents}
+            style={{ height: "55vh" }}
+          />
+        </div>
+      </Router>
+    );
   }
 }
 
