@@ -257,7 +257,7 @@ class SlackCard extends React.Component {
       message.attachments == undefined ? message.ts : message.attachments[0].ts;
     msgTime = msgTime == undefined ? message.ts : msgTime;
 
-    return getRelativeTime(new Date(msgTime));
+    return getRelativeTime(new Date(msgTime * 1000)); // convert sec to ms for date obj
   }
 
   getCardHeader(index) {
@@ -289,7 +289,8 @@ class SlackCard extends React.Component {
 
     // check for additional footer info
     let footer =
-      message.attachments == undefined
+      message.attachments == undefined ||
+      message.attachments[0].footer == undefined
         ? ""
         : " | " + message.attachments[0].footer;
 
