@@ -23,5 +23,6 @@ export const HOMEBASE = {
   top: BANNER_HEIGHT,
   bottom: 0,
   overflow: "hidden",
-  width: "100%"
+  width: "100%",
+  height: "100%"
 };
