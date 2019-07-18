@@ -3,10 +3,10 @@ import { Card } from "@material-ui/core";
 import { CX_GRAY_BLUE } from "./Constants.js";
 import { BOX_STYLE, BOX_HEADER } from "./styles";
 import pullRequest from "../resources/pullRequest.png";
-import { getRelativeTime, time } from "./utilities/TimeUtils";
+import { getRelativeTime, hour } from "./utilities/TimeUtils";
 
 const NUMPULLS = 5;
-const CALL_FREQ = time(1, 0, 0);
+const CALL_FREQ = hour;
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
@@ -52,13 +52,6 @@ const styles = {
   }
 };
 
-function parseDate(date) {
-  var year = date.substring(2, 4);
-  var month = date.substring(5, 7);
-  var day = date.substring(8, 10);
-  return month + "/" + day + "/" + year;
-}
-
 export default class Github extends React.Component {
   constructor(props) {
     super(props);
@@ -68,6 +61,8 @@ export default class Github extends React.Component {
       repoPath: this.props.repoPath,
       name: null
     };
+
+    this.getRepoName();
   }
 
   loadUserData(data) {
@@ -157,8 +152,6 @@ export default class Github extends React.Component {
         </div>
       </div>
     ));
-
-    this.getRepoName();
 
     return (
       <Card style={{ ...styles.box, ...BOX_STYLE }} raised={true}>
