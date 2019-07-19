@@ -85,7 +85,10 @@ class SlackComponent extends React.Component {
       () => this.checkRefresh(),
       minute
     );
-    this.rotateTimerIntervalID = setInterval(() => this.rotateTimer(), ROTATE_INTERVAL);
+    this.rotateTimerIntervalID = setInterval(
+      () => this.rotateTimer(),
+      ROTATE_INTERVAL
+    );
   }
 
   // clean up intervals
