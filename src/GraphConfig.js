@@ -1,5 +1,5 @@
 module.exports = {
-  appId: "4abd2a29-7b53-4965-b115-32cf92760662",
+  appId: "53b3ede2-e972-4d80-8e0d-894151b5ba65",
   authority: "https://login.microsoftonline.com/organizations/",
-  scopes: ["user.read", "mail.readwrite", "calendars.readwrite"]
+  scopes: ["user.read", "calendars.readwrite"]
 };
