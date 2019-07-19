@@ -7,7 +7,96 @@ import ErrorMessage from "./ErrorMessage";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "!style-loader!css-loader!./BoardCalendar.css";
-import Popup from "reactjs-popup";
+import {
+  Card,
+  Dialog,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  DialogTitle
+} from "@material-ui/core";
+
+const styles = {
+  card: {
+    height: "800px",
+    width: "100vh"
+  },
+  calendar: {
+    height: "100%",
+    width: "100%"
+  }
+};
+
+function SimpleDialog(props) {
+  const { onClose, selectedValue, calendars, callback, ...other } = props;
+
+  function handleClose() {
+    onClose(selectedValue);
+  }
+
+  function handleListItemClick(value) {
+    onClose(value);
+  }
+
+  return (
+    <Dialog
+      onClose={handleClose}
+      aria-labelledby="select-calendar-dialog"
+      {...other}
+    >
+      <DialogTitle id="select-calendar-dialog-title">
+        Select Calendar
+      </DialogTitle>
+      <List>
+        {calendars.map((cal, i) => (
+          <ListItem
+            button
+            onClick={() => handleListItemClick(cal, callback)}
+            key={i}
+          >
+            <ListItemText primary={cal.name} />
+          </ListItem>
+        ))}
+
+        <ListItem button onClick={() => handleListItemClick("addAccount")}>
+          <ListItemText primary="add account" />
+        </ListItem>
+      </List>
+    </Dialog>
+  );
+}
+
+function SimpleDialogDemo(props) {
+  const { calendars, callback, ...other } = props;
+
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(calendars[0]);
+
+  function handleClickOpen() {
+    setOpen(true);
+  }
+
+  const handleClose = value => {
+    setOpen(false);
+    callback(value);
+  };
+
+  return (
+    <div>
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+        Select Calendar
+      </Button>
+      <SimpleDialog
+        selectedValue={selectedValue}
+        open={open}
+        onClose={handleClose}
+        calendars={calendars}
+        callback={callback}
+      />
+    </div>
+  );
+}
 
 const localizer = momentLocalizer(moment);
 
@@ -17,11 +106,17 @@ function localizeTime(time, timezone) {
 
 function LogInOut(props) {
   return props.isAuthenticated ? (
-    <button onClick={props.logOut}>Log Out</button>
+    <Button variant="outlined" color="primary" onClick={props.logOut}>
+      Log Out
+    </Button>
   ) : (
-    <button onClick={props.logIn}>Log In</button>
+    <Button onClick={props.logIn}>Log In</Button>
   );
 }
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 class GraphCaller extends React.Component {
   constructor(props) {
@@ -42,23 +137,22 @@ class GraphCaller extends React.Component {
 
     this.state = {
       isAuthenticated: user !== null,
-      events: {},
-      calendars: {},
+      events: [],
+      calendars: [],
       chosenCal: null,
       error: null
     };
 
     if (user) {
-      this.getUserInfo();
       this.getCalendars();
     }
   }
 
   // Refresh user information/calendar events
   componentDidMount() {
-    setInterval(() => {
-      if (this.state.isAuthenticated) this.getUserInfo();
-    }, 1000 * 20);
+    // setInterval(() => {
+    //   if (this.state.isAuthenticated) this.getCalendarEvents();
+    // }, 1000 * 20);
   }
 
   // clean up event data so it works with calendar library
@@ -97,8 +191,8 @@ class GraphCaller extends React.Component {
         prompt: "select_account"
       });
 
-      await this.getUserInfo();
       await this.getCalendars();
+
       document.location.reload();
     } catch (err) {
       var error = {};
@@ -117,7 +211,7 @@ class GraphCaller extends React.Component {
 
       this.setState({
         isAuthenticated: false,
-        events: {},
+        events: [],
         error: error
       });
     }
@@ -142,7 +236,7 @@ class GraphCaller extends React.Component {
         // Get the user's profile from Graph
         var call = "/me/calendars?select=name";
         var ret = await callApi(accessToken, call);
-
+        console.log(ret.value);
         this.setState({ calendars: ret.value });
       }
     } catch (err) {
@@ -162,15 +256,17 @@ class GraphCaller extends React.Component {
 
       this.setState({
         isAuthenticated: false,
-        events: {},
+        events: [],
         error: error
       });
     }
   }
 
   //Fetch user information and calendar events
-  async getUserInfo() {
+  async getCalendarEvents(cal) {
+    console.log(cal);
     try {
+      console.log("Getting Calendar Events");
       // Get the access token silently
       // If the cache contains a non-expired token, this function
       // will just return the cached token. Otherwise, it will
@@ -182,14 +278,10 @@ class GraphCaller extends React.Component {
 
       if (accessToken) {
         // Get the user's profile from Graph
-        var call =
-          '/me/messages?$search="kind:meetings"&$select=id&$expand=microsoft.graph.eventMessage/event&$top=200';
+        var call = "/me/calendars/" + cal.id + "/events";
         var ret = await callApi(accessToken, call);
 
-        let events = ret.value.map(i => i.event);
-        events = events.filter(i => i.hasOwnProperty("id"));
-
-        this.updateEvents(events);
+        this.updateEvents(ret.value);
       }
     } catch (err) {
       var error = {};
@@ -208,65 +300,50 @@ class GraphCaller extends React.Component {
 
       this.setState({
         isAuthenticated: false,
-        events: {},
+        events: [],
         error: error
       });
     }
   }
 
-  formatCalendar() {
-    let calCont = this.state.calendars.map((cal, i) => {
-      <button onClick={this.setState({ chosenCal: cal.name })}>
-        {cal.name}
-      </button>;
-    });
-
-    return (
-      <div>
-        <p>Calendars: </p>
-        {calCont}
-      </div>
-    );
-  }
-
   render() {
-    let error = null;
-    if (this.state.error) {
-      error = (
-        <ErrorMessage
-          message={this.state.error.message}
-          debug={this.state.error.debug}
-        />
-      );
-    }
+    // let error = null;
+    // if (this.state.error) {
+    //   error = (
+    //     <ErrorMessage
+    //       message={this.state.error.message}
+    //       debug={this.state.error.debug}
+    //     />
+    //   );
+    //   }
+
+    let calButton = this.state.isAuthenticated ? (
+      <SimpleDialogDemo
+        calendars={this.state.calendars}
+        callback={this.getCalendarEvents.bind(this)}
+      />
+    ) : null;
 
     var calEvents =
       Object.keys(this.state.events).length === 0 ? [] : this.state.events;
 
     return (
       <Router>
-        <div>
-          {error}
+        <Card style={styles.card}>
           <LogInOut
             isAuthenticated={this.state.isAuthenticated}
             logIn={this.login.bind(this)}
             logOut={this.logout.bind(this)}
           />
-          <Popup
-            trigger={<button>Select Calendar</button>}
-            modal
-            closeOnDocumentClick
-          >
-            <div>{this.state.calendars}</div>
-          </Popup>
+          {calButton}
           <Calendar
+            style={styles.calendar}
             localizer={localizer}
             defaultDate={new Date()}
             defaultView="month"
             events={calEvents}
-            style={{ height: "55vh" }}
           />
-        </div>
+        </Card>
       </Router>
     );
   }
