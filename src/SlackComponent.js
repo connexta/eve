@@ -84,7 +84,7 @@ class SlackComponent extends React.Component {
       () => this.checkRefresh(),
       minute
     );
-    this.timerIntervalID = setInterval(() => this.timer(), minute);
+    this.rotateTimerIntervalID = setInterval(() => this.rotateTimer(), minute);
   }
 
   // clean up intervals
@@ -92,7 +92,7 @@ class SlackComponent extends React.Component {
     clearInterval(this.messageIntervalID);
     clearInterval(this.userListIntervalID);
     clearInterval(this.checkRefreshIntervalID);
-    clearInterval(this.timerIntervalID);
+    clearInterval(this.rotateTimerIntervalID);
   }
 
   // checks if any components need to re-fetch data
@@ -220,7 +220,7 @@ class SlackComponent extends React.Component {
   }
 
   //function runs in a setInterval to rotate/shift messages to give a dynamic aspect to the slack component.
-  timer() {
+  rotateTimer() {
     if (!this.anyStillLoading()) {
       this.rotateMessages();
     }
