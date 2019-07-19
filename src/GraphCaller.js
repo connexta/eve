@@ -23,7 +23,7 @@ const styles = {
     width: "100vh"
   },
   calendar: {
-    height: "100%",
+    height: "80%",
     width: "100%"
   }
 };
@@ -330,12 +330,16 @@ class GraphCaller extends React.Component {
     return (
       <Router>
         <Card style={styles.card}>
-          <LogInOut
-            isAuthenticated={this.state.isAuthenticated}
-            logIn={this.login.bind(this)}
-            logOut={this.logout.bind(this)}
-          />
-          {calButton}
+          <div
+            style={{ display: "flex", flexDirection: "row", padding: "12px" }}
+          >
+            <LogInOut
+              isAuthenticated={this.state.isAuthenticated}
+              logIn={this.login.bind(this)}
+              logOut={this.logout.bind(this)}
+            />
+            {calButton}
+          </div>
           <Calendar
             style={styles.calendar}
             localizer={localizer}
