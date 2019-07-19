@@ -1,31 +1,22 @@
 import React from "react";
-import {
-  CX_OFF_WHITE,
-  CX_FONT,
-  CX_DARK_BLUE,
-  BATMAN_GRAY
-} from "./Constants.js";
+import { BATMAN_GRAY } from "./Constants.js";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { extractTime } from "./utilities/utility";
-
-const oneHour = 1 * 1000 * 60 * 60;
+import { hour } from "./utilities/TimeUtils.js";
+import { AFJenkinLink, AFURL, AFpipeline } from "./lib/Link.js";
+import { BOX_STYLE, BOX_HEADER } from "./styles";
+import makeTrashable from "trashable";
 
 const styles = {
-  card: {
-    top: "20px",
-    position: "relative",
-    background: CX_OFF_WHITE,
-    fontFamily: CX_FONT,
-    color: BATMAN_GRAY
-  },
   cardheader: {
-    background: CX_DARK_BLUE,
-    textDecoration: "none",
-    color: CX_OFF_WHITE
+    background: BOX_HEADER.fontSize,
+    margin: BOX_HEADER.margin,
+    color: BOX_HEADER.color,
+    textDecoration: "none"
   },
   listitemtext: {
     color: BATMAN_GRAY
@@ -47,16 +38,13 @@ class BuildAF extends React.Component {
 
   // updates the build status around every midnight with timer checking current hour every 1 hour.
   componentDidMount() {
-    this.setState({
-      isLoading: true,
-      failedData: []
-    });
     this.updateBuildStatus();
-    this.timerIntervalID = setInterval(() => this.timer(), oneHour); //1 hour interval
+    this.timerIntervalID = setInterval(() => this.timer(), hour); //1 hour interval
   }
 
   componentWillUnmount() {
     clearInterval(this.timerIntervalID);
+    this.trashableFetchPromise.trash();
   }
 
   //if and only if the current time is 0 hour (midnight), trigger to update build status.
@@ -69,8 +57,10 @@ class BuildAF extends React.Component {
   }
 
   //fetch
-  updateBuildStatus() {
-    fetch(this.props.URL + "runs/")
+  async updateBuildStatus() {
+    this.trashableFetchPromise = makeTrashable(fetch(AFURL + "runs/"));
+
+    await this.trashableFetchPromise
       .then(response => response.json())
       .then(jsonData => {
         this.setState({
@@ -138,12 +128,7 @@ class BuildAF extends React.Component {
   //  display list of build contents (builder [data.causes], build start time, build result, build description)
   displayListContents(data, index) {
     return (
-      <ListItem
-        key={index}
-        button
-        component="a"
-        href={this.props.jenkinlink + data.id}
-      >
+      <ListItem key={index} button component="a" href={AFJenkinLink + data.id}>
         <ListItemText
           primary={this.formatData(data)}
           secondary={
@@ -206,17 +191,17 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={styles.card} raised={true}>
-        Loading. . .
+      <Card style={BOX_STYLE} raised={true}>
+        Loading AF Builds. . .
       </Card>
     ) : (
-      <Card style={styles.card} raised={true}>
+      <Card style={BOX_STYLE} raised={true}>
         <CardHeader
-          title={this.props.pipeline}
+          title={AFpipeline}
           subheader="Display failed build from most recent up to the last successful build"
           style={styles.cardheader}
           component="a"
-          href={this.props.jenkinlink}
+          href={AFJenkinLink}
           titleTypographyProps={{ variant: "h4" }}
           subheaderTypographyProps={{ variant: "h6", color: "inherit" }}
         ></CardHeader>
