@@ -10,6 +10,7 @@ import Grow from "@material-ui/core/Grow";
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
+const ROTATE_INTERVAL = minute;
 
 const styles = {
   CardContainer: {
@@ -84,7 +85,7 @@ class SlackComponent extends React.Component {
       () => this.checkRefresh(),
       minute
     );
-    this.rotateTimerIntervalID = setInterval(() => this.rotateTimer(), minute);
+    this.rotateTimerIntervalID = setInterval(() => this.rotateTimer(), ROTATE_INTERVAL);
   }
 
   // clean up intervals
@@ -203,7 +204,7 @@ class SlackComponent extends React.Component {
   //create state with a arraylist consisting of SlackCard component with unique keys/index up to MAX_MSGS.
   setSlackMsg() {
     let cardList = [];
-    for (var i = 0; i < MAX_MSGS; i++) {
+    for (let i = 0; i < MAX_MSGS; i++) {
       cardList.push(
         <SlackCard
           key={i}
