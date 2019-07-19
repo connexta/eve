@@ -1,8 +1,8 @@
 import React from "react";
-import BuildStatus from "../BuildStatus";
-import SlackComponent from "../SlackComponent";
-import Github from "../githubCaller";
-import { leftBox, rightBox } from "./WallboardStyles";
+import BuildStatus from "../components/BuildStatus";
+import SlackComponent from "../components/SlackComponent";
+import Github from "../components/Github";
+import { leftBox, rightBox } from "../utils/styles/WallboardStyles";
 import Grid from "@material-ui/core/Grid";
 
 export default class TVWallboard extends React.Component {

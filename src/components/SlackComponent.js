@@ -1,11 +1,10 @@
 import React from "react";
 import SlackCard from "./SlackCard";
-import { CX_OFF_WHITE, CX_FONT } from "./Constants";
+import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
 import Card from "@material-ui/core/Card";
-import { BOX_STYLE, BOX_HEADER } from "./styles";
-import { minute, time } from "./utilities/TimeUtils";
-import { GITHUB_HEIGHT } from "./githubCaller";
-import Grow from "@material-ui/core/Grow";
+import { BOX_STYLE, BOX_HEADER } from "../utils/styles/styles";
+import { minute, time } from "../utils/TimeUtils";
+import { GITHUB_HEIGHT } from "./Github";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
