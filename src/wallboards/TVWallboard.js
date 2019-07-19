@@ -3,23 +3,22 @@ import BuildStatus from "../BuildStatus";
 import SlackComponent from "../SlackComponent";
 import Github from "../githubCaller";
 import GraphCaller from "../GraphCaller";
-import { RightBox, LeftBox, ContentHorz } from "./WallboardStyles";
+import { leftBox, rightBox } from "./WallboardStyles";
+import Grid from "@material-ui/core/Grid";
 
 export default class TVWallboard extends React.Component {
   render() {
     return (
-      <ContentHorz>
-        <LeftBox>
-          {/* Left box content */}
+      <Grid container style={{ height: "100%" }}>
+        <Grid item style={leftBox}>
           <BuildStatus />
           <GraphCaller />
-        </LeftBox>
-        <RightBox>
-          {/* Right box content */}
+        </Grid>
+        <Grid item style={rightBox}>
           <SlackComponent />
-          <Github />
-        </RightBox>
-      </ContentHorz>
+          <Github repoPath={"codice/ddf"} />
+        </Grid>
+      </Grid>
     );
   }
 }

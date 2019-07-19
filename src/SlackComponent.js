@@ -1,36 +1,56 @@
 import React from "react";
-import styled from "styled-components";
-import Parser from "html-react-parser";
 import SlackCard from "./SlackCard";
-import { CX_OFF_WHITE, CX_DARK_BLUE, CX_FONT } from "./Constants";
+import { CX_OFF_WHITE, CX_FONT } from "./Constants";
+import Card from "@material-ui/core/Card";
+import { BOX_STYLE, BOX_HEADER } from "./styles";
 import { minute, time } from "./utilities/TimeUtils";
+import { GITHUB_HEIGHT } from "./githubCaller";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
+const MAX_MSGS = 10;
 
-const MAX_MSGS = 4;
-
-const CardContainer = styled.div`
-  background-color: ${CX_DARK_BLUE};
-
-  font-family: ${CX_FONT};
-  font-size: 50px;
-  color: ${CX_OFF_WHITE};
-
-  height: 60%;
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-`;
+const styles = {
+  CardContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    position: "relative",
+    height: "calc(100% - " + GITHUB_HEIGHT + "px - 72px)" // Height of Slack Card is size of window beneath banner minus size of github card and margins
+  },
+  cardHeader: {
+    fontFamily: CX_FONT,
+    margin: "12px 0 12px 16px",
+    height: "40px"
+  },
+  SlackCardContainer: {
+    top: "72px",
+    height: "100%",
+    position: "absolute"
+  },
+  GradientBlock: {
+    height: "15%",
+    width: "100%",
+    bottom: "10px",
+    background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
+    position: "absolute",
+    zIndex: 2
+  },
+  WhiteBlock: {
+    height: "12px",
+    width: "100%",
+    bottom: 0,
+    background: CX_OFF_WHITE,
+    position: "absolute",
+    zIndex: 3
+  }
+};
 
 class SlackComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      emojis: {},
+      emojis: [],
       messages: [],
       slackUsers: [],
       channels: [],
@@ -171,41 +191,27 @@ class SlackComponent extends React.Component {
   }
 
   render() {
-    return this.anyStillLoading() ? (
-      <CardContainer>Loading Slack...</CardContainer>
-    ) : (
-      <CardContainer>
-        {Parser(
-          `<div style="margin-left: 10px;"># ${this.getChannelName(
-            CHANNEL
-          )}</div>`
-        )}
-        <SlackCard
-          index={0}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={1}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={2}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-        <SlackCard
-          index={3}
-          slackUsers={this.state.slackUsers}
-          messages={this.state.messages}
-          emojis={this.state.emojis}
-        />
-      </CardContainer>
-    );
+    if (this.anyStillLoading()) {
+      return (
+        <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
+          <p style={BOX_HEADER}>Loading Slack...</p>
+        </Card>
+      );
+    } else {
+      let cardList = [];
+      for (var i = 0; i < MAX_MSGS; i++) {
+        cardList.push(<SlackCard key={i} index={i} {...this.state} />);
+      }
+
+      return (
+        <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
+          <span style={BOX_HEADER}>#{this.getChannelName(CHANNEL)}</span>
+          <div style={styles.GradientBlock}></div>
+          <div style={styles.WhiteBlock}></div>
+          <div style={styles.SlackCardContainer}>{cardList}</div>
+        </Card>
+      );
+    }
   }
 }
 

@@ -52,7 +52,7 @@ button.rbc-input::-moz-focus-inner {
 
   
 .rbc-off-range-bg {
-  background: #658398; } /*outside month day cell*/
+  background: #477081; } /*outside month day cell*/
 
   
 
@@ -84,7 +84,7 @@ button.rbc-input::-moz-focus-inner {
   z-index: 4; }
 
 .rbc-today {
-  background-color: #eaf6ff; }
+  background-color: #f2f2f2; }
 
 .rbc-toolbar {
   display: flex;
@@ -274,7 +274,7 @@ button.rbc-input::-moz-focus-inner {
 .rbc-overlay {
   position: absolute;
   z-index: 5;
-  border: 1px solid #e5e5e5;
+  /* border: 1px solid #e5e5e5; */
   background-color: #fff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
   padding: 10px; }

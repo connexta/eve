@@ -1,61 +1,28 @@
-import styled from "styled-components";
-import { CX_OFF_WHITE, CX_GRAY_BLUE } from "../Constants";
+import { BANNER_HEIGHT } from "../index";
 
-export const RightBox = styled.nav`
-  background: ${CX_OFF_WHITE};
-  padding: 0%;
-  font-size: 30px;
-  border-left: solid black 3px;
+export const leftBox = {
+  height: "100%",
+  width: "66%"
+};
 
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  top: 131px;
-  bottom: 0;
-  left: 66vw;
-  right: 0;
-  overflow: hidden;
-`;
+export const rightBox = {
+  height: "100%",
+  width: "34%"
+};
 
-export const LeftBox = styled.nav`
-  background: ${CX_GRAY_BLUE};
-  padding: 3%;
-  font-size: 30px;
-  border-right: solid black 3px;
+export const WallBoardButtons = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center",
+  flexWrap: "wrap"
+};
 
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-
-  position: absolute;
-  top: 131px;
-  bottom: 0;
-  left: 0;
-  right: 33vw;
-`;
-
-export const ContentHorz = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-export const SolidBackground = styled.div`
-  background: ${CX_GRAY_BLUE};
-  padding: 0%;
-  font-size: 30px;
-
-  position: absolute;
-  top: 131px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  overflow: hidden;
-`;
-
-export const WallboardButtons = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
+export const HOMEBASE = {
+  fontSize: "30px",
+  position: "absolute",
+  top: BANNER_HEIGHT,
+  bottom: 0,
+  overflow: "hidden",
+  width: "100%",
+  height: "100%"
+};

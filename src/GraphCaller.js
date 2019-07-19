@@ -6,7 +6,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import ErrorMessage from "./ErrorMessage";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import "!style-loader!css-loader!./BoardCalendar.css";
+import "!style-loader!css-loader!./BoardCalendar.scss";
+import { BOX_STYLE, BOX_HEADER } from "./styles.js";
 import {
   Card,
   Dialog,
@@ -19,8 +20,8 @@ import {
 
 const styles = {
   card: {
-    height: "800px",
-    width: "100vh"
+    height: "60%",
+    width: "97%"
   },
   calendar: {
     height: "80%",
@@ -329,7 +330,7 @@ class GraphCaller extends React.Component {
 
     return (
       <Router>
-        <Card style={styles.card}>
+        <Card style={{ ...styles.card, ...BOX_STYLE }}>
           <div
             style={{ display: "flex", flexDirection: "row", padding: "12px" }}
           >
@@ -344,7 +345,7 @@ class GraphCaller extends React.Component {
             style={styles.calendar}
             localizer={localizer}
             defaultDate={new Date()}
-            defaultView="month"
+            defaultView="week"
             events={calEvents}
           />
         </Card>

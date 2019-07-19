@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../Constants";
-import { SolidBackground, WallboardButtons } from "./WallboardStyles";
+import { HOMEBASE, WallBoardButtons } from "./WallboardStyles";
 import Button from "@material-ui/core/Button";
 
 // Wallboard Variants
@@ -40,9 +40,9 @@ const styles = {
 export default class Home extends React.Component {
   render() {
     return (
-      <SolidBackground>
+      <div style={HOMEBASE}>
         <h1 style={styles.title}>Choose Wallboard Variant</h1>
-        <WallboardButtons>
+        <div style={WallBoardButtons}>
           {/* generate links and paths through wallboards object */}
           {wallboards.map(wallboard => {
             if (wallboard.path == "/") return; // ignore Home link
@@ -56,8 +56,8 @@ export default class Home extends React.Component {
               </Link>
             );
           })}
-        </WallboardButtons>
-      </SolidBackground>
+        </div>
+      </div>
     );
   }
 }
