@@ -10,7 +10,9 @@ const styles = {
     background: CX_OFF_WHITE,
     fontSize: "20px",
     color: BATMAN_GRAY,
-    fontFamily: CX_FONT
+    fontFamily: CX_FONT,
+    fontStyle: "italic",
+    marginLeft: "32px"
   }
 };
 

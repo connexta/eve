@@ -1,18 +1,12 @@
 import React from "react";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
 import BuildIcon from "./BuildIcon";
-import Card from "@material-ui/core/Card";
-import { CardHeader, CardContent } from "@material-ui/core";
+import { Card, CardContent } from "@material-ui/core";
 import { overviewURL, jenkinsURLList } from "./lib/Link";
+import { BOX_STYLE, BOX_HEADER } from "./styles";
 import { hour, getRelativeTime } from "./utilities/TimeUtils";
 
 const styles = {
-  card: {
-    background: CX_OFF_WHITE,
-    fontSize: "50px",
-    color: BATMAN_GRAY,
-    fontFamily: CX_FONT
-  },
   cardheader: {
     background: CX_OFF_WHITE,
     color: BATMAN_GRAY,
@@ -22,7 +16,8 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    fontSize: "32px"
   }
 };
 
@@ -129,16 +124,12 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card raised={true} style={styles.card}>
-        Loading Build Health. . .
+      <Card style={BOX_STYLE} raised={true}>
+        <p style={BOX_HEADER}>Loading Build Health. . .</p>
       </Card>
     ) : (
-      <Card raised={true} style={styles.card}>
-        <CardHeader
-          title="Build Health"
-          style={styles.cardheader}
-          disableTypography={true} //disable to properly apply CX_FONT
-        />
+      <Card style={BOX_STYLE} raised={true}>
+        <p style={BOX_HEADER}>Build Health</p>
         <CardContent style={styles.cardContent}>
           {this.state.data.map(item => {
             return (
