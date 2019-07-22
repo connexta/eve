@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server --open --mode development --env.NODE_ENV=local"
+    "start": "webpack-dev-server --open --mode development --env.NODE_ENV=local",
+    "go": "yarn build && yarn start"
   },
   "dependencies": {
     "@material-ui/core": "^4.2.0",
@@ -17,7 +18,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-live-clock": "^3.1.0",
-    "react-router-dom": "^5.0.1"
+    "react-router-dom": "^5.0.1",
+    "trashable": "^1.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

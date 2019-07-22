@@ -6,6 +6,10 @@ import CardContent from "@material-ui/core/CardContent";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants.js";
 
 const styles = {
+  cardContent: {
+    padding: "4px",
+    width: "14%"
+  },
   date: {
     background: CX_OFF_WHITE,
     fontSize: "20px",
@@ -22,40 +26,52 @@ class BuildIcon extends React.Component {
     this.state = {
       name: props.name,
       score: props.score,
-      time: props.time
+      subtitle: props.subtitle
     };
   }
 
   render() {
-    return this.state.score == 100 ? (
-      <CardContent>
+    return this.state.score >= 80 ? (
+      <CardContent style={styles.cardContent}>
         <GoodState
           fontSize="inherit"
-          style={{ color: "green", verticalAlign: "top" }}
+          style={{
+            color: "green",
+            padding: "1 0",
+            float: "left",
+            transform: "scale(0.9)"
+          }}
         />
         {this.state.name}
-        <div style={styles.date}>{this.state.time}</div>
+        <div style={styles.date}>{this.state.subtitle}</div>
       </CardContent>
-    ) : this.state.score > 50 ? (
-      <CardContent>
+    ) : this.state.score >= 40 ? (
+      <CardContent style={styles.cardContent}>
         <NeutralState
           fontSize="inherit"
-          style={{ color: "orange", verticalAlign: "top" }}
+          style={{
+            color: "orange",
+            padding: "1 0",
+            float: "left",
+            transform: "scale(0.9)"
+          }}
         />
         {this.state.name}
-        <div style={styles.date}>{this.state.time}</div>
+        <div style={styles.date}>{this.state.subtitle}</div>
       </CardContent>
     ) : (
-      <CardContent>
+      <CardContent style={styles.cardContent}>
         <BadState
           fontSize="inherit"
           style={{
             color: "red",
-            verticalAlign: "top"
+            padding: "1 0",
+            float: "left",
+            transform: "scale(0.9)"
           }}
         />
         {this.state.name}
-        <div style={styles.date}>{this.state.time}</div>
+        <div style={styles.date}>{this.state.subtitle}</div>
       </CardContent>
     );
   }
