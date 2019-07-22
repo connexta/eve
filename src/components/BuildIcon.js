@@ -3,7 +3,7 @@ import GoodState from "@material-ui/icons/CheckCircleOutline";
 import NeutralState from "@material-ui/icons/RemoveCircleOutline";
 import BadState from "@material-ui/icons/HighlightOff";
 import CardContent from "@material-ui/core/CardContent";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants.js";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
 
 const styles = {
   date: {

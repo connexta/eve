@@ -1,8 +1,8 @@
 import React from "react";
 import Parser from "html-react-parser";
-import emojis from "./emojis";
-import square_logo from "../resources/square_logo.png";
-import { getRelativeTime } from "./utilities/TimeUtils";
+import emojis from "../utils/emojis";
+import square_logo from "../../resources/square_logo.png";
+import { getRelativeTime } from "../utils/TimeUtils";
 
 const SLACK_FONT_SIZE = "20px";
 
