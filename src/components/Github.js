@@ -4,6 +4,7 @@ import { CX_GRAY_BLUE } from "../utils/Constants.js";
 import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
 import pullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour } from "../utils/TimeUtils";
+import makeTrashable from "trashable";
 
 const NUMPULLS = 5;
 const CALL_FREQ = hour;
@@ -87,6 +88,8 @@ export default class Github extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.interval);
+    //clearing out left out promise during unmount.
+    if (this.trashableRequestGithub) this.trashableRequestGithub.trash();
   }
 
   getRepoName() {
@@ -116,15 +119,19 @@ export default class Github extends React.Component {
       });
   }
 
-  callGithub() {
-    fetch(
-      "https://api.github.com/repos/" +
-        this.state.repoPath +
-        "/pulls?client_id=" +
-        CLIENT_ID +
-        "&client_secret=" +
-        CLIENT_SECRET
-    )
+  async callGithub() {
+    this.trashableRequestGithub = makeTrashable(
+      fetch(
+        "https://api.github.com/repos/" +
+          this.state.repoPath +
+          "/pulls?client_id=" +
+          CLIENT_ID +
+          "&client_secret=" +
+          CLIENT_SECRET
+      )
+    );
+
+    await this.trashableRequestGithub
       .then(res => {
         if (!res.ok) {
           console.log("Failed to fetch GitHub data");
