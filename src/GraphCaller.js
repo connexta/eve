@@ -3,10 +3,9 @@ import config from "./GraphConfig";
 import { UserAgentApplication } from "msal";
 import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import ErrorMessage from "./ErrorMessage";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import "!style-loader!css-loader!./BoardCalendar.scss";
+import "!style-loader!css-loader!./BoardCalendar.css";
 import { BOX_STYLE, BOX_HEADER } from "./styles.js";
 import {
   Card,
@@ -18,6 +17,8 @@ import {
   DialogTitle
 } from "@material-ui/core";
 
+////////////////////////////////////////////////////////////////
+
 const styles = {
   card: {
     height: "60%",
@@ -25,11 +26,28 @@ const styles = {
   },
   calendar: {
     height: "80%",
-    width: "100%"
+    width: "90%",
+    margin: "0 5% 0 5%",
+    fontSize: "16px"
+  },
+  buttonContainer: {
+    marginLeft: "5%",
+    marginTop: "16px",
+    display: "flex",
+    flexDirection: "row"
+  },
+  button: {
+    marginRight: "8px"
   }
 };
 
-function SimpleDialog(props) {
+const localizer = momentLocalizer(moment);
+
+function localizeTime(time, timezone) {
+  return new Date(time.split("T") + " " + timezone);
+}
+
+function CalendarDialog(props) {
   const { onClose, selectedValue, calendars, callback, ...other } = props;
 
   function handleClose() {
@@ -53,26 +71,22 @@ function SimpleDialog(props) {
         {calendars.map((cal, i) => (
           <ListItem
             button
-            onClick={() => handleListItemClick(cal, callback)}
+            onClick={() => handleListItemClick(cal.id, callback)}
             key={i}
           >
             <ListItemText primary={cal.name} />
           </ListItem>
         ))}
-
-        <ListItem button onClick={() => handleListItemClick("addAccount")}>
-          <ListItemText primary="add account" />
-        </ListItem>
       </List>
     </Dialog>
   );
 }
 
-function SimpleDialogDemo(props) {
+function DialogAndButton(props) {
   const { calendars, callback, ...other } = props;
 
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(calendars[0]);
+  const selectedValue = React.useState(calendars[0]);
 
   function handleClickOpen() {
     setOpen(true);
@@ -85,10 +99,15 @@ function SimpleDialogDemo(props) {
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button
+        style={styles.button}
+        variant="outlined"
+        color="primary"
+        onClick={handleClickOpen}
+      >
         Select Calendar
       </Button>
-      <SimpleDialog
+      <CalendarDialog
         selectedValue={selectedValue}
         open={open}
         onClose={handleClose}
@@ -99,19 +118,20 @@ function SimpleDialogDemo(props) {
   );
 }
 
-const localizer = momentLocalizer(moment);
-
-function localizeTime(time, timezone) {
-  return new Date(time.split("T") + " " + timezone);
-}
-
 function LogInOut(props) {
   return props.isAuthenticated ? (
-    <Button variant="outlined" color="primary" onClick={props.logOut}>
+    <Button
+      style={styles.button}
+      variant="outlined"
+      color="primary"
+      onClick={props.logOut}
+    >
       Log Out
     </Button>
   ) : (
-    <Button onClick={props.logIn}>Log In</Button>
+    <Button style={styles.button} onClick={props.logIn}>
+      Log In
+    </Button>
   );
 }
 
@@ -140,7 +160,7 @@ class GraphCaller extends React.Component {
       isAuthenticated: user !== null,
       events: [],
       calendars: [],
-      chosenCal: null,
+      chosenCal: localStorage.getItem("chosenCalendar"),
       error: null
     };
 
@@ -151,9 +171,12 @@ class GraphCaller extends React.Component {
 
   // Refresh user information/calendar events
   componentDidMount() {
-    // setInterval(() => {
-    //   if (this.state.isAuthenticated) this.getCalendarEvents();
-    // }, 1000 * 20);
+    if (this.state.isAuthenticated)
+      this.getCalendarEvents(this.state.chosenCal);
+    setInterval(() => {
+      if (this.state.isAuthenticated)
+        this.getCalendarEvents(this.state.chosenCal);
+    }, 1000 * 20);
   }
 
   // clean up event data so it works with calendar library
@@ -237,10 +260,10 @@ class GraphCaller extends React.Component {
         // Get the user's profile from Graph
         var call = "/me/calendars?select=name";
         var ret = await callApi(accessToken, call);
-        console.log(ret.value);
         this.setState({ calendars: ret.value });
       }
     } catch (err) {
+      console.log("Error retrieving list of calendars");
       var error = {};
       if (typeof err === "string") {
         var errParts = err.split("|");
@@ -255,19 +278,19 @@ class GraphCaller extends React.Component {
         };
       }
 
-      this.setState({
-        isAuthenticated: false,
-        events: [],
-        error: error
-      });
+      console.log(error);
     }
+  }
+
+  async changeState(cal) {
+    this.setState({ chosenCal: cal });
+    localStorage.setItem("chosenCalendar", cal);
+    this.getCalendarEvents(cal);
   }
 
   //Fetch user information and calendar events
   async getCalendarEvents(cal) {
-    console.log(cal);
     try {
-      console.log("Getting Calendar Events");
       // Get the access token silently
       // If the cache contains a non-expired token, this function
       // will just return the cached token. Otherwise, it will
@@ -279,12 +302,27 @@ class GraphCaller extends React.Component {
 
       if (accessToken) {
         // Get the user's profile from Graph
-        var call = "/me/calendars/" + cal.id + "/events";
+        var startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+
+        var endDate = new Date();
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        var call =
+          "/me/calendars/" +
+          cal +
+          "/calendarView?startDateTime=" +
+          startDate.toISOString() +
+          "&endDateTime=" +
+          endDate.toISOString() +
+          "&top=200&select=subject,start,end";
         var ret = await callApi(accessToken, call);
 
         this.updateEvents(ret.value);
       }
     } catch (err) {
+      console.log("Error retrieving Calendar Events");
+
       var error = {};
       if (typeof err === "string") {
         var errParts = err.split("|");
@@ -299,41 +337,34 @@ class GraphCaller extends React.Component {
         };
       }
 
-      this.setState({
-        isAuthenticated: false,
-        events: [],
-        error: error
-      });
+      console.log(error);
     }
   }
 
   render() {
-    // let error = null;
-    // if (this.state.error) {
-    //   error = (
-    //     <ErrorMessage
-    //       message={this.state.error.message}
-    //       debug={this.state.error.debug}
-    //     />
-    //   );
-    //   }
+    //console.log(this.state.events);
 
     let calButton = this.state.isAuthenticated ? (
-      <SimpleDialogDemo
+      <DialogAndButton
         calendars={this.state.calendars}
-        callback={this.getCalendarEvents.bind(this)}
+        callback={this.changeState.bind(this)}
       />
     ) : null;
 
     var calEvents =
       Object.keys(this.state.events).length === 0 ? [] : this.state.events;
 
+    const minTime = new Date();
+    minTime.setHours(8, 0, 0);
+
+    const maxTime = new Date();
+    maxTime.setHours(18, 0, 0);
+
     return (
       <Router>
-        <Card style={{ ...styles.card, ...BOX_STYLE }}>
-          <div
-            style={{ display: "flex", flexDirection: "row", padding: "12px" }}
-          >
+        <Card style={{ ...styles.card, ...BOX_STYLE }} raised={true}>
+          <p style={BOX_HEADER}>Calendar</p>
+          <div style={styles.buttonContainer}>
             <LogInOut
               isAuthenticated={this.state.isAuthenticated}
               logIn={this.login.bind(this)}
@@ -344,9 +375,13 @@ class GraphCaller extends React.Component {
           <Calendar
             style={styles.calendar}
             localizer={localizer}
-            defaultDate={new Date()}
-            defaultView="week"
+            defaultView="work_week"
             events={calEvents}
+            min={minTime}
+            max={maxTime}
+            step={60}
+            timeslots={1}
+            views={["day", "work_week", "month", "agenda"]}
           />
         </Card>
       </Router>

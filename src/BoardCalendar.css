@@ -52,7 +52,7 @@ button.rbc-input::-moz-focus-inner {
 
   
 .rbc-off-range-bg {
-  background: #477081; } /*outside month day cell*/
+  background: #bfbfbf; } /*outside month day cell*/
 
   
 
@@ -161,9 +161,9 @@ button.rbc-input::-moz-focus-inner {
   box-shadow: none;
   margin: 0;
   padding: 2px 5px;
-  background-color: #506F85; /*event background */
+  background-color: #658398; /*event background */
   border-radius: 5px;
-  color: #fff; /*word color*/
+  color: #f2f2f2; /*word color*/
   cursor: pointer;
   width: 100%;
   text-align: left; }
@@ -176,7 +176,7 @@ button.rbc-input::-moz-focus-inner {
     outline: 5px auto #3b99fc; }
 
 .rbc-event-label {
-  font-size: 80%; }
+  font-size: 12px; }
 
 .rbc-event-overlaps {
   box-shadow: -1px 1px 5px 0px rgba(51, 51, 51, 0.5); }
@@ -260,7 +260,7 @@ button.rbc-input::-moz-focus-inner {
   flex-direction: row;
   flex: 1 0 0;
   overflow: hidden;
-  background: #00ADD2; 
+  background: #f2f2f2; 
 }
 
 .rbc-day-bg {
@@ -451,6 +451,7 @@ button.rbc-input::-moz-focus-inner {
     box-sizing: content-box;
     width: 100%;
     height: 100%;
+    display: none;
     position: relative; }
   .rbc-time-view .rbc-allday-cell + .rbc-allday-cell {
     border-left: 1px solid #DDD; }
