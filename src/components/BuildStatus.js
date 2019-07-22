@@ -55,6 +55,8 @@ class BuildStatus extends React.Component {
   componentWillUnmount() {
     clearInterval(this.intervalId);
     clearInterval(this.toggleId);
+
+    //clearing out left out promise during unmount.
     if (this.trashableRequestList)
       this.trashableRequestList.forEach(promise => promise.trash());
   }
@@ -71,6 +73,7 @@ class BuildStatus extends React.Component {
         makeTrashable(this.fetchData(jenkinsURLList[URL]))
       );
     }
+
     //fetch and update jenkins information for all team
     await Promise.all(this.trashableRequestList)
       .then(linklist => {
