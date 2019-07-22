@@ -6,10 +6,12 @@ import { BOX_STYLE, BOX_HEADER } from "./styles";
 import { minute, time } from "./utilities/TimeUtils";
 import { GITHUB_HEIGHT } from "./githubCaller";
 import makeTrashable from "trashable";
+import Grow from "@material-ui/core/Grow";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
+const ROTATE_INTERVAL = minute;
 
 const styles = {
   CardContainer: {
@@ -26,8 +28,7 @@ const styles = {
   },
   SlackCardContainer: {
     top: "72px",
-    height: "100%",
-    position: "absolute"
+    height: "100%"
   },
   GradientBlock: {
     height: "15%",
@@ -55,6 +56,13 @@ class SlackComponent extends React.Component {
       messages: [],
       slackUsers: [],
       channels: [],
+      //messages array with each element attached with a SlackCard Component
+      slackMsg: [],
+      //create a sequentially incrementing number array: i.e. [0,1,2...].
+      displayIndex: Array.apply(null, { length: MAX_MSGS }).map(
+        Function.call,
+        Number
+      ),
       userLoading: true,
       emojiLoading: true,
       msgLoading: true,
@@ -79,6 +87,7 @@ class SlackComponent extends React.Component {
       () => this.checkRefresh(),
       minute
     );
+    this.rotateTimerIntervalID = setInterval(() => this.rotateTimer(), ROTATE_INTERVAL);
   }
 
   // clean up intervals
@@ -89,6 +98,7 @@ class SlackComponent extends React.Component {
     //clearing out left out promise during unmount.
     if (this.trashableRequestList)
       this.trashableRequestList.forEach(promise => promise.trash());
+    clearInterval(this.rotateTimerIntervalID);
   }
 
   // checks if any components need to re-fetch data
@@ -131,6 +141,7 @@ class SlackComponent extends React.Component {
         messageList.push(message);
       });
       this.setState({ messages: messageList, msgLoading: false });
+      this.setSlackMsg();
     } else {
       console.log("Failed to fetch slack messages");
     }
@@ -215,6 +226,77 @@ class SlackComponent extends React.Component {
     );
   }
 
+  //create state with a arraylist consisting of SlackCard component with unique keys/index up to MAX_MSGS.
+  setSlackMsg() {
+    let cardList = [];
+    for (let i = 0; i < MAX_MSGS; i++) {
+      cardList.push(
+        <SlackCard
+          key={i}
+          index={i}
+          slackUsers={this.state.slackUsers}
+          messages={this.state.messages}
+          emojis={this.state.emojis}
+        />
+      );
+    }
+    this.setState({
+      slackMsg: cardList
+    });
+  }
+
+  //function runs in a setInterval to rotate/shift messages to give a dynamic aspect to the slack component.
+  rotateTimer() {
+    if (!this.anyStillLoading()) {
+      this.rotateMessages();
+    }
+  }
+
+  //rotate the index so that it's not necessary to rotate the whole array of this.state.slackMsg.
+  rotateMessages() {
+    let array = this.state.displayIndex;
+    this.rotateToRight(array);
+    this.setState({ displayIndex: array });
+  }
+
+  //shift array element to right as in rotating
+  rotateToRight(array) {
+    let temp = array[array.length - 1];
+    for (let i = array.length - 1; i >= 0; i--) {
+      array[i] = array[i - 1];
+    }
+    array[0] = temp;
+  }
+
+  //display the rest of the slack messages excluding the message shown by displayFirstMessage()
+  //in a specific order following what displayfirstMessage() has shown
+  //i.e. if displayFirstMessage() displayed message of 3rd index, then displayRestOfMessages will return/display messages 4 to last + 0 to 2 index.
+  displayRestOfMessages() {
+    let msgToShow = [
+      ...this.state.slackMsg.slice(this.state.displayIndex[1]),
+      ...this.state.slackMsg.slice(0, this.state.displayIndex[1])
+    ];
+    return msgToShow;
+  }
+
+  //@param:
+  //  item: displayIndex array element which contains the rotating order of the slack messages to be shown
+  //  index: displayIndex array index
+  //only return components if the index === 0
+  //@return:
+  //  components that display only the first message of the slackMsg determined by the displayIndex with a Zoom effect.
+  displayFirstMessage(item, index) {
+    if (index === 0) {
+      return (
+        <Grow key={item} in={true}>
+          <div style={styles.SlackCardContainer}>
+            {this.state.slackMsg[item]}
+          </div>
+        </Grow>
+      );
+    }
+  }
+
   render() {
     if (this.anyStillLoading()) {
       return (
@@ -223,17 +305,17 @@ class SlackComponent extends React.Component {
         </Card>
       );
     } else {
-      let cardList = [];
-      for (var i = 0; i < MAX_MSGS; i++) {
-        cardList.push(<SlackCard key={i} index={i} {...this.state} />);
-      }
-
       return (
         <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
           <span style={BOX_HEADER}>#{this.getChannelName(CHANNEL)}</span>
           <div style={styles.GradientBlock}></div>
           <div style={styles.WhiteBlock}></div>
-          <div style={styles.SlackCardContainer}>{cardList}</div>
+          {this.state.displayIndex.map((item, index) =>
+            this.displayFirstMessage(item, index)
+          )}
+          <div style={styles.SlackCardContainer}>
+            {this.displayRestOfMessages()}
+          </div>
         </Card>
       );
     }
