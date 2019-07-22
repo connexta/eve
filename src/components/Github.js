@@ -1,9 +1,9 @@
 import React from "react";
 import { Card } from "@material-ui/core";
-import { CX_GRAY_BLUE } from "./Constants.js";
-import { BOX_STYLE, BOX_HEADER } from "./styles";
-import pullRequest from "../resources/pullRequest.png";
-import { getRelativeTime, hour } from "./utilities/TimeUtils";
+import { CX_GRAY_BLUE } from "../utils/Constants.js";
+import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import pullRequest from "../../resources/pullRequest.png";
+import { getRelativeTime, hour } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 
 const NUMPULLS = 5;
