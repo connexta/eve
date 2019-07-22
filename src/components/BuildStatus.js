@@ -1,10 +1,10 @@
 import React from "react";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY, CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
 import { jenkinsURLList } from "../utils/Link";
 import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
-import { hour, getRelativeTime } from "../utils/TimeUtils";
+import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
 import makeTrashable from "trashable";
 
