@@ -1,6 +1,6 @@
 import React from "react";
-import { CX_OFF_WHITE, CX_FONT } from "./Constants.js";
-import Clock from "react-live-clock";
+import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants.js";
+import LiveClock from "react-live-clock";
 
 const styles = {
   ClockFullStyle: {
@@ -31,7 +31,7 @@ const styles = {
 const ClockHr = ({ timezone }) => {
   return (
     <nav style={styles.ClockHrStyle}>
-      <Clock format={"HH"} ticking={true} timezone={timezone} />
+      <LiveClock format={"HH"} ticking={true} timezone={timezone} />
     </nav>
   );
 };
@@ -39,12 +39,12 @@ const ClockHr = ({ timezone }) => {
 const ClockMin = ({ timezone }) => {
   return (
     <nav style={styles.ClockMinStyle}>
-      <Clock format={":mm"} ticking={true} timezone={timezone} />
+      <LiveClock format={":mm"} ticking={true} timezone={timezone} />
     </nav>
   );
 };
 
-const ClockFull = ({ timezone, place }) => {
+const Clock = ({ timezone, place }) => {
   return (
     <div style={styles.ClockFullStyle}>
       <ClockHr timezone={timezone} />
@@ -56,4 +56,4 @@ const ClockFull = ({ timezone, place }) => {
   );
 };
 
-export default ClockFull;
+export default Clock;

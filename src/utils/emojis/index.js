@@ -45,6 +45,6 @@ function unicodeForEmoji(token) {
 }
 
 function htmlForEmoji(token) {
-  const src = require("../../resources/emojis/" + token + ".png");
+  const src = require("../../../resources/emojis/" + token + ".png");
   return `<img class="emoji" width="25" height="25" style="display: inline;" src=${src} alt="${token}">`;
 }

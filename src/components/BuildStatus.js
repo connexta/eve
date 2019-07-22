@@ -1,10 +1,10 @@
 import React from "react";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
-import { overviewURL, jenkinsURLList } from "./lib/Link";
-import { BOX_STYLE, BOX_HEADER } from "./styles";
-import { hour, getRelativeTime } from "./utilities/TimeUtils";
+import { overviewURL, jenkinsURLList } from "../utils/Link";
+import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { hour, getRelativeTime } from "../utils/TimeUtils";
 
 const styles = {
   cardheader: {
