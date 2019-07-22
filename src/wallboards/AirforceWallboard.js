@@ -1,9 +1,9 @@
 import React from "react";
-import BuildStatus from "../BuildStatus";
-import SlackComponent from "../SlackComponent";
-import { leftBox, rightBox } from "./WallboardStyles";
+import BuildStatus from "../components/BuildStatus";
+import SlackComponent from "../components/SlackComponent";
+import { leftBox, rightBox } from "../styles/WallboardStyles";
 import Grid from "@material-ui/core/Grid";
-import BuildAF from "../BuildAF";
+import BuildAF from "../components/BuildAF";
 
 export default class AirforceWallboard extends React.Component {
   render() {

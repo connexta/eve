@@ -1,14 +1,13 @@
 import React from "react";
-import { BATMAN_GRAY } from "./Constants.js";
+import { BATMAN_GRAY } from "../utils/Constants.js";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { extractTime } from "./utilities/utility";
-import { hour } from "./utilities/TimeUtils.js";
-import { AFJenkinLink, AFURL, AFpipeline } from "./lib/Link.js";
-import { BOX_STYLE, BOX_HEADER } from "./styles";
+import { hour, parseTimeString } from "../utils/TimeUtils.js";
+import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
+import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
 import makeTrashable from "trashable";
 
 const styles = {
@@ -132,7 +131,7 @@ class BuildAF extends React.Component {
         <ListItemText
           primary={this.formatData(data)}
           secondary={
-            extractTime(data.startTime) +
+            parseTimeString(data.startTime) +
             " Triggered by " +
             this.formatCauses(data.causes)
           }
