@@ -68,7 +68,7 @@ ReactDOM.render(
         <Clock timezone="US/Arizona" place="PHX" />
         <Clock timezone="US/Mountain" place="DEN" />
         <Clock timezone="US/Eastern" place="BOS" />
-        <Clock timezone="Europe/London" place="UK" />
+        <Clock timezone="Europe/London" place="LON" />
         <Clock timezone="Australia/Melbourne" place="MEL" />
       </Grid>
       <Grid item style={styles.bottom}>
