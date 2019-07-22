@@ -1,4 +1,4 @@
-import { BANNER_HEIGHT } from "../../index";
+import { BANNER_HEIGHT } from "../index";
 
 export const leftBox = {
   height: "100%",

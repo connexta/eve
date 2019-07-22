@@ -1,4 +1,9 @@
-import { CX_OFF_WHITE, CX_GRAY_BLUE, BATMAN_GRAY, CX_FONT } from "../Constants";
+import {
+  CX_OFF_WHITE,
+  CX_GRAY_BLUE,
+  BATMAN_GRAY,
+  CX_FONT
+} from "../utils/Constants";
 
 export const BOX_STYLE = {
   margin: "24px",

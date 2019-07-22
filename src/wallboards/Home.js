@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants";
-import { HOMEBASE, WallBoardButtons } from "../utils/styles/WallboardStyles";
+import { HOMEBASE, WallBoardButtons } from "../styles/WallboardStyles";
 import Button from "@material-ui/core/Button";
 
 // Wallboard Variants
