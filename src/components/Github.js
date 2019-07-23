@@ -21,7 +21,8 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-around",
-    height: "84%"
+    height: "84%",
+    clear: "both"
   },
   header: {
     margin: "12px 0px 0px 12px"
