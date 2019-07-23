@@ -5,9 +5,9 @@ import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import "!style-loader!css-loader!./BoardCalendar.css";
-import { BOX_STYLE, BOX_HEADER } from "./styles.js";
-import { BUILD_STATUS_HEIGHT } from "./BuildStatus";
+import "!style-loader!css-loader!../../styles/Calendar.css";
+import { BOX_STYLE, BOX_HEADER } from "../../styles/styles";
+import { BUILD_STATUS_HEIGHT } from "../BuildStatus";
 import {
   Card,
   Dialog,
@@ -16,7 +16,7 @@ import {
   ListItemText,
   DialogTitle
 } from "@material-ui/core";
-import { hour } from "./utilities/TimeUtils";
+import { minute, hour } from "../../utils/TimeUtils";
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@ const NUM_EVENTS = 200; //limit on number of events to grab
 const START_HOUR = 8; // earliest hour to display in week/day view
 const END_HOUR = 18; // latest hour to display
 const WIP_MESSAGE_SPACE = 32;
+const CALL_FREQ = 30 * minute; //how often to refresh calendar events
 
 const styles = {
   card: {
@@ -194,10 +195,14 @@ class GraphCaller extends React.Component {
   componentDidMount() {
     if (this.state.isAuthenticated && this.state.chosenCal)
       this.getCalendarEvents(this.state.chosenCal);
-    setInterval(() => {
+    this.timerIntervalID = setInterval(() => {
       if (this.state.isAuthenticated && this.state.chosenCal)
         this.getCalendarEvents(this.state.chosenCal);
-    }, 1000 * 20);
+    }, CALL_FREQ);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerIntervalID);
   }
 
   // clean up event data so it works with big-react-calendar

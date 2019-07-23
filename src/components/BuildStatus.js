@@ -1,10 +1,11 @@
 import React from "react";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "./Constants";
+import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
-import { overviewURL, jenkinsURLList } from "./lib/Link";
-import { BOX_STYLE, BOX_HEADER } from "./styles";
-import { hour, getRelativeTime } from "./utilities/TimeUtils";
+import { overviewURL, jenkinsURLList } from "../utils/Link";
+import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { hour, getRelativeTime } from "../utils/TimeUtils";
+import makeTrashable from "trashable";
 
 export const BUILD_STATUS_HEIGHT = 160;
 
@@ -47,6 +48,11 @@ class BuildStatus extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.intervalId);
+    //clearing out left out promise during unmount.
+    if (this.trashableRequestOverview) this.trashableRequestOverview.trash();
+    if (this.trashableRequestAF) this.trashableRequestAF.trash();
+    if (this.trashableRequestList)
+      this.trashableRequestList.forEach(promise => promise.trash());
   }
 
   //a function that continuously be called by each set interval in componentDidMount() to fetch/update each team status for display
@@ -58,8 +64,8 @@ class BuildStatus extends React.Component {
     let index = 0;
 
     //fetch/update overview data for each team (except AF) for displayName and weatherScore
-    let promise = this.fetchData(overviewURL);
-    await promise
+    this.trashableRequestOverview = makeTrashable(this.fetchData(overviewURL));
+    await this.trashableRequestOverview
       .then(values => {
         values.forEach(item => {
           if (jenkinsURLList[item.displayName.toLowerCase()]) {
@@ -70,20 +76,24 @@ class BuildStatus extends React.Component {
       .catch(e => console.log("error", e));
 
     //fetch/update overview data for AF team for displayName and weatherScore
-    promise = this.fetchData(jenkinsURLList["af"]);
-    await promise
+    this.trashableRequestAF = makeTrashable(
+      this.fetchData(jenkinsURLList["af"])
+    );
+    await this.trashableRequestAF
       .then(item => {
         index = this.updateData(item, overallData, index);
       })
       .catch(e => console.log("error", e));
 
     //fetch/update last time build status for each team
-    let promises = [];
+    this.trashableRequestList = [];
     for (URL in jenkinsURLList) {
-      promises.push(this.fetchData(jenkinsURLList[URL]));
+      this.trashableRequestList.push(
+        makeTrashable(this.fetchData(jenkinsURLList[URL]))
+      );
     }
 
-    await Promise.all(promises)
+    await Promise.all(this.trashableRequestList)
       .then(values => {
         for (let i = 0; i < values.length; i++) {
           overallData[i].time =

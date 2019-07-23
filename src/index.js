@@ -1,11 +1,16 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import { CX_DARK_BLUE, CX_GRAY_BLUE, CX_FONT, CX_OFF_WHITE } from "./Constants";
+import {
+  CX_DARK_BLUE,
+  CX_GRAY_BLUE,
+  CX_FONT,
+  CX_OFF_WHITE
+} from "./utils/Constants";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { wallboards } from "./wallboards/Home";
 import NullWallboard from "./wallboards/NullWallboard";
 import logo from "../resources/logo-offwhite.png";
-import ClockFull from "./clock.js";
+import Clock from "./components/Clock";
 import Grid from "@material-ui/core/Grid";
 
 export const BANNER_HEIGHT = 124;
@@ -60,10 +65,10 @@ ReactDOM.render(
         <Link to="/">
           <Logo />
         </Link>
-        <ClockFull timezone="US/Arizona" place="PHX" />
-        <ClockFull timezone="US/Mountain" place="DEN" />
-        <ClockFull timezone="US/Eastern" place="BOS" />
-        <ClockFull timezone="Australia/Melbourne" place="MEL" />
+        <Clock timezone="US/Arizona" place="PHX" />
+        <Clock timezone="US/Mountain" place="DEN" />
+        <Clock timezone="US/Eastern" place="BOS" />
+        <Clock timezone="Australia/Melbourne" place="MEL" />
       </Grid>
       <Grid item style={styles.bottom}>
         <Switch>
