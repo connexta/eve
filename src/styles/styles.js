@@ -18,3 +18,5 @@ export const BOX_HEADER = {
   color: CX_GRAY_BLUE,
   margin: "12px 0 0 12px"
 };
+
+export const CARD_SIDE_MARGINS = 24;

@@ -3,7 +3,7 @@ import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
 import { overviewURL, jenkinsURLList } from "../utils/Link";
-import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { BOX_STYLE, BOX_HEADER, CARD_SIDE_MARGINS } from "../styles/styles";
 import { hour, getRelativeTime } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 
@@ -12,7 +12,7 @@ export const BUILD_STATUS_HEIGHT = 160;
 const styles = {
   card: {
     height: BUILD_STATUS_HEIGHT,
-    width: "calc(100% - 24px)"
+    width: "calc(100% - " + CARD_SIDE_MARGINS + "px)"
   },
   cardheader: {
     background: CX_OFF_WHITE,
