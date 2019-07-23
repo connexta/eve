@@ -11,7 +11,7 @@ import Grow from "@material-ui/core/Grow";
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
-const ROTATE_INTERVAL = minute;
+const ROTATE_INTERVAL = time({ seconds: 30 });
 
 const styles = {
   CardContainer: {
