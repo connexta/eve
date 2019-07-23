@@ -10,7 +10,6 @@ import makeTrashable from "trashable";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
-
 const styles = {
   cardheader: {
     background: CX_OFF_WHITE,
@@ -56,9 +55,8 @@ class BuildStatus extends React.Component {
   componentWillUnmount() {
     clearInterval(this.intervalId);
     clearInterval(this.toggleId);
+
     //clearing out left out promise during unmount.
-    if (this.trashableRequestOverview) this.trashableRequestOverview.trash();
-    if (this.trashableRequestAF) this.trashableRequestAF.trash();
     if (this.trashableRequestList)
       this.trashableRequestList.forEach(promise => promise.trash());
   }
