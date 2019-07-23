@@ -23,15 +23,10 @@ const styles = {
 class BuildIcon extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      name: props.name,
-      score: props.score,
-      subtitle: props.subtitle
-    };
   }
 
   render() {
-    return this.state.score >= 80 ? (
+    return this.props.score >= 80 ? (
       <CardContent style={styles.cardContent}>
         <GoodState
           fontSize="inherit"
@@ -42,10 +37,10 @@ class BuildIcon extends React.Component {
             transform: "scale(0.9)"
           }}
         />
-        {this.state.name}
-        <div style={styles.date}>{this.state.subtitle}</div>
+        {this.props.name}
+        <div style={styles.date}>{this.props.subtitle}</div>
       </CardContent>
-    ) : this.state.score >= 40 ? (
+    ) : this.props.score >= 40 ? (
       <CardContent style={styles.cardContent}>
         <NeutralState
           fontSize="inherit"
@@ -56,8 +51,8 @@ class BuildIcon extends React.Component {
             transform: "scale(0.9)"
           }}
         />
-        {this.state.name}
-        <div style={styles.date}>{this.state.subtitle}</div>
+        {this.props.name}
+        <div style={styles.date}>{this.props.subtitle}</div>
       </CardContent>
     ) : (
       <CardContent style={styles.cardContent}>
@@ -70,8 +65,8 @@ class BuildIcon extends React.Component {
             transform: "scale(0.9)"
           }}
         />
-        {this.state.name}
-        <div style={styles.date}>{this.state.subtitle}</div>
+        {this.props.name}
+        <div style={styles.date}>{this.props.subtitle}</div>
       </CardContent>
     );
   }
