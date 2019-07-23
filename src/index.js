@@ -42,7 +42,7 @@ const styles = {
   // For message in bottom left corner
   DevMessage: {
     color: CX_OFF_WHITE,
-    fontSize: "32px",
+    fontSize: "20px",
     position: "absolute",
     bottom: 0,
     marginLeft: "24px"
@@ -73,11 +73,7 @@ ReactDOM.render(
           <Route component={NullWallboard} />
         </Switch>
         <div style={styles.DevMessage}>
-          <p>Project EVE: Work in Progress</p>
-          <p>
-            For comments/questions, contact @vina or @matt or join
-            #wallboard-dev
-          </p>
+          <p>Work in Progress, contact @vina, @matt or join #wallboard-dev</p>
         </div>
       </Grid>
     </Grid>

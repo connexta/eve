@@ -6,7 +6,13 @@ import { overviewURL, jenkinsURLList } from "./lib/Link";
 import { BOX_STYLE, BOX_HEADER } from "./styles";
 import { hour, getRelativeTime } from "./utilities/TimeUtils";
 
+export const BUILD_STATUS_HEIGHT = 160;
+
 const styles = {
+  card: {
+    height: BUILD_STATUS_HEIGHT,
+    width: "calc(100% - 24px)"
+  },
   cardheader: {
     background: CX_OFF_WHITE,
     color: BATMAN_GRAY,
@@ -124,11 +130,11 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
         <p style={BOX_HEADER}>Loading Build Health. . .</p>
       </Card>
     ) : (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
         <p style={BOX_HEADER}>Build Health</p>
         <CardContent style={styles.cardContent}>
           {this.state.data.map(item => {
