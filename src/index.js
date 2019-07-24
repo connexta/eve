@@ -45,25 +45,11 @@ const styles = {
   logo: {
     margin: "0 0 12px 0"
   },
-  clock0: {
-    // display: "flex",
-    flexDirection: "row",
-    // border: "2px solid black",
-    justifyContent: "space-evenly",
-    width: "100%",
-    marginLeft: "10%",
-    // marginRight: "2%",
-    float: "left"
-  },
-  clock1: {
-    // display: "flex",
-    flexDirection: "row",
-    // border: "2px solid black",
-    justifyContent: "space-evenly",
-
-    maxWidth: "25%",
-    marginLeft: "2%",
-    float: "right"
+  day: {
+    position: "absolute",
+    top: "100px",
+    left: "62%",
+    fontSize: "20px"
   },
   // For message in bottom left corner
   DevMessage: {
@@ -86,17 +72,11 @@ ReactDOM.render(
         <Link to="/">
           <Logo />
         </Link>
-        <Grid spacing={3} direction="row">
-          Sunday
-          <Clock timezone="US/Arizona" place="PHX" />
-          <Clock timezone="US/Mountain" place="DEN" />
-          <Clock timezone="US/Eastern" place="BOS" />
-        </Grid>
-        <Grid spacing={3} direction="row">
-          Monday
-          <Clock timezone="Europe/London" place="LON" />
-          <Clock timezone="Australia/Melbourne" place="MEL" />
-        </Grid>
+        <Clock timezone="US/Arizona" place="PHOENIX" />
+        <Clock timezone="US/Mountain" place="DENVER" />
+        <Clock timezone="US/Eastern" place="BOSTON" />
+        <Clock timezone="Europe/London" place="LONDON" />
+        <Clock timezone="Australia/Melbourne" place="MELBOURNE" />
       </Grid>
       <Grid item style={styles.bottom}>
         <Switch>
