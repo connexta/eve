@@ -62,7 +62,7 @@ class I2OWallboard extends React.Component {
     for (let i = 0; i < pipelineNameList.length; i++) {
       this.trashableBranchExists[i] = makeTrashable(fetch(Object.values(pipelineNameList[i]))
       .then(response => response.json())
-      .catch(e => console.log("error", e)));
+      .catch(e => console.log("error fetching the i2o pipelines", e)));
 
       await this.trashableBranchExists[i]
         .then(json => {

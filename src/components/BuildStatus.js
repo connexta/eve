@@ -37,7 +37,7 @@ const styles = {
   },
   buttonSelected: {
     float: "right",
-    textDecoration: "underline" + CX_DARK_BLUE
+    textDecoration: "underline " + CX_DARK_BLUE
   }
 };
 
