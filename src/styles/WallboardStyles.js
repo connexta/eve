@@ -11,7 +11,7 @@ export const rightBox = {
 };
 
 export const I2OleftBox = {
-  height: "100px",
+  height: "100%",
   width: "30%"
 };
 

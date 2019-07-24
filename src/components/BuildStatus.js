@@ -7,10 +7,8 @@ import {
 } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
-import { jenkinsURLList } from "../utils/Link";
 import { BOX_STYLE, BOX_HEADER, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
-export const BUILD_STATUS_HEIGHT = 160;
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
 
@@ -18,7 +16,6 @@ const TOGGLE_INTERVAL = time({ seconds: 10 });
 
 const styles = {
   card: {
-    height: BUILD_STATUS_HEIGHT,
     width: "calc(100% - " + CARD_SIDE_MARGINS + "px)"
   },
   cardheader: {

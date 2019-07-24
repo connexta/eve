@@ -10,7 +10,6 @@ export default class AirforceWallboard extends React.Component {
     return (
       <Grid container style={{ height: "100%" }}>
         <Grid item style={leftBox}>
-          <BuildStatus />
           <BuildAF />
         </Grid>
         <Grid item style={rightBox}>
