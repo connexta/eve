@@ -164,8 +164,6 @@ class CalendarCaller extends React.Component {
 
     var user = this.userAgentApplication.getAccount();
 
-    console.log(new Date());
-
     this.state = {
       isAuthenticated: user !== null,
       events: [],
@@ -180,17 +178,12 @@ class CalendarCaller extends React.Component {
 
   // clean up event data so it works with big-react-calendar
   updateEvents(eventData) {
-    if (eventData != null) {
+    if (eventData != null && eventData.length > 0) {
       eventData = eventData.map(event => ({
         title: event.subject,
         start: event.start,
         end: event.end
       }));
-
-      console.log(eventData[0].start);
-      console.log(
-        localizeTime(eventData[0].start.dateTime, eventData[0].start.timeZone)
-      );
 
       for (let i = 0; i < eventData.length; i++) {
         eventData[i].start = localizeTime(
@@ -207,6 +200,10 @@ class CalendarCaller extends React.Component {
         isAuthenticated: true,
         events: eventData,
         error: null
+      });
+    } else {
+      this.setState({
+        events: []
       });
     }
   }
