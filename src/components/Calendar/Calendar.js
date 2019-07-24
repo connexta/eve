@@ -50,13 +50,15 @@ const styles = {
     fontSize: "16px"
   },
   buttonContainer: {
-    width: "90%",
+    width: "100%",
+    marginLeft: "calc(5% - 3px)", // 3 px to accomodate rbc-btn-group margins
     display: "flex",
     flexDirection: "row",
     verticalAlign: "bottom"
   },
   button: {
     display: "inline-block",
+    margin: 0,
     height: "30px",
     verticalAlign: "bottom",
     marginTop: "8px"
@@ -113,7 +115,7 @@ class DialogAndButton extends React.Component {
     return (
       <div>
         <button
-          style={{ ...styles.rightButton, ...styles.button }}
+          style={{ ...styles.button, ...styles.rightButton }}
           type="button"
           onClick={this.handleClickOpen.bind(this)}
         >
@@ -145,52 +147,6 @@ class DialogAndButton extends React.Component {
 //////////////////////////////////////////////////////////////////////////////
 
 class CalendarCaller extends React.Component {
-  constructor(props) {
-    super(props);
-
-    // grab and store user credentials
-    this.userAgentApplication = new UserAgentApplication({
-      auth: {
-        clientId: config.appId,
-        authority: config.authority
-      },
-      cache: {
-        cacheLocation: "localStorage",
-        storeAuthStateInCookie: true
-      }
-    });
-
-    var user = this.userAgentApplication.getAccount();
-
-    this.state = {
-      isAuthenticated: user !== null,
-      events: [],
-      calendars: [],
-      chosenCal: localStorage.getItem("chosenCalendar")
-    };
-
-    if (user) {
-      this.getCalendars();
-    }
-  }
-
-  // Refresh user information/calendar events
-  componentDidMount() {
-    if (this.state.isAuthenticated && this.state.chosenCal)
-      this.getCalendarEvents(this.state.chosenCal);
-    this.timerIntervalID = setInterval(() => {
-      if (this.state.isAuthenticated && this.state.chosenCal)
-        this.getCalendarEvents(this.state.chosenCal);
-    }, CALL_FREQ);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerIntervalID);
-    if (this.trashableAccessToken) this.trashableAccessToken.trash();
-    if (this.trashableAPICall) this.trashableAPICall.trash();
-    if (this.trashableLogIn) this.trashableLogIn.trash();
-  }
-
   // clean up event data so it works with big-react-calendar
   updateEvents(eventData) {
     if (eventData != null) {
@@ -346,6 +302,52 @@ class CalendarCaller extends React.Component {
     }
   }
 
+  constructor(props) {
+    super(props);
+
+    // grab and store user credentials
+    this.userAgentApplication = new UserAgentApplication({
+      auth: {
+        clientId: config.appId,
+        authority: config.authority
+      },
+      cache: {
+        cacheLocation: "localStorage",
+        storeAuthStateInCookie: true
+      }
+    });
+
+    var user = this.userAgentApplication.getAccount();
+
+    this.state = {
+      isAuthenticated: user !== null,
+      events: [],
+      calendars: [],
+      chosenCal: localStorage.getItem("chosenCalendar")
+    };
+
+    if (user) {
+      this.getCalendars();
+    }
+  }
+
+  // Refresh user information/calendar events
+  componentDidMount() {
+    if (this.state.isAuthenticated && this.state.chosenCal)
+      this.getCalendarEvents(this.state.chosenCal);
+    this.timerIntervalID = setInterval(() => {
+      if (this.state.isAuthenticated && this.state.chosenCal)
+        this.getCalendarEvents(this.state.chosenCal);
+    }, CALL_FREQ);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerIntervalID);
+    if (this.trashableAccessToken) this.trashableAccessToken.trash();
+    if (this.trashableAPICall) this.trashableAPICall.trash();
+    if (this.trashableLogIn) this.trashableLogIn.trash();
+  }
+
   render() {
     let calButton = this.state.isAuthenticated ? (
       <DialogAndButton
@@ -365,19 +367,20 @@ class CalendarCaller extends React.Component {
 
     return (
       <Router>
-        <Card style={{ ...styles.card, ...BOX_STYLE }} raised={true}>
+        <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
           <p style={BOX_HEADER}>Calendar</p>
-          <div className="rbc-toolbar">
-            <span className="rbc-btn-group" style={styles.buttonContainer}>
-              <LogInOut
-                isAuthenticated={this.state.isAuthenticated}
-                logIn={this.login.bind(this)}
-                logOut={this.logout.bind(this)}
-              />
-              {calButton}
-            </span>
+          <div style={styles.buttonContainer}>
+            <div className="rbc-toolbar">
+              <span className="rbc-btn-group" style={styles.buttonContainer}>
+                <LogInOut
+                  isAuthenticated={this.state.isAuthenticated}
+                  logIn={this.login.bind(this)}
+                  logOut={this.logout.bind(this)}
+                />
+                {calButton}
+              </span>
+            </div>
           </div>
-          <div style={styles.buttonContainer}></div>
           <Calendar
             style={styles.calendar}
             localizer={localizer}

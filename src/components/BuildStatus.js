@@ -159,7 +159,7 @@ class BuildStatus extends React.Component {
         <p style={BOX_HEADER}>Loading Build Health. . .</p>
       </Card>
     ) : (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
         <p style={BOX_HEADER}>Jenkins Build Health</p>
         <Button
           style={
