@@ -16,7 +16,6 @@
     "@primer/octicons-react": "^9.1.1",
     "css-loader": "^3.1.0",
     "html-react-parser": "^0.7.1",
-    "json-loader": "^0.5.7",
     "moment": "^2.24.0",
     "msal": "^1.0.2",
     "react": "^16.8.6",
@@ -25,8 +24,7 @@
     "react-live-clock": "^3.1.0",
     "react-router-dom": "^5.0.1",
     "style-loader": "^0.23.1",
-    "trashable": "^1.0.7",
-    "react-scripts": "^3.0.1"
+    "trashable": "^1.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
