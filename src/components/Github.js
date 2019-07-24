@@ -67,14 +67,17 @@ export default class Github extends React.Component {
     this.getRepoName();
   }
 
-  loadUserData(data) {
+  async loadUserData(data) {
     var pulls = [];
     for (let i = 0; i < data.length && i < NUMPULLS; i++) {
+      let approvals = await this.getReviews(data[i].number);
       pulls[i] = {
         author: data[i].user.login,
         number: data[i].number,
         title: data[i].title,
-        timeCreated: getRelativeTime(new Date(data[i].created_at))
+        timeCreated: getRelativeTime(new Date(data[i].created_at)),
+        url: data[i].html_url,
+        approvals: approvals
       };
     }
 
@@ -119,6 +122,35 @@ export default class Github extends React.Component {
       });
   }
 
+  async getReviews(prNum) {
+    let reviews = this.fetchReviews(prNum);
+    let sum = 0;
+    for (let i = 0; i < reviews.length; i++) {
+      if (reviews[i].state == "APPROVED") sum++;
+    }
+    return sum;
+  }
+
+  async fetchReviews(prNum) {
+    return fetch(
+      "https://api.github.com/repos/" +
+        this.state.repoPath +
+        "/pulls/" +
+        prNum +
+        "/reviews?client_id=" +
+        CLIENT_ID +
+        "&client_secret=" +
+        CLIENT_SECRET
+    ).then(res => {
+      if (!res.ok) {
+        console.log("Failed to fetch GitHub data");
+        return;
+      } else {
+        return res.json();
+      }
+    });
+  }
+
   async callGithub() {
     this.trashableRequestGithub = makeTrashable(
       fetch(
@@ -145,7 +177,11 @@ export default class Github extends React.Component {
 
   render() {
     let prList = this.state.prs.map((pr, i) => (
-      <div key={i} style={{ marginBottom: "12px" }}>
+      <div
+        key={i}
+        style={{ marginBottom: "12px", cursor: "pointer" }}
+        onClick={() => window.open(pr.url)}
+      >
         <img style={styles.icon} src={pullRequest}></img>
         <div style={styles.mainAndSubline}>
           <span style={styles.PRMainLine}>
@@ -155,7 +191,7 @@ export default class Github extends React.Component {
             </em>
           </span>
           <div style={styles.PRSubline}>
-            {pr.timeCreated} by {pr.author}
+            {pr.timeCreated} by {pr.author}, {pr.approvals} approvals
           </div>
         </div>
       </div>
