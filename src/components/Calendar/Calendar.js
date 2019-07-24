@@ -147,6 +147,37 @@ class DialogAndButton extends React.Component {
 //////////////////////////////////////////////////////////////////////////////
 
 class CalendarCaller extends React.Component {
+  constructor(props) {
+    super(props);
+
+    // grab and store user credentials
+    this.userAgentApplication = new UserAgentApplication({
+      auth: {
+        clientId: config.appId,
+        authority: config.authority
+      },
+      cache: {
+        cacheLocation: "localStorage",
+        storeAuthStateInCookie: true
+      }
+    });
+
+    var user = this.userAgentApplication.getAccount();
+
+    console.log(new Date());
+
+    this.state = {
+      isAuthenticated: user !== null,
+      events: [],
+      calendars: [],
+      chosenCal: localStorage.getItem("chosenCalendar")
+    };
+
+    if (user) {
+      this.getCalendars();
+    }
+  }
+
   // clean up event data so it works with big-react-calendar
   updateEvents(eventData) {
     if (eventData != null) {
@@ -155,6 +186,11 @@ class CalendarCaller extends React.Component {
         start: event.start,
         end: event.end
       }));
+
+      console.log(eventData[0].start);
+      console.log(
+        localizeTime(eventData[0].start.dateTime, eventData[0].start.timeZone)
+      );
 
       for (let i = 0; i < eventData.length; i++) {
         eventData[i].start = localizeTime(
@@ -302,35 +338,6 @@ class CalendarCaller extends React.Component {
     }
   }
 
-  constructor(props) {
-    super(props);
-
-    // grab and store user credentials
-    this.userAgentApplication = new UserAgentApplication({
-      auth: {
-        clientId: config.appId,
-        authority: config.authority
-      },
-      cache: {
-        cacheLocation: "localStorage",
-        storeAuthStateInCookie: true
-      }
-    });
-
-    var user = this.userAgentApplication.getAccount();
-
-    this.state = {
-      isAuthenticated: user !== null,
-      events: [],
-      calendars: [],
-      chosenCal: localStorage.getItem("chosenCalendar")
-    };
-
-    if (user) {
-      this.getCalendars();
-    }
-  }
-
   // Refresh user information/calendar events
   componentDidMount() {
     if (this.state.isAuthenticated && this.state.chosenCal)
@@ -383,7 +390,7 @@ class CalendarCaller extends React.Component {
           </div>
           <Calendar
             style={styles.calendar}
-            localizer={localizer}
+            localizer={momentLocalizer(moment)}
             defaultView="work_week"
             getNow={() => new Date(new Date().valueOf() + hour)}
             events={calEvents}
