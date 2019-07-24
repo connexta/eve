@@ -2,7 +2,6 @@ import React from "react";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY, CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
-import { jenkinsURLList } from "../utils/Link";
 import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
@@ -30,7 +29,7 @@ const styles = {
   },
   buttonSelected: {
     float: "right",
-    borderBottom: "thick solid " + CX_DARK_BLUE
+    textDecoration: "underline" + CX_DARK_BLUE
   }
 };
 
@@ -40,7 +39,6 @@ class BuildStatus extends React.Component {
     this.toggle = this.toggle.bind(this);
     this.state = {
       currentData: [],
-      lastFiveData: [],
       isLoading: true,
       toggle: true
     };
@@ -67,20 +65,19 @@ class BuildStatus extends React.Component {
   async refreshBuildStatus() {
     let overallData = [];
     this.trashableRequestList = [];
-    for (URL in jenkinsURLList) {
+    for (let index in this.props.urlList) {
       this.trashableRequestList.push(
-        makeTrashable(this.fetchData(jenkinsURLList[URL]))
+        makeTrashable(this.fetchData(Object.values(this.props.urlList[index])))
       );
     }
     //fetch and update jenkins information for all team
     await Promise.all(this.trashableRequestList)
       .then(linklist => {
         for (let index = 0; index < linklist.length; index++) {
-          this.updateData(linklist[index], overallData, index);
+          this.updateData(linklist[index], overallData, Object.keys(this.props.urlList[index]), index);
         }
       })
       .catch(e => console.log("error", e));
-
     //push all collected data to data state, and make it ready to display.
     this.setState({ currentData: overallData, isLoading: false });
   }
@@ -100,19 +97,28 @@ class BuildStatus extends React.Component {
   //@param:
   //  item: that contains information for array overallData to be updated
   //  overallData: array to pass down to keep each build information such as displayName, etc.
+  //  name: processed name to be displayed on the wallboard
   //  index: used to assign for each build information in the array
-  updateData(item, overallData, index) {
+  updateData(item, overallData, name, index) {
     overallData[index] = {
-      displayName: Object.keys(jenkinsURLList).map(key => {
-        if (item.fullName.includes(key)) {
-          return key;
-        }
-      }),
+      displayName: name,
       oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
       fiveScore: item.weatherScore,
       oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
-      fiveSubtitle: item.weatherScore / 20 + "/5 Succeeded"
+      fiveSubtitle: this.getFiveSubtitle(item)
     };
+  }
+
+  //get last five builds subtitles based on the number of weatherscore and number of total builds
+  getFiveSubtitle(item){
+    const divisor = item.latestRun.id >= 5 ? 5 : item.latestRun.id; //Since weatherscore is calculated by max 5 builds.
+    const weatherScoreDivisor = divisor === 0 ? undefined : Math.round(100/divisor); //avoid 0 division
+    if (!weatherScoreDivisor){
+      return "Data not Found"
+    }
+    else {
+      return (item.weatherScore / weatherScoreDivisor) + "/" + divisor.toString() + " Succeeded"
+    }
   }
 
   //return list of <BuildIcon> with corresponding information to the state toggle.
@@ -127,6 +133,7 @@ class BuildStatus extends React.Component {
               name={item.displayName}
               key={item.displayName + item.oneSubtitle}
               subtitle={item.oneSubtitle}
+              cardContentStyle={this.props.cardContentStyle}
             />
           );
         })
@@ -137,6 +144,7 @@ class BuildStatus extends React.Component {
               name={item.displayName}
               key={item.displayName + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
+              cardContentStyle={this.props.cardContentStyle}
             />
           );
         });

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --open --mode development --env.NODE_ENV=local",
-    "go": "yarn build && yarn start"
+    "go": "yarn install && yarn build && yarn start"
   },
   "dependencies": {
     "@material-ui/core": "^4.2.0",
