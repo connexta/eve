@@ -10,7 +10,7 @@ export const BOX_STYLE = {
   fontSize: "20px",
   color: BATMAN_GRAY,
   backgroundColor: CX_OFF_WHITE,
-  fontFamily: CX_FONT,
+  fontFamily: CX_FONT
 };
 
 export const BOX_HEADER = {
@@ -19,3 +19,5 @@ export const BOX_HEADER = {
   margin: "12px 0 0 12px",
   float: "left"
 };
+
+export const CARD_SIDE_MARGINS = 24;
