@@ -1,16 +1,26 @@
 import React from "react";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY, CX_DARK_BLUE } from "../utils/Constants";
+import {
+  CX_OFF_WHITE,
+  CX_FONT,
+  BATMAN_GRAY,
+  CX_DARK_BLUE
+} from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
 import { jenkinsURLList } from "../utils/Link";
-import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { BOX_STYLE, BOX_HEADER, CARD_SIDE_MARGINS } from "../styles/styles";
+import makeTrashable from "trashable";
+export const BUILD_STATUS_HEIGHT = 160;
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
-import makeTrashable from "trashable";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
 const styles = {
+  card: {
+    height: BUILD_STATUS_HEIGHT,
+    width: "calc(100% - " + CARD_SIDE_MARGINS + "px)"
+  },
   cardheader: {
     background: CX_OFF_WHITE,
     color: BATMAN_GRAY,
@@ -145,11 +155,11 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
         <p style={BOX_HEADER}>Loading Build Health. . .</p>
       </Card>
     ) : (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
         <p style={BOX_HEADER}>Jenkins Build Health</p>
         <Button
           style={
