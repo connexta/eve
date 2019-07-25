@@ -16,12 +16,21 @@ export default class AirforceWallboard extends React.Component {
   render() {
     return (
       <Grid container style={{ height: "100%" }}>
+<<<<<<< HEAD:client/wallboards/ReflexWallboard.js
         <LeftBox item>
+=======
+        <Grid item style={leftBox}>
+>>>>>>> Progress on converting styling:src/wallboards/AirforceWallboard.js
           <BuildStatus
             urlList={jenkinsURLList}
             cardContentStyle={styles.cardContent}
           />
+<<<<<<< HEAD:client/wallboards/ReflexWallboard.js
         </LeftBox>
+=======
+          <BuildAF />
+        </Grid>
+>>>>>>> Progress on converting styling:src/wallboards/AirforceWallboard.js
         <RightBox item>
           <SlackComponent />
         </RightBox>

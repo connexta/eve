@@ -24,7 +24,11 @@ export default class TVWallboard extends React.Component {
             cardContentStyle={styles.cardContent}
           />
           <Calendar />
+<<<<<<< HEAD:client/wallboards/TVWallboard.js
         </LeftBox>
+=======
+        </Grid>
+>>>>>>> Progress on converting styling:src/wallboards/TVWallboard.js
         <RightBox item>
           <SlackComponent />
           <Github repoPath={"codice/ddf"} />
