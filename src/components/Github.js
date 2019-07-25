@@ -173,6 +173,24 @@ export default class Github extends React.Component {
     this.getRepoName();
   }
 
+  // Function to make class to GitHub API, trashable used to protect against broken promises
+  async fetchGithub(call) {
+    this.trashableRequestGithub = makeTrashable(fetch(call));
+
+    return await this.trashableRequestGithub
+      .then(res => {
+        if (!res.ok) {
+          console.log("Failed to fetch GitHub data: " + call);
+          return;
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => {
+        return res;
+      });
+  }
+
   // Finds and sets name of repo
   async getRepoName() {
     let call =
@@ -184,65 +202,6 @@ export default class Github extends React.Component {
       CLIENT_ID;
     let name = (await this.fetchGithub(call)).name.toUpperCase();
     this.setState({ name: name });
-  }
-
-  // Gets user data and sets timer for refreshing data and rotating displayed PR
-  componentDidMount() {
-    this.loadUserData();
-    this.interval = setInterval(() => this.loadUserData(), CALL_FREQ);
-    this.rotateInterval = setInterval(() => this.rotatePR(), ROTATE_FREQ);
-  }
-
-  // Clears interval and destroys remaining promises when component unmounted
-  componentWillUnmount() {
-    clearInterval(this.interval);
-    clearInterval(this.rotateInterval);
-    if (this.trashableRequestGithub) this.trashableRequestGithub.trash();
-  }
-
-  // Increments which PR to display
-  rotatePR() {
-    this.setState({
-      displayIndex:
-        this.state.displayIndex == this.state.numPulls - 1
-          ? 0
-          : this.state.displayIndex + 1
-    });
-  }
-
-  // Manually changes which PR to display, resets timer
-  switchPR(i) {
-    this.setState({ displayIndex: i });
-    clearInterval(this.rotateInterval);
-    this.rotateInterval = setInterval(() => this.rotatePR(), ROTATE_FREQ);
-  }
-
-  // Calls GitHub to fetch PR, status, and review data & stores in this.state.pulls
-  async loadUserData() {
-    let call = "https://api.github.com/repos/" + this.props.repoPath + "/pulls";
-    let data = await this.fetchGithub(call);
-
-    var pulls = [];
-    this.setState({
-      numPulls: data.length >= MAXPULLS ? MAXPULLS : data.length
-    });
-
-    for (let i = 0; i < this.state.numPulls; i++) {
-      let approvals = await this.getReviews(data[i].number);
-      let statuses = await this.getStatuses(data[i].statuses_url);
-
-      pulls[i] = {
-        author: data[i].user.login,
-        number: data[i].number,
-        title: data[i].title,
-        timeCreated: getRelativeTime(new Date(data[i].created_at)),
-        url: data[i].html_url,
-        approvals: approvals,
-        statuses: statuses
-      };
-    }
-
-    this.setState({ prs: pulls });
   }
 
   // Gets review data for a given PR and returns num of approvals
@@ -283,22 +242,63 @@ export default class Github extends React.Component {
     return Object.values(unique);
   }
 
-  // Function to make class to GitHub API, trashable used to protect against broken promises
-  async fetchGithub(call) {
-    this.trashableRequestGithub = makeTrashable(fetch(call));
+  // Calls GitHub to fetch PR, status, and review data & stores in this.state.pulls
+  async loadUserData() {
+    let call = "https://api.github.com/repos/" + this.props.repoPath + "/pulls";
+    let data = await this.fetchGithub(call);
 
-    return await this.trashableRequestGithub
-      .then(res => {
-        if (!res.ok) {
-          console.log("Failed to fetch GitHub data: " + call);
-          return;
-        } else {
-          return res.json();
-        }
-      })
-      .then(res => {
-        return res;
-      });
+    var pulls = [];
+    this.setState({
+      numPulls: data.length >= MAXPULLS ? MAXPULLS : data.length
+    });
+
+    for (let i = 0; i < this.state.numPulls; i++) {
+      let approvals = await this.getReviews(data[i].number);
+      let statuses = await this.getStatuses(data[i].statuses_url);
+
+      pulls[i] = {
+        author: data[i].user.login,
+        number: data[i].number,
+        title: data[i].title,
+        timeCreated: getRelativeTime(new Date(data[i].created_at)),
+        url: data[i].html_url,
+        approvals: approvals,
+        statuses: statuses
+      };
+    }
+
+    this.setState({ prs: pulls });
+  }
+
+  // Increments which PR to display
+  rotatePR() {
+    this.setState({
+      displayIndex:
+        this.state.displayIndex == this.state.numPulls - 1
+          ? 0
+          : this.state.displayIndex + 1
+    });
+  }
+
+  // Manually changes which PR to display, resets timer
+  switchPR(i) {
+    this.setState({ displayIndex: i });
+    clearInterval(this.rotateInterval);
+    this.rotateInterval = setInterval(() => this.rotatePR(), ROTATE_FREQ);
+  }
+
+  // Gets user data and sets timer for refreshing data and rotating displayed PR
+  componentDidMount() {
+    this.loadUserData();
+    this.interval = setInterval(() => this.loadUserData(), CALL_FREQ);
+    this.rotateInterval = setInterval(() => this.rotatePR(), ROTATE_FREQ);
+  }
+
+  // Clears interval and destroys remaining promises when component unmounted
+  componentWillUnmount() {
+    clearInterval(this.interval);
+    clearInterval(this.rotateInterval);
+    if (this.trashableRequestGithub) this.trashableRequestGithub.trash();
   }
 
   render() {
