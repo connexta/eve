@@ -32,7 +32,7 @@ const styles = {
     justifyContent: "space-between",
     flexWrap: "wrap",
     fontSize: "32px",
-    padding: "8px",
+    padding: "0 8px 0 8px",
     clear: "both"
   },
   buttonDefault: {

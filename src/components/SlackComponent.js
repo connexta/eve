@@ -32,13 +32,13 @@ const styles = {
   GradientBlock: {
     height: "10%",
     width: "100%",
-    bottom: "19px",
+    bottom: "23px",
     background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
     position: "absolute",
     zIndex: 2
   },
   WhiteBlock: {
-    height: "20px",
+    height: "24px",
     width: "100%",
     bottom: 0,
     background: CX_OFF_WHITE,
@@ -310,14 +310,15 @@ class SlackComponent extends React.Component {
       return (
         <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
           <span style={BOX_HEADER}>#{this.getChannelName(CHANNEL)}</span>
-          <div style={styles.GradientBlock}></div>
-          <div style={styles.WhiteBlock}></div>
+
           {this.state.displayIndex.map((item, index) =>
             this.displayFirstMessage(item, index)
           )}
           <div style={styles.SlackCardContainer}>
             {this.displayRestOfMessages()}
           </div>
+          <div style={styles.GradientBlock}></div>
+          <div style={styles.WhiteBlock}></div>
         </Card>
       );
     }
