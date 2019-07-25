@@ -120,7 +120,6 @@ function SideNav(props) {
         </UnhighlightNav>
       );
     navs.push(next);
-  }
   return <NavBar>{navs}</NavBar>;
 }
 

@@ -11,7 +11,7 @@ import Grow from "@material-ui/core/Grow";
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
-const ROTATE_INTERVAL = minute;
+const ROTATE_INTERVAL = time({ seconds: 30 });
 
 const styles = {
   CardContainer: {
@@ -19,7 +19,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "flex-start",
     position: "relative",
-    height: "calc(100% - " + GITHUB_HEIGHT + "px - 72px)" // Height of Slack Card is size of window beneath banner minus size of github card and margins
+    height: "calc(100% - " + GITHUB_HEIGHT + "px - 72px - 32px)" // Height of Slack Card is size of window beneath banner minus size of github card and margins
   },
   cardHeader: {
     fontFamily: CX_FONT,

@@ -1,13 +1,26 @@
 import React from "react";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants";
+import {
+  CX_OFF_WHITE,
+  CX_FONT,
+  BATMAN_GRAY,
+  CX_DARK_BLUE
+} from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
-import { overviewURL, jenkinsURLList } from "../utils/Link";
-import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
-import { hour, getRelativeTime } from "../utils/TimeUtils";
+import { jenkinsURLList } from "../utils/Link";
+import { BOX_STYLE, BOX_HEADER, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
+export const BUILD_STATUS_HEIGHT = 160;
+import { hour, getRelativeTime, time } from "../utils/TimeUtils";
+import Button from "@material-ui/core/Button";
+
+const TOGGLE_INTERVAL = time({ seconds: 10 });
 
 const styles = {
+  card: {
+    height: BUILD_STATUS_HEIGHT,
+    width: "calc(100% - " + CARD_SIDE_MARGINS + "px)"
+  },
   cardheader: {
     background: CX_OFF_WHITE,
     color: BATMAN_GRAY,
@@ -18,86 +31,72 @@ const styles = {
     flexDirection: "row",
     justifyContent: "space-between",
     flexWrap: "wrap",
-    fontSize: "32px"
+    fontSize: "32px",
+    padding: "8px",
+    clear: "both"
+  },
+  buttonDefault: {
+    float: "right"
+  },
+  buttonSelected: {
+    float: "right",
+    borderBottom: "thick solid " + CX_DARK_BLUE
   }
-};
-
-const aliases = {
-  SOAESB_Nightly_Release_Builder: "AF"
 };
 
 class BuildStatus extends React.Component {
   constructor(props) {
     super(props);
+    this.toggle = this.toggle.bind(this);
     this.state = {
-      data: [],
-      isLoading: true
+      currentData: [],
+      lastFiveData: [],
+      isLoading: true,
+      toggle: true
     };
   }
 
   componentDidMount() {
     this.refreshBuildStatus();
     this.intervalId = setInterval(() => this.refreshBuildStatus(), hour);
+    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
   }
 
   componentWillUnmount() {
     clearInterval(this.intervalId);
+    clearInterval(this.toggleId);
+
     //clearing out left out promise during unmount.
-    if (this.trashableRequestOverview) this.trashableRequestOverview.trash();
-    if (this.trashableRequestAF) this.trashableRequestAF.trash();
     if (this.trashableRequestList)
       this.trashableRequestList.forEach(promise => promise.trash());
   }
 
   //a function that continuously be called by each set interval in componentDidMount() to fetch/update each team status for display
   //overallData: temporary array to collect each team status before pushing to setState: data
-  //index: to keep track of each team status in the array overallData.
-  //update data for displayName, weatherScore, last build time.
+  //update data for displayName, score, last build time.
   async refreshBuildStatus() {
     let overallData = [];
-    let index = 0;
-
-    //fetch/update overview data for each team (except AF) for displayName and weatherScore
-    this.trashableRequestOverview = makeTrashable(this.fetchData(overviewURL));
-    await this.trashableRequestOverview
-      .then(values => {
-        values.forEach(item => {
-          if (jenkinsURLList[item.displayName.toLowerCase()]) {
-            index = this.updateData(item, overallData, index);
-          }
-        });
-      })
-      .catch(e => console.log("error", e));
-
-    //fetch/update overview data for AF team for displayName and weatherScore
-    this.trashableRequestAF = makeTrashable(
-      this.fetchData(jenkinsURLList["af"])
-    );
-    await this.trashableRequestAF
-      .then(item => {
-        index = this.updateData(item, overallData, index);
-      })
-      .catch(e => console.log("error", e));
-
-    //fetch/update last time build status for each team
     this.trashableRequestList = [];
     for (URL in jenkinsURLList) {
       this.trashableRequestList.push(
         makeTrashable(this.fetchData(jenkinsURLList[URL]))
       );
     }
-
+    //fetch and update jenkins information for all team
     await Promise.all(this.trashableRequestList)
-      .then(values => {
-        for (let i = 0; i < values.length; i++) {
-          overallData[i].time =
-            "Built " + getRelativeTime(new Date(values[i].latestRun.startTime));
+      .then(linklist => {
+        for (let index = 0; index < linklist.length; index++) {
+          this.updateData(linklist[index], overallData, index);
         }
       })
       .catch(e => console.log("error", e));
 
     //push all collected data to data state, and make it ready to display.
-    this.setState({ data: overallData, isLoading: false });
+    this.setState({ currentData: overallData, isLoading: false });
+  }
+
+  toggle() {
+    this.setState({ toggle: !this.state.toggle });
   }
 
   //fetch data from the jenkin url
@@ -107,50 +106,79 @@ class BuildStatus extends React.Component {
       .catch(e => console.log("error", e));
   }
 
-  //general function to convert name to alias for easy display if alias exists
-  //@return:
-  //  return alias if exists otherwise original name
-  //  i.e. if name is AF specific repo name, convert to "AF" instead for easy display
-  //  otherwise, display its original name.
-  aliasOf(displayName) {
-    return aliases[displayName] ? aliases[displayName] : displayName;
-  }
-
-  //update overallData from item and return index for following array assignment
+  //update overallData from item
   //@param:
   //  item: that contains information for array overallData to be updated
-  //  overallData: array to pass down to keep each build information such as displayName
+  //  overallData: array to pass down to keep each build information such as displayName, etc.
   //  index: used to assign for each build information in the array
-  //@return:
-  //  index: to be passed down for next functions
   updateData(item, overallData, index) {
     overallData[index] = {
-      displayName: this.aliasOf(item.displayName),
-      weatherScore: item.weatherScore,
-      time: ""
+      displayName: Object.keys(jenkinsURLList).map(key => {
+        if (item.fullName.includes(key)) {
+          return key;
+        }
+      }),
+      oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
+      fiveScore: item.weatherScore,
+      oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
+      fiveSubtitle: item.weatherScore / 20 + "/5 Succeeded"
     };
-    return ++index;
+  }
+
+  //return list of <BuildIcon> with corresponding information to the state toggle.
+  //if this.state.toggle === true, return list of current build
+  //else, list of last 5 builds
+  getBuildDisplay() {
+    const display = this.state.toggle
+      ? this.state.currentData.map(item => {
+          return (
+            <BuildIcon
+              score={item.oneScore}
+              name={item.displayName}
+              key={item.displayName + item.oneSubtitle}
+              subtitle={item.oneSubtitle}
+            />
+          );
+        })
+      : this.state.currentData.map(item => {
+          return (
+            <BuildIcon
+              score={item.fiveScore}
+              name={item.displayName}
+              key={item.displayName + item.fiveSubtitle}
+              subtitle={item.fiveSubtitle}
+            />
+          );
+        });
+    return display;
   }
 
   render() {
     return this.state.isLoading ? (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
         <p style={BOX_HEADER}>Loading Build Health. . .</p>
       </Card>
     ) : (
-      <Card style={BOX_STYLE} raised={true}>
-        <p style={BOX_HEADER}>Build Health</p>
+      <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
+        <p style={BOX_HEADER}>Jenkins Build Health</p>
+        <Button
+          style={
+            this.state.toggle ? styles.buttonDefault : styles.buttonSelected
+          }
+          onClick={this.toggle}
+        >
+          Last 5 Builds
+        </Button>
+        <Button
+          style={
+            this.state.toggle ? styles.buttonSelected : styles.buttonDefault
+          }
+          onClick={this.toggle}
+        >
+          Current Build
+        </Button>
         <CardContent style={styles.cardContent}>
-          {this.state.data.map(item => {
-            return (
-              <BuildIcon
-                score={item.weatherScore}
-                name={item.displayName}
-                key={item.displayName}
-                time={item.time}
-              />
-            );
-          })}
+          {this.getBuildDisplay()}
         </CardContent>
       </Card>
     );
