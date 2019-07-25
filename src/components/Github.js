@@ -12,7 +12,7 @@ import NeutralState from "@material-ui/icons/remove";
 import BadState from "@material-ui/icons/clear";
 import GoodState from "@material-ui/icons/done";
 
-const SIDENAV_WIDTH = 80;
+const SIDENAV_WIDTH = 40;
 export const GITHUB_HEIGHT = 360;
 
 const MAXPULLS = 5; // Max number of pull requests to display
@@ -28,10 +28,13 @@ const GithubCard = styled(Card)`
   height: ${GITHUB_HEIGHT}px;
 `;
 
+const Header = styled.div`
+  width: 100%;
+`;
 const CardContent = styled.div`
   margin: 12px 0 0 12px;
   height: calc(100% - ${BOX_HEADER_SIZE}px);
-  width: calc(100% - ${SIDENAV_WIDTH}px);
+  width: calc(100% - ${SIDENAV_WIDTH}px - 100px);
   float: left;
 `;
 
@@ -74,13 +77,13 @@ const UnhighlightNav = styled.div`
 `;
 
 const NavBar = styled.div`
-  width: ${SIDENAV_WIDTH};
+  width: ${SIDENAV_WIDTH}px;
   height: calc(100% - ${BOX_HEADER_SIZE}px);
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  float: left;
   margin-left: 16px;
+  float: left;
 `;
 
 // Appends s to word if value is not 1
@@ -120,6 +123,7 @@ function SideNav(props) {
         </UnhighlightNav>
       );
     navs.push(next);
+  }
   return <NavBar>{navs}</NavBar>;
 }
 
@@ -309,7 +313,7 @@ export default class Github extends React.Component {
       let pr = this.state.prs[this.state.displayIndex];
       return (
         <GithubCard style={BOX_STYLE} raised={true}>
-          <p style={BOX_HEADER}>{this.state.name} Pull Requests</p>
+          <Header style={BOX_HEADER}>{this.state.name} Pull Requests</Header>
           <SideNav
             displayIndex={this.state.displayIndex}
             numPulls={this.state.numPulls}
