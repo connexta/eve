@@ -26,13 +26,13 @@ const styles = {
     fontSize: "22px",
     color: CX_OFF_WHITE,
     position: "relative",
-    top: "7px",
+    top: "0px",
     left: "5px",
     textAlign: "justify",
     textJustify: "distribute"
   },
   daystyle: {
-    fontSize: "28px",
+    fontSize: "24px",
     position: "relative",
     top: "7px"
   }
