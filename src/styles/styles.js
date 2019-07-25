@@ -13,6 +13,8 @@ export const BOX_STYLE = {
   fontFamily: CX_FONT
 };
 
+export const BOX_HEADER_SIZE = 44;
+
 export const BOX_HEADER = {
   fontSize: "32px",
   color: CX_GRAY_BLUE,
