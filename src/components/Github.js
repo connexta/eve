@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "@material-ui/core";
 import { CX_GRAY_BLUE } from "../utils/Constants.js";
-import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { BOX_STYLE, BOX_HEADER, RIGHT_BOX_STYLE } from "../styles/styles";
 import pullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
@@ -163,7 +163,10 @@ export default class Github extends React.Component {
     ));
 
     return (
-      <Card style={{ ...styles.box, ...BOX_STYLE }} raised={true}>
+      <Card
+        style={{ ...styles.box, ...RIGHT_BOX_STYLE, ...BOX_STYLE }}
+        raised={true}
+      >
         <p style={BOX_HEADER}>{this.state.name} Pull Requests</p>
         <div style={styles.cardContent}>{prList}</div>
       </Card>
