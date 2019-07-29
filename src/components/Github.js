@@ -26,20 +26,17 @@ import GoodState from "@material-ui/icons/done";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
-export const GITHUB_HEIGHT = 280;
+export const GITHUB_HEIGHT = 340;
 
 const MAXPULLS = 5; // Max number of pull requests to display
-const NUM_STATUSES = 1; // Max number of statuses to display for each PR
+const NUM_STATUSES = 2; // Max number of statuses to display for each PR
 const REQ_APPROVALS = 2; // Required number of approvals for a given PR
 const CALL_FREQ = hour; // Frequency to refresh GitHub data
 const ROTATE_FREQ = time({ seconds: 10 }); // Frequency to rotate displayed PR
+const IGNORE_CONTEXTS = ["synk", "license/cla"]; // list of contexts to ignore for statuses
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-
-const dotActive = {
-  color: "red"
-};
 
 const GithubCard = styled(Card)`
   height: ${GITHUB_HEIGHT}px;
@@ -51,9 +48,7 @@ const Header = styled.div`
 
 const CardContent = styled.div`
   margin: 0 12px 0 12px;
-  height: calc(
-    100% - ${BOX_HEADER_SIZE}px - 32px
-  ); /* Navigator size: 24px, margins: 36px */
+  height: calc(100% - ${BOX_HEADER_SIZE}px - 32px);
   width: calc(100% - 24px);
   float: left;
 `;
@@ -221,13 +216,13 @@ export default class Github extends React.Component {
     let unique = {};
 
     for (let i = 0; i < statuses.length; i++) {
-      if (statuses[i].context === "license/cla") {
-        continue;
-      }
-      if (statuses[i].context.indexOf("snyk") >= 0) {
-        continue;
-      }
-      if (!unique[statuses[i].context]) {
+      let proceed = true;
+
+      IGNORE_CONTEXTS.forEach(function(j) {
+        if (statuses[i].context.indexOf(j) >= 0) proceed = false;
+      });
+
+      if (!unique[statuses[i].context] && proceed) {
         let start = statuses[i].description.indexOf("http");
         if (start >= 0) {
           let end = statuses[i].description.indexOf(" ", start);
