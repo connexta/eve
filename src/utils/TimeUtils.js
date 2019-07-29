@@ -1,3 +1,5 @@
+import { addS } from "./utility";
+
 const second = 1000;
 const minute = second * 60;
 const hour = minute * 60;
@@ -28,9 +30,9 @@ const getRelativeTime = targetDate => {
   if (timeDiffMin < 60) {
     return timeDiffMin == 0 ? "now" : timeDiffMin + " min ago";
   } else if (timeDiffHrs < 24) {
-    return timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago");
+    return timeDiffHrs + " hour" + addS(timeDiffHrs) + " ago";
   } else {
-    return timeDiffDays + (timeDiffDays == 1 ? " day ago" : " days ago");
+    return timeDiffDays + " day" + addS(timeDiffDays) + " ago";
   }
 };
 
