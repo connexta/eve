@@ -10,6 +10,11 @@ export const rightBox = {
   width: "34%"
 };
 
+export const I2OleftBox = {
+  height: "100%",
+  width: "30%"
+};
+
 export const WallBoardButtons = {
   display: "flex",
   flexDirection: "row",

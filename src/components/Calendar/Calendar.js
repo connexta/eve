@@ -7,7 +7,6 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "!style-loader!css-loader!../../styles/Calendar.css";
 import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../../styles/styles";
-import { BUILD_STATUS_HEIGHT } from "../BuildStatus";
 import {
   Card,
   Dialog,
@@ -30,6 +29,7 @@ const END_HOUR = 18; // latest hour to display
 const WIP_MESSAGE_SPACE = 68;
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 const CARD_HEIGHT_MARGINS = 36;
+const BUILD_STATUS_HEIGHT = 160;
 
 const styles = {
   card: {

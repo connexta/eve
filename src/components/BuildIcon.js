@@ -6,10 +6,6 @@ import CardContent from "@material-ui/core/CardContent";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
 
 const styles = {
-  cardContent: {
-    padding: "4px",
-    width: "14%"
-  },
   date: {
     background: CX_OFF_WHITE,
     fontSize: "20px",
@@ -27,7 +23,7 @@ class BuildIcon extends React.Component {
 
   render() {
     return this.props.score >= 80 ? (
-      <CardContent style={styles.cardContent}>
+      <CardContent style={this.props.cardContentStyle}>
         <GoodState
           fontSize="inherit"
           style={{
@@ -41,7 +37,7 @@ class BuildIcon extends React.Component {
         <div style={styles.date}>{this.props.subtitle}</div>
       </CardContent>
     ) : this.props.score >= 40 ? (
-      <CardContent style={styles.cardContent}>
+      <CardContent style={this.props.cardContentStyle}>
         <NeutralState
           fontSize="inherit"
           style={{
@@ -55,7 +51,7 @@ class BuildIcon extends React.Component {
         <div style={styles.date}>{this.props.subtitle}</div>
       </CardContent>
     ) : (
-      <CardContent style={styles.cardContent}>
+      <CardContent style={this.props.cardContentStyle}>
         <BadState
           fontSize="inherit"
           style={{
