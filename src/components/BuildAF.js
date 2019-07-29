@@ -7,7 +7,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
-import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../styles/styles";
 import makeTrashable from "trashable";
 
 const styles = {
@@ -190,11 +190,11 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
         Loading AF Builds. . .
       </Card>
     ) : (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
         <CardHeader
           title={AFpipeline}
           subheader="Display failed build from most recent up to the last successful build"

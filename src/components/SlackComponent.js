@@ -2,7 +2,7 @@ import React from "react";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
 import Card from "@material-ui/core/Card";
-import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { BOX_STYLE, BOX_HEADER, RIGHT_BOX_STYLE } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
 import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
@@ -302,13 +302,19 @@ class SlackComponent extends React.Component {
   render() {
     if (this.anyStillLoading()) {
       return (
-        <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
+        <Card
+          style={{ ...styles.CardContainer, ...RIGHT_BOX_STYLE, ...BOX_STYLE }}
+          raised={true}
+        >
           <p style={BOX_HEADER}>Loading Slack...</p>
         </Card>
       );
     } else {
       return (
-        <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
+        <Card
+          style={{ ...styles.CardContainer, ...RIGHT_BOX_STYLE, ...BOX_STYLE }}
+          raised={true}
+        >
           <span style={BOX_HEADER}>#{this.getChannelName(CHANNEL)}</span>
 
           {this.state.displayIndex.map((item, index) =>
