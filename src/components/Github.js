@@ -9,7 +9,12 @@ import {
   Button
 } from "@material-ui/core";
 import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
-import { BOX_STYLE, BOX_HEADER, BOX_HEADER_SIZE } from "../styles/styles";
+import {
+  RIGHT_BOX_STYLE,
+  BOX_STYLE,
+  BOX_HEADER,
+  BOX_HEADER_SIZE
+} from "../styles/styles";
 import { getRelativeTime, hour, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import { addS } from "../utils/utility";
@@ -42,7 +47,7 @@ const Header = styled.div`
 const CardContent = styled.div`
   margin: 0 12px 12px 12px;
   height: calc(
-    100% - ${BOX_HEADER_SIZE}px - 60px
+    100% - ${BOX_HEADER_SIZE}px - 48px
   ); /* Navigator size: 24px, margins: 36px */
   width: calc(100% - 24px);
   float: left;
@@ -286,7 +291,7 @@ export default class Github extends React.Component {
   render() {
     if (this.state.prs.length == 0)
       return (
-        <GithubCard style={BOX_STYLE} raised={true}>
+        <GithubCard style={{ ...RIGHT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
           <p style={BOX_HEADER}>{this.state.name} Pull Requests</p>
           <CardContent>No pull requests</CardContent>
         </GithubCard>
@@ -294,7 +299,7 @@ export default class Github extends React.Component {
     else {
       let pr = this.state.prs[this.state.displayIndex];
       return (
-        <GithubCard style={BOX_STYLE} raised={true}>
+        <GithubCard style={{ ...RIGHT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
           <Header style={BOX_HEADER}>{this.state.name} Pull Requests</Header>
           <CardContent>
             <MainAndSubline>
