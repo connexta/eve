@@ -20,6 +20,9 @@ const styles = {
   subheader: {
     margin: 0,
     fontSize: "24px"
+  },
+  headers: {
+    cursor: "pointer"
   }
 };
 
@@ -192,7 +195,10 @@ class BuildAF extends React.Component {
       </Card>
     ) : (
       <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
-        <div style={BOX_HEADER} onClick={() => window.open(AFJenkinLink)}>
+        <div
+          style={{ ...styles.headers, ...BOX_HEADER }}
+          onClick={() => window.open(AFJenkinLink)}
+        >
           {AFpipeline}
           <p style={styles.subheader}>
             Display failed build from most recent up to the last successful
