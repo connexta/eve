@@ -8,6 +8,7 @@ import {
   MobileStepper,
   Button
 } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
 import {
   RIGHT_BOX_STYLE,
@@ -28,13 +29,17 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 export const GITHUB_HEIGHT = 280;
 
 const MAXPULLS = 5; // Max number of pull requests to display
-const NUM_STATUSES = 3; // Max number of statuses to display for each PR
+const NUM_STATUSES = 1; // Max number of statuses to display for each PR
 const REQ_APPROVALS = 2; // Required number of approvals for a given PR
 const CALL_FREQ = hour; // Frequency to refresh GitHub data
 const ROTATE_FREQ = time({ seconds: 10 }); // Frequency to rotate displayed PR
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
+const dotActive = {
+  color: "red"
+};
 
 const GithubCard = styled(Card)`
   height: ${GITHUB_HEIGHT}px;
@@ -45,9 +50,9 @@ const Header = styled.div`
 `;
 
 const CardContent = styled.div`
-  margin: 0 12px 12px 12px;
+  margin: 0 12px 0 12px;
   height: calc(
-    100% - ${BOX_HEADER_SIZE}px - 48px
+    100% - ${BOX_HEADER_SIZE}px - 32px
   ); /* Navigator size: 24px, margins: 36px */
   width: calc(100% - 24px);
   float: left;
@@ -79,6 +84,16 @@ const LinkText = styled.span`
   text-decoration: underline;
   cursor: pointer;
 `;
+
+const StyledMobileStpper = withStyles({
+  root: {
+    backgroundColor: CX_OFF_WHITE,
+    height: "20px"
+  },
+  dotActive: {
+    backgroundColor: CX_GRAY_BLUE
+  }
+})(MobileStepper);
 
 // Returns either GoodState or NeutralState depending on num approvals
 function Approvals(props) {
@@ -325,8 +340,7 @@ export default class Github extends React.Component {
               </List>
             </MainAndSubline>
           </CardContent>
-          <MobileStepper
-            style={{ backgroundColor: CX_OFF_WHITE }}
+          <StyledMobileStpper
             activeStep={this.state.displayIndex}
             steps={this.state.numPulls}
             variant={"dots"}
