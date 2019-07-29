@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "!style-loader!css-loader!../../styles/Calendar.css";
-import { BOX_STYLE, BOX_HEADER, CARD_SIDE_MARGINS } from "../../styles/styles";
+import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../../styles/styles";
 import {
   Card,
   Dialog,
@@ -29,7 +29,7 @@ const END_HOUR = 18; // latest hour to display
 const WIP_MESSAGE_SPACE = 68;
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 const CARD_HEIGHT_MARGINS = 36;
-const BUILD_STATUS_HEIGHT = 133;
+const BUILD_STATUS_HEIGHT = 160;
 
 const styles = {
   card: {
@@ -40,8 +40,7 @@ const styles = {
       CARD_HEIGHT_MARGINS +
       "px - " +
       WIP_MESSAGE_SPACE +
-      "px)",
-    width: "calc(100% - " + CARD_SIDE_MARGINS + "px)"
+      "px)"
   },
   calendar: {
     height: "77%",
@@ -371,7 +370,10 @@ class CalendarCaller extends React.Component {
 
     return (
       <Router>
-        <Card style={{ ...BOX_STYLE, ...styles.card }} raised={true}>
+        <Card
+          style={{ ...BOX_STYLE, ...LEFT_BOX_STYLE, ...styles.card }}
+          raised={true}
+        >
           <p style={BOX_HEADER}>Calendar</p>
           <div style={styles.buttonContainer}>
             <div className="rbc-toolbar">

@@ -9,7 +9,7 @@ const SLACK_FONT_SIZE = "20px";
 const styles = {
   cardStyle: {
     paddingBottom: "10px",
-    margin: "0 10px 5px 10px",
+    margin: "0 0 5px 0",
     fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
     fontSize: SLACK_FONT_SIZE,
     position: "relative"

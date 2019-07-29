@@ -85,9 +85,7 @@ class I2OWallboard extends React.Component {
   }
 
   render() {
-    return this.state.isLoading ? (
-      <Grid></Grid>
-    ) : (
+    return (
       <Grid container style={{ height: "100%" }}>
         <Grid item style={I2OleftBox}>
           <BuildStatus

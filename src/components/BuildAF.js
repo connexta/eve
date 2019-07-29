@@ -1,28 +1,28 @@
 import React from "react";
 import { BATMAN_GRAY } from "../utils/Constants.js";
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
-import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../styles/styles";
 import makeTrashable from "trashable";
 
 const styles = {
-  cardheader: {
-    background: BOX_HEADER.fontSize,
-    margin: BOX_HEADER.margin,
-    color: BOX_HEADER.color,
-    textDecoration: "none"
-  },
   listitemtext: {
     color: BATMAN_GRAY
   },
   listitemtextdots: {
     color: BATMAN_GRAY,
     textAlign: "center"
+  },
+  subheader: {
+    margin: 0,
+    fontSize: "24px"
+  },
+  headers: {
+    cursor: "pointer"
   }
 };
 
@@ -190,20 +190,21 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={BOX_STYLE} raised={true}>
+      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
         Loading AF Builds. . .
       </Card>
     ) : (
-      <Card style={BOX_STYLE} raised={true}>
-        <CardHeader
-          title={AFpipeline}
-          subheader="Display failed build from most recent up to the last successful build"
-          style={styles.cardheader}
-          component="a"
-          href={AFJenkinLink}
-          titleTypographyProps={{ variant: "h4" }}
-          subheaderTypographyProps={{ variant: "h6", color: "inherit" }}
-        ></CardHeader>
+      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
+        <div
+          style={{ ...styles.headers, ...BOX_HEADER }}
+          onClick={() => window.open(AFJenkinLink)}
+        >
+          {AFpipeline}
+          <p style={styles.subheader}>
+            Display failed build from most recent up to the last successful
+            build
+          </p>
+        </div>
         {this.getListContents(4, 2)}
       </Card>
     );
