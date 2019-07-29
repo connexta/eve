@@ -59,6 +59,7 @@ const MainAndSubline = styled.div`
 
 const PRMainLine = styled.span`
   display: inline-block;
+  cursor: pointer;
 `;
 
 const PRTitle = styled.span`
@@ -76,6 +77,7 @@ const PRSubline = styled.div`
 
 const LinkText = styled.span`
   text-decoration: underline;
+  cursor: pointer;
 `;
 
 // Returns either GoodState or NeutralState depending on num approvals
@@ -109,7 +111,7 @@ function Statuses(props) {
           </LinkText>
         </ListItem>
       ) : (
-        <ListItem key={i} onClick={() => window.open(props.statuses[i].link)}>
+        <ListItem key={i}>
           <ListItemIcon key={i}>{icon}</ListItemIcon>
           {props.statuses[i].context}: {props.statuses[i].description}
         </ListItem>
