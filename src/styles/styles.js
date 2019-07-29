@@ -26,5 +26,7 @@ export const BOX_HEADER = {
   fontSize: "32px",
   color: CX_GRAY_BLUE,
   margin: "0 0 16px 0",
-  float: "left"
+  float: "left",
+  zIndex: 3,
+  position: "relative"
 };
