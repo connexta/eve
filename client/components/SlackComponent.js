@@ -2,7 +2,18 @@ import React from "react";
 import styled from "styled-components";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
+<<<<<<< HEAD:client/components/SlackComponent.js
 import { BoxStyle, BoxHeader } from "../styles/styles";
+=======
+import Card from "@material-ui/core/Card";
+import {
+  BOX_STYLE,
+  BOX_HEADER,
+  RIGHT_BOX_STYLE,
+  BoxStyle,
+  BoxHeader
+} from "../styles/styles";
+>>>>>>> Switching to styled in progress:src/components/SlackComponent.js
 import { minute, time } from "../utils/TimeUtils";
 import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
@@ -13,6 +24,7 @@ const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
 
+<<<<<<< HEAD:client/components/SlackComponent.js
 const CardContainer = styled(BoxStyle)`
   display: flex;
   flex-direction: column;
@@ -36,6 +48,81 @@ const GradientBlock = styled.div`
   height: 15%;
   width: 100%;
   bottom: 10px;
+  background: linear-gradient(transparent, ${CX_OFF_WHITE});
+  position: absolute;
+  z-index: 2;
+`;
+
+const WhiteBlock = styled.div`
+  position: absolute;
+  height: 12px;
+  width: 100%;
+  bottom: 0px;
+  background: ${CX_OFF_WHITE};
+  z-index: 3;
+`;
+=======
+const styles = {
+  // CardContainer: {
+  //   display: "flex",
+  //   flexDirection: "column",
+  //   justifyContent: "flex-start",
+  //   position: "relative",
+  //   height: "calc(100% - " + GITHUB_HEIGHT + "px - 72px - 32px)" // Height of Slack Card is size of window beneath banner minus size of github card and margins
+  // },
+  // cardHeader: {
+  //   fontFamily: CX_FONT,
+  //   margin: "12px 0 12px 16px",
+  //   height: "40px"
+  // },
+  // SlackCardContainer: {
+  //   top: "72px",
+  //   height: "100%"
+  // },
+  // GradientBlock: {
+  //   height: "15%",
+  //   width: "100%",
+  //   bottom: "10px",
+  //   background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
+  //   position: "absolute",
+  //   zIndex: 2
+  // },
+  // WhiteBlock: {
+  //   height: "12px",
+  //   width: "100%",
+  //   bottom: 0,
+  //   background: CX_OFF_WHITE,
+  //   position: "absolute",
+  //   zIndex: 3
+  // }
+};
+>>>>>>> Switching to styled in progress:src/components/SlackComponent.js
+
+const CardContainer = styled(BoxStyle)`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+
+  /*Height of Slack Card is size of window beneath banner minus size of github card and margins*/
+  height: calc(100% - ${GITHUB_HEIGHT}px - 72px - 32px);
+`;
+
+const CardHeader = styled(BoxHeader)`
+  font-family: ${CX_FONT};
+  margin: 12px 0 12px 16px;
+  height: 40px;
+`;
+
+const SlackCardContainer = styled.div`
+  top: 72px;
+  height: 100%;
+`;
+
+const GradientBlock = styled.div`
+  height: 15%;
+  width: 100%;
+  bottom: 10p;
   background: linear-gradient(transparent, ${CX_OFF_WHITE});
   position: absolute;
   z-index: 2;
@@ -299,6 +386,7 @@ class SlackComponent extends React.Component {
   //only return components if the index === 0
   //@return:
   //  components that display only the first message of the slackMsg determined by the displayIndex with a Zoom effect.
+<<<<<<< HEAD:client/components/SlackComponent.js
   displayFirstMessage() {
     return (
       <div>
@@ -307,6 +395,16 @@ class SlackComponent extends React.Component {
         </Collapse>
       </div>
     );
+=======
+  displayFirstMessage(item, index) {
+    if (index === 0) {
+      return (
+        <Grow key={item} in={true}>
+          <SlackCardContainer>{this.state.slackMsg[item]}</SlackCardContainer>
+        </Grow>
+      );
+    }
+>>>>>>> Switching to styled in progress:src/components/SlackComponent.js
   }
 
   render() {
@@ -324,7 +422,13 @@ class SlackComponent extends React.Component {
           </span>
           <GradientBlock />
           <WhiteBlock />
+<<<<<<< HEAD:client/components/SlackComponent.js
           {this.displayFirstMessage()}
+=======
+          {this.state.displayIndex.map((item, index) =>
+            this.displayFirstMessage(item, index)
+          )}
+>>>>>>> Switching to styled in progress:src/components/SlackComponent.js
           <SlackCardContainer>
             {this.displayRestOfMessages()}
           </SlackCardContainer>

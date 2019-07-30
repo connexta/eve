@@ -8,6 +8,7 @@ import { getEmoji } from "../utils/emojis/emojiUtil";
 
 const SLACK_FONT_SIZE = "20px";
 
+<<<<<<< HEAD:client/components/SlackCard.js
 const StyledCard = styled.div`
   padding-bottom: 10px;
   margin: 0 0 5px 0;
@@ -37,6 +38,79 @@ const CardText = styled.div`
 const AvatarStyle = styled.img`
   border-radius: 8%;
   margin: 5px 10px 0 0;
+  display: inline;
+  height: 50px;
+  width: 50px;
+  display: inline-block;
+  vertical-align: top;
+`;
+=======
+const styles = {
+  // cardStyle: {
+  //   paddingBottom: "10px",
+  //   margin: "0 10px 5px 10px",
+  //   fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
+  //   fontSize: SLACK_FONT_SIZE,
+  //   position: "relative"
+  // },
+  // contentContainer: {
+  //   verticalAlign: "top"
+  // },
+  // headerAndContent: {
+  //   display: "inline-block",
+  //   width: "80%"
+  // },
+  // cardText: {
+  //   fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
+  //   fontSize: SLACK_FONT_SIZE,
+  //   marginTop: "4px",
+  //   width: "100%",
+  //   color: "black",
+  //   minHeight: "100%",
+  //   width: "100%"
+  // },
+  // avatarStyle: {
+  //   borderRadius: "8%",
+  //   margin: "5px 10px 0 5px",
+  //   display: "inline",
+  //   height: "50px",
+  //   width: "50px",
+  //   display: "inline-block",
+  //   verticalAlign: "top"
+  // }
+};
+>>>>>>> Switching to styled in progress:src/components/SlackCard.js
+
+const StyledCard = styled.div`
+  padding-bottom: 10px;
+  margin: 0 10px 5px 10px;
+  font-family: "NotoSansJP, Slack-Lato, appleLogo, sans-serif";
+  font-size: ${SLACK_FONT_SIZE};
+  position: relative;
+`;
+
+const ContentContainer = styled.div`
+  vertical-align: top;
+`;
+
+const HeaderAndContent = styled.div`
+  display: inline-block;
+  width: 80%;
+`;
+
+const CardText = styled.div`
+  font-family: "NotoSansJP, Slack-Lato, appleLogo, sans-serif";
+  font-size: ${SLACK_FONT_SIZE};
+  margin-top: 4px;
+  width: 100%;
+  color: black;
+  min-height: 100%;
+  width: 100%;
+`;
+
+const AvatarStyle = styled.img`
+  border-radius: 8%;
+  margin: 5px 10px 0 5px;
   display: inline;
   height: 50px;
   width: 50px;
