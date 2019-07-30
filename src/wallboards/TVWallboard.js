@@ -10,16 +10,19 @@ import { jenkinsURLList } from "../utils/Link";
 const styles = {
   cardContent: {
     padding: "4px",
-    width: "15%",
+    width: "15%"
   }
-}
+};
 
 export default class TVWallboard extends React.Component {
   render() {
     return (
       <Grid container style={{ height: "100%" }}>
         <Grid item style={leftBox}>
-          <BuildStatus urlList={jenkinsURLList} cardContentStyle={styles.cardContent}/>
+          <BuildStatus
+            urlList={jenkinsURLList}
+            cardContentStyle={styles.cardContent}
+          />
           <Calendar />
         </Grid>
         <Grid item style={rightBox}>

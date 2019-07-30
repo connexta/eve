@@ -16,6 +16,7 @@ import {
   BOX_HEADER,
   BOX_HEADER_SIZE
 } from "../styles/styles";
+import PullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import { addS } from "../utils/utility";
@@ -25,15 +26,16 @@ import BadState from "@material-ui/icons/clear";
 import GoodState from "@material-ui/icons/done";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import Add from "@material-ui/icons/add";
 
-export const GITHUB_HEIGHT = 340;
+export const GITHUB_HEIGHT = 400;
 
 const MAXPULLS = 5; // Max number of pull requests to display
 const NUM_STATUSES = 2; // Max number of statuses to display for each PR
 const REQ_APPROVALS = 2; // Required number of approvals for a given PR
 const CALL_FREQ = hour; // Frequency to refresh GitHub data
 const ROTATE_FREQ = time({ seconds: 10 }); // Frequency to rotate displayed PR
-const IGNORE_CONTEXTS = ["synk", "license/cla"]; // list of contexts to ignore for statuses
+const IGNORE_CONTEXTS = ["snyk", "license/cla"]; // list of contexts to ignore for statuses
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
@@ -47,23 +49,19 @@ const Header = styled.div`
 `;
 
 const CardContent = styled.div`
-  margin: 0 12px 0 12px;
   height: calc(100% - ${BOX_HEADER_SIZE}px - 32px);
-  width: calc(100% - 24px);
+  width: 100%;
   float: left;
 `;
 
 const MainAndSubline = styled.div`
   display: inline-block;
-`;
-
-const PRMainLine = styled.span`
-  display: inline-block;
+  width: 100%;
   cursor: pointer;
 `;
 
 const PRTitle = styled.span`
-  display: inline-block;
+  text-decoration: bold;
 `;
 
 const PRNumber = styled.em`
@@ -75,6 +73,16 @@ const PRSubline = styled.div`
   font-style: italic;
 `;
 
+const Description = styled.p`
+  margin: 0 0 0 0;
+  max-height: 48px;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
 const LinkText = styled.span`
   text-decoration: underline;
   cursor: pointer;
@@ -83,7 +91,8 @@ const LinkText = styled.span`
 const StyledMobileStpper = withStyles({
   root: {
     backgroundColor: CX_OFF_WHITE,
-    height: "20px"
+    height: "20px",
+    width: "calc(100% - 20px)"
   },
   dotActive: {
     backgroundColor: CX_GRAY_BLUE
@@ -114,14 +123,18 @@ function Statuses(props) {
 
     statuses.push(
       props.statuses[i].link ? (
-        <ListItem key={i} onClick={() => window.open(props.statuses[i].link)}>
+        <ListItem
+          key={i}
+          disableGutters={true}
+          onClick={() => window.open(props.statuses[i].link)}
+        >
           <ListItemIcon key={i}>{icon}</ListItemIcon>
           <LinkText>
             {props.statuses[i].context}: {props.statuses[i].description}
           </LinkText>
         </ListItem>
       ) : (
-        <ListItem key={i}>
+        <ListItem key={i} disableGutters={true}>
           <ListItemIcon key={i}>{icon}</ListItemIcon>
           {props.statuses[i].context}: {props.statuses[i].description}
         </ListItem>
@@ -130,8 +143,11 @@ function Statuses(props) {
   }
   if (props.statuses.length > NUM_STATUSES) {
     statuses.push(
-      <ListItem key={NUM_STATUSES}>
-        + {props.statuses.length - (NUM_STATUSES - 1)} more statuses
+      <ListItem disableGutters={true} key={NUM_STATUSES}>
+        <ListItemIcon>
+          <Add />
+        </ListItemIcon>
+        {props.statuses.length - (NUM_STATUSES - 1)} more statuses
       </ListItem>
     );
   }
@@ -216,13 +232,9 @@ export default class Github extends React.Component {
     let unique = {};
 
     for (let i = 0; i < statuses.length; i++) {
-      let proceed = true;
+      if (IGNORE_CONTEXTS.some(e => statuses[i].context.includes(e))) continue;
 
-      IGNORE_CONTEXTS.forEach(function(j) {
-        if (statuses[i].context.indexOf(j) >= 0) proceed = false;
-      });
-
-      if (!unique[statuses[i].context] && proceed) {
+      if (!unique[statuses[i].context]) {
         let start = statuses[i].description.indexOf("http");
         if (start >= 0) {
           let end = statuses[i].description.indexOf(" ", start);
@@ -239,6 +251,19 @@ export default class Github extends React.Component {
     return Object.values(unique);
   }
 
+  // Formats given PR description for display
+  formatDescription(desc) {
+    let tag = "What does this PR do?";
+    let start = desc.indexOf(tag);
+    if (start >= 0) {
+      let end = desc.indexOf("\r\n", start + tag.length + 2);
+      return desc.substring(start + tag.length + 1, end);
+    } else {
+      let end = desc.indexOf("\r\n");
+      return desc.substring(0, end);
+    }
+  }
+
   // Calls GitHub to fetch PR, status, and review data & stores in this.state.pulls
   async loadUserData() {
     let call = "https://api.github.com/repos/" + this.props.repoPath + "/pulls";
@@ -252,11 +277,13 @@ export default class Github extends React.Component {
     for (let i = 0; i < this.state.numPulls; i++) {
       let approvals = await this.getApprovals(data[i].number);
       let statuses = await this.getStatuses(data[i].statuses_url);
+      let description = this.formatDescription(data[i].body);
 
       pulls[i] = {
         author: data[i].user.login,
         number: data[i].number,
         title: data[i].title,
+        description: description,
         timeCreated: getRelativeTime(new Date(data[i].created_at)),
         url: data[i].html_url,
         approvals: approvals,
@@ -310,30 +337,42 @@ export default class Github extends React.Component {
       );
     else {
       let pr = this.state.prs[this.state.displayIndex];
+      let desc =
+        pr.description.length > 4 ? (
+          <ListItem disableGutters={true}>
+            <ListItemIcon>
+              <img
+                style={{ height: "20px", marginLeft: "4px" }}
+                src={PullRequest}
+              />
+            </ListItemIcon>
+            <Description>{pr.description}</Description>
+          </ListItem>
+        ) : null;
+
       return (
         <GithubCard style={{ ...RIGHT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
           <Header style={BOX_HEADER}>{this.state.name} Pull Requests</Header>
           <CardContent>
-            <MainAndSubline>
-              <PRMainLine onClick={() => window.open(pr.url)}>
-                <PRTitle>
-                  <PRNumber>{" #" + pr.number}</PRNumber> {pr.title}
-                </PRTitle>
-              </PRMainLine>
+            <MainAndSubline onClick={() => window.open(pr.url)}>
+              <PRTitle>
+                <PRNumber>{" #" + pr.number}</PRNumber> {pr.title}
+              </PRTitle>
               <PRSubline>
                 Created {pr.timeCreated} by {pr.author}
               </PRSubline>
-              <List>
-                <ListItem>
-                  <ListItemIcon>
-                    <Approvals approvals={pr.approvals} />
-                  </ListItemIcon>
-                  {pr.approvals} approval
-                  {addS(pr.approvals)}
-                </ListItem>
-                <Statuses statuses={pr.statuses} />
-              </List>
             </MainAndSubline>
+            <List>
+              {desc}
+              <ListItem disableGutters={true}>
+                <ListItemIcon>
+                  <Approvals approvals={pr.approvals} />
+                </ListItemIcon>
+                {pr.approvals} approval
+                {addS(pr.approvals)}
+              </ListItem>
+              <Statuses statuses={pr.statuses} />
+            </List>
           </CardContent>
           <StyledMobileStpper
             activeStep={this.state.displayIndex}
