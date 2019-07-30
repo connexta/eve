@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import {
   CX_OFF_WHITE,
   CX_FONT,
@@ -7,39 +8,80 @@ import {
 } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { Card, CardContent } from "@material-ui/core";
-import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../styles/styles";
+import { jenkinsURLList } from "../utils/Link";
+import {
+  BoxStyle,
+  BoxHeader,
+  CARD_SIDE_MARGINS,
+  LEFT_BOX_STYLE
+} from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
 
+export const BUILD_STATUS_HEIGHT = 160;
+
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
 const styles = {
-  card: {
-    width: "calc(100% - " + LEFT_BOX_STYLE + "px)"
-  },
-  cardheader: {
-    background: CX_OFF_WHITE,
-    color: BATMAN_GRAY,
-    fontFamily: CX_FONT
-  },
-  cardContent: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    fontSize: "32px",
-    padding: "0 8px 0 8px",
-    clear: "both"
-  },
-  buttonDefault: {
-    float: "right"
-  },
-  buttonSelected: {
-    float: "right",
-    textDecoration: "underline " + CX_DARK_BLUE
-  }
+  // card: {
+  //   height: BUILD_STATUS_HEIGHT,
+  //   width: "calc(100% - " + CARD_SIDE_MARGINS + "px)"
+  // },
+  // cardheader: {
+  //   background: CX_OFF_WHITE,
+  //   color: BATMAN_GRAY,
+  //   fontFamily: CX_FONT
+  // },
+  // cardContent: {
+  //   display: "flex",
+  //   flexDirection: "row",
+  //   justifyContent: "space-between",
+  //   flexWrap: "wrap",
+  //   fontSize: "32px",
+  //   padding: "8px",
+  //   clear: "both"
+  // },
+  // buttonDefault: {
+  //   float: "right"
+  // },
+  // buttonSelected: {
+  //   float: "right",
+  //   borderBottom: "thick solid " + CX_DARK_BLUE
+  // }
 };
+
+const StyledCard = styled(BoxStyle)`
+  && {
+    height: ${BUILD_STATUS_HEIGHT}px;
+    width: calc(100% - ${CARD_SIDE_MARGINS}px);
+  }
+`;
+
+const StyledCardContent = styled(CardContent)`
+  && {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    font-size: 32px;
+    padding: 8px;
+    clear: both;
+  }
+`;
+
+const ButtonDefault = styled(Button)`
+  && {
+    float: "right";
+  }
+`;
+
+const ButtonSelected = styled(Button)`
+  && {
+    float: right;
+    border-bottom: thick solid ${CX_DARK_BLUE};
+  }
+`;
 
 class BuildStatus extends React.Component {
   constructor(props) {
@@ -171,38 +213,44 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card
-        style={{ ...styles.card, ...LEFT_BOX_STYLE, ...BOX_STYLE }}
-        raised={true}
-      >
-        <p style={BOX_HEADER}>Loading Build Health. . .</p>
-      </Card>
+      <StyledCard raised={true}>
+        <BoxHeader>
+          <p>Loading Build Health. . .</p>
+        </BoxHeader>
+      </StyledCard>
     ) : (
-      <Card
-        style={{ ...styles.card, ...LEFT_BOX_STYLE, ...BOX_STYLE }}
-        raised={true}
-      >
-        <p style={BOX_HEADER}>Jenkins Build Health</p>
-        <Button
-          style={
-            this.state.toggle ? styles.buttonDefault : styles.buttonSelected
-          }
-          onClick={this.toggle}
-        >
-          Last 5 Builds
-        </Button>
-        <Button
-          style={
-            this.state.toggle ? styles.buttonSelected : styles.buttonDefault
-          }
-          onClick={this.toggle}
-        >
-          Current Build
-        </Button>
-        <CardContent style={styles.cardContent}>
-          {this.getBuildDisplay()}
-        </CardContent>
-      </Card>
+      <StyledCard raised={true}>
+        <BoxHeader>
+          <p>Jenkins Build Health</p>
+        </BoxHeader>
+        {this.state.toggle ? (
+          <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
+        ) : (
+          <ButtonSelected onClick={this.toggle}>Last 5 Builds</ButtonSelected>
+        )}
+        {this.state.toggle ? (
+          <ButtonSelected onClick={this.toggle}>Current Builds</ButtonSelected>
+        ) : (
+          <ButtonDefault onClick={this.toggle}>Current Builds</ButtonDefault>
+        )}
+        {/* // <Button
+        //   style={
+        //     this.state.toggle ? styles.buttonDefault : styles.buttonSelected
+        //   }
+        //   onClick={this.toggle}
+        // >
+        //   Last 5 Builds
+        // </Button>
+        // <Button
+        //   style={
+        //     this.state.toggle ? styles.buttonSelected : styles.buttonDefault
+        //   }
+        //   onClick={this.toggle}
+        // >
+        //   Current Build
+        // </Button> */}
+        <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
+      </StyledCard>
     );
   }
 }

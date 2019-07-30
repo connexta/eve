@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { BATMAN_GRAY } from "../utils/Constants.js";
 import Card from "@material-ui/core/Card";
 import List from "@material-ui/core/List";
@@ -6,6 +7,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
+<<<<<<< HEAD
 import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../styles/styles";
 import makeTrashable from "trashable";
 
@@ -24,7 +26,39 @@ const styles = {
   headers: {
     cursor: "pointer"
   }
+=======
+import { BoxStyle, BoxHeader } from "../styles/styles";
+import makeTrashable from "trashable";
+
+const styles = {
+  // cardheader: {
+  //   background: BoxHeader.fontSize,
+  //   margin: BoxHeader.margin,
+  //   color: BoxHeader.color,
+  //   textDecoration: "none"
+  // },
+  // listitemtext: {
+  //   color: BATMAN_GRAY
+  // },
+  // listitemtextdots: {
+  //   color: BATMAN_GRAY,
+  //   textAlign: "center"
+  // }
+>>>>>>> Switching to styled in progress
 };
+
+const StyledCardHeader = styled(BoxHeader)`
+  text-decoration: none;
+`;
+
+const StyledListItemText = styled(ListItemText)`
+  color: ${BATMAN_GRAY};
+`;
+
+const ListItemTextDots = styled(ListItemText)`
+  color: ${BATMAN_GRAY};
+  text-align: center;
+`;
 
 class BuildAF extends React.Component {
   constructor(props) {
@@ -114,11 +148,10 @@ class BuildAF extends React.Component {
   displayDots() {
     return (
       <ListItem>
-        <ListItemText
+        <ListItemTextDots
           primary={"\u22EE"} //\u22EE: Vertical Ellipsis to represent trimmed data
           primaryTypographyProps={{ variant: "h5" }}
-          style={styles.listitemtextdots}
-        ></ListItemText>
+        ></ListItemTextDots>
       </ListItem>
     );
   }
@@ -128,7 +161,7 @@ class BuildAF extends React.Component {
   displayListContents(data, index) {
     return (
       <ListItem key={index} button component="a" href={AFJenkinLink + data.id}>
-        <ListItemText
+        <StyledListItemText
           primary={this.formatData(data)}
           secondary={
             parseTimeString(data.startTime) +
@@ -137,8 +170,7 @@ class BuildAF extends React.Component {
           }
           primaryTypographyProps={{ variant: "h5" }}
           secondaryTypographyProps={{ variant: "h6" }}
-          style={styles.listitemtext}
-        ></ListItemText>
+        ></StyledListItemText>
       </ListItem>
     );
   }
@@ -190,6 +222,7 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
+<<<<<<< HEAD
       <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
         Loading AF Builds. . .
       </Card>
@@ -205,8 +238,21 @@ class BuildAF extends React.Component {
             build
           </p>
         </div>
+=======
+      <BoxStyle raised={true}>Loading AF Builds. . .</BoxStyle>
+    ) : (
+      <BoxStyle raised={true}>
+        <StyledCardHeader
+          title={AFpipeline}
+          subheader="Display failed build from most recent up to the last successful build"
+          component="a"
+          href={AFJenkinLink}
+          titleTypographyProps={{ variant: "h4" }}
+          subheaderTypographyProps={{ variant: "h6", color: "inherit" }}
+        ></StyledCardHeader>
+>>>>>>> Switching to styled in progress
         {this.getListContents(4, 2)}
-      </Card>
+      </BoxStyle>
     );
   }
 }

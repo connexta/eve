@@ -27,7 +27,7 @@ export default class TVWallboard extends React.Component {
         </Grid>
         <RightBox item>
           <SlackComponent />
-          <Github repoPath={"codice/ddf"} />
+          {/* <Github repoPath={"codice/ddf"} /> */}
         </RightBox>
       </Grid>
     );

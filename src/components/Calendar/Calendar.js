@@ -6,7 +6,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "!style-loader!css-loader!../../styles/Calendar.css";
-import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../../styles/styles";
+import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../../styles/styles";
+import { BUILD_STATUS_HEIGHT } from "../BuildStatus";
 import {
   Card,
   Dialog,
@@ -370,11 +371,8 @@ class CalendarCaller extends React.Component {
 
     return (
       <Router>
-        <Card
-          style={{ ...BOX_STYLE, ...LEFT_BOX_STYLE, ...styles.card }}
-          raised={true}
-        >
-          <p style={BOX_HEADER}>Calendar</p>
+        <Card style={{ ...BoxStyle, ...styles.card }} raised={true}>
+          <p style={BoxHeader}>Calendar</p>
           <div style={styles.buttonContainer}>
             <div className="rbc-toolbar">
               <span className="rbc-btn-group" style={styles.buttonContainer}>

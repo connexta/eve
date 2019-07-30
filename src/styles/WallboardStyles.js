@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { BANNER_HEIGHT } from "../index";
-import { Grid } from "@material-ui/core/Grid";
+import Grid from "@material-ui/core/Grid";
 
 export const LeftBox = styled(Grid)`
   height: 100%;
@@ -17,14 +17,14 @@ export const I2OleftBox = {
   width: "30%"
 };
 
-export const WallBoardButtons = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  flexWrap: "wrap"
-};
+export const WallBoardButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
 
-export const Homebase = styled(Grid)`
+export const Homebase = styled.div`
   font-size: 30px;
   position: absolute;
   top: ${BANNER_HEIGHT}px;

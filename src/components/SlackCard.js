@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import Parser from "html-react-parser";
 import emojis from "../utils/emojis";
 import square_logo from "../../resources/square_logo.png";
@@ -7,39 +8,76 @@ import { getRelativeTime } from "../utils/TimeUtils";
 const SLACK_FONT_SIZE = "20px";
 
 const styles = {
-  cardStyle: {
-    paddingBottom: "10px",
-    margin: "0 0 5px 0",
-    fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
-    fontSize: SLACK_FONT_SIZE,
-    position: "relative"
-  },
-  contentContainer: {
-    verticalAlign: "top"
-  },
-  headerAndContent: {
-    display: "inline-block",
-    width: "80%"
-  },
-  cardText: {
-    fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
-    fontSize: SLACK_FONT_SIZE,
-    marginTop: "4px",
-    width: "100%",
-    color: "black",
-    minHeight: "100%",
-    width: "100%"
-  },
-  avatarStyle: {
-    borderRadius: "8%",
-    margin: "5px 10px 0 5px",
-    display: "inline",
-    height: "50px",
-    width: "50px",
-    display: "inline-block",
-    verticalAlign: "top"
-  }
+  // cardStyle: {
+  //   paddingBottom: "10px",
+  //   margin: "0 10px 5px 10px",
+  //   fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
+  //   fontSize: SLACK_FONT_SIZE,
+  //   position: "relative"
+  // },
+  // contentContainer: {
+  //   verticalAlign: "top"
+  // },
+  // headerAndContent: {
+  //   display: "inline-block",
+  //   width: "80%"
+  // },
+  // cardText: {
+  //   fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
+  //   fontSize: SLACK_FONT_SIZE,
+  //   marginTop: "4px",
+  //   width: "100%",
+  //   color: "black",
+  //   minHeight: "100%",
+  //   width: "100%"
+  // },
+  // avatarStyle: {
+  //   borderRadius: "8%",
+  //   margin: "5px 10px 0 5px",
+  //   display: "inline",
+  //   height: "50px",
+  //   width: "50px",
+  //   display: "inline-block",
+  //   verticalAlign: "top"
+  // }
 };
+
+const StyledCard = styled.div`
+  padding-bottom: 10px;
+  margin: 0 10px 5px 10px;
+  font-family: "NotoSansJP, Slack-Lato, appleLogo, sans-serif";
+  font-size: ${SLACK_FONT_SIZE};
+  position: relative;
+`;
+
+const ContentContainer = styled.div`
+  vertical-align: top;
+`;
+
+const HeaderAndContent = styled.div`
+  display: inline-block;
+  width: 80%;
+`;
+
+const CardText = styled.div`
+  font-family: "NotoSansJP, Slack-Lato, appleLogo, sans-serif";
+  font-size: ${SLACK_FONT_SIZE};
+  margin-top: 4px;
+  width: 100%;
+  color: black;
+  min-height: 100%;
+  width: 100%;
+`;
+
+const AvatarStyle = styled.img`
+  border-radius: 8%;
+  margin: 5px 10px 0 5px;
+  display: inline;
+  height: 50px;
+  width: 50px;
+  display: inline-block;
+  vertical-align: top;
+`;
 
 const cardMedia =
   "max-width: 10vw; \
@@ -329,21 +367,16 @@ class SlackCard extends React.Component {
 
   render() {
     return (
-      <div style={styles.cardStyle}>
-        <img
-          style={styles.avatarStyle}
-          src={this.getIcon(this.props.index)}
-        ></img>
-        <div style={styles.headerAndContent}>
+      <StyledCard>
+        <AvatarStyle src={this.getIcon(this.props.index)}></AvatarStyle>
+        <HeaderAndContent>
           {Parser(this.getCardHeader(this.props.index))}
-          <div style={styles.contentContainer}>
+          <ContentContainer>
             {Parser(this.getCardMedia(this.props.index))}
-            <div style={styles.cardText}>
-              {Parser(this.getCardText(this.props.index))}
-            </div>
-          </div>
-        </div>
-      </div>
+            <CardText>{Parser(this.getCardText(this.props.index))}</CardText>
+          </ContentContainer>
+        </HeaderAndContent>
+      </StyledCard>
     );
   }
 }
