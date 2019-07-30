@@ -3,6 +3,11 @@ const minute = second * 60;
 const hour = minute * 60;
 const day = hour * 24;
 
+// Appends s to word if value is not 1
+export function addS(val) {
+  return val == 1 ? "" : "s";
+}
+
 const time = ({ hours = 0, minutes = 0, seconds = 0 }) => {
   return hours * hour + minutes * minute + seconds * second;
 };
@@ -28,9 +33,9 @@ const getRelativeTime = targetDate => {
   if (timeDiffMin < 60) {
     return timeDiffMin == 0 ? "now" : timeDiffMin + " min ago";
   } else if (timeDiffHrs < 24) {
-    return timeDiffHrs + (timeDiffHrs == 1 ? " hour ago" : " hours ago");
+    return timeDiffHrs + " hour" + addS(timeDiffHrs) + " ago";
   } else {
-    return timeDiffDays + (timeDiffDays == 1 ? " day ago" : " days ago");
+    return timeDiffDays + " day" + addS(timeDiffDays) + " ago";
   }
 };
 

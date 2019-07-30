@@ -14,10 +14,9 @@ import Button from "@material-ui/core/Button";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
-
 const styles = {
   card: {
-    width: "calc(100% - " + LEFT_BOX_STYLE  + "px)",
+    width: "calc(100% - " + LEFT_BOX_STYLE + "px)"
   },
   cardheader: {
     background: CX_OFF_WHITE,
@@ -83,7 +82,12 @@ class BuildStatus extends React.Component {
     await Promise.all(this.trashableRequestList)
       .then(linklist => {
         for (let index = 0; index < linklist.length; index++) {
-          this.updateData(linklist[index], overallData, Object.keys(this.props.urlList[index]), index);
+          this.updateData(
+            linklist[index],
+            overallData,
+            Object.keys(this.props.urlList[index]),
+            index
+          );
         }
       })
       .catch(e => console.log("error", e));
@@ -119,14 +123,19 @@ class BuildStatus extends React.Component {
   }
 
   //get last five builds subtitles based on the number of weatherscore and number of total builds
-  getFiveSubtitle(item){
+  getFiveSubtitle(item) {
     const divisor = item.latestRun.id >= 5 ? 5 : item.latestRun.id; //Since weatherscore is calculated by max 5 builds.
-    const weatherScoreDivisor = divisor === 0 ? undefined : Math.round(100/divisor); //avoid 0 division
-    if (!weatherScoreDivisor){
-      return "Data not Found"
-    }
-    else {
-      return (item.weatherScore / weatherScoreDivisor) + "/" + divisor.toString() + " Succeeded"
+    const weatherScoreDivisor =
+      divisor === 0 ? undefined : Math.round(100 / divisor); //avoid 0 division
+    if (!weatherScoreDivisor) {
+      return "Data not Found";
+    } else {
+      return (
+        item.weatherScore / weatherScoreDivisor +
+        "/" +
+        divisor.toString() +
+        " Succeeded"
+      );
     }
   }
 

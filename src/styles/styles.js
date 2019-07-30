@@ -22,6 +22,8 @@ export const RIGHT_BOX_STYLE = {
   margin: "24px 24px 24px 12px"
 };
 
+export const BOX_HEADER_SIZE = 44;
+
 export const BOX_HEADER = {
   fontSize: "32px",
   color: CX_GRAY_BLUE,
