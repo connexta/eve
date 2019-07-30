@@ -19,14 +19,13 @@ import {
 import PullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
-import { addS } from "../utils/utility";
+import { addS } from "../utils/TimeUtils";
 
 import NeutralState from "@material-ui/icons/remove";
 import BadState from "@material-ui/icons/clear";
 import GoodState from "@material-ui/icons/done";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import Add from "@material-ui/icons/add";
 
 export const GITHUB_HEIGHT = 400;
 
@@ -76,11 +75,15 @@ const PRSubline = styled.div`
 const Description = styled.p`
   margin: 0 0 0 0;
   max-height: 48px;
-  width: 100%;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+`;
+
+const Icon = styled.img`
+  height: 20px;
+  margin-left: 4px;
 `;
 
 const LinkText = styled.span`
@@ -88,7 +91,7 @@ const LinkText = styled.span`
   cursor: pointer;
 `;
 
-const StyledMobileStpper = withStyles({
+const StyledMobileStepper = withStyles({
   root: {
     backgroundColor: CX_OFF_WHITE,
     height: "20px",
@@ -143,11 +146,12 @@ function Statuses(props) {
   }
   if (props.statuses.length > NUM_STATUSES) {
     statuses.push(
-      <ListItem disableGutters={true} key={NUM_STATUSES}>
-        <ListItemIcon>
-          <Add />
-        </ListItemIcon>
-        {props.statuses.length - (NUM_STATUSES - 1)} more statuses
+      <ListItem
+        disableGutters={true}
+        key={NUM_STATUSES}
+        onClick={() => window.open(props.url)}
+      >
+        + {props.statuses.length - (NUM_STATUSES - 1)} statuses not shown
       </ListItem>
     );
   }
@@ -175,6 +179,7 @@ export default class Github extends React.Component {
     this.trashableRequestGithub = makeTrashable(fetch(call));
 
     return await this.trashableRequestGithub
+      .catch(e => console.log("Error fetching GitHub data", e))
       .then(res => {
         if (!res.ok) {
           console.log("Failed to fetch GitHub data: " + call);
@@ -341,10 +346,7 @@ export default class Github extends React.Component {
         pr.description.length > 4 ? (
           <ListItem disableGutters={true}>
             <ListItemIcon>
-              <img
-                style={{ height: "20px", marginLeft: "4px" }}
-                src={PullRequest}
-              />
+              <Icon src={PullRequest} />
             </ListItemIcon>
             <Description>{pr.description}</Description>
           </ListItem>
@@ -371,10 +373,10 @@ export default class Github extends React.Component {
                 {pr.approvals} approval
                 {addS(pr.approvals)}
               </ListItem>
-              <Statuses statuses={pr.statuses} />
+              <Statuses statuses={pr.statuses} url={pr.url} />
             </List>
           </CardContent>
-          <StyledMobileStpper
+          <StyledMobileStepper
             activeStep={this.state.displayIndex}
             steps={this.state.numPulls}
             variant={"dots"}
