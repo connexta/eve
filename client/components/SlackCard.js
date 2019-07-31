@@ -4,6 +4,7 @@ import Parser from "html-react-parser";
 import square_logo from "../../resources/square_logo.png";
 import { getRelativeTime } from "../utils/TimeUtils";
 import { CX_FONT } from "../utils/Constants";
+<<<<<<< HEAD:client/components/SlackCard.js
 import { getEmoji } from "../utils/emojis/emojiUtil";
 
 const SLACK_FONT_SIZE = "20px";
@@ -81,10 +82,15 @@ const styles = {
 };
 >>>>>>> Switching to styled in progress:src/components/SlackCard.js
 
+=======
+
+const SLACK_FONT_SIZE = "20px";
+
+>>>>>>> Converted to styled components:src/components/SlackCard.js
 const StyledCard = styled.div`
   padding-bottom: 10px;
   margin: 0 10px 5px 10px;
-  font-family: "NotoSansJP, Slack-Lato, appleLogo, sans-serif";
+  font-family: ${CX_FONT};
   font-size: ${SLACK_FONT_SIZE};
   position: relative;
 `;
@@ -99,7 +105,6 @@ const HeaderAndContent = styled.div`
 `;
 
 const CardText = styled.div`
-  font-family: "NotoSansJP, Slack-Lato, appleLogo, sans-serif";
   font-size: ${SLACK_FONT_SIZE};
   margin-top: 4px;
   width: 100%;

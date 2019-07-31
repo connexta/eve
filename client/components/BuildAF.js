@@ -1,6 +1,15 @@
 import React from "react";
 import styled from "styled-components";
+<<<<<<< HEAD
 import { BATMAN_GRAY } from "../utils/Constants.js";
+<<<<<<< HEAD:client/components/BuildAF.js
+=======
+import Card from "@material-ui/core/Card";
+=======
+import { BATMAN_GRAY, CX_GRAY_BLUE } from "../utils/Constants.js";
+import CardHeader from "@material-ui/core/CardHeader";
+>>>>>>> Converted to styled components
+>>>>>>> Converted to styled components:src/components/BuildAF.js
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -32,6 +41,7 @@ const ListItemTextDots = styled(ListItemText)`
   text-align: center;
 `;
 =======
+<<<<<<< HEAD
 <<<<<<< HEAD
 import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../styles/styles";
 import makeTrashable from "trashable";
@@ -74,6 +84,19 @@ const styles = {
 >>>>>>> Switching to styled in progress:src/components/BuildAF.js
 
 const StyledCardHeader = styled(BoxHeader)`
+=======
+import { BoxStyle, CARD_SIDE_MARGINS } from "../styles/styles";
+import makeTrashable from "trashable";
+
+const StyledCard = styled(BoxStyle)`
+  width: calc(100% - ${CARD_SIDE_MARGINS}px);
+`;
+
+const StyledCardHeader = styled(CardHeader)`
+  font-size: 32px;
+  color: ${CX_GRAY_BLUE};
+  margin: 12px 0 0 12px;
+>>>>>>> Converted to styled components
   text-decoration: none;
 `;
 
@@ -270,6 +293,7 @@ class BuildAF extends React.Component {
       <StyledBox raised={true}>Loading AF Builds. . .</StyledBox>
 =======
 <<<<<<< HEAD
+<<<<<<< HEAD
       <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
         Loading AF Builds. . .
       </Card>
@@ -291,8 +315,11 @@ class BuildAF extends React.Component {
         </div>
 =======
       <BoxStyle raised={true}>Loading AF Builds. . .</BoxStyle>
+=======
+      <StyledCard raised={true}>Loading AF Builds. . .</StyledCard>
+>>>>>>> Converted to styled components
     ) : (
-      <BoxStyle raised={true}>
+      <StyledCard raised={true}>
         <StyledCardHeader
           title={AFpipeline}
           subheader="Display failed build from most recent up to the last successful build"
@@ -303,8 +330,12 @@ class BuildAF extends React.Component {
         ></StyledCardHeader>
 >>>>>>> Switching to styled in progress
         {this.getListContents(4, 2)}
+<<<<<<< HEAD:client/components/BuildAF.js
       </BoxStyle>
 >>>>>>> Switching to styled in progress:src/components/BuildAF.js
+=======
+      </StyledCard>
+>>>>>>> Converted to styled components:src/components/BuildAF.js
     );
   }
 }
