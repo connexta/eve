@@ -7,13 +7,12 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --open --mode development --env.NODE_ENV=local",
-    "go": "yarn build && yarn start"
+    "go": "yarn install && yarn build && yarn start"
   },
   "dependencies": {
     "@material-ui/core": "^4.2.1",
     "@material-ui/icons": "^4.2.1",
     "@microsoft/microsoft-graph-client": "^1.7.0",
-    "@primer/octicons-react": "^9.1.1",
     "css-loader": "^3.1.0",
     "html-react-parser": "^0.7.1",
     "moment": "^2.24.0",

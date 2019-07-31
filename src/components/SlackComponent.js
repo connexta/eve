@@ -2,7 +2,7 @@ import React from "react";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
 import Card from "@material-ui/core/Card";
-import { BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { BOX_STYLE, BOX_HEADER, RIGHT_BOX_STYLE } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
 import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
@@ -23,7 +23,6 @@ const styles = {
   },
   cardHeader: {
     fontFamily: CX_FONT,
-    margin: "12px 0 12px 16px",
     height: "40px"
   },
   SlackCardContainer: {
@@ -31,15 +30,15 @@ const styles = {
     height: "100%"
   },
   GradientBlock: {
-    height: "15%",
+    height: "10%",
     width: "100%",
-    bottom: "10px",
+    bottom: "23px",
     background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
     position: "absolute",
     zIndex: 2
   },
   WhiteBlock: {
-    height: "12px",
+    height: "24px",
     width: "100%",
     bottom: 0,
     background: CX_OFF_WHITE,
@@ -303,22 +302,29 @@ class SlackComponent extends React.Component {
   render() {
     if (this.anyStillLoading()) {
       return (
-        <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
+        <Card
+          style={{ ...styles.CardContainer, ...RIGHT_BOX_STYLE, ...BOX_STYLE }}
+          raised={true}
+        >
           <p style={BOX_HEADER}>Loading Slack...</p>
         </Card>
       );
     } else {
       return (
-        <Card style={{ ...styles.CardContainer, ...BOX_STYLE }} raised={true}>
+        <Card
+          style={{ ...styles.CardContainer, ...RIGHT_BOX_STYLE, ...BOX_STYLE }}
+          raised={true}
+        >
           <span style={BOX_HEADER}>#{this.getChannelName(CHANNEL)}</span>
-          <div style={styles.GradientBlock}></div>
-          <div style={styles.WhiteBlock}></div>
+
           {this.state.displayIndex.map((item, index) =>
             this.displayFirstMessage(item, index)
           )}
           <div style={styles.SlackCardContainer}>
             {this.displayRestOfMessages()}
           </div>
+          <div style={styles.GradientBlock}></div>
+          <div style={styles.WhiteBlock}></div>
         </Card>
       );
     }

@@ -22,14 +22,18 @@ const SOAESBURL =
 const REFLEXURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/reflex-jobs/pipelines/Nightly/pipelines/reflex-nightly/";
 
-export const jenkinsURLList = {
-  Alliance: AllianceURL,
-  DDF: DDFURL,
-  DIB: DIBURL,
-  GSR: GSRURL,
-  SOAESB: SOAESBURL,
-  REFLEX: REFLEXURL
-};
+//URL for the ION team main repo to keep track of
+export const IONURL =
+  "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/ION/";
+
+export const jenkinsURLList = [
+  {Alliance: AllianceURL},
+  {DDF: DDFURL},
+  {DIB: DIBURL},
+  {GSR: GSRURL},
+  {SOAESB: SOAESBURL},
+  {REFLEX: REFLEXURL}
+  ];
 
 /*AF team*/
 
