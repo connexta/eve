@@ -2,14 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
-import Card from "@material-ui/core/Card";
-import {
-  BOX_STYLE,
-  BOX_HEADER,
-  RIGHT_BOX_STYLE,
-  BoxStyle,
-  BoxHeader
-} from "../styles/styles";
+import { BoxStyle, BoxHeader } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
 import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
@@ -19,41 +12,6 @@ const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
-
-const styles = {
-  // CardContainer: {
-  //   display: "flex",
-  //   flexDirection: "column",
-  //   justifyContent: "flex-start",
-  //   position: "relative",
-  //   height: "calc(100% - " + GITHUB_HEIGHT + "px - 72px - 32px)" // Height of Slack Card is size of window beneath banner minus size of github card and margins
-  // },
-  // cardHeader: {
-  //   fontFamily: CX_FONT,
-  //   margin: "12px 0 12px 16px",
-  //   height: "40px"
-  // },
-  // SlackCardContainer: {
-  //   top: "72px",
-  //   height: "100%"
-  // },
-  // GradientBlock: {
-  //   height: "15%",
-  //   width: "100%",
-  //   bottom: "10px",
-  //   background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
-  //   position: "absolute",
-  //   zIndex: 2
-  // },
-  // WhiteBlock: {
-  //   height: "12px",
-  //   width: "100%",
-  //   bottom: 0,
-  //   background: CX_OFF_WHITE,
-  //   position: "absolute",
-  //   zIndex: 3
-  // }
-};
 
 const CardContainer = styled(BoxStyle)`
   display: flex;
@@ -79,7 +37,7 @@ const SlackCardContainer = styled.div`
 const GradientBlock = styled.div`
   height: 15%;
   width: 100%;
-  bottom: 10p;
+  bottom: 10px;
   background: linear-gradient(transparent, ${CX_OFF_WHITE});
   position: absolute;
   z-index: 2;

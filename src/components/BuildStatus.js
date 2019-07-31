@@ -1,13 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  CX_OFF_WHITE,
-  CX_FONT,
-  BATMAN_GRAY,
-  CX_DARK_BLUE
-} from "../utils/Constants";
+import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
-import { Card, CardContent } from "@material-ui/core";
+import { CardContent } from "@material-ui/core";
 import { jenkinsURLList } from "../utils/Link";
 import {
   BoxStyle,
@@ -23,64 +18,28 @@ export const BUILD_STATUS_HEIGHT = 160;
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
-const styles = {
-  // card: {
-  //   height: BUILD_STATUS_HEIGHT,
-  //   width: "calc(100% - " + CARD_SIDE_MARGINS + "px)"
-  // },
-  // cardheader: {
-  //   background: CX_OFF_WHITE,
-  //   color: BATMAN_GRAY,
-  //   fontFamily: CX_FONT
-  // },
-  // cardContent: {
-  //   display: "flex",
-  //   flexDirection: "row",
-  //   justifyContent: "space-between",
-  //   flexWrap: "wrap",
-  //   fontSize: "32px",
-  //   padding: "8px",
-  //   clear: "both"
-  // },
-  // buttonDefault: {
-  //   float: "right"
-  // },
-  // buttonSelected: {
-  //   float: "right",
-  //   borderBottom: "thick solid " + CX_DARK_BLUE
-  // }
-};
-
 const StyledCard = styled(BoxStyle)`
-  && {
-    height: ${BUILD_STATUS_HEIGHT}px;
-    width: calc(100% - ${CARD_SIDE_MARGINS}px);
-  }
+  height: ${BUILD_STATUS_HEIGHT}px;
+  width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
 const StyledCardContent = styled(CardContent)`
-  && {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    font-size: 32px;
-    padding: 8px;
-    clear: both;
-  }
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 32px;
+  padding: 8px;
+  clear: both;
 `;
 
 const ButtonDefault = styled(Button)`
-  && {
-    float: "right";
-  }
+  float: right;
 `;
 
 const ButtonSelected = styled(Button)`
-  && {
-    float: right;
-    border-bottom: thick solid ${CX_DARK_BLUE};
-  }
+  float: right;
+  border-bottom: thick solid ${CX_DARK_BLUE};
 `;
 
 class BuildStatus extends React.Component {
@@ -214,15 +173,11 @@ class BuildStatus extends React.Component {
   render() {
     return this.state.isLoading ? (
       <StyledCard raised={true}>
-        <BoxHeader>
-          <p>Loading Build Health. . .</p>
-        </BoxHeader>
+        <BoxHeader>Loading Build Health. . .</BoxHeader>
       </StyledCard>
     ) : (
       <StyledCard raised={true}>
-        <BoxHeader>
-          <p>Jenkins Build Health</p>
-        </BoxHeader>
+        <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.state.toggle ? (
           <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
         ) : (
@@ -233,22 +188,6 @@ class BuildStatus extends React.Component {
         ) : (
           <ButtonDefault onClick={this.toggle}>Current Builds</ButtonDefault>
         )}
-        {/* // <Button
-        //   style={
-        //     this.state.toggle ? styles.buttonDefault : styles.buttonSelected
-        //   }
-        //   onClick={this.toggle}
-        // >
-        //   Last 5 Builds
-        // </Button>
-        // <Button
-        //   style={
-        //     this.state.toggle ? styles.buttonSelected : styles.buttonDefault
-        //   }
-        //   onClick={this.toggle}
-        // >
-        //   Current Build
-        // </Button> */}
         <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
       </StyledCard>
     );

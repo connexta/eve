@@ -14,46 +14,9 @@ import logo from "../resources/logo-offwhite.png";
 import Clock from "./components/Clock";
 import Grid from "@material-ui/core/Grid";
 
-export const BANNER_HEIGHT = 124;
+import { StylesProvider } from "@material-ui/styles";
 
-// const styles = {
-//   root: {
-//     height: "100%",
-//     position: "absolute",
-//     top: 0,
-//     bottom: 0,
-//     fontFamily: CX_FONT,
-//     background: CX_GRAY_BLUE
-//   },
-//   banner: {
-//     background: CX_DARK_BLUE,
-//     height: BANNER_HEIGHT,
-//     width: "100%",
-//     margin: "0px",
-//     padding: "0 40px 0 40px",
-//     display: "flex",
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center"
-//   },
-//   bottom: {
-//     width: "100%",
-//     position: "absolute",
-//     top: BANNER_HEIGHT,
-//     bottom: 0
-//   },
-//   logo: {
-//     margin: "0 0 12px 0"
-//   },
-//   // For message in bottom left corner
-//   DevMessage: {
-//     color: CX_OFF_WHITE,
-//     fontSize: "20px",
-//     position: "absolute",
-//     bottom: 0,
-//     marginLeft: "24px"
-//   }
-// };
+export const BANNER_HEIGHT = 124;
 
 const RootGrid = styled(Grid)`
   height: 100%;
@@ -101,30 +64,32 @@ const Logo = () => {
 };
 
 ReactDOM.render(
-  <Router>
-    <RootGrid container>
-      <BannerGrid container>
-        <Link to="/">
-          <Logo />
-        </Link>
-        <Clock timezone="US/Arizona" place="PHX" />
-        <Clock timezone="US/Mountain" place="DEN" />
-        <Clock timezone="US/Eastern" place="BOS" />
-        <Clock timezone="Europe/London" place="LON" />
-        <Clock timezone="Australia/Melbourne" place="MEL" />
-      </BannerGrid>
-      <BottomGrid item>
-        <Switch>
-          {wallboards.map(wallboard => {
-            return <Route {...wallboard} exact />;
-          })}
-          <Route component={NullWallboard} />
-        </Switch>
-        <StyledDevMsg>
-          <p>Work in Progress, contact @vina, @matt or join #wallboard-dev</p>
-        </StyledDevMsg>
-      </BottomGrid>
-    </RootGrid>
-  </Router>,
+  <StylesProvider injectFirst>
+    <Router>
+      <RootGrid container>
+        <BannerGrid container>
+          <Link to="/">
+            <Logo />
+          </Link>
+          <Clock timezone="US/Arizona" place="PHX" />
+          <Clock timezone="US/Mountain" place="DEN" />
+          <Clock timezone="US/Eastern" place="BOS" />
+          <Clock timezone="Europe/London" place="LON" />
+          <Clock timezone="Australia/Melbourne" place="MEL" />
+        </BannerGrid>
+        <BottomGrid item>
+          <Switch>
+            {wallboards.map(wallboard => {
+              return <Route {...wallboard} exact />;
+            })}
+            <Route component={NullWallboard} />
+          </Switch>
+          <StyledDevMsg>
+            <p>Work in Progress, contact @vina, @matt or join #wallboard-dev</p>
+          </StyledDevMsg>
+        </BottomGrid>
+      </RootGrid>
+    </Router>
+  </StylesProvider>,
   document.getElementById("iamroot")
 );

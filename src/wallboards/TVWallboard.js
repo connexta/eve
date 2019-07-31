@@ -18,16 +18,13 @@ export default class TVWallboard extends React.Component {
   render() {
     return (
       <Grid container style={{ height: "100%" }}>
-        <Grid item style={leftBox}>
-          <BuildStatus
-            urlList={jenkinsURLList}
-            cardContentStyle={styles.cardContent}
-          />
+        <LeftBox item>
+          <BuildStatus />
           <Calendar />
-        </Grid>
+        </LeftBox>
         <RightBox item>
           <SlackComponent />
-          {/* <Github repoPath={"codice/ddf"} /> */}
+          <Github repoPath={"codice/ddf"} />
         </RightBox>
       </Grid>
     );
