@@ -22,7 +22,7 @@ export const wallboards = [
   { path: "/i2o/", component: I2OWallboard, key: "I2O" }
 ];
 
-const StyledButton = styled(Button)`
+export const StyledButton = styled(Button)`
   background-color: ${CX_OFF_WHITE};
   height: 15vh;
   width: 20vw;

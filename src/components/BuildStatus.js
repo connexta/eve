@@ -8,8 +8,6 @@ import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
 
-export const BUILD_STATUS_HEIGHT = 160;
-
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
 const StyledCard = styled(BoxStyle)`
@@ -22,8 +20,10 @@ const StyledCardContent = styled(CardContent)`
   justify-content: space-between;
   flex-wrap: wrap;
   font-size: 32px;
-  padding: 8px;
   clear: both;
+  && {
+    padding: 0;
+  }
 `;
 
 const ButtonDefault = styled(Button)`
@@ -163,6 +163,22 @@ class BuildStatus extends React.Component {
     return display;
   }
 
+  prevBuildsButton(toggle) {
+    return toggle ? (
+      <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
+    ) : (
+      <ButtonSelected onClick={this.toggle}>Last 5 Builds</ButtonSelected>
+    );
+  }
+
+  currBuilds(toggle) {
+    return toggle ? (
+      <ButtonSelected onClick={this.toggle}>Current Builds</ButtonSelected>
+    ) : (
+      <ButtonDefault onClick={this.toggle}>Current Builds</ButtonDefault>
+    );
+  }
+
   render() {
     return this.state.isLoading ? (
       <StyledCard raised={true}>
@@ -171,16 +187,8 @@ class BuildStatus extends React.Component {
     ) : (
       <StyledCard raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
-        {this.state.toggle ? (
-          <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
-        ) : (
-          <ButtonSelected onClick={this.toggle}>Last 5 Builds</ButtonSelected>
-        )}
-        {this.state.toggle ? (
-          <ButtonSelected onClick={this.toggle}>Current Builds</ButtonSelected>
-        ) : (
-          <ButtonDefault onClick={this.toggle}>Current Builds</ButtonDefault>
-        )}
+        {this.prevBuildsButton(this.state.toggle)}
+        {this.currBuilds(this.state.toggle)}
         <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
       </StyledCard>
     );

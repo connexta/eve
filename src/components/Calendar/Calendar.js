@@ -7,7 +7,6 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "!style-loader!css-loader!../../styles/Calendar.css";
 import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../../styles/styles";
-import { BUILD_STATUS_HEIGHT } from "../BuildStatus";
 import {
   Dialog,
   List,
@@ -36,15 +35,14 @@ const StyledHeader = styled(BoxHeader)`
 
 const StyledCard = styled(BoxStyle)`
   height: calc(
-    100% - ${BUILD_STATUS_HEIGHT}px - ${CARD_HEIGHT_MARGINS}px -
-      ${WIP_MESSAGE_SPACE}px - 28px
+    100% - ${CARD_HEIGHT_MARGINS}px - ${WIP_MESSAGE_SPACE}px - 157px
   );
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
 const StyledCalendar = styled(Calendar)`
   && {
-    height: 70%;
+    height: 75%;
     width: 90%;
     margin: 0 5% 0 5%;
     font-size: 16px;
@@ -61,19 +59,19 @@ const ButtonContainer = styled.div`
 
 const StyledButton = styled.button`
   display: inline-block;
-  margin: 0;
+  && {
+    margin: 8px 0 0;
+  }
   height: 30px;
   vertical-align: bottom;
   margin-top: 8px;
 `;
 
 const RightButton = styled(StyledButton)`
-  border-radius: "0 4px 4px 0";
+  && {
+    border-radius: "0 4px 4px 0";
+  }
 `;
-
-// const LeftButton = styled(StyledButton)`
-//   border-radius: "4px 0 0 4px";
-// `;
 
 // Localizes time for big-react-calendar
 const localizer = momentLocalizer(moment);
@@ -374,7 +372,7 @@ class CalendarCaller extends React.Component {
         <StyledHeader>Calendar</StyledHeader>
         <ButtonContainer>
           <div className="rbc-toolbar">
-            <ButtonContainer className="rbc-btn-group">
+            <ButtonContainer>
               <LogInOut
                 isAuthenticated={this.state.isAuthenticated}
                 logIn={this.login.bind(this)}

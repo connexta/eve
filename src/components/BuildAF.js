@@ -122,7 +122,7 @@ class BuildAF extends React.Component {
         <ListItemTextDots
           primary={"\u22EE"} //\u22EE: Vertical Ellipsis to represent trimmed data
           primaryTypographyProps={{ variant: "h5" }}
-        ></ListItemTextDots>
+        />
       </ListItem>
     );
   }
@@ -131,7 +131,13 @@ class BuildAF extends React.Component {
   //  display list of build contents (builder [data.causes], build start time, build result, build description)
   displayListContents(data, index) {
     return (
-      <ListItem key={index} button component="a" href={AFJenkinLink + data.id}>
+      <ListItem
+        disableGutters={true}
+        key={index}
+        button
+        component="a"
+        href={AFJenkinLink + data.id}
+      >
         <StyledListItemText
           primary={this.formatData(data)}
           secondary={
@@ -141,7 +147,7 @@ class BuildAF extends React.Component {
           }
           primaryTypographyProps={{ variant: "h5" }}
           secondaryTypographyProps={{ variant: "h6" }}
-        ></StyledListItemText>
+        />
       </ListItem>
     );
   }

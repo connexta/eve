@@ -10,7 +10,7 @@ import { jenkinsURLList } from "../utils/Link";
 const styles = {
   cardContent: {
     padding: "4px",
-    width: "14%"
+    width: "15%"
   }
 };
 

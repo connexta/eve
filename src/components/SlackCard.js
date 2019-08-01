@@ -10,7 +10,7 @@ const SLACK_FONT_SIZE = "20px";
 
 const StyledCard = styled.div`
   padding-bottom: 10px;
-  margin: 0 10px 5px 10px;
+  margin: 0 0 5px 0;
   font-family: ${CX_FONT};
   font-size: ${SLACK_FONT_SIZE};
   position: relative;
@@ -36,7 +36,7 @@ const CardText = styled.div`
 
 const AvatarStyle = styled.img`
   border-radius: 8%;
-  margin: 5px 10px 0 5px;
+  margin: 5px 10px 0 0;
   display: inline;
   height: 50px;
   width: 50px;
