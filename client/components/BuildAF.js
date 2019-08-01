@@ -224,6 +224,9 @@ class BuildAF extends React.Component {
   displayListContents(data, index) {
     return (
 <<<<<<< HEAD:client/components/BuildAF.js
+<<<<<<< HEAD:client/components/BuildAF.js
+=======
+>>>>>>> working nodeJS server to read/write version numbers:src/components/BuildAF.js
       <ListItem
         disableGutters={true}
         key={index}
@@ -231,9 +234,12 @@ class BuildAF extends React.Component {
         component="a"
         href={AFJenkinLink + data.id}
       >
+<<<<<<< HEAD:client/components/BuildAF.js
 =======
       <ListItem key={index} button component="a" href={AFJenkinLink + data.id}>
 >>>>>>> Switching to styled in progress:src/components/BuildAF.js
+=======
+>>>>>>> working nodeJS server to read/write version numbers:src/components/BuildAF.js
         <StyledListItemText
           primary={this.formatData(data)}
           secondary={
