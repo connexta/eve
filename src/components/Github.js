@@ -21,9 +21,9 @@ import { getRelativeTime, hour, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import { addS } from "../utils/TimeUtils";
 
-import NeutralState from "@material-ui/icons/remove";
-import BadState from "@material-ui/icons/clear";
-import GoodState from "@material-ui/icons/done";
+import NeutralState from "@material-ui/icons/Remove";
+import BadState from "@material-ui/icons/Clear";
+import GoodState from "@material-ui/icons/Done";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
