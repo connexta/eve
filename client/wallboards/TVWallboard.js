@@ -10,7 +10,7 @@ import { jenkinsURLList } from "../utils/Link";
 const styles = {
   cardContent: {
     padding: "4px",
-    width: "15%"
+    width: "14%"
   }
 };
 
@@ -20,10 +20,14 @@ export default class TVWallboard extends React.Component {
       <Grid container style={{ height: "100%" }}>
         <LeftBox item>
 <<<<<<< HEAD:client/wallboards/TVWallboard.js
+<<<<<<< HEAD:client/wallboards/TVWallboard.js
+=======
+>>>>>>> Dealt with conflicts after rebasing:src/wallboards/TVWallboard.js
           <BuildStatus
             urlList={jenkinsURLList}
             cardContentStyle={styles.cardContent}
           />
+<<<<<<< HEAD:client/wallboards/TVWallboard.js
           <Calendar />
 <<<<<<< HEAD:client/wallboards/TVWallboard.js
         </LeftBox>
@@ -32,6 +36,8 @@ export default class TVWallboard extends React.Component {
 >>>>>>> Progress on converting styling:src/wallboards/TVWallboard.js
 =======
           <BuildStatus />
+=======
+>>>>>>> Dealt with conflicts after rebasing:src/wallboards/TVWallboard.js
           <Calendar />
         </LeftBox>
 >>>>>>> Converted to styled components:src/wallboards/TVWallboard.js

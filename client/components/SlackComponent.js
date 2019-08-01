@@ -117,7 +117,6 @@ const CardContainer = styled(BoxStyle)`
 
 const CardHeader = styled(BoxHeader)`
   font-family: ${CX_FONT};
-  margin: 12px 0 12px 16px;
   height: 40px;
 `;
 

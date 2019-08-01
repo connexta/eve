@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-<<<<<<< HEAD
 import { BATMAN_GRAY } from "../utils/Constants.js";
+<<<<<<< HEAD:client/components/BuildAF.js
 <<<<<<< HEAD:client/components/BuildAF.js
 =======
 import Card from "@material-ui/core/Card";
@@ -10,11 +10,14 @@ import { BATMAN_GRAY, CX_GRAY_BLUE } from "../utils/Constants.js";
 import CardHeader from "@material-ui/core/CardHeader";
 >>>>>>> Converted to styled components
 >>>>>>> Converted to styled components:src/components/BuildAF.js
+=======
+>>>>>>> Dealt with conflicts after rebasing:src/components/BuildAF.js
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
+<<<<<<< HEAD:client/components/BuildAF.js
 <<<<<<< HEAD:client/components/BuildAF.js
 import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
@@ -89,15 +92,22 @@ import { BoxStyle, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
 
 const StyledCard = styled(BoxStyle)`
+=======
+import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+import makeTrashable from "trashable";
+
+const StyledBox = styled(BoxStyle)`
+>>>>>>> Dealt with conflicts after rebasing:src/components/BuildAF.js
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
-const StyledCardHeader = styled(CardHeader)`
-  font-size: 32px;
-  color: ${CX_GRAY_BLUE};
-  margin: 12px 0 0 12px;
->>>>>>> Converted to styled components
-  text-decoration: none;
+const StyledHeader = styled(BoxHeader)`
+  cursor: pointer;
+`;
+
+const SubHeader = styled.div`
+  margin: 0px;
+  font-size: 24px;
 `;
 
 const StyledListItemText = styled(ListItemText)`
@@ -290,6 +300,7 @@ class BuildAF extends React.Component {
   render() {
     return this.state.isLoading ? (
 <<<<<<< HEAD:client/components/BuildAF.js
+<<<<<<< HEAD:client/components/BuildAF.js
       <StyledBox raised={true}>Loading AF Builds. . .</StyledBox>
 =======
 <<<<<<< HEAD
@@ -298,6 +309,9 @@ class BuildAF extends React.Component {
         Loading AF Builds. . .
       </Card>
 >>>>>>> Switching to styled in progress:src/components/BuildAF.js
+=======
+      <StyledBox raised={true}>Loading AF Builds. . .</StyledBox>
+>>>>>>> Dealt with conflicts after rebasing:src/components/BuildAF.js
     ) : (
       <StyledBox raised={true}>
         <StyledHeader onClick={() => window.open(AFJenkinLink)}>
@@ -305,6 +319,7 @@ class BuildAF extends React.Component {
           <SubHeader>
             Display failed build from most recent up to the last successful
             build
+<<<<<<< HEAD:client/components/BuildAF.js
 <<<<<<< HEAD:client/components/BuildAF.js
           </SubHeader>
         </StyledHeader>
@@ -336,6 +351,12 @@ class BuildAF extends React.Component {
 =======
       </StyledCard>
 >>>>>>> Converted to styled components:src/components/BuildAF.js
+=======
+          </SubHeader>
+        </StyledHeader>
+        {this.getListContents(4, 2)}
+      </StyledBox>
+>>>>>>> Dealt with conflicts after rebasing:src/components/BuildAF.js
     );
   }
 }

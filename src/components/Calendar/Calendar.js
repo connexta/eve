@@ -29,7 +29,6 @@ const END_HOUR = 18; // latest hour to display
 const WIP_MESSAGE_SPACE = 68;
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 const CARD_HEIGHT_MARGINS = 36;
-const BUILD_STATUS_HEIGHT = 160;
 
 const StyledHeader = styled(BoxHeader)`
   margin-bottom: 16px;
@@ -38,16 +37,16 @@ const StyledHeader = styled(BoxHeader)`
 const StyledCard = styled(BoxStyle)`
   height: calc(
     100% - ${BUILD_STATUS_HEIGHT}px - ${CARD_HEIGHT_MARGINS}px -
-      ${WIP_MESSAGE_SPACE}px
+      ${WIP_MESSAGE_SPACE}px - 28px
   );
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
 const StyledCalendar = styled(Calendar)`
   && {
-    height: 75%;
+    height: 70%;
     width: 90%;
-    margin: 0 5%;
+    margin: 0 5% 0 5%;
     font-size: 16px;
   }
 `;

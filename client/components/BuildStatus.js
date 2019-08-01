@@ -6,6 +6,7 @@ import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
 import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+<<<<<<< HEAD:client/components/BuildStatus.js
 =======
 import {
   CX_OFF_WHITE,
@@ -26,6 +27,8 @@ import {
   LEFT_BOX_STYLE
 } from "../styles/styles";
 >>>>>>> Switching to styled in progress:src/components/BuildStatus.js
+=======
+>>>>>>> Dealt with conflicts after rebasing:src/components/BuildStatus.js
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
@@ -97,7 +100,6 @@ const styles = {
 =======
 >>>>>>> Converted to styled components:src/components/BuildStatus.js
 const StyledCard = styled(BoxStyle)`
-  height: ${BUILD_STATUS_HEIGHT}px;
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
@@ -117,7 +119,7 @@ const ButtonDefault = styled(Button)`
 
 const ButtonSelected = styled(Button)`
   float: right;
-  border-bottom: thick solid ${CX_DARK_BLUE};
+  text-decoration: underline ${CX_DARK_BLUE};
 `;
 
 class BuildStatus extends React.Component {
