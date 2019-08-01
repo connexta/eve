@@ -3,13 +3,7 @@ import styled from "styled-components";
 import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
-import { jenkinsURLList } from "../utils/Link";
-import {
-  BoxStyle,
-  BoxHeader,
-  CARD_SIDE_MARGINS,
-  LEFT_BOX_STYLE
-} from "../styles/styles";
+import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
@@ -19,7 +13,6 @@ export const BUILD_STATUS_HEIGHT = 160;
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
 const StyledCard = styled(BoxStyle)`
-  height: ${BUILD_STATUS_HEIGHT}px;
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
@@ -39,7 +32,7 @@ const ButtonDefault = styled(Button)`
 
 const ButtonSelected = styled(Button)`
   float: right;
-  border-bottom: thick solid ${CX_DARK_BLUE};
+  text-decoration: underline ${CX_DARK_BLUE};
 `;
 
 class BuildStatus extends React.Component {

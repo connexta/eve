@@ -1,73 +1,25 @@
 import React from "react";
 import styled from "styled-components";
-<<<<<<< HEAD
 import { BATMAN_GRAY } from "../utils/Constants.js";
-import Card from "@material-ui/core/Card";
-=======
-import { BATMAN_GRAY, CX_GRAY_BLUE } from "../utils/Constants.js";
-import CardHeader from "@material-ui/core/CardHeader";
->>>>>>> Converted to styled components
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../styles/styles";
+import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
 
-const styles = {
-  listitemtext: {
-    color: BATMAN_GRAY
-  },
-  listitemtextdots: {
-    color: BATMAN_GRAY,
-    textAlign: "center"
-  },
-  subheader: {
-    margin: 0,
-    fontSize: "24px"
-  },
-  headers: {
-    cursor: "pointer"
-  }
-=======
-import { BoxStyle, BoxHeader } from "../styles/styles";
-import makeTrashable from "trashable";
-
-const styles = {
-  // cardheader: {
-  //   background: BoxHeader.fontSize,
-  //   margin: BoxHeader.margin,
-  //   color: BoxHeader.color,
-  //   textDecoration: "none"
-  // },
-  // listitemtext: {
-  //   color: BATMAN_GRAY
-  // },
-  // listitemtextdots: {
-  //   color: BATMAN_GRAY,
-  //   textAlign: "center"
-  // }
->>>>>>> Switching to styled in progress
-};
-
-const StyledCardHeader = styled(BoxHeader)`
-=======
-import { BoxStyle, CARD_SIDE_MARGINS } from "../styles/styles";
-import makeTrashable from "trashable";
-
-const StyledCard = styled(BoxStyle)`
+const StyledBox = styled(BoxStyle)`
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
-const StyledCardHeader = styled(CardHeader)`
-  font-size: 32px;
-  color: ${CX_GRAY_BLUE};
-  margin: 12px 0 0 12px;
->>>>>>> Converted to styled components
-  text-decoration: none;
+const StyledHeader = styled(BoxHeader)`
+  cursor: pointer;
+`;
+
+const SubHeader = styled.div`
+  margin: 0px;
+  font-size: 24px;
 `;
 
 const StyledListItemText = styled(ListItemText)`
@@ -241,41 +193,18 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
-        Loading AF Builds. . .
-      </Card>
+      <StyledBox raised={true}>Loading AF Builds. . .</StyledBox>
     ) : (
-      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
-        <div
-          style={{ ...styles.headers, ...BOX_HEADER }}
-          onClick={() => window.open(AFJenkinLink)}
-        >
+      <StyledBox raised={true}>
+        <StyledHeader onClick={() => window.open(AFJenkinLink)}>
           {AFpipeline}
-          <p style={styles.subheader}>
+          <SubHeader>
             Display failed build from most recent up to the last successful
             build
-          </p>
-        </div>
-=======
-      <BoxStyle raised={true}>Loading AF Builds. . .</BoxStyle>
-=======
-      <StyledCard raised={true}>Loading AF Builds. . .</StyledCard>
->>>>>>> Converted to styled components
-    ) : (
-      <StyledCard raised={true}>
-        <StyledCardHeader
-          title={AFpipeline}
-          subheader="Display failed build from most recent up to the last successful build"
-          component="a"
-          href={AFJenkinLink}
-          titleTypographyProps={{ variant: "h4" }}
-          subheaderTypographyProps={{ variant: "h6", color: "inherit" }}
-        ></StyledCardHeader>
->>>>>>> Switching to styled in progress
+          </SubHeader>
+        </StyledHeader>
         {this.getListContents(4, 2)}
-      </StyledCard>
+      </StyledBox>
     );
   }
 }
