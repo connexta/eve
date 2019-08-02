@@ -97,6 +97,8 @@ class BuildStatus extends React.Component {
 
   toggle() {
     this.setState({ toggle: !this.state.toggle });
+    clearInterval(this.toggleId);
+    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
   }
 
   //fetch data from the jenkin url
@@ -183,22 +185,21 @@ class BuildStatus extends React.Component {
         raised={true}
       >
         <p style={BOX_HEADER}>Jenkins Build Health</p>
-        <Button
-          style={
-            this.state.toggle ? styles.buttonDefault : styles.buttonSelected
-          }
-          onClick={this.toggle}
-        >
-          Last 5 Builds
-        </Button>
-        <Button
-          style={
-            this.state.toggle ? styles.buttonSelected : styles.buttonDefault
-          }
-          onClick={this.toggle}
-        >
-          Current Build
-        </Button>
+        {this.state.toggle ? (
+          <div>
+            <Button style={styles.buttonDefault} onClick={this.toggle}>
+              Last 5 Builds
+            </Button>
+            <Button style={styles.buttonSelected}>Current Build</Button>
+          </div>
+        ) : (
+          <div>
+            <Button style={styles.buttonSelected}>Last 5 Builds</Button>
+            <Button style={styles.buttonDefault} onClick={this.toggle}>
+              Current Build
+            </Button>
+          </div>
+        )}
         <CardContent style={styles.cardContent}>
           {this.getBuildDisplay()}
         </CardContent>
