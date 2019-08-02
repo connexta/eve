@@ -99,11 +99,6 @@ class BuildStatus extends React.Component {
     this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
   }
 
-  clearTimer() {
-    clearInterval(this.toggleId);
-    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
-  }
-
   //fetch data from the jenkin url
   fetchData(URL) {
     return fetch(URL)
@@ -185,28 +180,30 @@ class BuildStatus extends React.Component {
         </ButtonSelected>
       </div>
     ) : (
-      <div>
-        <ButtonSelected onClick={this.clearTimer.bind(this)}>
-          Last 5 Builds
-        </ButtonSelected>
-        <ButtonDefault onClick={this.toggle.bind(this)}>
-          Current Build
-        </ButtonDefault>
-      </div>
-    );
-  }
-
-  render() {
-    return this.state.isLoading ? (
-      <StyledCard raised={true}>
-        <BoxHeader>Loading Build Health. . .</BoxHeader>
-      </StyledCard>
-    ) : (
-      <StyledCard raised={true}>
-        <BoxHeader>Jenkins Build Health</BoxHeader>
-        {this.buildButtons(this.state.toggle)}
-        <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
-      </StyledCard>
+      <Card
+        style={{ ...styles.card, ...LEFT_BOX_STYLE, ...BOX_STYLE }}
+        raised={true}
+      >
+        <p style={BOX_HEADER}>Jenkins Build Health</p>
+        {this.state.toggle ? (
+          <div>
+            <Button style={styles.buttonDefault} onClick={this.toggle}>
+              Last 5 Builds
+            </Button>
+            <Button style={styles.buttonSelected}>Current Build</Button>
+          </div>
+        ) : (
+          <div>
+            <Button style={styles.buttonSelected}>Last 5 Builds</Button>
+            <Button style={styles.buttonDefault} onClick={this.toggle}>
+              Current Build
+            </Button>
+          </div>
+        )}
+        <CardContent style={styles.cardContent}>
+          {this.getBuildDisplay()}
+        </CardContent>
+      </Card>
     );
   }
 }
