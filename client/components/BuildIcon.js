@@ -23,52 +23,56 @@ class BuildIcon extends React.Component {
   render() {
     return (
       <CardContent style={this.props.cardContentStyle}>
-        {this.props.score >= 80 ? (
-          <GoodState
-            fontSize="inherit"
-            style={{
-              color: "green",
-              padding: "1 0",
-              float: "left",
-              transform: "scale(0.9)"
-            }}
-          />
-        ) : this.props.score >= 40 ? (
-          <NeutralState
-            fontSize="inherit"
-            style={{
-              color: "orange",
-              padding: "1 0",
-              float: "left",
-              transform: "scale(0.9)"
-            }}
-          />
-        ) : (
-          <BadState
-            fontSize="inherit"
-            style={{
-              color: "red",
-              padding: "1 0",
-              float: "left",
-              transform: "scale(0.9)"
-            }}
-          />
-        )}
-        {this.props.name}
-        <StyledDate>{this.props.subtitle}</StyledDate>
-        {this.props.isEditing ? (
-          <StyledDate>
-            Version:
-            <TextField
-              name={this.props.name.toString()}
-              onChange={this.props.callback}
-              defaultValue={this.props.version}
-              variant="outlined"
+        <div>
+          {this.props.score >= 80 ? (
+            <GoodState
+              fontSize="inherit"
+              style={{
+                color: "green",
+                padding: "1 0",
+                float: "left",
+                transform: "scale(0.9)"
+              }}
             />
-          </StyledDate>
-        ) : (
-          <StyledDate>Version: {this.props.version}</StyledDate>
-        )}
+          ) : this.props.score >= 40 ? (
+            <NeutralState
+              fontSize="inherit"
+              style={{
+                color: "orange",
+                padding: "1 0",
+                float: "left",
+                transform: "scale(0.9)"
+              }}
+            />
+          ) : (
+            <BadState
+              fontSize="inherit"
+              style={{
+                color: "red",
+                padding: "1 0",
+                float: "left",
+                transform: "scale(0.9)"
+              }}
+            />
+          )}
+          {this.props.name}
+          <StyledDate>{this.props.subtitle}</StyledDate>
+        </div>
+        <div>
+          {this.props.isEditing ? (
+            <StyledDate>
+              Version:
+              <TextField
+                name={this.props.name.toString()}
+                onChange={this.props.callback}
+                defaultValue={this.props.version}
+                variant="outlined"
+              />
+            </StyledDate>
+          ) : (
+            <StyledDate>Version: {this.props.version}</StyledDate>
+          )}
+        </div>
       </CardContent>
     );
   }
