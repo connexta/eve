@@ -1,6 +1,6 @@
 import React from "react";
-import { Card, List, ListItem } from "@material-ui/core";
-import { LEFT_BOX_STYLE, BOX_STYLE, BOX_HEADER } from "../styles/styles";
+import { List, ListItem } from "@material-ui/core";
+import { BoxStyle, BoxHeader } from "../styles/styles";
 import Edit from "@material-ui/icons/Edit";
 import Save from "@material-ui/icons/Save";
 
@@ -81,10 +81,10 @@ export default class ReleaseVersion extends React.Component {
     });
 
     return (
-      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }}>
-        <div style={BOX_HEADER}>Testing</div>
+      <BoxStyle>
+        <BoxHeader>Testing</BoxHeader>
         <List>{versions}</List>
-      </Card>
+      </BoxStyle>
     );
   }
 }

@@ -32,6 +32,8 @@ import {
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
+import Edit from "@material-ui/icons/Edit";
+import Save from "@material-ui/icons/Save";
 
 export const BUILD_STATUS_HEIGHT = 160;
 
@@ -129,8 +131,34 @@ class BuildStatus extends React.Component {
     this.state = {
       currentData: [],
       isLoading: true,
-      toggle: true
+      toggle: true,
+      versions: [],
+      isEditing: false
     };
+
+    this.getVersions();
+  }
+
+  async getVersions() {
+    this.trashableVersionFetch = makeTrashable(
+      fetch("http://localhost:9000", {
+        method: "GET"
+      })
+    );
+
+    await this.trashableVersionFetch
+      .catch(err => console.log(err))
+      .then(res => {
+        if (!res.ok) {
+          console.log("Failed to fetch versions data " + call);
+          return;
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => {
+        this.setState({ versions: res });
+      });
   }
 
   componentDidMount() {
@@ -146,6 +174,10 @@ class BuildStatus extends React.Component {
     //clearing out left out promise during unmount.
     if (this.trashableRequestList)
       this.trashableRequestList.forEach(promise => promise.trash());
+
+    if (this.trashableVersionFetch) this.trashableVersionFetch.trash();
+
+    if (this.trashableVersionSave) this.trashableVersionSave.trash();
   }
 
   //a function that continuously be called by each set interval in componentDidMount() to fetch/update each team status for display
@@ -177,6 +209,7 @@ class BuildStatus extends React.Component {
   }
 
   toggle() {
+<<<<<<< HEAD:client/components/BuildStatus.js
     this.setState({ toggle: !this.state.toggle });
     clearInterval(this.toggleId);
     this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
@@ -185,6 +218,38 @@ class BuildStatus extends React.Component {
   clearTimer() {
     clearInterval(this.toggleId);
     this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
+=======
+    if (!this.state.isEditing) this.setState({ toggle: !this.state.toggle });
+  }
+
+  handleChange(evt) {
+    let temp = this.state.versions;
+    temp[evt.target.name] = evt.target.value;
+    this.setState({ versions: temp });
+  }
+
+  async save() {
+    this.setState({
+      isEditing: false
+    });
+
+    this.trashableVersionSave = makeTrashable(
+      fetch("http://localhost:9000", {
+        method: "POST",
+        body: JSON.stringify(this.state.versions),
+        headers: { "Content-Type": "application/json" }
+      })
+    );
+
+    await this.trashableVersionSave
+      .catch(err => console.log(err))
+      .then(res => res.text())
+      .then(res => console.log(res));
+  }
+
+  editText() {
+    this.setState({ isEditing: true });
+>>>>>>> working editable version numbers/nodejs server:src/components/BuildStatus.js
   }
 
   //fetch data from the jenkin url
@@ -232,25 +297,31 @@ class BuildStatus extends React.Component {
   //else, list of last 5 builds
   getBuildDisplay() {
     const display = this.state.toggle
-      ? this.state.currentData.map(item => {
+      ? this.state.currentData.map((item, i) => {
           return (
             <BuildIcon
               score={item.oneScore}
               name={item.displayName}
               key={item.displayName + item.oneSubtitle}
               subtitle={item.oneSubtitle}
+              version={this.state.versions[item.displayName]}
               cardContentStyle={this.props.cardContentStyle}
+              isEditing={this.state.isEditing}
+              callback={this.handleChange.bind(this)}
             />
           );
         })
-      : this.state.currentData.map(item => {
+      : this.state.currentData.map((item, i) => {
           return (
             <BuildIcon
               score={item.fiveScore}
               name={item.displayName}
               key={item.displayName + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
+              version={this.state.versions[item.displayName]}
               cardContentStyle={this.props.cardContentStyle}
+              isEditing={this.state.isEditing}
+              callback={this.handleChange.bind(this)}
             />
           );
         });
@@ -309,6 +380,7 @@ class BuildStatus extends React.Component {
           <ButtonDefault onClick={this.toggle}>Current Builds</ButtonDefault>
         )}
 <<<<<<< HEAD:client/components/BuildStatus.js
+<<<<<<< HEAD:client/components/BuildStatus.js
         {/* // <Button
         //   style={
         //     this.state.toggle ? styles.buttonDefault : styles.buttonSelected
@@ -328,6 +400,19 @@ class BuildStatus extends React.Component {
 >>>>>>> Switching to styled in progress:src/components/BuildStatus.js
 =======
 >>>>>>> Converted to styled components:src/components/BuildStatus.js
+=======
+        {this.state.isEditing ? (
+          <div>
+            <Edit />
+            <Save onClick={() => this.save()} />
+          </div>
+        ) : (
+          <div>
+            <Edit onClick={() => this.editText()} />
+            <Save />
+          </div>
+        )}
+>>>>>>> working editable version numbers/nodejs server:src/components/BuildStatus.js
         <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
       </StyledCard>
     );
