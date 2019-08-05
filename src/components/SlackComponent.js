@@ -11,7 +11,7 @@ import Grow from "@material-ui/core/Grow";
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
-const ROTATE_INTERVAL = time({ seconds: 30 });
+const ROTATE_INTERVAL = time({ seconds: 10 });
 
 const styles = {
   CardContainer: {
@@ -290,7 +290,7 @@ class SlackComponent extends React.Component {
   displayFirstMessage(item, index) {
     if (index === 0) {
       return (
-        <Grow key={item} in={true}>
+        <Grow key={item} in={true} timeout={500}>
           <div style={styles.SlackCardContainer}>
             {this.state.slackMsg[item]}
           </div>
