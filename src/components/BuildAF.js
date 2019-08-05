@@ -1,30 +1,35 @@
 import React from "react";
+import styled from "styled-components";
 import { BATMAN_GRAY } from "../utils/Constants.js";
-import Card from "@material-ui/core/Card";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
-import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../styles/styles";
+import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
 
-const styles = {
-  listitemtext: {
-    color: BATMAN_GRAY
-  },
-  listitemtextdots: {
-    color: BATMAN_GRAY,
-    textAlign: "center"
-  },
-  subheader: {
-    margin: 0,
-    fontSize: "24px"
-  },
-  headers: {
-    cursor: "pointer"
-  }
-};
+const StyledBox = styled(BoxStyle)`
+  width: calc(100% - ${CARD_SIDE_MARGINS}px);
+`;
+
+const StyledHeader = styled(BoxHeader)`
+  cursor: pointer;
+`;
+
+const SubHeader = styled.div`
+  margin: 0px;
+  font-size: 24px;
+`;
+
+const StyledListItemText = styled(ListItemText)`
+  color: ${BATMAN_GRAY};
+`;
+
+const ListItemTextDots = styled(ListItemText)`
+  color: ${BATMAN_GRAY};
+  text-align: center;
+`;
 
 class BuildAF extends React.Component {
   constructor(props) {
@@ -114,11 +119,10 @@ class BuildAF extends React.Component {
   displayDots() {
     return (
       <ListItem>
-        <ListItemText
+        <ListItemTextDots
           primary={"\u22EE"} //\u22EE: Vertical Ellipsis to represent trimmed data
           primaryTypographyProps={{ variant: "h5" }}
-          style={styles.listitemtextdots}
-        ></ListItemText>
+        />
       </ListItem>
     );
   }
@@ -127,8 +131,14 @@ class BuildAF extends React.Component {
   //  display list of build contents (builder [data.causes], build start time, build result, build description)
   displayListContents(data, index) {
     return (
-      <ListItem key={index} button component="a" href={AFJenkinLink + data.id}>
-        <ListItemText
+      <ListItem
+        disableGutters={true}
+        key={index}
+        button
+        component="a"
+        href={AFJenkinLink + data.id}
+      >
+        <StyledListItemText
           primary={this.formatData(data)}
           secondary={
             parseTimeString(data.startTime) +
@@ -137,8 +147,7 @@ class BuildAF extends React.Component {
           }
           primaryTypographyProps={{ variant: "h5" }}
           secondaryTypographyProps={{ variant: "h6" }}
-          style={styles.listitemtext}
-        ></ListItemText>
+        />
       </ListItem>
     );
   }
@@ -190,23 +199,18 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
-        Loading AF Builds. . .
-      </Card>
+      <StyledBox raised={true}>Loading AF Builds. . .</StyledBox>
     ) : (
-      <Card style={{ ...LEFT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
-        <div
-          style={{ ...styles.headers, ...BOX_HEADER }}
-          onClick={() => window.open(AFJenkinLink)}
-        >
+      <StyledBox raised={true}>
+        <StyledHeader onClick={() => window.open(AFJenkinLink)}>
           {AFpipeline}
-          <p style={styles.subheader}>
+          <SubHeader>
             Display failed build from most recent up to the last successful
             build
-          </p>
-        </div>
+          </SubHeader>
+        </StyledHeader>
         {this.getListContents(4, 2)}
-      </Card>
+      </StyledBox>
     );
   }
 }
