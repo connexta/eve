@@ -33,6 +33,10 @@ const ButtonDefault = styled(Button)`
 const ButtonSelected = styled(Button)`
   float: right;
   text-decoration: underline ${CX_DARK_BLUE};
+
+  &:hover {
+    text-decoration: underline ${CX_DARK_BLUE};
+  }
 `;
 
 class BuildStatus extends React.Component {
@@ -91,6 +95,13 @@ class BuildStatus extends React.Component {
 
   toggle() {
     this.setState({ toggle: !this.state.toggle });
+    clearInterval(this.toggleId);
+    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
+  }
+
+  clearTimer() {
+    clearInterval(this.toggleId);
+    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
   }
 
   //fetch data from the jenkin url
@@ -163,19 +174,25 @@ class BuildStatus extends React.Component {
     return display;
   }
 
-  prevBuildsButton(toggle) {
+  buildButtons(toggle) {
     return toggle ? (
-      <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
+      <div>
+        <ButtonDefault onClick={this.toggle.bind(this)}>
+          Last 5 Builds
+        </ButtonDefault>
+        <ButtonSelected onClick={this.clearTimer.bind(this)}>
+          Current Build
+        </ButtonSelected>
+      </div>
     ) : (
-      <ButtonSelected onClick={this.toggle}>Last 5 Builds</ButtonSelected>
-    );
-  }
-
-  currBuilds(toggle) {
-    return toggle ? (
-      <ButtonSelected onClick={this.toggle}>Current Builds</ButtonSelected>
-    ) : (
-      <ButtonDefault onClick={this.toggle}>Current Builds</ButtonDefault>
+      <div>
+        <ButtonSelected onClick={this.clearTimer.bind(this)}>
+          Last 5 Builds
+        </ButtonSelected>
+        <ButtonDefault onClick={this.toggle.bind(this)}>
+          Current Build
+        </ButtonDefault>
+      </div>
     );
   }
 
@@ -187,8 +204,7 @@ class BuildStatus extends React.Component {
     ) : (
       <StyledCard raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
-        {this.prevBuildsButton(this.state.toggle)}
-        {this.currBuilds(this.state.toggle)}
+        {this.buildButtons(this.state.toggle)}
         <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
       </StyledCard>
     );
