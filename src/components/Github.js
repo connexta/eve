@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import {
-  Card,
   List,
   ListItem,
   ListItemIcon,
@@ -10,20 +9,15 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
-import {
-  RIGHT_BOX_STYLE,
-  BOX_STYLE,
-  BOX_HEADER,
-  BOX_HEADER_SIZE
-} from "../styles/styles";
+import { BoxStyle, BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
 import PullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import { addS } from "../utils/TimeUtils";
 
-import NeutralState from "@material-ui/icons/remove";
-import BadState from "@material-ui/icons/clear";
-import GoodState from "@material-ui/icons/done";
+import NeutralState from "@material-ui/icons/Remove";
+import BadState from "@material-ui/icons/Clear";
+import GoodState from "@material-ui/icons/Done";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
@@ -39,11 +33,11 @@ const IGNORE_CONTEXTS = ["snyk", "license/cla"]; // list of contexts to ignore f
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
-const GithubCard = styled(Card)`
+const GithubCard = styled(BoxStyle)`
   height: ${GITHUB_HEIGHT}px;
 `;
 
-const Header = styled.div`
+const Header = styled(BoxHeader)`
   width: 100%;
 `;
 
@@ -335,8 +329,8 @@ export default class Github extends React.Component {
   render() {
     if (this.state.prs.length == 0)
       return (
-        <GithubCard style={{ ...RIGHT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
-          <p style={BOX_HEADER}>{this.state.name} Pull Requests</p>
+        <GithubCard raised={true}>
+          <Header>{this.state.name} Pull Requests</Header>
           <CardContent>No pull requests</CardContent>
         </GithubCard>
       );
@@ -353,8 +347,8 @@ export default class Github extends React.Component {
         ) : null;
 
       return (
-        <GithubCard style={{ ...RIGHT_BOX_STYLE, ...BOX_STYLE }} raised={true}>
-          <Header style={BOX_HEADER}>{this.state.name} Pull Requests</Header>
+        <GithubCard raised={true}>
+          <Header>{this.state.name} Pull Requests</Header>
           <CardContent>
             <MainAndSubline onClick={() => window.open(pr.url)}>
               <PRTitle>

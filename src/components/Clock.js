@@ -1,58 +1,61 @@
 import React from "react";
+import styled from "styled-components";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants.js";
 import LiveClock from "react-live-clock";
 
-const styles = {
-  ClockFullStyle: {
-    display: "flex",
-    fontStyle: "bold",
-    color: CX_OFF_WHITE,
-    fontFamily: CX_FONT
-  },
-  ClockHrStyle: {
-    fontSize: "83px"
-  },
-  ClockMinAndPlace: {
-    display: "flex",
-    flexDirection: "column",
-    paddingTop: "5px"
-  },
-  ClockMinStyle: {
-    fontSize: "44px"
-  },
-  PlaceStyle: {
-    fontSize: "28px",
-    marginLeft: "14px",
-    position: "relative",
-    top: "6px"
-  }
-};
+const ClockFullStyle = styled.div`
+  display: flex;
+  font-style: bold;
+  color: ${CX_OFF_WHITE};
+  font-family: ${CX_FONT};
+`;
+
+const ClockHrStyle = styled.div`
+  font-size: 83px;
+`;
+
+const ClockMinAndPlace = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-top: 5px;
+`;
+
+const ClockMinStyle = styled.div`
+  font-size: 44px;
+`;
+
+const PlaceStyle = styled.div`
+  font-size: 28px;
+  margin-left: 14px;
+  position: relative;
+  top: 6px;
+`;
 
 const ClockHr = ({ timezone }) => {
   return (
-    <nav style={styles.ClockHrStyle}>
+    <ClockHrStyle>
       <LiveClock format={"HH"} ticking={true} timezone={timezone} />
-    </nav>
+    </ClockHrStyle>
   );
 };
 
 const ClockMin = ({ timezone }) => {
   return (
-    <nav style={styles.ClockMinStyle}>
+    <ClockMinStyle>
       <LiveClock format={":mm"} ticking={true} timezone={timezone} />
-    </nav>
+    </ClockMinStyle>
   );
 };
 
 const Clock = ({ timezone, place }) => {
   return (
-    <div style={styles.ClockFullStyle}>
+    <ClockFullStyle>
       <ClockHr timezone={timezone} />
-      <div style={styles.ClockMinAndPlace}>
-        <div style={styles.PlaceStyle}>{place}</div>
+      <ClockMinAndPlace>
+        <PlaceStyle>{place}</PlaceStyle>
         <ClockMin timezone={timezone} />
-      </div>
-    </div>
+      </ClockMinAndPlace>
+    </ClockFullStyle>
   );
 };
 
