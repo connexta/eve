@@ -144,6 +144,7 @@ class SlackComponent extends React.Component {
 
       let msgCount = 0;
       data.messages.forEach(message => {
+        // ignore non-bot subtype msgs (such as join/leave notifications)
         if (!message.subtype || message.bot_id) {
           msgCount++;
           if (msgCount > MAX_MSGS) return;
