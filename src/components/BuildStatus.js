@@ -164,18 +164,18 @@ class BuildStatus extends React.Component {
         });
     return display;
   }
-  
+
   buildButtons(toggle) {
     return toggle ? (
-      <ButtonDefault onClick={this.toggle}>
-              Last 5 Builds
-            </ButtonDefault>
-      <ButtonSelected>Current Build</Button>
+      <div>
+        <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
+        <ButtonSelected>Current Build</ButtonSelected>
+      </div>
     ) : (
-      <ButtonDefault >
-              Last 5 Builds
-            </ButtonDefault>
-      <ButtonSelected onClick={this.toggle}>Current Build</Button>
+      <div>
+        <ButtonSelected>Last 5 Builds</ButtonSelected>
+        <ButtonDefault onClick={this.toggle}>Current Build</ButtonDefault>
+      </div>
     );
   }
 
