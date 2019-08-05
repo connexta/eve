@@ -141,10 +141,14 @@ class SlackComponent extends React.Component {
       let messageList = [];
       this.trashableRequestList[1] = makeTrashable(response.json());
       let data = await this.trashableRequestList[1];
-      data.messages.forEach((message, msgCount) => {
-        msgCount++;
-        if (msgCount > MAX_MSGS) return;
-        messageList.push(message);
+
+      let msgCount = 0;
+      data.messages.forEach(message => {
+        if (!message.subtype || message.bot_id) {
+          msgCount++;
+          if (msgCount > MAX_MSGS) return;
+          messageList.push(message);
+        }
       });
       this.setState({ messages: messageList, msgLoading: false });
       this.setSlackMsg();
