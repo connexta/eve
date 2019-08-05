@@ -33,6 +33,10 @@ const ButtonDefault = styled(Button)`
 const ButtonSelected = styled(Button)`
   float: right;
   text-decoration: underline ${CX_DARK_BLUE};
+
+  &:hover {
+    text-decoration: underline ${CX_DARK_BLUE};
+  }
 `;
 
 class BuildStatus extends React.Component {
@@ -91,6 +95,11 @@ class BuildStatus extends React.Component {
 
   toggle() {
     this.setState({ toggle: !this.state.toggle });
+    clearInterval(this.toggleId);
+    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
+  }
+
+  clearTimer() {
     clearInterval(this.toggleId);
     this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
   }
@@ -168,13 +177,21 @@ class BuildStatus extends React.Component {
   buildButtons(toggle) {
     return toggle ? (
       <div>
-        <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
-        <ButtonSelected>Current Build</ButtonSelected>
+        <ButtonDefault onClick={this.toggle.bind(this)}>
+          Last 5 Builds
+        </ButtonDefault>
+        <ButtonSelected onClick={this.clearTimer.bind(this)}>
+          Current Build
+        </ButtonSelected>
       </div>
     ) : (
       <div>
-        <ButtonSelected>Last 5 Builds</ButtonSelected>
-        <ButtonDefault onClick={this.toggle}>Current Build</ButtonDefault>
+        <ButtonSelected onClick={this.clearTimer.bind(this)}>
+          Last 5 Builds
+        </ButtonSelected>
+        <ButtonDefault onClick={this.toggle.bind(this)}>
+          Current Build
+        </ButtonDefault>
       </div>
     );
   }
