@@ -1,43 +1,45 @@
 import React from "react";
-import styled from "styled-components";
-import { CX_DARK_BLUE } from "../utils/Constants";
+import {
+  CX_OFF_WHITE,
+  CX_FONT,
+  BATMAN_GRAY,
+  CX_DARK_BLUE
+} from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
-import { CardContent } from "@material-ui/core";
-import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+import { Card, CardContent } from "@material-ui/core";
+import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
-const StyledCard = styled(BoxStyle)`
-  width: calc(100% - ${CARD_SIDE_MARGINS}px);
-`;
-
-const StyledCardContent = styled(CardContent)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  font-size: 32px;
-  clear: both;
-  && {
-    padding: 0;
+const styles = {
+  card: {
+    width: "calc(100% - " + LEFT_BOX_STYLE + "px)"
+  },
+  cardheader: {
+    background: CX_OFF_WHITE,
+    color: BATMAN_GRAY,
+    fontFamily: CX_FONT
+  },
+  cardContent: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    fontSize: "32px",
+    padding: "0 8px 0 8px",
+    clear: "both"
+  },
+  buttonDefault: {
+    float: "right"
+  },
+  buttonSelected: {
+    float: "right",
+    textDecoration: "underline " + CX_DARK_BLUE
   }
-`;
-
-const ButtonDefault = styled(Button)`
-  float: right;
-`;
-
-const ButtonSelected = styled(Button)`
-  float: right;
-  text-decoration: underline ${CX_DARK_BLUE};
-
-  &:hover {
-    text-decoration: underline ${CX_DARK_BLUE};
-  }
-`;
+};
 
 class BuildStatus extends React.Component {
   constructor(props) {
@@ -95,8 +97,6 @@ class BuildStatus extends React.Component {
 
   toggle() {
     this.setState({ toggle: !this.state.toggle });
-    clearInterval(this.toggleId);
-    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
   }
 
   //fetch data from the jenkin url
@@ -169,66 +169,40 @@ class BuildStatus extends React.Component {
     return display;
   }
 
-  buildButtons(toggle) {
-    return toggle ? (
-      <div>
-<<<<<<< HEAD:client/components/BuildStatus.js
-        <ButtonDefault onClick={this.toggle.bind(this)}>
-          Last 5 Builds
-        </ButtonDefault>
-        <ButtonSelected onClick={this.clearTimer.bind(this)}>
-          Current Build
-        </ButtonSelected>
-      </div>
+  render() {
+    return this.state.isLoading ? (
+      <Card
+        style={{ ...styles.card, ...LEFT_BOX_STYLE, ...BOX_STYLE }}
+        raised={true}
+      >
+        <p style={BOX_HEADER}>Loading Build Health. . .</p>
+      </Card>
     ) : (
       <Card
         style={{ ...styles.card, ...LEFT_BOX_STYLE, ...BOX_STYLE }}
         raised={true}
       >
         <p style={BOX_HEADER}>Jenkins Build Health</p>
-        {this.state.toggle ? (
-          <div>
-            <Button style={styles.buttonDefault} onClick={this.toggle}>
-              Last 5 Builds
-            </Button>
-            <Button style={styles.buttonSelected}>Current Build</Button>
-          </div>
-        ) : (
-          <div>
-            <Button style={styles.buttonSelected}>Last 5 Builds</Button>
-            <Button style={styles.buttonDefault} onClick={this.toggle}>
-              Current Build
-            </Button>
-          </div>
-        )}
+        <Button
+          style={
+            this.state.toggle ? styles.buttonDefault : styles.buttonSelected
+          }
+          onClick={this.toggle}
+        >
+          Last 5 Builds
+        </Button>
+        <Button
+          style={
+            this.state.toggle ? styles.buttonSelected : styles.buttonDefault
+          }
+          onClick={this.toggle}
+        >
+          Current Build
+        </Button>
         <CardContent style={styles.cardContent}>
           {this.getBuildDisplay()}
         </CardContent>
       </Card>
-=======
-        <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
-        <ButtonSelected>Current Build</ButtonSelected>
-      </div>
-    ) : (
-      <div>
-        <ButtonSelected>Last 5 Builds</ButtonSelected>
-        <ButtonDefault onClick={this.toggle}>Current Build</ButtonDefault>
-      </div>
-    );
-  }
-
-  render() {
-    return this.state.isLoading ? (
-      <StyledCard raised={true}>
-        <BoxHeader>Loading Build Health. . .</BoxHeader>
-      </StyledCard>
-    ) : (
-      <StyledCard raised={true}>
-        <BoxHeader>Jenkins Build Health</BoxHeader>
-        {this.buildButtons(this.state.toggle)}
-        <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
-      </StyledCard>
->>>>>>> fixed merge errors:src/components/BuildStatus.js
     );
   }
 }
