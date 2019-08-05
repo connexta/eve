@@ -172,6 +172,7 @@ class BuildStatus extends React.Component {
   buildButtons(toggle) {
     return toggle ? (
       <div>
+<<<<<<< HEAD:client/components/BuildStatus.js
         <ButtonDefault onClick={this.toggle.bind(this)}>
           Last 5 Builds
         </ButtonDefault>
@@ -204,6 +205,30 @@ class BuildStatus extends React.Component {
           {this.getBuildDisplay()}
         </CardContent>
       </Card>
+=======
+        <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
+        <ButtonSelected>Current Build</ButtonSelected>
+      </div>
+    ) : (
+      <div>
+        <ButtonSelected>Last 5 Builds</ButtonSelected>
+        <ButtonDefault onClick={this.toggle}>Current Build</ButtonDefault>
+      </div>
+    );
+  }
+
+  render() {
+    return this.state.isLoading ? (
+      <StyledCard raised={true}>
+        <BoxHeader>Loading Build Health. . .</BoxHeader>
+      </StyledCard>
+    ) : (
+      <StyledCard raised={true}>
+        <BoxHeader>Jenkins Build Health</BoxHeader>
+        {this.buildButtons(this.state.toggle)}
+        <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
+      </StyledCard>
+>>>>>>> fixed merge errors:src/components/BuildStatus.js
     );
   }
 }
