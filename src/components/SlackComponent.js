@@ -6,12 +6,12 @@ import { BOX_STYLE, BOX_HEADER, RIGHT_BOX_STYLE } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
 import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
-import Grow from "@material-ui/core/Grow";
+import Collapse from "@material-ui/core/Collapse";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
-const ROTATE_INTERVAL = time({ seconds: 10 });
+const ROTATE_INTERVAL = time({ seconds: 30 });
 
 const styles = {
   CardContainer: {
@@ -26,7 +26,7 @@ const styles = {
     height: "40px"
   },
   SlackCardContainer: {
-    top: "72px",
+    marginTop: 0,
     height: "100%"
   },
   GradientBlock: {
@@ -65,7 +65,8 @@ class SlackComponent extends React.Component {
       userLoading: true,
       emojiLoading: true,
       msgLoading: true,
-      chanLoading: true
+      chanLoading: true,
+      displayFirst: true
     };
   }
 
@@ -242,6 +243,7 @@ class SlackComponent extends React.Component {
         />
       );
     }
+
     this.setState({
       slackMsg: cardList
     });
@@ -251,6 +253,7 @@ class SlackComponent extends React.Component {
   rotateTimer() {
     if (!this.anyStillLoading()) {
       this.rotateMessages();
+      this.setState({ displayFirst: true });
     }
   }
 
@@ -258,6 +261,7 @@ class SlackComponent extends React.Component {
   rotateMessages() {
     let array = this.state.displayIndex;
     this.rotateToRight(array);
+    this.setState({ displayFirst: false });
     this.setState({ displayIndex: array });
   }
 
@@ -287,16 +291,14 @@ class SlackComponent extends React.Component {
   //only return components if the index === 0
   //@return:
   //  components that display only the first message of the slackMsg determined by the displayIndex with a Zoom effect.
-  displayFirstMessage(item, index) {
-    if (index === 0) {
-      return (
-        <Grow key={item} in={true} timeout={500}>
-          <div style={styles.SlackCardContainer}>
-            {this.state.slackMsg[item]}
-          </div>
-        </Grow>
-      );
-    }
+  displayFirstMessage() {
+    return (
+      <div>
+        <Collapse in={this.state.displayFirst} exit={false}>
+          {this.state.slackMsg[this.state.displayIndex[0]]}
+        </Collapse>
+      </div>
+    );
   }
 
   render() {
@@ -316,10 +318,7 @@ class SlackComponent extends React.Component {
           raised={true}
         >
           <span style={BOX_HEADER}>#{this.getChannelName(CHANNEL)}</span>
-
-          {this.state.displayIndex.map((item, index) =>
-            this.displayFirstMessage(item, index)
-          )}
+          {this.displayFirstMessage()}
           <div style={styles.SlackCardContainer}>
             {this.displayRestOfMessages()}
           </div>
