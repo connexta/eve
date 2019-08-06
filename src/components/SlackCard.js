@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import Parser from "html-react-parser";
-import emojis from "../utils/emojis";
 import square_logo from "../../resources/square_logo.png";
 import { getRelativeTime } from "../utils/TimeUtils";
 import { CX_FONT } from "../utils/Constants";
+import { getEmoji } from "../utils/emojis/emojiUtil";
 
 const SLACK_FONT_SIZE = "20px";
 
@@ -125,8 +125,9 @@ class SlackCard extends React.Component {
       return messageText;
     }
 
-    // replace custom emojis found
-    messageText = messageText.replace(/:(.+?):/gm, (match, name) => {
+    // set any :emoji: messages
+    messageText = messageText.replace(/:(\S+?):/gm, (match, name) => {
+      // check for custom emoji
       if (customEmojis[name]) {
         // alias points to actual
         if (customEmojis[name].includes("alias:")) {
@@ -137,7 +138,14 @@ class SlackCard extends React.Component {
           return `<img height="20" width="20" style="${emojiStyle}" src=${customEmojis[name]} alt=${name}/>`;
         }
       }
-      return match;
+
+      // check for standard emoji
+      let emoji = getEmoji(name);
+      if (!emoji) {
+        return match;
+      } else {
+        return `<div style="${emojiStyle}">${emoji}</div>`;
+      }
     });
 
     // set any `` messages
@@ -188,22 +196,21 @@ class SlackCard extends React.Component {
     );
 
     // set any *bold* messages
-    messageText = messageText.replace(/\*(.+?)\*(?!\S)/g, (match, phrase) => {
+    messageText = messageText.replace(/\*(.+?)\*(?!\w)/g, (match, phrase) => {
       return `<div style="font-weight: bolder; display: inline;">${phrase}</div>`;
     });
 
     // set any _italic_ messages
-    messageText = messageText.replace(/_(.+?)_(?!\S)/g, (match, phrase) => {
+    messageText = messageText.replace(/_(.+?)_(?!\w)/g, (match, phrase) => {
       return `<div style="font-style: italic; display: inline;">${phrase}</div>`;
     });
 
     // set any ~strikethrough~ messages
-    messageText = messageText.replace(/\~(.+?)\~(?!\S)/g, (match, phrase) => {
+    messageText = messageText.replace(/\~(.+?)\~(?!\w)/g, (match, phrase) => {
       return `<div style="text-decoration: line-through; display: inline;">${phrase}</div>`;
     });
 
-    // set slack built in emojis
-    return emojis.html(messageText);
+    return messageText;
   }
 
   // return name from given user ID
