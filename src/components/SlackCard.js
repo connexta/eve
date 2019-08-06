@@ -108,7 +108,6 @@ const msgLifeStyle =
 const fileImgStyle =
   " \
   display: block; \
-  margin-left: 10px; \
   margin-right: 10px; \
   width: 100%; \
   height: 100%; \
@@ -258,7 +257,14 @@ class SlackCard extends React.Component {
         : message.attachments[0].author_name;
     // Got rid of bot check, since all wallboard posts come from bot
     if (author == undefined) {
-      author = "Unknown User";
+      if (
+        message.bot_id ||
+        (message.attachments && message.attachments.bot_id)
+      ) {
+        author = "Bot";
+      } else {
+        author = "Unknown User";
+      }
     }
 
     // check for additional footer info
@@ -326,6 +332,11 @@ class SlackCard extends React.Component {
       message.files == undefined
         ? media
         : `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.files[0].url_private} alt="file" /></div>`;
+
+    // check if message attachment has file to share
+    if (message.attachments && message.attachments[0].files) {
+      media = `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.attachments[0].files[0].url_private} alt="file" /></div>`;
+    }
 
     return media;
   }
