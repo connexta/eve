@@ -663,7 +663,14 @@
     "@babel/plugin-transform-react-jsx-self" "^7.0.0"
     "@babel/plugin-transform-react-jsx-source" "^7.0.0"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.1.5", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.0", "@babel/runtime@^7.4.5":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.0", "@babel/runtime@^7.4.5":
+  version "7.5.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.5.4.tgz#cb7d1ad7c6d65676e66b47186577930465b5271b"
+  integrity sha512-Na84uwyImZZc3FKf4aUF1tysApzwf3p2yuFBIyBfbzT5glzKTdvYI4KVW4kcgjrzoGUjC7w3YyCHcJKaRxsr2Q==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
+"@babel/runtime@^7.1.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.5.5.tgz#74fba56d35efbeca444091c7850ccd494fd2f132"
   integrity sha512-28QvEGyQyNkB0/m2B4FU7IEZGK2NUrcMtT6BZEFALTguLk+AUT6ofsHtPk5QyjAdUkpMJ+/Em+quwz4HOt30AQ==
@@ -812,13 +819,6 @@
     es6-promise "^4.2.6"
     isomorphic-fetch "^2.2.1"
     tslib "^1.9.3"
-
-"@primer/octicons-react@^9.1.1":
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-9.1.1.tgz#bee3d091c6ecc179c5e46d4716929b987b07baf7"
-  integrity sha512-+ZgALoxUOYUeEnqqN6ZqSfRP6LDRgfmErhY4ZIuGlw5Ocjj7AI87J68dD/wYqWl4IW7xE6rmLvpC3kU3iGmAfQ==
-  dependencies:
-    prop-types "^15.6.1"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"

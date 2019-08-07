@@ -1,20 +1,19 @@
 import React from "react";
+import styled from "styled-components";
 import GoodState from "@material-ui/icons/CheckCircleOutline";
 import NeutralState from "@material-ui/icons/RemoveCircleOutline";
 import BadState from "@material-ui/icons/HighlightOff";
 import CardContent from "@material-ui/core/CardContent";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
 
-const styles = {
-  date: {
-    background: CX_OFF_WHITE,
-    fontSize: "20px",
-    color: BATMAN_GRAY,
-    fontFamily: CX_FONT,
-    fontStyle: "italic",
-    marginLeft: "32px"
-  }
-};
+const StyledDate = styled.div`
+  background: ${CX_OFF_WHITE};
+  font-size: 20px;
+  color: ${BATMAN_GRAY};
+  font-family: ${CX_FONT};
+  font-style: italic;
+  margin-left: 32px;
+`;
 
 class BuildIcon extends React.Component {
   constructor(props) {
@@ -34,7 +33,7 @@ class BuildIcon extends React.Component {
           }}
         />
         {this.props.name}
-        <div style={styles.date}>{this.props.subtitle}</div>
+        <StyledDate>{this.props.subtitle}</StyledDate>
       </CardContent>
     ) : this.props.score >= 40 ? (
       <CardContent style={this.props.cardContentStyle}>
@@ -48,7 +47,7 @@ class BuildIcon extends React.Component {
           }}
         />
         {this.props.name}
-        <div style={styles.date}>{this.props.subtitle}</div>
+        <StyledDate>{this.props.subtitle}</StyledDate>
       </CardContent>
     ) : (
       <CardContent style={this.props.cardContentStyle}>
@@ -62,7 +61,7 @@ class BuildIcon extends React.Component {
           }}
         />
         {this.props.name}
-        <div style={styles.date}>{this.props.subtitle}</div>
+        <StyledDate>{this.props.subtitle}</StyledDate>
       </CardContent>
     );
   }

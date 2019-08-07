@@ -1,14 +1,13 @@
 import { callApi } from "./GraphService";
+import styled from "styled-components";
 import config from "./GraphConfig";
 import { UserAgentApplication } from "msal";
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "!style-loader!css-loader!../../styles/Calendar.css";
-import { BOX_STYLE, BOX_HEADER, LEFT_BOX_STYLE } from "../../styles/styles";
+import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../../styles/styles";
 import {
-  Card,
   Dialog,
   List,
   ListItem,
@@ -29,46 +28,50 @@ const END_HOUR = 18; // latest hour to display
 const WIP_MESSAGE_SPACE = 68;
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 const CARD_HEIGHT_MARGINS = 36;
-const BUILD_STATUS_HEIGHT = 160;
 
-const styles = {
-  card: {
-    height:
-      "calc(100% - " +
-      BUILD_STATUS_HEIGHT +
-      "px - " +
-      CARD_HEIGHT_MARGINS +
-      "px - " +
-      WIP_MESSAGE_SPACE +
-      "px)"
-  },
-  calendar: {
-    height: "77%",
-    width: "90%",
-    margin: "0 5% 0 5%",
-    fontSize: "16px"
-  },
-  buttonContainer: {
-    width: "100%",
-    marginLeft: "calc(5% - 3px)", // 3 px to accomodate rbc-btn-group margins
-    display: "flex",
-    flexDirection: "row",
-    verticalAlign: "bottom"
-  },
-  button: {
-    display: "inline-block",
-    margin: 0,
-    height: "30px",
-    verticalAlign: "bottom",
-    marginTop: "8px"
-  },
-  rightButton: {
-    borderRadius: "0 4px 4px 0"
-  },
-  leftButton: {
-    borderRadius: "4px 0 0 4px"
+const StyledHeader = styled(BoxHeader)`
+  margin-bottom: 16px;
+`;
+
+const StyledCard = styled(BoxStyle)`
+  height: calc(
+    100% - ${CARD_HEIGHT_MARGINS}px - ${WIP_MESSAGE_SPACE}px - 157px
+  );
+  width: calc(100% - ${CARD_SIDE_MARGINS}px);
+`;
+
+const StyledCalendar = styled(Calendar)`
+  && {
+    height: 75%;
+    width: 90%;
+    margin: 0 5% 0 5%;
+    font-size: 16px;
   }
-};
+`;
+
+const ButtonContainer = styled.div`
+  width: 100%;
+  margin-left: calc(5% - 3px); /* 3 px to accomodate rbc-btn-group margins */
+  display: flex;
+  flex-direction: row;
+  vertical-align: bottom;
+`;
+
+const StyledButton = styled.button`
+  display: inline-block;
+  && {
+    margin: 8px 0 0;
+  }
+  height: 30px;
+  vertical-align: bottom;
+  margin-top: 8px;
+`;
+
+const RightButton = styled(StyledButton)`
+  && {
+    border-radius: "0 4px 4px 0";
+  }
+`;
 
 // Localizes time for big-react-calendar
 const localizer = momentLocalizer(moment);
@@ -80,13 +83,13 @@ function localizeTime(time, timezone) {
 // Function to toggle between log in / log out button depending on state
 function LogInOut(props) {
   return props.isAuthenticated ? (
-    <button style={styles.button} type="button" onClick={props.logOut}>
+    <StyledButton type="button" onClick={props.logOut}>
       Log Out
-    </button>
+    </StyledButton>
   ) : (
-    <button style={styles.button} type="button" onClick={props.logIn}>
+    <StyledButton type="button" onClick={props.logIn}>
       Log In
-    </button>
+    </StyledButton>
   );
 }
 
@@ -113,13 +116,9 @@ class DialogAndButton extends React.Component {
   render() {
     return (
       <div>
-        <button
-          style={{ ...styles.button, ...styles.rightButton }}
-          type="button"
-          onClick={this.handleClickOpen.bind(this)}
-        >
+        <RightButton type="button" onClick={this.handleClickOpen.bind(this)}>
           Select Calendar
-        </button>
+        </RightButton>
         <Dialog
           onClose={this.handleClose.bind(this)}
           aria-labelledby="select-calendar-dialog"
@@ -369,38 +368,32 @@ class CalendarCaller extends React.Component {
     maxTime.setHours(END_HOUR, 0, 0);
 
     return (
-      <Router>
-        <Card
-          style={{ ...BOX_STYLE, ...LEFT_BOX_STYLE, ...styles.card }}
-          raised={true}
-        >
-          <p style={BOX_HEADER}>Calendar</p>
-          <div style={styles.buttonContainer}>
-            <div className="rbc-toolbar">
-              <span className="rbc-btn-group" style={styles.buttonContainer}>
-                <LogInOut
-                  isAuthenticated={this.state.isAuthenticated}
-                  logIn={this.login.bind(this)}
-                  logOut={this.logout.bind(this)}
-                />
-                {calButton}
-              </span>
-            </div>
+      <StyledCard raised={true}>
+        <StyledHeader>Calendar</StyledHeader>
+        <ButtonContainer>
+          <div className="rbc-toolbar">
+            <ButtonContainer>
+              <LogInOut
+                isAuthenticated={this.state.isAuthenticated}
+                logIn={this.login.bind(this)}
+                logOut={this.logout.bind(this)}
+              />
+              {calButton}
+            </ButtonContainer>
           </div>
-          <Calendar
-            style={styles.calendar}
-            localizer={momentLocalizer(moment)}
-            defaultView="work_week"
-            getNow={() => new Date(new Date().valueOf() + hour)}
-            events={calEvents}
-            min={minTime}
-            max={maxTime}
-            step={60}
-            timeslots={1}
-            views={["day", "work_week", "month", "agenda"]}
-          />
-        </Card>
-      </Router>
+        </ButtonContainer>
+        <StyledCalendar
+          localizer={momentLocalizer(moment)}
+          defaultView="work_week"
+          getNow={() => new Date(new Date().valueOf() + hour)}
+          events={calEvents}
+          min={minTime}
+          max={maxTime}
+          step={60}
+          timeslots={1}
+          views={["day", "work_week", "month", "agenda"]}
+        />
+      </StyledCard>
     );
   }
 }

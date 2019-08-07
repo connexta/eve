@@ -1,51 +1,54 @@
 import React from "react";
+import styled from "styled-components";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
-import Card from "@material-ui/core/Card";
-import { BOX_STYLE, BOX_HEADER, RIGHT_BOX_STYLE } from "../styles/styles";
+import { BoxStyle, BoxHeader } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
 import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
-import Grow from "@material-ui/core/Grow";
+import Collapse from "@material-ui/core/Collapse";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
 
-const styles = {
-  CardContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    position: "relative",
-    height: "calc(100% - " + GITHUB_HEIGHT + "px - 72px - 32px)" // Height of Slack Card is size of window beneath banner minus size of github card and margins
-  },
-  cardHeader: {
-    fontFamily: CX_FONT,
-    height: "40px"
-  },
-  SlackCardContainer: {
-    top: "72px",
-    height: "100%"
-  },
-  GradientBlock: {
-    height: "10%",
-    width: "100%",
-    bottom: "23px",
-    background: "linear-gradient(transparent," + CX_OFF_WHITE + ")",
-    position: "absolute",
-    zIndex: 2
-  },
-  WhiteBlock: {
-    height: "24px",
-    width: "100%",
-    bottom: 0,
-    background: CX_OFF_WHITE,
-    position: "absolute",
-    zIndex: 3
-  }
-};
+const CardContainer = styled(BoxStyle)`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+
+  /*Height of Slack Card is size of window beneath banner minus size of github card and margins*/
+  height: calc(100% - ${GITHUB_HEIGHT}px - 72px - 32px);
+`;
+
+const CardHeader = styled(BoxHeader)`
+  font-family: ${CX_FONT};
+  height: 40px;
+`;
+
+const SlackCardContainer = styled.div`
+  height: 100%;
+`;
+
+const GradientBlock = styled.div`
+  height: 15%;
+  width: 100%;
+  bottom: 10px;
+  background: linear-gradient(transparent, ${CX_OFF_WHITE});
+  position: absolute;
+  z-index: 2;
+`;
+
+const WhiteBlock = styled.div`
+  position: absolute;
+  height: 12px;
+  width: 100%;
+  bottom: 0px;
+  background: ${CX_OFF_WHITE};
+  z-index: 3;
+`;
 
 class SlackComponent extends React.Component {
   constructor(props) {
@@ -65,7 +68,8 @@ class SlackComponent extends React.Component {
       userLoading: true,
       emojiLoading: true,
       msgLoading: true,
-      chanLoading: true
+      chanLoading: true,
+      displayFirst: true
     };
   }
 
@@ -137,10 +141,15 @@ class SlackComponent extends React.Component {
       let messageList = [];
       this.trashableRequestList[1] = makeTrashable(response.json());
       let data = await this.trashableRequestList[1];
-      data.messages.forEach((message, msgCount) => {
-        msgCount++;
-        if (msgCount > MAX_MSGS) return;
-        messageList.push(message);
+
+      let msgCount = 0;
+      data.messages.forEach(message => {
+        // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)
+        if (!message.parent_user_id && (!message.subtype || message.bot_id)) {
+          msgCount++;
+          if (msgCount > MAX_MSGS) return;
+          messageList.push(message);
+        }
       });
       this.setState({ messages: messageList, msgLoading: false });
       this.setSlackMsg();
@@ -242,6 +251,7 @@ class SlackComponent extends React.Component {
         />
       );
     }
+
     this.setState({
       slackMsg: cardList
     });
@@ -251,6 +261,7 @@ class SlackComponent extends React.Component {
   rotateTimer() {
     if (!this.anyStillLoading()) {
       this.rotateMessages();
+      this.setState({ displayFirst: true });
     }
   }
 
@@ -258,6 +269,7 @@ class SlackComponent extends React.Component {
   rotateMessages() {
     let array = this.state.displayIndex;
     this.rotateToRight(array);
+    this.setState({ displayFirst: false });
     this.setState({ displayIndex: array });
   }
 
@@ -287,45 +299,36 @@ class SlackComponent extends React.Component {
   //only return components if the index === 0
   //@return:
   //  components that display only the first message of the slackMsg determined by the displayIndex with a Zoom effect.
-  displayFirstMessage(item, index) {
-    if (index === 0) {
-      return (
-        <Grow key={item} in={true}>
-          <div style={styles.SlackCardContainer}>
-            {this.state.slackMsg[item]}
-          </div>
-        </Grow>
-      );
-    }
+  displayFirstMessage() {
+    return (
+      <div>
+        <Collapse in={this.state.displayFirst} exit={false}>
+          {this.state.slackMsg[this.state.displayIndex[0]]}
+        </Collapse>
+      </div>
+    );
   }
 
   render() {
     if (this.anyStillLoading()) {
       return (
-        <Card
-          style={{ ...styles.CardContainer, ...RIGHT_BOX_STYLE, ...BOX_STYLE }}
-          raised={true}
-        >
-          <p style={BOX_HEADER}>Loading Slack...</p>
-        </Card>
+        <CardContainer raised={true}>
+          <CardHeader>Loading Slack...</CardHeader>
+        </CardContainer>
       );
     } else {
       return (
-        <Card
-          style={{ ...styles.CardContainer, ...RIGHT_BOX_STYLE, ...BOX_STYLE }}
-          raised={true}
-        >
-          <span style={BOX_HEADER}>#{this.getChannelName(CHANNEL)}</span>
-
-          {this.state.displayIndex.map((item, index) =>
-            this.displayFirstMessage(item, index)
-          )}
-          <div style={styles.SlackCardContainer}>
+        <CardContainer raised={true}>
+          <span>
+            <CardHeader>#{this.getChannelName(CHANNEL)}</CardHeader>
+          </span>
+          <GradientBlock />
+          <WhiteBlock />
+          {this.displayFirstMessage()}
+          <SlackCardContainer>
             {this.displayRestOfMessages()}
-          </div>
-          <div style={styles.GradientBlock}></div>
-          <div style={styles.WhiteBlock}></div>
-        </Card>
+          </SlackCardContainer>
+        </CardContainer>
       );
     }
   }

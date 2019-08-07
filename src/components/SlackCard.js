@@ -1,45 +1,48 @@
 import React from "react";
+import styled from "styled-components";
 import Parser from "html-react-parser";
-import emojis from "../utils/emojis";
 import square_logo from "../../resources/square_logo.png";
 import { getRelativeTime } from "../utils/TimeUtils";
+import { CX_FONT } from "../utils/Constants";
+import { getEmoji } from "../utils/emojis/emojiUtil";
 
 const SLACK_FONT_SIZE = "20px";
 
-const styles = {
-  cardStyle: {
-    paddingBottom: "10px",
-    margin: "0 0 5px 0",
-    fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
-    fontSize: SLACK_FONT_SIZE,
-    position: "relative"
-  },
-  contentContainer: {
-    verticalAlign: "top"
-  },
-  headerAndContent: {
-    display: "inline-block",
-    width: "80%"
-  },
-  cardText: {
-    fontFamily: "NotoSansJP, Slack-Lato, appleLogo, sans-serif",
-    fontSize: SLACK_FONT_SIZE,
-    marginTop: "4px",
-    width: "100%",
-    color: "black",
-    minHeight: "100%",
-    width: "100%"
-  },
-  avatarStyle: {
-    borderRadius: "8%",
-    margin: "5px 10px 0 5px",
-    display: "inline",
-    height: "50px",
-    width: "50px",
-    display: "inline-block",
-    verticalAlign: "top"
-  }
-};
+const StyledCard = styled.div`
+  padding-bottom: 10px;
+  margin: 0 0 5px 0;
+  font-family: ${CX_FONT};
+  font-size: ${SLACK_FONT_SIZE};
+  position: relative;
+`;
+
+const ContentContainer = styled.div`
+  vertical-align: top;
+`;
+
+const HeaderAndContent = styled.div`
+  display: inline-block;
+  width: 80%;
+`;
+
+const CardText = styled.div`
+  font-size: ${SLACK_FONT_SIZE};
+  margin-top: 4px;
+  width: 100%;
+  color: black;
+  min-height: 100%;
+  width: 100%;
+`;
+
+const AvatarStyle = styled.img`
+  border-radius: 8%;
+  margin: 5px 10px 0 0;
+  display: inline;
+  height: 50px;
+  width: 50px;
+  display: inline-block;
+  vertical-align: top;
+`;
 
 const cardMedia =
   "max-width: 10vw; \
@@ -105,7 +108,6 @@ const msgLifeStyle =
 const fileImgStyle =
   " \
   display: block; \
-  margin-left: 10px; \
   margin-right: 10px; \
   width: 100%; \
   height: 100%; \
@@ -122,8 +124,9 @@ class SlackCard extends React.Component {
       return messageText;
     }
 
-    // replace custom emojis found
-    messageText = messageText.replace(/:(.+?):/gm, (match, name) => {
+    // set any :emoji: messages
+    messageText = messageText.replace(/:(\S+?):/gm, (match, name) => {
+      // check for custom emoji
       if (customEmojis[name]) {
         // alias points to actual
         if (customEmojis[name].includes("alias:")) {
@@ -134,7 +137,14 @@ class SlackCard extends React.Component {
           return `<img height="20" width="20" style="${emojiStyle}" src=${customEmojis[name]} alt=${name}/>`;
         }
       }
-      return match;
+
+      // check for standard emoji
+      let emoji = getEmoji(name);
+      if (!emoji) {
+        return match;
+      } else {
+        return `<div style="${emojiStyle}">${emoji}</div>`;
+      }
     });
 
     // set any `` messages
@@ -185,22 +195,21 @@ class SlackCard extends React.Component {
     );
 
     // set any *bold* messages
-    messageText = messageText.replace(/\*(.+?)\*(?!\S)/g, (match, phrase) => {
+    messageText = messageText.replace(/\*(.+?)\*(?!\w)/g, (match, phrase) => {
       return `<div style="font-weight: bolder; display: inline;">${phrase}</div>`;
     });
 
     // set any _italic_ messages
-    messageText = messageText.replace(/_(.+?)_(?!\S)/g, (match, phrase) => {
+    messageText = messageText.replace(/_(.+?)_(?!\w)/g, (match, phrase) => {
       return `<div style="font-style: italic; display: inline;">${phrase}</div>`;
     });
 
     // set any ~strikethrough~ messages
-    messageText = messageText.replace(/\~(.+?)\~(?!\S)/g, (match, phrase) => {
+    messageText = messageText.replace(/\~(.+?)\~(?!\w)/g, (match, phrase) => {
       return `<div style="text-decoration: line-through; display: inline;">${phrase}</div>`;
     });
 
-    // set slack built in emojis
-    return emojis.html(messageText);
+    return messageText;
   }
 
   // return name from given user ID
@@ -255,7 +264,14 @@ class SlackCard extends React.Component {
         : message.attachments[0].author_name;
     // Got rid of bot check, since all wallboard posts come from bot
     if (author == undefined) {
-      author = "Unknown User";
+      if (
+        message.bot_id ||
+        (message.attachments && message.attachments.bot_id)
+      ) {
+        author = "Bot";
+      } else {
+        author = "Unknown User";
+      }
     }
 
     // check for additional footer info
@@ -324,26 +340,26 @@ class SlackCard extends React.Component {
         ? media
         : `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.files[0].url_private} alt="file" /></div>`;
 
+    // check if message attachment has file to share
+    if (message.attachments && message.attachments[0].files) {
+      media = `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.attachments[0].files[0].url_private} alt="file" /></div>`;
+    }
+
     return media;
   }
 
   render() {
     return (
-      <div style={styles.cardStyle}>
-        <img
-          style={styles.avatarStyle}
-          src={this.getIcon(this.props.index)}
-        ></img>
-        <div style={styles.headerAndContent}>
+      <StyledCard>
+        <AvatarStyle src={this.getIcon(this.props.index)}></AvatarStyle>
+        <HeaderAndContent>
           {Parser(this.getCardHeader(this.props.index))}
-          <div style={styles.contentContainer}>
+          <ContentContainer>
             {Parser(this.getCardMedia(this.props.index))}
-            <div style={styles.cardText}>
-              {Parser(this.getCardText(this.props.index))}
-            </div>
-          </div>
-        </div>
-      </div>
+            <CardText>{Parser(this.getCardText(this.props.index))}</CardText>
+          </ContentContainer>
+        </HeaderAndContent>
+      </StyledCard>
     );
   }
 }
