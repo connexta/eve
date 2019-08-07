@@ -1,11 +1,14 @@
 import React from "react";
+import styled from "styled-components";
 import BuildStatus from "../components/BuildStatus";
 import SlackComponent from "../components/SlackComponent";
 import Github from "../components/Github";
 import Calendar from "../components/Calendar/Calendar";
-import { LeftBox, RightBox } from "../styles/WallboardStyles";
+import { LeftBox, RightBox, LowerLeftBox } from "../styles/WallboardStyles";
 import Grid from "@material-ui/core/Grid";
 import { jenkinsURLList } from "../utils/Link";
+import MediaComponent from "../components/MediaComponent";
+import EventComponent from "../components/EventComponent";
 
 const styles = {
   cardContent: {
@@ -17,13 +20,16 @@ const styles = {
 export default class TVWallboard extends React.Component {
   render() {
     return (
-      <Grid container style={{ height: "100%" }}>
+      <Grid container style={{ height: "100%" }} spacing={0}>
         <LeftBox item>
           <BuildStatus
             urlList={jenkinsURLList}
             cardContentStyle={styles.cardContent}
           />
-          <Calendar />
+          <Grid container direction="row">
+            <MediaComponent />
+            <EventComponent />
+          </Grid>
         </LeftBox>
         <RightBox item>
           <SlackComponent />

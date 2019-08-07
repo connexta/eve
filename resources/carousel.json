@@ -1,0 +1,24 @@
+{
+  "cards": [
+    {
+      "title": "Ice Cream Social",
+      "body": "Come to the Ice Cream Social in the first floor kitchen!",
+      "media": "icecreamsocial.png",
+      "link": "http://www.google.com"
+    },
+
+    {
+      "title": "New Hire: Goose",
+      "body": "This is Goose, he is a new hire.  His skills include laying golden eggs and writing on chalkboards.",
+      "media": "duck-duck-goose.jpg",
+      "link": ""
+    },
+
+    {
+      "title": "Fun at the offsite!",
+      "body": "Were there water slides at the offsite? Not sure! Here's one anyway.",
+      "media": "waterslide.jpg",
+      "link": ""
+    }
+  ]
+}
