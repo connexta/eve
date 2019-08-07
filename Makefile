@@ -46,7 +46,7 @@ killAll:
 	@echo "$$(docker ps -aq)"
 ifneq ($$(docker ps -aq),)
 	@echo "killing running docker image"
-	@docker stop $$(docker ps -aq)
-	@docker rm $$(docker ps -aq)
+	# @docker stop $$(docker ps -aq)
+	# @docker rm $$(docker ps -aq)
 endif
 	@docker rmi -f $$(docker images -q)

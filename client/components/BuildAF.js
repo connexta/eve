@@ -102,7 +102,7 @@ class BuildAF extends React.Component {
     return icon + " ( " + data.result + " ) " + description;
   }
 
-  //@ram:
+  //@param:
   //  causes: name for the userID value pair in JSON format
   //@return:
   //  return builder if specified, else "timer"
