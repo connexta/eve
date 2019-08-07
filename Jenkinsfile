@@ -33,9 +33,17 @@ pipeline {
           string(credentialsId: 'SLACK_TOKEN', variable: 'SLACK_TOKEN'),
           string(credentialsId: 'SLACK_CHANNEL', variable: 'SLACK_CHANNEL'),
           string(credentialsId: 'GITHUB_CLIENT_ID', variable: 'GITHUB_CLIENT_ID'),
-          string(credentialsId: 'GITHUB_CLIENT_SECRET', variable: 'GITHUB_CLIENT_SECRET')
+          string(credentialsId: 'GITHUB_CLIENT_SECRET', variable: 'GITHUB_CLIENT_SECRET'),
+          string(credentialsId: 'SOAESB_LOGIN_USERNAME', variable: 'SOAESB_LOGIN_USERNAME'),
+          string(credentialsId: 'SOAESB_LOGIN_PASSWORD', variable: 'SOAESB_LOGIN_PASSWORD')
         ]) {
-          sh 'make image SLACK_TOKEN=${SLACK_TOKEN} SLACK_CHANNEL=${SLACK_CHANNEL} GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID} GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET} GIT_BRANCH=' + env.BRANCH_NAME
+          sh 'make image SLACK_TOKEN=${SLACK_TOKEN} \
+          SLACK_CHANNEL=${SLACK_CHANNEL} \
+          GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID} \
+          GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET} \
+          SOAESB_LOGIN_USERNAME=${SOAESB_LOGIN_USERNAME} \
+          SOAESB_LOGIN_PASSWORD=${SOAESB_LOGIN_PASSWORD} \
+          GIT_BRANCH=' + env.BRANCH_NAME
         }
       }
     }

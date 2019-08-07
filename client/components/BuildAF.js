@@ -10,7 +10,7 @@ import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
 
 const StyledBox = styled(BoxStyle)`
-  width: calc(100% - ${CARD_SIDE_MARGINS}px);
+  margin: 24px;
 `;
 
 const StyledHeader = styled(BoxHeader)`
@@ -102,7 +102,7 @@ class BuildAF extends React.Component {
     return icon + " ( " + data.result + " ) " + description;
   }
 
-  //@param:
+  //@ram:
   //  causes: name for the userID value pair in JSON format
   //@return:
   //  return builder if specified, else "timer"

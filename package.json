@@ -7,7 +7,8 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --open --mode development --env.NODE_ENV=local",
-    "go": "yarn install && yarn build && yarn start"
+    "go": "yarn install && yarn build && yarn start",
+    "server": "node server/server.js"
   },
   "dependencies": {
     "@material-ui/core": "^4.2.1",
@@ -15,6 +16,7 @@
     "@microsoft/microsoft-graph-client": "^1.7.0",
     "css-loader": "^3.1.0",
     "html-react-parser": "^0.7.1",
+    "lodash.throttle": "^4.1.1",
     "moment": "^2.24.0",
     "msal": "^1.0.2",
     "react": "^16.8.6",
@@ -22,6 +24,7 @@
     "react-dom": "^16.8.6",
     "react-live-clock": "^3.1.0",
     "react-router-dom": "^5.0.1",
+    "react-spinners": "^0.5.13",
     "style-loader": "^0.23.1",
     "trashable": "^1.0.7"
   },
