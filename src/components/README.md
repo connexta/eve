@@ -32,7 +32,7 @@ Displays events from a calendar that the user selects.  User can log in/ log out
 
 #### API:
 
-Before you can use the API, you must create an application in the [Azure Active Directory](https://portal.azure.com/).  To make or edit your application, navigate to Azure Active Directory -> App Registrations -> New Registration / Select yourapplication.  The Application ID should be the same as the ID in GraphConfig.js.  Under the Authentication tab, the redirect URI should match the URL of where the Wallboard is hosted (or http://localhost:[PORT NUMBER] for local testing).  You must select to grant Access tokens and ID tokens.  Under API permissions, grant the permissions for the features you'll need as delegated privileges.  In the case of the calendar, users will need to grant User.Read and Calendars.Read permissions.
+Before you can use the API, you must create an application in the [Azure Active Directory](https://portal.azure.com/).  To make or edit your application, navigate to Azure Active Directory -> App Registrations -> New Registration / Select your application.  The Application ID should be the same as the ID in GraphConfig.js.  Under the Authentication tab, the redirect URI should match the URL of where the Wallboard is hosted (or http://localhost:[PORT NUMBER] for local testing).  You must select to grant Access tokens and ID tokens.  Under API permissions, grant the permissions for the features you'll need as delegated privileges.  In the case of the calendar, users will need to grant User.Read and Calendars.Read permissions.
 
 [This website](https://developer.microsoft.com/en-us/graph/graph-explorer) can be useful to see whether Microsft Graph API calls are valid and what they will return.
 
@@ -46,7 +46,18 @@ Handles the actual API calls.  Has two functions, one to return the authenticate
 
 ## Clock
 
+Displays time for timezones pertinent to Connexta: Phoenix (MST), Denver (MDT), Boston/DC (EST), United Kingdom (GMT) and Melbourne (AEST).
+
 ## Github
+
+Displays the 5 most recent pull requests for a specified repository.  For each pull request, it displays the title, pull request number, excerpt from the description, number of approvals, and any pertinent status checks (such as Jenkins build status).  The component is clickable to navigate to the displayed PR.
+
+#### Props:
+- **repoPath**: the path to reach the desired repository during API calls.  Typically takes the form of `[ORGANIZATION]/[REPOSITORY]`.  See [GitHub API documentation](https://developer.github.com/v3/repos/) for more details.
+
+#### API:
+
+All information for this component is pulled from the GitHub API.  Calls are authenticated with with a client secret and client ID.  To set up a GitHub API application, navigate to Settings -> Developer Settings -> Personal Access Tokens.  These are the credentials you should use when setting up your environment variables (as specified in the main README).
 
 ## SlackComponent
 ### SlackCard
