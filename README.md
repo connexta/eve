@@ -4,6 +4,8 @@ Wallboard Project for Connexta.
 
 Project EVE serves as a display for important information both for the office and for each project team.  Project EVE includes many different components that can be mixed and matched to fit a given team's need and the information shown on many components can also be customized.  The Wallboard is hosted at [http://eve.phx.connexta.com/](http://eve.phx.connexta.com/).
 
+This project is built using React.
+
 ## Features
 
 - Components
