@@ -248,6 +248,7 @@ class SlackComponent extends React.Component {
           slackUsers={this.state.slackUsers}
           messages={this.state.messages}
           emojis={this.state.emojis}
+          variant={this.props.variant}
         />
       );
     }

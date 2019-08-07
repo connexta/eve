@@ -156,7 +156,7 @@ class BuildStatus extends React.Component {
               name={item.displayName}
               key={item.displayName + item.oneSubtitle}
               subtitle={item.oneSubtitle}
-              cardContentStyle={this.props.cardContentStyle}
+              variant={this.props.variant}
             />
           );
         })
@@ -167,7 +167,7 @@ class BuildStatus extends React.Component {
               name={item.displayName}
               key={item.displayName + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
-              cardContentStyle={this.props.cardContentStyle}
+              variant={this.props.variant}
             />
           );
         });

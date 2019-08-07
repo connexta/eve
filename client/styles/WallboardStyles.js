@@ -2,6 +2,14 @@ import styled from "styled-components";
 import { BANNER_HEIGHT } from "../index";
 import Grid from "@material-ui/core/Grid";
 
+// wallboard variants enum for styling
+export const VARIANTS = {
+  TV: 0,
+  I2O: 1,
+  AIRFORCE: 2,
+  GSR: 3
+};
+
 export const LeftBox = styled(Grid)`
   height: 100%;
   width: 66%;
