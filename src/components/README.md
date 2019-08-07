@@ -60,4 +60,20 @@ Displays the 5 most recent pull requests for a specified repository.  For each p
 All information for this component is pulled from the GitHub API.  Calls are authenticated with with a client secret and client ID.  To set up a GitHub API application, navigate to Settings -> Developer Settings -> Personal Access Tokens.  These are the credentials you should use when setting up your environment variables (as specified in the main README).
 
 ## SlackComponent
+Displays the 10 most recent slack messages, rotating through the messages on a set interval. The slack widget is a fixed size and will only show as many messages as can fit. The component is currently not interactable in any way.
+
+#### API:  
+Multiple API calls are made to the Slack API for different information. The API calls rely on the `SLACK_TOKEN` and `SLACK_CHANNEL` environment variables being set. Here is the list of the API calls made...  
+  * Channel History: Gets message history from specific channel
+  * Channel List: Gets the list of channels for converting channel ID to name
+  * User List: Gets the list of users for converting the user ID to name
+  * Emoji List: Gets the list of custom slack emojis for the workspace
+  
 ### SlackCard
+This component holds an individual slack message to be used in the collection of slackmessages in the `SlackComponent` component. This contains the main logic for parsing the raw slack message obtained by the API calls.
+
+#### Props:
+  * **index**: index of the slack card in the list of slack cards
+  * **messages**: list of pulled messages
+  * **slackUsers**: List of pulled slack users
+  * **emojis**: List of pulled emojis
