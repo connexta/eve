@@ -7,10 +7,15 @@ Project EVE serves as a display for important information both for the office an
 ## Features
 
 - Components
+
   - **BuildStatus**: Displays the health of major builds as given by Jenkins.  Build health can be toggled between the health of the most recent build or the health of the last 5 builds.  Health is indicated by one of three icons: green check mark for healthy builds, yellow dash for some failtures, and red x for many failed builds.
+  
   - **Calendar**: Displays events from a given Outlook Calendar.  Users can log in/out and select which of their calendars they want displayed.  Users can toggle between day, work week, month, and agenda views.
+  
   - **Clock**: Displays time for relevant timezones to Connexta: Phoenix (MST), Denver (MDT), Boston/DC (EST), United Kingdom (GMT), Melbourne (AEST).
+  
   - **Github**: Displays most recent pull requests of a given repository.  Cycles through PR's automatically or users can manually scroll through them.  For each PR, the component links to the Github page and displays the title, PR number, exerpt from the description, and any pertinent status checks.  If the status check links to a webpage, users can click on the status check to navigate there.
+  
   - **SlackComponent**: Cycles through 10 most recent slack messages on a given channel.  Displays username, profile picture, message (including styling and emojis), date, and channel of origin.
 - Custom Wallboards: Userse can navigate to wallboards customized to their project team or to the main TV wallboard.
 
@@ -37,11 +42,11 @@ Navigate to your clone of the repo and run `yarn go` (synonymous with `yarn inst
 
 
 ### Hosting the Wallboard
-### What you need
+#### What you need
 - yarn
 - docker
 
-## Docker
+#### Docker
 On linux run ```make image``` to generate the image.  
 **NOTE:** You must set your environment variables before building the image for the app to work. 
 See the **Setting up** section for more details  
@@ -54,7 +59,7 @@ Once the image is running, you can connect to the wallboard app by going to ```0
   
 You can kill the container through the command ```docker kill wallboard```  
 
-## Jenkins
+#### Jenkins
 
 Required setup:
 
