@@ -27,13 +27,13 @@ export const IONURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/ION/";
 
 export const jenkinsURLList = [
-  {Alliance: AllianceURL},
-  {DDF: DDFURL},
-  {DIB: DIBURL},
-  {GSR: GSRURL},
-  {SOAESB: SOAESBURL},
-  {REFLEX: REFLEXURL}
-  ];
+  { Alliance: AllianceURL },
+  { DDF: DDFURL },
+  { DIB: DIBURL },
+  { GSR: GSRURL },
+  { SOAESB: SOAESBURL },
+  { REFLEX: REFLEXURL }
+];
 
 /*AF team*/
 
@@ -47,3 +47,7 @@ export const AFJenkinLink =
 //URL for the AF team main repo to keep track of
 export const AFURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/HAART-Jobs/pipelines/SOAESB_Nightly_Release_Builder/";
+
+/* Grafana */
+export const SOAESB_GRAFANA_URL =
+  "http://haart-kube.phx.connexta.com:3000/d/6hIxKFVZk/soa_dashboard?orgId=1";

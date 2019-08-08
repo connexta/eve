@@ -24,7 +24,18 @@ push: ## Push docker image
 	@echo "\nPushing image: $(BUILD_TAG):$(GIT_BRANCH)\n"
 	@docker push $(BUILD_TAG):$(GIT_BRANCH)
 
-#Developer Tools
+###Developer Tools
+.PHONY: pretty
+pretty:
+	@echo "Prettifying the world except node_modules"
+	@yarn prettier --end-of-line lf --write "{,!(node_modules)/**/}*.js"
+
+#disable auto conversion to crlf.
+#Run only once!
+.PHONY: lf
+lf:
+	@git config --global core.autocrlf false
+
 .PHONY: run
 run:
 	@echo "RUNNING image: $$(docker images | grep -E 'master' | awk -e '{print $$3}')"
@@ -46,7 +57,8 @@ killAll:
 	@echo "$$(docker ps -aq)"
 ifneq ($$(docker ps -aq),)
 	@echo "killing running docker image"
-	# @docker stop $$(docker ps -aq)
-	# @docker rm $$(docker ps -aq)
+	@docker stop $$(docker ps -aq)
+	@docker rm $$(docker ps -aq)
 endif
 	@docker rmi -f $$(docker images -q)
+

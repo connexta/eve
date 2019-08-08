@@ -45,10 +45,18 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.SLACK_TOKEN": JSON.stringify(process.env.SLACK_TOKEN),
       "process.env.SLACK_CHANNEL": JSON.stringify(process.env.SLACK_CHANNEL),
-      "process.env.GITHUB_CLIENT_ID": JSON.stringify(process.env.GITHUB_CLIENT_ID),
-      "process.env.GITHUB_CLIENT_SECRET": JSON.stringify(process.env.GITHUB_CLIENT_SECRET),
-      "process.env.SOAESB_LOGIN_USERNAME": JSON.stringify(process.env.SOAESB_LOGIN_USERNAME),
-      "process.env.SOAESB_LOGIN_PASSWORD": JSON.stringify(process.env.SOAESB_LOGIN_PASSWORD),
+      "process.env.GITHUB_CLIENT_ID": JSON.stringify(
+        process.env.GITHUB_CLIENT_ID
+      ),
+      "process.env.GITHUB_CLIENT_SECRET": JSON.stringify(
+        process.env.GITHUB_CLIENT_SECRET
+      ),
+      "process.env.SOAESB_LOGIN_USERNAME": JSON.stringify(
+        process.env.SOAESB_LOGIN_USERNAME
+      ),
+      "process.env.SOAESB_LOGIN_PASSWORD": JSON.stringify(
+        process.env.SOAESB_LOGIN_PASSWORD
+      )
     })
   ],
   devServer: {
