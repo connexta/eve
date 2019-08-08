@@ -51,12 +51,7 @@ module.exports = {
       "process.env.GITHUB_CLIENT_SECRET": JSON.stringify(
         process.env.GITHUB_CLIENT_SECRET
       ),
-      "process.env.SOAESB_LOGIN_USERNAME": JSON.stringify(
-        process.env.SOAESB_LOGIN_USERNAME
-      ),
-      "process.env.SOAESB_LOGIN_PASSWORD": JSON.stringify(
-        process.env.SOAESB_LOGIN_PASSWORD
-      )
+      "process.env.BEARER_TOKEN": JSON.stringify(process.env.BEARER_TOKEN)
     })
   ],
   devServer: {

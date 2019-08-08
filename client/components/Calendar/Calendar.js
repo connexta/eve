@@ -25,7 +25,7 @@ const TIME_AFTER = 1; //num months after to grab events
 const NUM_EVENTS = 200; //limit on number of events to grab
 const START_HOUR = 8; // earliest hour to display in week/day view
 const END_HOUR = 18; // latest hour to display
-const WIP_MESSAGE_SPACE = 68;
+const WIP_MESSAGE_SPACE = 68; //height of the message buffer so that it doesn't overlap with working progress message.
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 const CARD_HEIGHT_MARGINS = 36;
 
@@ -33,6 +33,7 @@ const StyledHeader = styled(BoxHeader)`
   margin-bottom: 16px;
 `;
 
+//157px: to align calendar to buildstatus
 const StyledCard = styled(BoxStyle)`
   height: calc(
     100% - ${CARD_HEIGHT_MARGINS}px - ${WIP_MESSAGE_SPACE}px - 157px

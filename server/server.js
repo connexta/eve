@@ -3,9 +3,9 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const path = require("path");
 const dotenv = require("dotenv");
-dotenv.config();
 const grafana = require("./grafana");
 
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 

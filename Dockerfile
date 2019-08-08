@@ -19,7 +19,7 @@ RUN apk update && apk upgrade && \
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
-RUN mkdir -p /usr/src/app/server/targe
+RUN mkdir -p /usr/src/app/server/target
 COPY --from=build /app/target /usr/src/app/server/target
 
 WORKDIR /usr/src/app
@@ -36,14 +36,12 @@ ARG SLACK_TOKEN
 ARG GITHUB_CLIENT_ID
 ARG GITHUB_CLIENT_SECRET
 ARG NODE_ENV
-ARG SOAESB_LOGIN_USERNAME
-ARG SOAESB_LOGIN_PASSWORD
+ARG SOAESB_BEARER_TOKEN
 ENV SLACK_CHANNEL=$SLACK_CHANNEL \
     SLACK_TOKEN=$SLACK_TOKEN \
     GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID \
     GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET \
     NODE_ENV=$NODE_ENV \
-    SOAESB_LOGIN_USERNAME=$SOAESB_LOGIN_USERNAME \
-    SOAESB_LOGIN_PASSWORD=$SOAESB_LOGIN_PASSWORD
+    SOAESB_BEARER_TOKEN=$SOAESB_BEARER_TOKEN
 
 CMD [ "node", "server.js"]

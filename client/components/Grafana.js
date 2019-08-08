@@ -75,7 +75,7 @@ export default class Grafana extends React.Component {
             src={this.state.imageURL}
             width={this.state.screenWidth * 0.65}
             height={this.state.screenHeight * 0.78}
-            alt="Unable to load Grafana Image"
+            alt="Grafana Screenshot"
           />
         </a>
       </ImgContainer>
