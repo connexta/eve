@@ -3,8 +3,6 @@ import styled from "styled-components";
 import { withStyles } from "@material-ui/core/styles";
 import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
 import { BoxStyle, BoxHeader } from "../styles/styles";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { time } from "../utils/TimeUtils";
 import { callApi } from "./Calendar/GraphService";
 import config from "./Calendar/GraphConfig";
@@ -16,7 +14,8 @@ import {
   ListItemText,
   DialogTitle,
   MobileStepper,
-  Button
+  Button,
+  Divider
 } from "@material-ui/core";
 import makeTrashable from "trashable";
 
@@ -24,25 +23,21 @@ const ROTATE_FREQ = time({ seconds: 5 });
 export const MEDIA_EVENT_CARD_HEIGHT = 700;
 const TIME_BEFORE = 0; //num months before to grab events
 const TIME_AFTER = 1; //num months after to grab events
-const NUM_EVENTS = 10; //limit on number of events to grab
+const NUM_EVENTS = 6; //limit on number of events to grab
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 
 const ButtonContainer = styled.div`
-  width: 100%;
+  width: 300px;
   margin-left: calc(5% - 3px); /* 3 px to accomodate rbc-btn-group margins */
   display: flex;
   flex-direction: row;
-  vertical-align: bottom;
+  position: absolute;
+  right: 0;
 `;
 
-const StyledButton = styled.button`
-  display: inline-block;
-  && {
-    margin: 8px 0 0;
-  }
-  height: 30px;
-  vertical-align: bottom;
-  margin-top: 8px;
+const StyledButton = styled(Button)`
+  height: 32px;
+  vertical-align: top;
 `;
 
 const RightButton = styled(StyledButton)`
@@ -64,40 +59,49 @@ export const CarouselContent = styled.div`
 export const MediaCard = styled(BoxStyle)`
   width: calc((100% / 2) - 24px);
   height: ${MEDIA_EVENT_CARD_HEIGHT}px;
-  margin: 0 12px 0 24px;
+  margin: 0 0 0 24px;
   position: relative;
 `;
 
 const Header = styled(BoxHeader)`
   width: 100%;
+  display: flex;
+  flex-direction: row;
 `;
-
-const StyledMobileStepper = withStyles({
-  root: {
-    backgroundColor: CX_OFF_WHITE,
-    height: "20px",
-    width: "calc(100% - 20px)",
-    position: "absolute",
-    bottom: "12px",
-    left: "0px"
-  },
-  dotActive: {
-    backgroundColor: CX_GRAY_BLUE
-  }
-})(MobileStepper);
 
 function localizeTime(time, timezone) {
   return new Date(time.split("T") + " " + timezone);
 }
 
+function getDayofWeek(num) {
+  switch (num) {
+    case 0:
+      return "Sun";
+    case 1:
+      return "Mon";
+    case 2:
+      return "Tue";
+    case 3:
+      return "Wed";
+    case 4:
+      return "Thu";
+    case 5:
+      return "Fri";
+    case 6:
+      return "Sat";
+    default:
+      return "";
+  }
+}
+
 // Function to toggle between log in / log out button depending on state
 function LogInOut(props) {
   return props.isAuthenticated ? (
-    <StyledButton type="button" onClick={props.logOut}>
+    <StyledButton variant={"outlined"} onClick={props.logOut}>
       Log Out
     </StyledButton>
   ) : (
-    <StyledButton type="button" onClick={props.logIn}>
+    <StyledButton variant={"outlined"} onClick={props.logIn}>
       Log In
     </StyledButton>
   );
@@ -125,9 +129,13 @@ class DialogAndButton extends React.Component {
   render() {
     return (
       <div>
-        <RightButton type="button" onClick={this.handleClickOpen.bind(this)}>
+        <StyledButton
+          type="button"
+          variant={"outlined"}
+          onClick={this.handleClickOpen.bind(this)}
+        >
           Select Calendar
-        </RightButton>
+        </StyledButton>
         <Dialog
           onClose={this.handleClose.bind(this)}
           aria-labelledby="select-calendar-dialog"
@@ -165,19 +173,22 @@ export default class MediaComponent extends React.Component {
       }
     });
 
-    var user = this.userAgentApplication.getAccount();
+    let user = this.userAgentApplication.getAccount();
+    let cal = localStorage.getItem("chosenCalendar");
 
     this.state = {
       displayIndex: 0,
       isAuthenticated: user !== null,
       events: [],
       calendars: [],
-      chosenCal: localStorage.getItem("chosenCalendar")
+      chosenCal: cal
     };
 
     if (user) {
       this.getCalendars();
     }
+
+    if (cal) this.getCalendarEvents(cal);
   }
 
   // clean up event data so it works with big-react-calendar
@@ -186,7 +197,9 @@ export default class MediaComponent extends React.Component {
       eventData = eventData.map(event => ({
         title: event.subject,
         start: event.start,
-        end: event.end
+        end: event.end,
+        bodyPreview: event.bodyPreview,
+        location: event.location.displayName
       }));
 
       for (let i = 0; i < eventData.length; i++) {
@@ -328,7 +341,7 @@ export default class MediaComponent extends React.Component {
           endDate.toISOString() +
           "&top=" +
           NUM_EVENTS +
-          "&select=subject,start,end";
+          "&select=subject,start,end,bodyPreview,location";
 
         this.trashableAPICall = makeTrashable(callApi(accessToken, call));
         await this.trashableAPICall.then(ret => this.updateEvents(ret.value));
@@ -392,59 +405,65 @@ export default class MediaComponent extends React.Component {
       />
     ) : null;
 
-    let event =
-      this.state.events.length == 0
-        ? { title: "", start: "", end: "" }
-        : this.state.events[this.state.displayIndex];
-
-    let start = "";
-    if (event.start != "") {
-      start =
-        event.start.getDay() +
-        " " +
-        event.start.getMonth() +
-        "/" +
-        event.start.getDate();
-    }
-
-    return (
-      <MediaCard raised={true}>
+    return this.state.events.length == 0 ? (
+      <MediaCard>
         <Header>Company Events</Header>
-        <ButtonContainer>
-          <LogInOut
-            isAuthenticated={this.state.isAuthenticated}
-            logIn={this.login.bind(this)}
-            logOut={this.logout.bind(this)}
-          />
-          {calButton}
-        </ButtonContainer>
-        {event.title}
-        {start}
-        {event.end.toString()}
-        <StyledMobileStepper
-          activeStep={this.state.displayIndex}
-          steps={this.state.events.length}
-          variant={"dots"}
-          position={"static"}
-          nextButton={
-            <Button
-              size="small"
-              onClick={() => this.switchCard(this.state.displayIndex + 1)}
-            >
-              Next
-              <KeyboardArrowRight />
-            </Button>
-          }
-          backButton={
-            <Button
-              size="small"
-              onClick={() => this.switchCard(this.state.displayIndex - 1)}
-            >
-              <KeyboardArrowLeft />
-              Back
-            </Button>
-          }
-        />
+      </MediaCard>
+    ) : (
+      <MediaCard raised={true}>
+        <Header>
+          Company Events
+          <ButtonContainer>
+            <LogInOut
+              isAuthenticated={this.state.isAuthenticated}
+              logIn={this.login.bind(this)}
+              logOut={this.logout.bind(this)}
+            />
+            {calButton}
+          </ButtonContainer>
+        </Header>
+        <div style={{ marginTop: "60px" }}>
+          <Divider />
+          {this.state.events.map((event, i) => {
+            let day = getDayofWeek(event.start.getDay());
+            let date = event.start.getMonth() + "/" + event.start.getDate();
+            let startTime = event.start.getHours() + ":";
+            startTime =
+              event.start.getMinutes() < 10
+                ? startTime + "0" + event.start.getMinutes() + " - "
+                : startTime + event.start.getMinutes() + " - ";
+            let endTime = event.end.getHours() + ":";
+            endTime =
+              event.end.getMinutes() < 10
+                ? endTime + "0" + event.end.getMinutes()
+                : endTime + event.end.getMinutes();
+
+            return (
+              <div key={i}>
+                <Divider />
+                <div style={{ marginTop: "20px", marginBottom: "20px" }}>
+                  <div style={{ display: "inline-block", width: "120px" }}>
+                    <div>{day + " " + date}</div>
+                    <div>{startTime + endTime}</div>
+                  </div>
+                  <div
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "top",
+                      width: "70%",
+                      marginLeft: "20px"
+                    }}
+                  >
+                    <div>{event.title}</div>
+                    <div>{event.location}</div>
+                  </div>
+                </div>
+                <Divider />
+              </div>
+            );
+          })}
+          <Divider />
+        </div>
       </MediaCard>
     );
   }

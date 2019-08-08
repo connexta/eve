@@ -25,7 +25,7 @@ export const CarouselContent = styled.div`
 export const MediaCard = styled(BoxStyle)`
   width: calc((100% / 2) - 24px);
   height: ${MEDIA_EVENT_CARD_HEIGHT}px;
-  margin: 0 0 0 12px;
+  margin: 0 0 0 24px;
   position: relative;
 `;
 
