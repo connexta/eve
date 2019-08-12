@@ -1,23 +1,35 @@
 import React from "react";
 import styled from "styled-components";
-import { MobileStepper, Button } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
 import { BoxStyle, BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
+import Carousel from "../../resources/carousel.json";
+import { time } from "../utils/TimeUtils";
+import {
+  MobileStepper,
+  Button,
+  Dialog,
+  DialogTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField
+} from "@material-ui/core";
+import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
+import {
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  Edit,
+  Add,
+  Delete,
+  Save
+} from "@material-ui/icons";
 import Carousel from "../../resources/carousel.json";
 import { time } from "../utils/TimeUtils";
 
 const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 export const MEDIA_CARD_MARGINS = 20;
-
-export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  margin: 0 0 0 24px;
-  height: 100%;
-  position: relative;
-`;
 
 export const CarouselContent = styled.div`
   text-align: center;
@@ -27,10 +39,6 @@ export const CarouselContent = styled.div`
   position: absolute;
   bottom: 60px;
   left: 0;
-`;
-
-const CarouselContentLink = styled(CarouselContent)`
-  cursor: pointer;
 `;
 
 const CarouselMedia = styled.img`
@@ -63,6 +71,127 @@ const StyledMobileStepper = withStyles({
   }
 })(MobileStepper);
 
+class MediaEdit extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      open: false,
+      edit: false,
+      add: false,
+      title: null,
+      body: null,
+      media: null,
+      link: null
+    };
+  }
+
+  handleClickOpen() {
+    this.setState({ open: true });
+  }
+
+  handleClose(value) {
+    this.setState({ open: false });
+    this.props.remove(value);
+  }
+
+  save() {
+    let myReader = new FileReader();
+    myReader.onloadend = function(e) {
+      this.save(myReader.result);
+    };
+    myReader.readAsDataURL(file);
+  }
+
+  send(stream) {
+    this.setState({ media: stream });
+
+    fetch("http://localhost:8080/carousel", {
+      method: "POST",
+      body: JSON.stringify(this.state),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(res => res.text())
+      .then(res => console.log(res.body));
+  }
+
+  render() {
+    return (
+      <div style={{ display: "inline-block", position: "absolute", right: 20 }}>
+        <Edit onClick={this.handleClickOpen.bind(this)} />
+        <Dialog
+          onClose={this.handleClose.bind(this)}
+          aria-labelledby="select-calendar-dialog"
+          open={this.state.open}
+        >
+          <DialogTitle id="select-calendar-dialog-title">
+            Add/Remove Media
+          </DialogTitle>
+          <Table size={"small"}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Action</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Body</TableCell>
+                <TableCell>Media</TableCell>
+                <TableCell>Link</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.props.media.map((media, i) => (
+                <TableRow key={media.title}>
+                  <TableCell>
+                    <Delete onClick={() => this.props.remove(i)} />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {media.title}
+                  </TableCell>
+                  <TableCell>{media.body}</TableCell>
+                  <TableCell>{media.media}</TableCell>
+                  <TableCell>{media.link}</TableCell>
+                </TableRow>
+              ))}
+              {this.state.add ? (
+                <TableRow>
+                  <TableCell>
+                    <Save onClick={() => this.send()} />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <TextField
+                      onChange={e => this.setState({ title: e.target.value })}
+                      id="title"
+                    ></TextField>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      onChange={e => this.setState({ body: e.target.value })}
+                      id="body"
+                    ></TextField>
+                  </TableCell>
+                  <TableCell>
+                    <input
+                      onChange={e => this.setState({ media: e.target.value })}
+                      type="file"
+                      name="file"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      onChange={e => this.setState({ link: e.target.value })}
+                      id="link"
+                    ></TextField>
+                  </TableCell>
+                </TableRow>
+              ) : null}
+            </TableBody>
+          </Table>
+          <Add onClick={() => this.setState({ add: true })} />
+        </Dialog>
+      </div>
+    );
+  }
+}
+
 export default class MediaComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -84,7 +213,7 @@ export default class MediaComponent extends React.Component {
     });
   }
 
-  // Manually changes which media to display, resets timer
+  // Manually changes which PR to display, resets timer
   switchCard(index) {
     if (index >= this.state.numCards) index = 0;
     if (index < 0) index = this.state.numCards - 1;
@@ -92,7 +221,6 @@ export default class MediaComponent extends React.Component {
     clearInterval(this.rotateInterval);
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
-
 
   // Fetches all images to be displayed
   getMedia() {
@@ -126,11 +254,22 @@ export default class MediaComponent extends React.Component {
     }
   }
 
+  addMedia(media) {
+    console.log(media);
+  }
+
   render() {
     if (this.state.numCards <= 0) {
       return (
         <MediaCard raised={true}>
-          <BoxHeader>Company Media</BoxHeader>
+          <Header>
+            Company Media
+            <MediaEdit
+              media={this.state.carousel}
+              remove={this.removeMedia.bind(this)}
+              add={this.addMedia.bind(this)}
+            />
+          </Header>
         </MediaCard>
       );
     } else {
@@ -138,7 +277,14 @@ export default class MediaComponent extends React.Component {
 
       return (
         <MediaCard raised={true}>
-          <BoxHeader>Company Media</BoxHeader>
+          <BoxHeader>
+            Company Media
+            <MediaEdit
+              media={this.state.carousel}
+              remove={this.removeMedia.bind(this)}
+              add={this.addMedia.bind(this)}
+            />
+          </BoxHeader>
           {card.link == "" ? (
             <CarouselContent>
               <CarouselMedia
