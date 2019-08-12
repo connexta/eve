@@ -103,12 +103,17 @@ class MediaEdit extends React.Component {
     myReader.readAsDataURL(file);
   }
 
-  send(stream) {
-    this.setState({ media: stream });
+  send() {
+    this.props.addMedia({
+      body: this.state.body,
+      title: this.state.title,
+      media: this.state.media,
+      link: this.state.link
+    });
 
-    fetch("http://localhost:8080/carousel", {
+    fetch("http://localhost:8080/upload", {
       method: "POST",
-      body: JSON.stringify(this.state),
+      body: this.state.media,
       headers: { "Content-Type": "application/json" }
     })
       .then(res => res.text())
@@ -196,6 +201,8 @@ export default class MediaComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log(Carousel);
+
     this.state = {
       carousel: Carousel.cards,
       displayIndex: 0,
@@ -256,6 +263,23 @@ export default class MediaComponent extends React.Component {
 
   addMedia(media) {
     console.log(media);
+    let temp = this.state.carousel;
+    temp.push(media);
+    this.setState({ carousel: temp, numCards: this.state.numCards + 1 });
+
+    this.send();
+  }
+
+  send() {
+    console.log(this.state.carousel);
+
+    fetch("http://localhost:8080/carousel", {
+      method: "POST",
+      body: JSON.stringify({ cards: this.state.carousel }),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(res => res.text())
+      .then(res => console.log(res.body));
   }
 
   render() {
@@ -267,7 +291,7 @@ export default class MediaComponent extends React.Component {
             <MediaEdit
               media={this.state.carousel}
               remove={this.removeMedia.bind(this)}
-              add={this.addMedia.bind(this)}
+              addMedia={this.addMedia.bind(this)}
             />
           </Header>
         </MediaCard>
@@ -282,7 +306,7 @@ export default class MediaComponent extends React.Component {
             <MediaEdit
               media={this.state.carousel}
               remove={this.removeMedia.bind(this)}
-              add={this.addMedia.bind(this)}
+              addMedia={this.addMedia.bind(this)}
             />
           </BoxHeader>
           {card.link == "" ? (

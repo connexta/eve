@@ -20,7 +20,7 @@ const urlList = {
 };
 
 app.use(express.static("target"));
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -58,6 +58,15 @@ app.get("/display", async (req, res) => {
       res.end(screenshotBuffer);
     } else {
       res.end();
+app.post("/carousel", function(req, res) {
+  console.log(req.body);
+  fs.writeFileSync("./resources/carousel.json", JSON.stringify(req.body));
+});
+
+app.post("/upload", function(req, res) {
+  upload(req, res, function(err) {
+    if (err) {
+      return res.end("Something went wrong!");
     }
   } catch (error) {
     console.log("Error in /display ", error);
