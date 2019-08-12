@@ -75,6 +75,9 @@ class MediaEdit extends React.Component {
   constructor(props) {
     super(props);
 
+    this.formRef = React.createRef();
+    this.inputRef = React.createRef();
+
     this.state = {
       open: false,
       edit: false,
@@ -82,7 +85,8 @@ class MediaEdit extends React.Component {
       title: null,
       body: null,
       media: null,
-      link: null
+      link: null,
+      file: null
     };
   }
 
@@ -95,15 +99,17 @@ class MediaEdit extends React.Component {
     this.props.remove(value);
   }
 
-  save() {
-    let myReader = new FileReader();
-    myReader.onloadend = function(e) {
-      this.save(myReader.result);
-    };
-    myReader.readAsDataURL(file);
-  }
-
   send() {
+    // fetch("http://localhost:8080/upload", {
+    //   method: "POST",
+    //   body: this.inputRef.files[0]
+    //   // headers: {
+    //   //   "Content-Type": "multipart/form-data"
+    //   // }
+    // }).then(res => console.log(res));
+
+    this.formRef.current.submit();
+
     this.props.addMedia({
       body: this.state.body,
       title: this.state.title,
@@ -111,13 +117,27 @@ class MediaEdit extends React.Component {
       link: this.state.link
     });
 
+    console.log("File: ", this.state.file);
     fetch("http://localhost:8080/upload", {
       method: "POST",
-      body: this.state.media,
-      headers: { "Content-Type": "application/json" }
+      body: this.state.file,
+      header: {
+        "Content-Type": "multipart/form-data"
+      }
     })
-      .then(res => res.text())
-      .then(res => console.log(res.body));
+      .then(response => response.json())
+      .then(success => {
+        console.log(success);
+      })
+      .catch(error => console.log(error));
+
+    // fetch("http://localhost:8080/upload", {
+    //   method: "POST",
+    //   body: this.state.media,
+    //   headers: { "Content-Type": "application/json" }
+    // })
+    //   .then(res => res.text())
+    //   .then(res => console.log(res.body));
   }
 
   render() {
@@ -174,11 +194,25 @@ class MediaEdit extends React.Component {
                     ></TextField>
                   </TableCell>
                   <TableCell>
-                    <input
-                      onChange={e => this.setState({ media: e.target.value })}
-                      type="file"
-                      name="file"
-                    />
+                    <form
+                      target="_blank"
+                      id="frmUploader"
+                      action="http://localhost:8080/upload"
+                      method="post"
+                      ref={this.formRef}
+                      encType="multipart/form-data"
+                    >
+                      <input
+                        id="inputFile"
+                        type="file"
+                        name="imgUploader"
+                        // onChange={e =>
+                        //   this.setState({ file: e.target.files[0] })
+                        // }
+
+                        multiple
+                      />
+                    </form>
                   </TableCell>
                   <TableCell>
                     <TextField
@@ -279,7 +313,7 @@ export default class MediaComponent extends React.Component {
       headers: { "Content-Type": "application/json" }
     })
       .then(res => res.text())
-      .then(res => console.log(res.body));
+      .then(res => console.log(res));
   }
 
   render() {

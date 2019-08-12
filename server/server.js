@@ -12,6 +12,25 @@ const app = express();
 const port = process.env.EVE_PORT || 3000;
 const prod = process.env.NODE_ENV === "production";
 
+const storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, "./resources/carouselMedia");
+  },
+  filename: function(req, file, callback) {
+    // callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+    callback(null, file.originalname);
+  }
+});
+
+var upload = multer({
+  storage: storage
+}).array("imgUploader", 3);
+
+// Add headers
+// mediaApp.use(function(req, res, next) {
+//   // Website you wish to allow to connect
+//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+
 /* URL */
 const soaesb_url =
   "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
@@ -61,6 +80,7 @@ app.get("/display", async (req, res) => {
 app.post("/carousel", function(req, res) {
   console.log(req.body);
   fs.writeFileSync("./resources/carousel.json", JSON.stringify(req.body));
+  res.end();
 });
 
 app.post("/upload", function(req, res) {
@@ -68,9 +88,14 @@ app.post("/upload", function(req, res) {
     if (err) {
       return res.end("Something went wrong!");
     }
+<<<<<<< HEAD
   } catch (error) {
     console.log("Error in /display ", error);
   }
+=======
+    return res.end("File uploaded successfully!");
+  });
+>>>>>>> working but with redirect
 });
 
 app.get("*", (req, res) => {
