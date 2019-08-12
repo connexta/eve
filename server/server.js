@@ -17,7 +17,7 @@ app.use(cors());
 /* ROUTE */
 app.get("/grafana", (req, res) => {
   let prod = process.env.NODE_ENV === "production";
-  grafana.getScreenshot(res, prod);
+  grafana.getScreenshot(res, prod, req.query.url);
 });
 
 app.get("*", (req, res) => {

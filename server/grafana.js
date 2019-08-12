@@ -3,14 +3,12 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 //GRAFANA SETUP
-const GF_SOAESB_URL =
-  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
 const auth_header = "Bearer " + process.env.SOAESB_BEARER_TOKEN;
 const timeout = 120000; //2 minutes
 
 //use Puppeteer to take screenshot and write it to the respond url.
 module.exports = {
-  getScreenshot: async function(res, prod) {
+  getScreenshot: async function(res, prod, url) {
     const browser = prod
       ? await puppeteer.launch({
           executablePath: "/usr/bin/chromium-browser",
@@ -30,7 +28,7 @@ module.exports = {
     await page.setExtraHTTPHeaders({ Authorization: auth_header });
     await page.setDefaultNavigationTimeout();
     await page.setViewport({ width: width, height: height });
-    await page.goto(GF_SOAESB_URL, { waitUntil: "networkidle0" });
+    await page.goto(url, { waitUntil: "networkidle0" });
     const screenshotBuffer = await page.screenshot({ timeout });
     res.writeHead(200, {
       "Content-Type": "image/png",

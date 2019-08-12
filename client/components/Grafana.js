@@ -4,7 +4,6 @@ import { time, hour } from "../utils/TimeUtils";
 import throttle from "lodash.throttle";
 import { DotLoader } from "react-spinners";
 import { CX_LIGHT_BLUE } from "../utils/Constants";
-import { SOAESB_GRAFANA_URL } from "../utils/Link";
 
 const ImgContainer = styled.div`
   padding: 24px;
@@ -44,13 +43,14 @@ export default class Grafana extends React.Component {
 
   //obtain Grafana screenshot through NodeJS to /grafana
   async getScreenshot() {
-    await fetch("/grafana", {
+    const url = "/grafana/?url=" + this.props.url;
+    await fetch(url, {
       method: "GET"
     }).catch(err => {
       console.log("Unable to fetch grafana screenshot ", err);
     });
 
-    this.setState({ isLoading: false, imageURL: "/grafana?" + Date.now() });
+    this.setState({ isLoading: false, imageURL: url + "?" + Date.now() });
   }
 
   //throttle method to prevent explosive rendering during window resizing.
@@ -70,7 +70,7 @@ export default class Grafana extends React.Component {
       </DotLoaderContainer>
     ) : (
       <ImgContainer>
-        <a href={SOAESB_GRAFANA_URL}>
+        <a href={this.props.url}>
           <img
             src={this.state.imageURL}
             width={this.state.screenWidth * 0.65}
