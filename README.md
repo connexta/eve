@@ -4,7 +4,7 @@ Wallboard Project for Connexta.
 
 Project EVE serves as a display for important information both for the office and for each project team.  Project EVE includes many different components that can be mixed and matched to fit a given team's need and the information shown on many components can also be customized.  The Wallboard is hosted at [http://eve.phx.connexta.com/](http://eve.phx.connexta.com/).
 
-This project is built using React.
+This project is built using ReactJS and NodeJS.
 
 ## Features
 
@@ -19,61 +19,74 @@ This project is built using React.
   - **Github**: Displays most recent pull requests of a given repository.  Cycles through PR's automatically or users can manually scroll through them.  For each PR, the component links to the Github page and displays the title, PR number, exerpt from the description, and any pertinent status checks.  If the status check links to a webpage, users can click on the status check to navigate there.
   
   - **SlackComponent**: Cycles through 10 most recent slack messages on a given channel.  Displays username, profile picture, message (including styling and emojis), date, and channel of origin.
+
+  - **Grafana**: Takes screenshot of the current grafana dashboard executed by NodeJS grafana.js.
+
 - Custom Wallboards: Userse can navigate to wallboards customized to their project team or to the main TV wallboard.
 
-## Building
+
 You can view the Wallboard by visiting [http://eve.phx.connexta.com/](http://eve.phx.connexta.com/).
 
-### Setting up
-The Github and Slack components require the use of environmant variables to authenticate and fetch data.  Before running the wallboard on your machine, you must set up the ```SLACK_TOKEN```, ```SLACK_CHANNEL```, ```GITHUB_CLIENT_ID```, ```GITHUB_CLIENT_SECRET```, and ```GRAPH_APP_ID``` environment variables.
+## Setup
 
-**Windows:** You can set env variables by using the command ```setx -m <Var_Name> <Var_Value```  
-Note that the ```-m``` flag makes it a system property so the command line shell must be run in 
-administrator mode.  
-Example: ```setx -m SLACK_TOKEN 12345```
-  
-**UNIX:** You can set env variables by using the command ```export <Var_Name>=<Var_Value>```  
-Example: ```export SLACK_TOKEN=12345```
+### What you need
+- yarn
+- GNU make
+- Docker
+- .env (with all necessary environment variable; necessary for local or Dockerized environment testing)
+
+### Setting up Enviornment Variables
+The Github components require ```GITHUB_TOKEN``` and ```GITHUB_CLIENT_SECRET```
+The Slack components require ```SLACK_CHANNEL``` and ```SLACK_TOKEN```
+The Grafana components require ```SOAESB_BEARER_TOKEN```
+
+Place the environment variable in .env file
+Example: ```SLACK_CHANNEL=ABC123```
 
 ### Running the Wallboard locally
-#### What you need
-- yarn
-
-#### How to build
-Navigate to your clone of the repo and run `yarn go` (synonymous with `yarn install && yarn build && yarn start`).  Then navigate to 0.0.0.0:8000 on Mac or localhost:8000 on Windows.
-
+In two separate terminals,
+For client, run
+```
+yarn go (synonymous with yarn install && yarn build && yarn start)
+```
+For server, run
+```
+yarn server (synonymous with node server/server.js)
+```
+Then navigate to 0.0.0.0:8080 on Mac or localhost:8080 on Windows.
+It is necessary to run server if you are to test components that utilize backend API calls (i.e. Grafana)
+  
+### Running the Wallboard in Dockerized environment
+run
+```
+make go
+```
+Then navigate to 0.0.0.0:3000 on Mac or localhost:3000 on Windows.
 
 ### Hosting the Wallboard
-#### What you need
-- yarn
-- docker
+Make a PR and merge it to master branch of github repo.
+Jenkins will pick up the change and will automatically build based on the change.
+The change will be reflected in [http://eve.phx.connexta.com/](http://eve.phx.connexta.com/).
 
 #### Docker
-On linux run ```make image``` to generate the image.  
-**NOTE:** You must set your environment variables before building the image for the app to work. 
-See the **Setting up** section for more details  
-  
-To push, run ```make push```
-  
-To start the container, run ```docker run --rm -p 3000:3000 --name wallboard -d <image-id>```  
-  
-Once the image is running, you can connect to the wallboard app by going to ```0.0.0.0:3000``` in your web browser.
-  
+```make go``` will create a new Docker image tagged with `master` and subsequently run the newly created Docker image.
+**NOTE:** You must set your environment variables in .env file before building the image for the app to work. 
+Then navigate to 0.0.0.0:8080 on Mac or localhost:8080 on Windows. 
 You can kill the container through the command ```docker kill wallboard```  
 
 #### Jenkins
+The Jenkins has already been setup in devops/eve-wallboard of Jenkins server
 
-Required setup:
-
+Required build setup:
 - Github Webhook setup : An admin needs to add a webhook to the Jenkins service in the Github repository settings.
+`https://dzone.com/articles/adding-a-github-webhook-in-your-jenkins-pipeline`
 - Jenkins setup: In the Jenkins service website, create multibranch pipeline project to detect github SCM repo.
-- Environment variable setup: In the Jenkins service website, Create secret text in Credentials for SLACK_TOKEN and SLACK_CHANNEL
+- Environment variable setup: In the Jenkins service website, Create secret text in Credentials (i.e. SLACK_TOKEN)
 
 ## Format Code
-Use `prettier` for code formatting through yarn:  
+Use `prettier` for code formatting through yarn. The following command will prettify .js code in all directories including subdirectories.
 ```
-yarn prettier --write <file>
+make pretty
 ```  
-  
 Prettier can also be used through extensions in your IDE.   
 More information can be found [here](https://prettier.io/).
