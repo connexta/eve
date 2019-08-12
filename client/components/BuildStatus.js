@@ -14,11 +14,24 @@ const StyledCard = styled(BoxStyle)`
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
+// if listvert is not true, it will list the items horizontally,
+// otherwise it will list them vertically
+const getListStyle = listvert => {
+  if (listvert != "true") {
+    return " \
+  display: flex; \
+  flex-direction: row;\
+  justify-content: space-between;\
+  flex-wrap: wrap;\
+    ";
+  } else return ``;
+};
+
 const StyledCardContent = styled(CardContent)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  ${props => {
+    return getListStyle(props.listvert);
+  }};
+
   font-size: 32px;
   clear: both;
   && {
@@ -156,7 +169,6 @@ class BuildStatus extends React.Component {
               name={item.displayName}
               key={item.displayName + item.oneSubtitle}
               subtitle={item.oneSubtitle}
-              variant={this.props.variant}
             />
           );
         })
@@ -167,7 +179,6 @@ class BuildStatus extends React.Component {
               name={item.displayName}
               key={item.displayName + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
-              variant={this.props.variant}
             />
           );
         });
@@ -205,7 +216,9 @@ class BuildStatus extends React.Component {
       <StyledCard raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
-        <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
+        <StyledCardContent listvert={this.props.listvert}>
+          {this.getBuildDisplay()}
+        </StyledCardContent>
       </StyledCard>
     );
   }

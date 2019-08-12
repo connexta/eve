@@ -1,6 +1,6 @@
 import React from "react";
 import BuildStatus from "../components/BuildStatus";
-import { I2OleftBox, VARIANTS } from "../styles/WallboardStyles";
+import { I2OleftBox } from "../styles/WallboardStyles";
 import Grid from "@material-ui/core/Grid";
 import { IONURL } from "../utils/Link";
 import { hour } from "../utils/TimeUtils";
@@ -88,7 +88,7 @@ class I2OWallboard extends React.Component {
     return (
       <Grid container style={{ height: "100%" }}>
         <I2OleftBox item>
-          <BuildStatus urlList={this.state.urlList} variant={VARIANTS.I2O} />
+          <BuildStatus urlList={this.state.urlList} listvert="true" />
         </I2OleftBox>
       </Grid>
     );

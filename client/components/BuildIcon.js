@@ -5,18 +5,12 @@ import NeutralState from "@material-ui/icons/RemoveCircleOutline";
 import BadState from "@material-ui/icons/HighlightOff";
 import CardContent from "@material-ui/core/CardContent";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
-import { VARIANTS } from "../styles/WallboardStyles";
 
 const StyledCardContent = styled(CardContent)`
   /* Force priority over .MuiCardContent-root:last-child */
   && {
     padding: 4px;
   }
-
-  flex: ${props => {
-    if (props.variant == VARIANTS.I2O) return "0 100%";
-    else return; // default
-  }};
 `;
 
 const StyledDate = styled.div`
@@ -35,7 +29,7 @@ class BuildIcon extends React.Component {
 
   render() {
     return this.props.score >= 80 ? (
-      <StyledCardContent variant={this.props.variant}>
+      <StyledCardContent>
         <GoodState
           fontSize="inherit"
           style={{
@@ -49,7 +43,7 @@ class BuildIcon extends React.Component {
         <StyledDate>{this.props.subtitle}</StyledDate>
       </StyledCardContent>
     ) : this.props.score >= 40 ? (
-      <StyledCardContent variant={this.props.variant}>
+      <StyledCardContent>
         <NeutralState
           fontSize="inherit"
           style={{
@@ -63,7 +57,7 @@ class BuildIcon extends React.Component {
         <StyledDate>{this.props.subtitle}</StyledDate>
       </StyledCardContent>
     ) : (
-      <StyledCardContent variant={this.props.variant}>
+      <StyledCardContent>
         <BadState
           fontSize="inherit"
           style={{
