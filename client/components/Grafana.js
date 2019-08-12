@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { time, hour } from "../utils/TimeUtils";
 import throttle from "lodash.throttle";
-import { DotLoader } from "react-spinners";
-import { CX_LIGHT_BLUE } from "../utils/Constants";
 
 const ImgContainer = styled.div`
   padding: 24px;
@@ -11,46 +9,30 @@ const ImgContainer = styled.div`
   margin: 0px;
 `;
 
-const DotLoaderContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 90%;
-`;
-
 export default class Grafana extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
       screenWidth: window.innerWidth,
       screenHeight: window.innerHeight,
-      imageURL: "/grafana?" + Date.now()
+      imageURL: "/display/?name=" + this.props.name + "?" + Date.now()
     };
   }
 
-  componentDidMount() {
-    this.getScreenshot();
-    this.timerIntervalID = setInterval(() => this.getScreenshot(), hour); //1 hour interval
+  async componentDidMount() {
+    this.timerIntervalID = setInterval(() => this.updateImage(), hour);
     window.addEventListener("resize", this.throttledHandleWindowResize());
+  }
+
+  updateImage() {
+    this.setState({
+      imageURL: "/display/?name=" + this.props.name + "?" + Date.now()
+    });
   }
 
   componentWillUnmount() {
     clearInterval(this.timerIntervalID);
     window.removeEventListener("resize", this.throttledHandleWindowResize());
-    if (this.trashableGetScreenshot) this.trashableGetScreenshot.trash();
-  }
-
-  //obtain Grafana screenshot through NodeJS to /grafana
-  async getScreenshot() {
-    const url = "/grafana/?url=" + this.props.url;
-    await fetch(url, {
-      method: "GET"
-    }).catch(err => {
-      console.log("Unable to fetch grafana screenshot ", err);
-    });
-
-    this.setState({ isLoading: false, imageURL: url + "?" + Date.now() });
   }
 
   //throttle method to prevent explosive rendering during window resizing.
@@ -64,11 +46,7 @@ export default class Grafana extends React.Component {
   }
 
   render() {
-    return this.state.isLoading ? (
-      <DotLoaderContainer>
-        <DotLoader color={CX_LIGHT_BLUE} loading={this.state.isLoading} />
-      </DotLoaderContainer>
-    ) : (
+    return (
       <ImgContainer>
         <a href={this.props.url}>
           <img

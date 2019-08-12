@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
+const cron = require("./cron");
 
 dotenv.config();
 const app = express();
@@ -14,10 +15,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
+const prod = process.env.NODE_ENV === "production";
+
+/* URL */
+const soaesb_url =
+  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
+
+/* CRON JOB */
+app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+cron.grafanaCron(prod, app, soaesb_url);
+
 /* ROUTE */
-app.get("/grafana", (req, res) => {
-  let prod = process.env.NODE_ENV === "production";
-  grafana.getScreenshot(res, prod, req.query.url);
+app.get("/display", async (req, res) => {
+  const name = req.query.name.split("?")[0];
+  const screenshotBuffer = await app.get(name);
+  res.writeHead(200, {
+    "Content-Type": "image/png",
+    "Content-Length": screenshotBuffer.length
+  });
+  res.end(screenshotBuffer);
 });
 
 app.get("*", (req, res) => {

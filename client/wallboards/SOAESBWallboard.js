@@ -10,7 +10,7 @@ export default class SOAESBWallboard extends React.Component {
     return (
       <Grid container style={{ height: "100%" }}>
         <LeftBox item>
-          <Grafana url={SOAESB_GRAFANA_URL} />
+          <Grafana name={"SOAESB"} url={SOAESB_GRAFANA_URL} />
         </LeftBox>
         <RightBox item>
           <BuildAF />
