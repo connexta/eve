@@ -20,10 +20,9 @@ import {
 import makeTrashable from "trashable";
 
 const ROTATE_FREQ = time({ seconds: 5 });
-export const MEDIA_EVENT_CARD_HEIGHT = 700;
-const TIME_BEFORE = 0; //num months before to grab events
-const TIME_AFTER = 1; //num months after to grab events
-const NUM_EVENTS = 6; //limit on number of events to grab
+export const MEDIA_EVENT_CARD_HEIGHT = 696;
+const DAYS_AFTER = 7;
+const NUM_EVENTS = 5; //limit on number of events to grab
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 
 const ButtonContainer = styled.div`
@@ -112,8 +111,7 @@ class DialogAndButton extends React.Component {
     super(props);
 
     this.state = {
-      open: false,
-      selectedValue: this.props.calendars[0]
+      open: false
     };
   }
 
@@ -212,6 +210,10 @@ export default class MediaComponent extends React.Component {
           eventData[i].end.timeZone
         );
       }
+
+      eventData.sort(function(a, b) {
+        return a.start.getTime() - b.start.getTime();
+      });
 
       this.setState({
         isAuthenticated: true,
@@ -327,10 +329,11 @@ export default class MediaComponent extends React.Component {
       if (accessToken) {
         // Get the user's profile from Graph
         let startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - TIME_BEFORE);
 
         let endDate = new Date();
-        endDate.setMonth(endDate.getMonth() + TIME_AFTER);
+        let newDate = endDate.getDate() + DAYS_AFTER;
+
+        endDate.setDate(newDate > 32 ? newDate - 30 : newDate);
 
         let call =
           "/me/calendars/" +
@@ -405,11 +408,7 @@ export default class MediaComponent extends React.Component {
       />
     ) : null;
 
-    return this.state.events.length == 0 ? (
-      <MediaCard>
-        <Header>Company Events</Header>
-      </MediaCard>
-    ) : (
+    return (
       <MediaCard raised={true}>
         <Header>
           Company Events
@@ -427,12 +426,32 @@ export default class MediaComponent extends React.Component {
           {this.state.events.map((event, i) => {
             let day = getDayofWeek(event.start.getDay());
             let date = event.start.getMonth() + "/" + event.start.getDate();
+
+            let startTimeSuffix = " AM -";
             let startTime = event.start.getHours() + ":";
+
+            if (event.start.getHours() >= 12) {
+              startTimeSuffix = " PM -";
+              if (event.start.getHours() > 12) {
+                startTime = event.start.getHours() - 12 + ":";
+              }
+            }
+
             startTime =
               event.start.getMinutes() < 10
-                ? startTime + "0" + event.start.getMinutes() + " - "
-                : startTime + event.start.getMinutes() + " - ";
+                ? startTime + "0" + event.start.getMinutes()
+                : startTime + event.start.getMinutes();
+
+            let endTimeSuffix = " AM";
             let endTime = event.end.getHours() + ":";
+
+            if (event.end.getHours() >= 12) {
+              endTimeSuffix = " PM";
+              if (event.end.getHours() > 12) {
+                endTime = event.end.getHours() - 12 + ":";
+              }
+            }
+
             endTime =
               event.end.getMinutes() < 10
                 ? endTime + "0" + event.end.getMinutes()
@@ -444,7 +463,8 @@ export default class MediaComponent extends React.Component {
                 <div style={{ marginTop: "20px", marginBottom: "20px" }}>
                   <div style={{ display: "inline-block", width: "120px" }}>
                     <div>{day + " " + date}</div>
-                    <div>{startTime + endTime}</div>
+                    <div>{startTime + startTimeSuffix}</div>
+                    <div>{endTime + endTimeSuffix}</div>
                   </div>
                   <div
                     style={{
