@@ -3,10 +3,6 @@ import ReleaseVersion from "../components/ReleaseVersion";
 
 export default class GSRWallboard extends React.Component {
   render() {
-    return (
-      <div>
-        <ReleaseVersion />
-      </div>
-    );
+    return <ReleaseVersion />;
   }
 }

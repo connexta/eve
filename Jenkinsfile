@@ -22,12 +22,6 @@ pipeline {
       }
     }
     stage('Build Image') {
-      when {
-        allOf {
-          expression { env.CHANGE_ID == null }
-          expression { env.BRANCH_NAME == "master" || "DEV" }
-        }
-      }
       steps {
         withCredentials([
           string(credentialsId: 'SLACK_TOKEN', variable: 'SLACK_TOKEN'),

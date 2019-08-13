@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "cron": "^1.7.1",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "puppeteer": "^1.19.0"
