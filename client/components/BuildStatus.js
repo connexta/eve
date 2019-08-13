@@ -32,10 +32,6 @@ import {
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
-import Edit from "@material-ui/icons/Edit";
-import Save from "@material-ui/icons/Save";
-
-export const BUILD_STATUS_HEIGHT = 160;
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
@@ -111,8 +107,10 @@ const StyledCardContent = styled(CardContent)`
   justify-content: space-between;
   flex-wrap: wrap;
   font-size: 32px;
-  padding: 8px;
   clear: both;
+  && {
+    padding: 0;
+  }
 `;
 
 const ButtonDefault = styled(Button)`
@@ -122,6 +120,10 @@ const ButtonDefault = styled(Button)`
 const ButtonSelected = styled(Button)`
   float: right;
   text-decoration: underline ${CX_DARK_BLUE};
+
+  &:hover {
+    text-decoration: underline ${CX_DARK_BLUE};
+  }
 `;
 
 class BuildStatus extends React.Component {
@@ -131,34 +133,8 @@ class BuildStatus extends React.Component {
     this.state = {
       currentData: [],
       isLoading: true,
-      toggle: true,
-      versions: [],
-      isEditing: false
+      toggle: true
     };
-
-    this.getVersions();
-  }
-
-  async getVersions() {
-    this.trashableVersionFetch = makeTrashable(
-      fetch("http://localhost:9000", {
-        method: "GET"
-      })
-    );
-
-    await this.trashableVersionFetch
-      .catch(err => console.log(err))
-      .then(res => {
-        if (!res.ok) {
-          console.log("Failed to fetch versions data " + call);
-          return;
-        } else {
-          return res.json();
-        }
-      })
-      .then(res => {
-        this.setState({ versions: res });
-      });
   }
 
   componentDidMount() {
@@ -174,10 +150,6 @@ class BuildStatus extends React.Component {
     //clearing out left out promise during unmount.
     if (this.trashableRequestList)
       this.trashableRequestList.forEach(promise => promise.trash());
-
-    if (this.trashableVersionFetch) this.trashableVersionFetch.trash();
-
-    if (this.trashableVersionSave) this.trashableVersionSave.trash();
   }
 
   //a function that continuously be called by each set interval in componentDidMount() to fetch/update each team status for display
@@ -209,6 +181,7 @@ class BuildStatus extends React.Component {
   }
 
   toggle() {
+<<<<<<< HEAD:client/components/BuildStatus.js
 <<<<<<< HEAD:client/components/BuildStatus.js
     this.setState({ toggle: !this.state.toggle });
     clearInterval(this.toggleId);
@@ -250,6 +223,16 @@ class BuildStatus extends React.Component {
   editText() {
     this.setState({ isEditing: true });
 >>>>>>> working editable version numbers/nodejs server:src/components/BuildStatus.js
+=======
+    this.setState({ toggle: !this.state.toggle });
+    clearInterval(this.toggleId);
+    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
+  }
+
+  clearTimer() {
+    clearInterval(this.toggleId);
+    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
+>>>>>>> moved version info over to its own component:src/components/BuildStatus.js
   }
 
   //fetch data from the jenkin url
@@ -297,31 +280,25 @@ class BuildStatus extends React.Component {
   //else, list of last 5 builds
   getBuildDisplay() {
     const display = this.state.toggle
-      ? this.state.currentData.map((item, i) => {
+      ? this.state.currentData.map(item => {
           return (
             <BuildIcon
               score={item.oneScore}
               name={item.displayName}
               key={item.displayName + item.oneSubtitle}
               subtitle={item.oneSubtitle}
-              version={this.state.versions[item.displayName]}
               cardContentStyle={this.props.cardContentStyle}
-              isEditing={this.state.isEditing}
-              callback={this.handleChange.bind(this)}
             />
           );
         })
-      : this.state.currentData.map((item, i) => {
+      : this.state.currentData.map(item => {
           return (
             <BuildIcon
               score={item.fiveScore}
               name={item.displayName}
               key={item.displayName + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
-              version={this.state.versions[item.displayName]}
               cardContentStyle={this.props.cardContentStyle}
-              isEditing={this.state.isEditing}
-              callback={this.handleChange.bind(this)}
             />
           );
         });
@@ -329,6 +306,9 @@ class BuildStatus extends React.Component {
   }
 
 <<<<<<< HEAD:client/components/BuildStatus.js
+<<<<<<< HEAD:client/components/BuildStatus.js
+=======
+>>>>>>> moved version info over to its own component:src/components/BuildStatus.js
   buildButtons(toggle) {
     return toggle ? (
       <div>
@@ -351,6 +331,7 @@ class BuildStatus extends React.Component {
     );
   }
 
+<<<<<<< HEAD:client/components/BuildStatus.js
   render() {
     return this.state.isLoading ? (
       <StyledCard raised={true}>
@@ -361,6 +342,8 @@ class BuildStatus extends React.Component {
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
 =======
+=======
+>>>>>>> moved version info over to its own component:src/components/BuildStatus.js
   render() {
     return this.state.isLoading ? (
       <StyledCard raised={true}>
@@ -369,6 +352,7 @@ class BuildStatus extends React.Component {
     ) : (
       <StyledCard raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
+<<<<<<< HEAD:client/components/BuildStatus.js
         {this.state.toggle ? (
           <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
         ) : (
@@ -413,6 +397,9 @@ class BuildStatus extends React.Component {
           </div>
         )}
 >>>>>>> working editable version numbers/nodejs server:src/components/BuildStatus.js
+=======
+        {this.buildButtons(this.state.toggle)}
+>>>>>>> moved version info over to its own component:src/components/BuildStatus.js
         <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
       </StyledCard>
     );
