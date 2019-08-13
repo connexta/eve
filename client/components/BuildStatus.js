@@ -17,17 +17,23 @@ const StyledCard = styled(BoxStyle)`
 // if listvert is not true, it will list the items horizontally,
 // otherwise it will list them vertically
 const getListStyle = listvert => {
-  if (listvert != "true") {
+  if (!listvert) {
     return " \
   display: flex; \
-  flex-direction: row;\
-  justify-content: space-between;\
-  flex-wrap: wrap;\
+  flex-direction: row; \
+  justify-content: space-between; \
+  flex-wrap: wrap; \
     ";
   } else return ``;
 };
 
-const StyledCardContent = styled(CardContent)`
+// wrap CardContent, omitting listvert prop
+const CardWrapper = props => {
+  const { listvert, ...rest } = props;
+  return <CardContent {...rest} />;
+};
+
+const StyledCardContent = styled(CardWrapper)`
   ${props => {
     return getListStyle(props.listvert);
   }};

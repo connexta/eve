@@ -88,7 +88,7 @@ class I2OWallboard extends React.Component {
     return (
       <Grid container style={{ height: "100%" }}>
         <I2OleftBox item>
-          <BuildStatus urlList={this.state.urlList} listvert="true" />
+          <BuildStatus urlList={this.state.urlList} listvert />
         </I2OleftBox>
       </Grid>
     );
