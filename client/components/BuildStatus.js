@@ -1,107 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-<<<<<<< HEAD:client/components/BuildStatus.js
-<<<<<<< HEAD:client/components/BuildStatus.js
 import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
 import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
-<<<<<<< HEAD:client/components/BuildStatus.js
-=======
-import {
-  CX_OFF_WHITE,
-  CX_FONT,
-  BATMAN_GRAY,
-  CX_DARK_BLUE
-} from "../utils/Constants";
-=======
-import { CX_DARK_BLUE } from "../utils/Constants";
->>>>>>> Converted to styled components:src/components/BuildStatus.js
-import BuildIcon from "./BuildIcon";
-import { CardContent } from "@material-ui/core";
-import { jenkinsURLList } from "../utils/Link";
-import {
-  BoxStyle,
-  BoxHeader,
-  CARD_SIDE_MARGINS,
-  LEFT_BOX_STYLE
-} from "../styles/styles";
->>>>>>> Switching to styled in progress:src/components/BuildStatus.js
-=======
->>>>>>> Dealt with conflicts after rebasing:src/components/BuildStatus.js
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
-<<<<<<< HEAD:client/components/BuildStatus.js
-<<<<<<< HEAD:client/components/BuildStatus.js
 const StyledCard = styled(BoxStyle)`
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
-const StyledCardContent = styled(CardContent)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  font-size: 32px;
-  clear: both;
-  && {
-    padding: 0;
-  }
-`;
-
-const ButtonDefault = styled(Button)`
-  float: right;
-`;
-
-const ButtonSelected = styled(Button)`
-  float: right;
-  text-decoration: underline ${CX_DARK_BLUE};
-
-  &:hover {
-    text-decoration: underline ${CX_DARK_BLUE};
-  }
-`;
-=======
-const styles = {
-  // card: {
-  //   height: BUILD_STATUS_HEIGHT,
-  //   width: "calc(100% - " + CARD_SIDE_MARGINS + "px)"
-  // },
-  // cardheader: {
-  //   background: CX_OFF_WHITE,
-  //   color: BATMAN_GRAY,
-  //   fontFamily: CX_FONT
-  // },
-  // cardContent: {
-  //   display: "flex",
-  //   flexDirection: "row",
-  //   justifyContent: "space-between",
-  //   flexWrap: "wrap",
-  //   fontSize: "32px",
-  //   padding: "8px",
-  //   clear: "both"
-  // },
-  // buttonDefault: {
-  //   float: "right"
-  // },
-  // buttonSelected: {
-  //   float: "right",
-  //   borderBottom: "thick solid " + CX_DARK_BLUE
-  // }
-};
->>>>>>> Switching to styled in progress:src/components/BuildStatus.js
-
-=======
->>>>>>> Converted to styled components:src/components/BuildStatus.js
-const StyledCard = styled(BoxStyle)`
-  width: calc(100% - ${CARD_SIDE_MARGINS}px);
-`;
-
-const StyledCardContent = styled(CardContent)`
+export const StyledCardContent = styled(CardContent)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -181,8 +94,6 @@ class BuildStatus extends React.Component {
   }
 
   toggle() {
-<<<<<<< HEAD:client/components/BuildStatus.js
-<<<<<<< HEAD:client/components/BuildStatus.js
     this.setState({ toggle: !this.state.toggle });
     clearInterval(this.toggleId);
     this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
@@ -191,48 +102,6 @@ class BuildStatus extends React.Component {
   clearTimer() {
     clearInterval(this.toggleId);
     this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
-=======
-    if (!this.state.isEditing) this.setState({ toggle: !this.state.toggle });
-  }
-
-  handleChange(evt) {
-    let temp = this.state.versions;
-    temp[evt.target.name] = evt.target.value;
-    this.setState({ versions: temp });
-  }
-
-  async save() {
-    this.setState({
-      isEditing: false
-    });
-
-    this.trashableVersionSave = makeTrashable(
-      fetch("http://localhost:9000", {
-        method: "POST",
-        body: JSON.stringify(this.state.versions),
-        headers: { "Content-Type": "application/json" }
-      })
-    );
-
-    await this.trashableVersionSave
-      .catch(err => console.log(err))
-      .then(res => res.text())
-      .then(res => console.log(res));
-  }
-
-  editText() {
-    this.setState({ isEditing: true });
->>>>>>> working editable version numbers/nodejs server:src/components/BuildStatus.js
-=======
-    this.setState({ toggle: !this.state.toggle });
-    clearInterval(this.toggleId);
-    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
-  }
-
-  clearTimer() {
-    clearInterval(this.toggleId);
-    this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
->>>>>>> moved version info over to its own component:src/components/BuildStatus.js
   }
 
   //fetch data from the jenkin url
@@ -305,10 +174,6 @@ class BuildStatus extends React.Component {
     return display;
   }
 
-<<<<<<< HEAD:client/components/BuildStatus.js
-<<<<<<< HEAD:client/components/BuildStatus.js
-=======
->>>>>>> moved version info over to its own component:src/components/BuildStatus.js
   buildButtons(toggle) {
     return toggle ? (
       <div>
@@ -331,7 +196,6 @@ class BuildStatus extends React.Component {
     );
   }
 
-<<<<<<< HEAD:client/components/BuildStatus.js
   render() {
     return this.state.isLoading ? (
       <StyledCard raised={true}>
@@ -341,65 +205,6 @@ class BuildStatus extends React.Component {
       <StyledCard raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
-=======
-=======
->>>>>>> moved version info over to its own component:src/components/BuildStatus.js
-  render() {
-    return this.state.isLoading ? (
-      <StyledCard raised={true}>
-        <BoxHeader>Loading Build Health. . .</BoxHeader>
-      </StyledCard>
-    ) : (
-      <StyledCard raised={true}>
-        <BoxHeader>Jenkins Build Health</BoxHeader>
-<<<<<<< HEAD:client/components/BuildStatus.js
-        {this.state.toggle ? (
-          <ButtonDefault onClick={this.toggle}>Last 5 Builds</ButtonDefault>
-        ) : (
-          <ButtonSelected onClick={this.toggle}>Last 5 Builds</ButtonSelected>
-        )}
-        {this.state.toggle ? (
-          <ButtonSelected onClick={this.toggle}>Current Builds</ButtonSelected>
-        ) : (
-          <ButtonDefault onClick={this.toggle}>Current Builds</ButtonDefault>
-        )}
-<<<<<<< HEAD:client/components/BuildStatus.js
-<<<<<<< HEAD:client/components/BuildStatus.js
-        {/* // <Button
-        //   style={
-        //     this.state.toggle ? styles.buttonDefault : styles.buttonSelected
-        //   }
-        //   onClick={this.toggle}
-        // >
-        //   Last 5 Builds
-        // </Button>
-        // <Button
-        //   style={
-        //     this.state.toggle ? styles.buttonSelected : styles.buttonDefault
-        //   }
-        //   onClick={this.toggle}
-        // >
-        //   Current Build
-        // </Button> */}
->>>>>>> Switching to styled in progress:src/components/BuildStatus.js
-=======
->>>>>>> Converted to styled components:src/components/BuildStatus.js
-=======
-        {this.state.isEditing ? (
-          <div>
-            <Edit />
-            <Save onClick={() => this.save()} />
-          </div>
-        ) : (
-          <div>
-            <Edit onClick={() => this.editText()} />
-            <Save />
-          </div>
-        )}
->>>>>>> working editable version numbers/nodejs server:src/components/BuildStatus.js
-=======
-        {this.buildButtons(this.state.toggle)}
->>>>>>> moved version info over to its own component:src/components/BuildStatus.js
         <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
       </StyledCard>
     );

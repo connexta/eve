@@ -6,7 +6,7 @@ import BadState from "@material-ui/icons/HighlightOff";
 import CardContent from "@material-ui/core/CardContent";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
 
-const StyledDate = styled.div`
+export const StyledDate = styled.div`
   background: ${CX_OFF_WHITE};
   font-size: 20px;
   color: ${BATMAN_GRAY};

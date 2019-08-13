@@ -5,6 +5,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
 const cron = require("./cron");
+const fs = require("fs");
 
 dotenv.config();
 const app = express();
@@ -26,6 +27,16 @@ app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
 cron.grafanaCron(prod, app, soaesb_url);
 
 /* ROUTE */
+app.get("/versions", function(req, res) {
+  var content = fs.readFileSync("versions.json");
+  res.send(JSON.parse(content));
+});
+
+app.post("/versions", function(req, res) {
+  fs.writeFileSync("versions.json", JSON.stringify(req.body));
+  res.end();
+});
+
 app.get("/display", async (req, res) => {
   const name = req.query.name.split("?")[0];
   const screenshotBuffer = await app.get(name);

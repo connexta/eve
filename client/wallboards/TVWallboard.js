@@ -19,28 +19,12 @@ export default class TVWallboard extends React.Component {
     return (
       <Grid container style={{ height: "100%" }}>
         <LeftBox item>
-<<<<<<< HEAD:client/wallboards/TVWallboard.js
-<<<<<<< HEAD:client/wallboards/TVWallboard.js
-=======
->>>>>>> Dealt with conflicts after rebasing:src/wallboards/TVWallboard.js
           <BuildStatus
             urlList={jenkinsURLList}
             cardContentStyle={styles.cardContent}
           />
-<<<<<<< HEAD:client/wallboards/TVWallboard.js
-          <Calendar />
-<<<<<<< HEAD:client/wallboards/TVWallboard.js
-        </LeftBox>
-=======
-        </Grid>
->>>>>>> Progress on converting styling:src/wallboards/TVWallboard.js
-=======
-          <BuildStatus />
-=======
->>>>>>> Dealt with conflicts after rebasing:src/wallboards/TVWallboard.js
           <Calendar />
         </LeftBox>
->>>>>>> Converted to styled components:src/wallboards/TVWallboard.js
         <RightBox item>
           <SlackComponent />
           <Github repoPath={"codice/ddf"} />
