@@ -100,16 +100,7 @@ class MediaEdit extends React.Component {
   }
 
   send() {
-    // fetch("http://localhost:8080/upload", {
-    //   method: "POST",
-    //   body: this.inputRef.files[0]
-    //   // headers: {
-    //   //   "Content-Type": "multipart/form-data"
-    //   // }
-    // }).then(res => console.log(res));
-
     this.formRef.current.submit();
-
     this.props.addMedia({
       body: this.state.body,
       title: this.state.title,
@@ -117,7 +108,6 @@ class MediaEdit extends React.Component {
       link: this.state.link
     });
 
-    console.log("File: ", this.state.file);
     fetch("http://localhost:8080/upload", {
       method: "POST",
       body: this.state.file,
@@ -130,14 +120,6 @@ class MediaEdit extends React.Component {
         console.log(success);
       })
       .catch(error => console.log(error));
-
-    // fetch("http://localhost:8080/upload", {
-    //   method: "POST",
-    //   body: this.state.media,
-    //   headers: { "Content-Type": "application/json" }
-    // })
-    //   .then(res => res.text())
-    //   .then(res => console.log(res.body));
   }
 
   render() {
@@ -206,10 +188,14 @@ class MediaEdit extends React.Component {
                         id="inputFile"
                         type="file"
                         name="imgUploader"
-                        // onChange={e =>
-                        //   this.setState({ file: e.target.files[0] })
-                        // }
-
+                        onChange={e =>
+                          this.setState({
+                            media: e.target.value.substr(
+                              12,
+                              e.target.value.length - 1
+                            )
+                          })
+                        }
                         multiple
                       />
                     </form>
@@ -234,9 +220,6 @@ class MediaEdit extends React.Component {
 export default class MediaComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    console.log(Carousel);
-
     this.state = {
       carousel: Carousel.cards,
       displayIndex: 0,
@@ -296,7 +279,6 @@ export default class MediaComponent extends React.Component {
   }
 
   addMedia(media) {
-    console.log(media);
     let temp = this.state.carousel;
     temp.push(media);
     this.setState({ carousel: temp, numCards: this.state.numCards + 1 });
@@ -305,8 +287,6 @@ export default class MediaComponent extends React.Component {
   }
 
   send() {
-    console.log(this.state.carousel);
-
     fetch("http://localhost:8080/carousel", {
       method: "POST",
       body: JSON.stringify({ cards: this.state.carousel }),
