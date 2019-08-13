@@ -39,7 +39,7 @@ lf:
 .PHONY: run
 run:
 	@echo "RUNNING image: $$(docker images | grep -E 'master' | awk -e '{print $$3}')"
-	@docker kill wallboard; docker run --rm -p 3000:3000 --name wallboard $$(docker images | grep -E 'master' | awk -e '{print $$3}')
+	@docker kill wallboard; docker run --rm -p 3000:3000 --name wallboard $$(docker images | grep -E 'master' | awk -e '{print $$3}'); docker kill wallboard
 
 .PHONY: shell
 shell:
@@ -54,11 +54,7 @@ go:
 .PHONY: killAll
 killAll:
 	@echo "kill all running and created docker images"
-	@echo "$$(docker ps -aq)"
-ifneq ($$(docker ps -aq),)
+	@docker kill wallboard
 	@echo "killing running docker image"
-	# @docker stop $$(docker ps -aq)
-	# @docker rm $$(docker ps -aq)
-endif
 	@docker rmi -f $$(docker images -q)
 

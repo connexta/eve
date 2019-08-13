@@ -6149,10 +6149,10 @@ react-router@5.0.1:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-spinners@^0.5.13:
-  version "0.5.13"
-  resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.5.13.tgz#09da41ee6b321083ff9670cbf78e11effb3feb87"
-  integrity sha512-zrQTWlyhqs+3nQ4Zpg19eW4elYQgrrvu0fXL1tIP3CKgLBxkO+rmXdL8l34qTHrpDZnukMFGLxyqQebijeVSJA==
+react-spinners@^0.5.12:
+  version "0.5.12"
+  resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.5.12.tgz#3fb4f293198e60a3095aba7b5ed5fc23513a033d"
+  integrity sha512-A1UG87Yd+pdmPQKooJoywdmgSGPG6iPcOoMyfki+wxYDNDEYtejAepws+VxTt/GGpb/JRDnll5oNuQoh4nF9JA==
   dependencies:
     "@emotion/core" "^10.0.4"
     prop-types "^15.5.10"
