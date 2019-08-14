@@ -16,7 +16,7 @@ RUN yarn install
 RUN yarn build
 
 # server build
-FROM node:alpine
+FROM alpine:edge
 
 # Installs latest Chromium (76) package.
 # Puppeteer v1.17.0 works with Chromium 76.
