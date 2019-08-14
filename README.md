@@ -24,9 +24,6 @@ This project is built using ReactJS and NodeJS.
 
 - Custom Wallboards: Userse can navigate to wallboards customized to their project team or to the main TV wallboard.
 
-
-You can view the Wallboard by visiting [http://eve.phx.connexta.com/](http://eve.phx.connexta.com/).
-
 ## Setup
 
 ### What you need
