@@ -10,6 +10,7 @@ import { time } from "../utils/TimeUtils";
 
 const ROTATE_FREQ = time({ seconds: 5 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
+export const MEDIA_CARD_MARGINS = 20;
 
 export const CarouselContent = styled.div`
   text-align: center;
@@ -18,7 +19,7 @@ export const CarouselContent = styled.div`
   bottom: 60px;
   left: 0;
   width: 100%;
-  margin: 20px 0 0 0;
+  margin: ${MEDIA_CARD_MARGINS}px 0 0 0;
 `;
 
 export const MediaCard = styled(BoxStyle)`
@@ -27,8 +28,6 @@ export const MediaCard = styled(BoxStyle)`
   margin: 0 0 0 24px;
   position: relative;
 `;
-
-const Header = styled(BoxHeader)``;
 
 const CarouselMedia = styled.img`
   max-width: calc(100% - 48px);
@@ -50,7 +49,7 @@ const StyledMobileStepper = withStyles({
   root: {
     backgroundColor: CX_OFF_WHITE,
     height: "20px",
-    width: "calc(100% - 20px)",
+    width: "calc(100% - " + MEDIA_CARD_MARGINS + "px)",
     position: "absolute",
     bottom: "12px",
     left: "0px"
@@ -67,7 +66,7 @@ export default class MediaComponent extends React.Component {
     this.state = {
       carousel: Carousel.cards,
       displayIndex: 0,
-      numCards: Carousel.cards.length
+      numCards: Carousel.cards ? Carousel.cards.length : 0
     };
   }
 
@@ -80,16 +79,16 @@ export default class MediaComponent extends React.Component {
     });
   }
 
-  // Manually changes which PR to display, resets timer
-  switchCard(i) {
-    if (i >= this.state.numCards) i = 0;
-    if (i < 0) i = this.state.numCards - 1;
-    this.setState({ displayIndex: i });
+  // Manually changes which media to display, resets timer
+  switchCard(index) {
+    if (index >= this.state.numCards) index = 0;
+    if (index < 0) i = this.state.numCards - 1;
+    this.setState({ displayIndex: index });
     clearInterval(this.rotateInterval);
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
 
-  // Gets user data and sets timer for refreshing data and rotating displayed PR
+  // Sets timer for rotating displayed media
   componentDidMount() {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
@@ -111,15 +110,11 @@ export default class MediaComponent extends React.Component {
     }
   }
 
-  addMedia(media) {
-    console.log(media);
-  }
-
   render() {
     if (this.state.numCards <= 0) {
       return (
         <MediaCard raised={true}>
-          <Header>Company Media</Header>
+          <BoxHeader>Company Media</BoxHeader>
         </MediaCard>
       );
     } else {
@@ -128,7 +123,7 @@ export default class MediaComponent extends React.Component {
 
       return (
         <MediaCard raised={true}>
-          <Header>Company Media</Header>
+          <BoxHeader>Company Media</BoxHeader>
           <CarouselContent
             onClick={() => {
               if (card.link != "") window.open(card.link);

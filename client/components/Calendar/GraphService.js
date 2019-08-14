@@ -13,8 +13,8 @@ function getAuthenticatedClient(accessToken) {
   return client;
 }
 
+// Makes a given call to the Microsoft Graph API
 export async function callApi(accessToken, call) {
   const client = getAuthenticatedClient(accessToken);
-  const events = await client.api(call).get();
-  return events;
+  return await client.api(call).get();
 }

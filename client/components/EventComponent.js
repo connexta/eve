@@ -1,7 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import { BoxStyle, BoxHeader } from "../styles/styles";
-import { time } from "../utils/TimeUtils";
+import {
+  time,
+  localizeTime,
+  getDayofWeek,
+  getTimeString,
+  catchError
+} from "../utils/TimeUtils";
 import { callApi } from "./Calendar/GraphService";
 import config from "./Calendar/GraphConfig";
 import { UserAgentApplication } from "msal";
@@ -18,7 +24,8 @@ import makeTrashable from "trashable";
 
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 const DAYS_AFTER = 7; // how many days in the future to grab events
-const NUM_EVENTS = 5; //limit on number of events to display
+const NUM_EVENTS_DISPLAY = 5; //limit on number of events to display
+const NUM_EVENTS_GRAB = 50; //limit on number of events to grab from API
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 
 const ButtonContainer = styled.div`
@@ -79,53 +86,8 @@ const Header = styled(BoxHeader)`
   flex-direction: row;
 `;
 
-function localizeTime(time, timezone) {
-  return new Date(time.split("T") + " " + timezone);
-}
-
-function getDayofWeek(num) {
-  switch (num) {
-    case 0:
-      return "Sun";
-    case 1:
-      return "Mon";
-    case 2:
-      return "Tue";
-    case 3:
-      return "Wed";
-    case 4:
-      return "Thu";
-    case 5:
-      return "Fri";
-    case 6:
-      return "Sat";
-    default:
-      return "";
-  }
-}
-
-//formats time for Date object
-function getTimeString(date) {
-  let suffix = " AM";
-  let time = date.getHours() + ":";
-
-  if (date.getHours() >= 12) {
-    suffix = " PM";
-    if (date.getHours() > 12) {
-      time = date.getHours() - 12 + ":";
-    }
-  }
-
-  time =
-    date.getMinutes() < 10
-      ? time + "0" + date.getMinutes()
-      : time + date.getMinutes();
-
-  return time + suffix;
-}
-
 // Function to toggle between log in / log out button depending on state
-function LogInOut(props) {
+export function LogInOut(props) {
   return props.isAuthenticated ? (
     <StyledButton variant={"outlined"} onClick={props.logOut}>
       Log Out
@@ -137,7 +99,7 @@ function LogInOut(props) {
   );
 }
 
-class DialogAndButton extends React.Component {
+export class DialogAndButton extends React.Component {
   constructor(props) {
     super(props);
 
@@ -242,9 +204,11 @@ export default class MediaComponent extends React.Component {
         );
       }
 
-      eventData.sort(function(a, b) {
+      eventData.sort((a, b) => {
         return a.start.getTime() - b.start.getTime();
       });
+
+      eventData = eventData.slice(0, NUM_EVENTS_DISPLAY);
 
       this.setState({
         isAuthenticated: true,
@@ -256,25 +220,6 @@ export default class MediaComponent extends React.Component {
         events: []
       });
     }
-  }
-
-  // catch and clean error before printing to console
-  catchError(err) {
-    var error = {};
-    if (typeof err === "string") {
-      let errParts = err.split("|");
-      error =
-        errParts.length > 1
-          ? { message: errParts, debug: errParts }
-          : { message: err };
-    } else {
-      error = {
-        message: err.message,
-        debug: JSON.stringify(err)
-      };
-    }
-
-    console.log(error);
   }
 
   // Pop up to log in user and acquire credentials
@@ -294,7 +239,7 @@ export default class MediaComponent extends React.Component {
       document.location.reload();
     } catch (err) {
       console.log("Error Logging In");
-      this.catchError(err);
+      catchError(err);
 
       this.setState({
         isAuthenticated: false,
@@ -330,7 +275,7 @@ export default class MediaComponent extends React.Component {
       }
     } catch (err) {
       console.log("Error retrieving list of calendars");
-      this.catchError(err);
+      catchError(err);
     }
   }
 
@@ -341,7 +286,7 @@ export default class MediaComponent extends React.Component {
     this.getCalendarEvents(cal);
   }
 
-  //Fetch event data for preceding and proceeding month
+  //Fetch event data for next DAYS_AFTER days
   async getCalendarEvents(cal) {
     try {
       this.trashableAccessToken = makeTrashable(
@@ -368,7 +313,7 @@ export default class MediaComponent extends React.Component {
           "&endDateTime=" +
           endDate.toISOString() +
           "&top=" +
-          NUM_EVENTS +
+          NUM_EVENTS_GRAB +
           "&select=subject,start,end,bodyPreview,location";
 
         this.trashableAPICall = makeTrashable(callApi(accessToken, call));
@@ -376,7 +321,7 @@ export default class MediaComponent extends React.Component {
       }
     } catch (err) {
       console.log("Error retrieving Calendar Events");
-      this.catchError(err);
+      catchError(err);
     }
   }
 
@@ -396,6 +341,18 @@ export default class MediaComponent extends React.Component {
     if (this.trashableAccessToken) this.trashableAccessToken.trash();
     if (this.trashableAPICall) this.trashableAPICall.trash();
     if (this.trashableLogIn) this.trashableLogIn.trash();
+  }
+
+  noEventMessage() {
+    if (!this.state.isAuthenticated) {
+      return <div>Please sign in</div>;
+    } else if (!this.state.chosenCal) {
+      return <div>Select calendar to display events</div>;
+    } else if (this.state.events.length <= 0) {
+      return <div>No events to display</div>;
+    } else {
+      return <div>Trouble displaying events</div>;
+    }
   }
 
   render() {
@@ -419,35 +376,39 @@ export default class MediaComponent extends React.Component {
             {calButton}
           </ButtonContainer>
         </Header>
-        <EventContainer>
-          <Divider />
-          {this.state.events.map((event, i) => {
-            let day = getDayofWeek(event.start.getDay());
-            let date = event.start.getMonth() + "/" + event.start.getDate();
+        {this.state.events.length <= 0 ? (
+          this.noEventMessage()
+        ) : (
+          <EventContainer>
+            <Divider />
+            {this.state.events.map((event, i) => {
+              let day = getDayofWeek(event.start.getDay());
+              let date = event.start.getMonth() + "/" + event.start.getDate();
 
-            let startTime = getTimeString(event.start);
-            let endTime = getTimeString(event.end);
+              let startTime = getTimeString(event.start);
+              let endTime = getTimeString(event.end);
 
-            return (
-              <div key={i}>
-                <Divider />
-                <EventBlock>
-                  <EventTime>
-                    <div>{day + " " + date}</div>
-                    <div>{startTime + " -"}</div>
-                    <div>{endTime}</div>
-                  </EventTime>
-                  <EventDescription>
-                    <div>{event.title}</div>
-                    <div>{event.location}</div>
-                  </EventDescription>
-                </EventBlock>
-                <Divider />
-              </div>
-            );
-          })}
-          <Divider />
-        </EventContainer>
+              return (
+                <div key={i}>
+                  <Divider />
+                  <EventBlock>
+                    <EventTime>
+                      <div>{day + " " + date}</div>
+                      <div>{startTime + " -"}</div>
+                      <div>{endTime}</div>
+                    </EventTime>
+                    <EventDescription>
+                      <div>{event.title}</div>
+                      <div>{event.location}</div>
+                    </EventDescription>
+                  </EventBlock>
+                  <Divider />
+                </div>
+              );
+            })}
+            <Divider />
+          </EventContainer>
+        )}
       </MediaCard>
     );
   }

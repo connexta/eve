@@ -2,8 +2,6 @@ import styled from "styled-components";
 import { BANNER_HEIGHT } from "../index";
 import Grid from "@material-ui/core/Grid";
 
-export const LowerLeftBox = styled(Grid)``;
-
 export const LeftBox = styled(Grid)`
   height: 100%;
   width: 66%;
