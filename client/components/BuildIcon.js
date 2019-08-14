@@ -6,6 +6,13 @@ import BadState from "@material-ui/icons/HighlightOff";
 import CardContent from "@material-ui/core/CardContent";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
 
+const StyledCardContent = styled(CardContent)`
+  /* Force priority over .MuiCardContent-root:last-child */
+  && {
+    padding: 4px;
+  }
+`;
+
 const StyledDate = styled.div`
   background: ${CX_OFF_WHITE};
   font-size: 20px;
@@ -22,7 +29,7 @@ class BuildIcon extends React.Component {
 
   render() {
     return this.props.score >= 80 ? (
-      <CardContent style={this.props.cardContentStyle}>
+      <StyledCardContent>
         <GoodState
           fontSize="inherit"
           style={{
@@ -34,9 +41,9 @@ class BuildIcon extends React.Component {
         />
         {this.props.name}
         <StyledDate>{this.props.subtitle}</StyledDate>
-      </CardContent>
+      </StyledCardContent>
     ) : this.props.score >= 40 ? (
-      <CardContent style={this.props.cardContentStyle}>
+      <StyledCardContent>
         <NeutralState
           fontSize="inherit"
           style={{
@@ -48,9 +55,9 @@ class BuildIcon extends React.Component {
         />
         {this.props.name}
         <StyledDate>{this.props.subtitle}</StyledDate>
-      </CardContent>
+      </StyledCardContent>
     ) : (
-      <CardContent style={this.props.cardContentStyle}>
+      <StyledCardContent>
         <BadState
           fontSize="inherit"
           style={{
@@ -62,7 +69,7 @@ class BuildIcon extends React.Component {
         />
         {this.props.name}
         <StyledDate>{this.props.subtitle}</StyledDate>
-      </CardContent>
+      </StyledCardContent>
     );
   }
 }
