@@ -4,16 +4,12 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
+const fs = require("fs");
 
 dotenv.config();
 const app = express();
 const port = process.env.EVE_PORT || 3000;
 const prod = process.env.NODE_ENV === "production";
-
-app.use(express.static("target"));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
 
 /* URL */
 const soaesb_url =
@@ -22,8 +18,27 @@ const urlList = {
   SOAESB: soaesb_url
 };
 
+app.use(express.static("target"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors());
+
 /* ROUTE */
-//create screenshot of grafana dashboard
+app.get("/versions", function(req, res) {
+  var content = fs.readFileSync(
+    prod ? "versions.json" : "server/versions.json"
+  );
+  res.send(JSON.parse(content));
+});
+
+app.post("/versions", function(req, res) {
+  fs.writeFileSync(
+    prod ? "versions.json" : "server/versions.json",
+    JSON.stringify(req.body)
+  );
+  res.end();
+});
+
 app.get("/grafana", (req, res) => {
   app.set(
     req.query.name,
