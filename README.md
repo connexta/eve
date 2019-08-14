@@ -22,7 +22,7 @@ This project is built using ReactJS and NodeJS.
 
   - **Grafana**: Takes screenshot of the current grafana dashboard executed by NodeJS grafana.js.
 
-- Custom Wallboards: Userse can navigate to wallboards customized to their project team or to the main TV wallboard.
+- Custom Wallboards: Users can navigate to wallboards customized to their project team or to the main TV wallboard.
 
 ## Setup
 
