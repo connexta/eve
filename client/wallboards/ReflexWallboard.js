@@ -13,16 +13,19 @@ const styles = {
 };
 
 export default class AirforceWallboard extends React.Component {
-    render() {
-      return (
-        <Grid container style={{ height: "100%" }}>
+  render() {
+    return (
+      <Grid container style={{ height: "100%" }}>
         <LeftBox item>
-            <BuildStatus urlList={jenkinsURLList} cardContentStyle={styles.cardContent}/>
+          <BuildStatus
+            urlList={jenkinsURLList}
+            cardContentStyle={styles.cardContent}
+          />
         </LeftBox>
-          <RightBox item>
-            <SlackComponent />
+        <RightBox item>
+          <SlackComponent />
         </RightBox>
-        </Grid>
-      );
-    }
+      </Grid>
+    );
   }
+}
