@@ -11,6 +11,6 @@
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
-    "puppeteer": "^1.19.0"
+    "puppeteer": "1.17.0"
   }
 }
