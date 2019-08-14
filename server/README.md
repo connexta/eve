@@ -1,7 +1,7 @@
 # Server
 
 ## server
-Main entry file for backend side server (NodeJS) to host the server and any backend side code.
+Main entry file for backend side server (NodeJS) to host the server and any backend code.
 
 #### Packages:
 - **express**: NodeJS Web application framework for routing.
