@@ -36,11 +36,11 @@ You can view the Wallboard by visiting [http://eve.phx.connexta.com/](http://eve
 - .env (with all necessary environment variable; necessary for local or Dockerized environment testing)
 
 ### Setting up Enviornment Variables
-The Github components require ```GITHUB_TOKEN``` and ```GITHUB_CLIENT_SECRET```
-The Slack components require ```SLACK_CHANNEL``` and ```SLACK_TOKEN```
-The Grafana components require ```SOAESB_BEARER_TOKEN```
+The Github component requires ```GITHUB_TOKEN``` and ```GITHUB_CLIENT_SECRET```.
+The Slack component requires ```SLACK_CHANNEL``` and ```SLACK_TOKEN```.
+The Grafana component requires ```SOAESB_BEARER_TOKEN```.
 
-Place the environment variable in .env file
+Place the environment variables in the .env file
 Example: ```SLACK_CHANNEL=ABC123```
 
 ### Running the Wallboard locally
@@ -54,10 +54,10 @@ For server, run
 yarn server (synonymous with node server/server.js)
 ```
 Then navigate to 0.0.0.0:8080 on Mac or localhost:8080 on Windows.
-It is necessary to run server if you are to test components that utilize backend API calls (i.e. Grafana)
+It is necessary to run the server if you are testing components that utilize backend API calls (i.e. Grafana)
   
 ### Running the Wallboard in Dockerized environment
-run
+Make sure Docker is running, then run
 ```
 make go
 ```
@@ -75,7 +75,7 @@ Then navigate to 0.0.0.0:8080 on Mac or localhost:8080 on Windows.
 You can kill the container through the command ```docker kill wallboard```  
 
 #### Jenkins
-The Jenkins has already been setup in devops/eve-wallboard of Jenkins server
+The Jenkins has already been setup in devops/eve-wallboard of the Jenkins server
 
 Required build setup:
 - Github Webhook setup : An admin needs to add a webhook to the Jenkins service in the Github repository settings.
