@@ -6,8 +6,7 @@ import { CardContent } from "@material-ui/core";
 import {
   BoxStyle,
   BoxHeader,
-  CARD_SIDE_MARGINS,
-  FlexRowCardContent
+  CARD_SIDE_MARGINS
 } from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
@@ -17,6 +16,37 @@ const TOGGLE_INTERVAL = time({ seconds: 10 });
 
 const StyledCard = styled(BoxStyle)`
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
+`;
+
+// if listvert is not true, it will list the items horizontally,
+// otherwise it will list them vertically
+const getListStyle = listvert => {
+  if (!listvert) {
+    return " \
+  display: flex; \
+  flex-direction: row; \
+  justify-content: space-between; \
+  flex-wrap: wrap; \
+    ";
+  } else return ``;
+};
+
+// wrap CardContent, omitting listvert prop
+const CardWrapper = props => {
+  const { listvert, ...rest } = props;
+  return <CardContent {...rest} />;
+};
+
+const StyledCardContent = styled(CardWrapper)`
+  ${props => {
+    return getListStyle(props.listvert);
+  }};
+
+  font-size: 32px;
+  clear: both;
+  && {
+    padding: 0;
+  }
 `;
 
 const ButtonDefault = styled(Button)`
@@ -149,7 +179,6 @@ class BuildStatus extends React.Component {
               name={item.displayName}
               key={item.displayName + item.oneSubtitle}
               subtitle={item.oneSubtitle}
-              cardContentStyle={this.props.cardContentStyle}
             />
           );
         })
@@ -160,7 +189,6 @@ class BuildStatus extends React.Component {
               name={item.displayName}
               key={item.displayName + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
-              cardContentStyle={this.props.cardContentStyle}
             />
           );
         });
@@ -198,7 +226,9 @@ class BuildStatus extends React.Component {
       <StyledCard raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
-        <FlexRowCardContent>{this.getBuildDisplay()}</FlexRowCardContent>
+        <StyledCardContent listvert={this.props.listvert}>
+          {this.getBuildDisplay()}
+        </StyledCardContent>
       </StyledCard>
     );
   }

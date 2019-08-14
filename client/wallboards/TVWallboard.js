@@ -7,22 +7,24 @@ import { LeftBox, RightBox } from "../styles/WallboardStyles";
 import Grid from "@material-ui/core/Grid";
 import { jenkinsURLList } from "../utils/Link";
 
-const styles = {
-  cardContent: {
-    padding: "4px",
-    width: "15%"
-  }
-};
+/*
+You can change the size of any component through the use of styled components.
+
+< Example >
+To change height of BuildStatus...
+
+const StyledBuildStatus = styled(BuildStatus)`
+  height: 100px;
+`
+
+*/
 
 export default class TVWallboard extends React.Component {
   render() {
     return (
       <Grid container style={{ height: "100%" }}>
         <LeftBox item>
-          <BuildStatus
-            urlList={jenkinsURLList}
-            cardContentStyle={styles.cardContent}
-          />
+          <BuildStatus urlList={jenkinsURLList} />
           <Calendar />
         </LeftBox>
         <RightBox item>

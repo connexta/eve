@@ -7,6 +7,13 @@ import CardContent from "@material-ui/core/CardContent";
 import { FlexRowSubHeading } from "../styles/styles";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
 
+const StyledCardContent = styled(CardContent)`
+  /* Force priority over .MuiCardContent-root:last-child */
+  && {
+    padding: 4px;
+  }
+`;
+
 class BuildIcon extends React.Component {
   constructor(props) {
     super(props);
@@ -14,7 +21,7 @@ class BuildIcon extends React.Component {
 
   render() {
     return this.props.score >= 80 ? (
-      <CardContent style={this.props.cardContentStyle}>
+      <StyledCardContent>
         <GoodState
           fontSize="inherit"
           style={{
@@ -26,9 +33,9 @@ class BuildIcon extends React.Component {
         />
         {this.props.name}
         <FlexRowSubHeading>{this.props.subtitle}</FlexRowSubHeading>
-      </CardContent>
+      </StyledCardContent>
     ) : this.props.score >= 40 ? (
-      <CardContent style={this.props.cardContentStyle}>
+      <StyledCardContent>
         <NeutralState
           fontSize="inherit"
           style={{
@@ -40,9 +47,9 @@ class BuildIcon extends React.Component {
         />
         {this.props.name}
         <FlexRowSubHeading>{this.props.subtitle}</FlexRowSubHeading>
-      </CardContent>
+      </StyledCardContent>
     ) : (
-      <CardContent style={this.props.cardContentStyle}>
+      <StyledCardContent>
         <BadState
           fontSize="inherit"
           style={{
@@ -54,7 +61,7 @@ class BuildIcon extends React.Component {
         />
         {this.props.name}
         <FlexRowSubHeading>{this.props.subtitle}</FlexRowSubHeading>
-      </CardContent>
+      </StyledCardContent>
     );
   }
 }
