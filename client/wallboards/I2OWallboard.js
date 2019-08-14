@@ -6,14 +6,6 @@ import { IONURL } from "../utils/Link";
 import { hour } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 
-const styles = {
-  cardContent: {
-    padding: "4px",
-    display: "block",
-    flex: "0 100%"
-  }
-};
-
 class I2OWallboard extends React.Component {
   constructor(props) {
     super(props);
@@ -96,10 +88,7 @@ class I2OWallboard extends React.Component {
     return (
       <Grid container style={{ height: "100%" }}>
         <I2OleftBox item>
-          <BuildStatus
-            urlList={this.state.urlList}
-            cardContentStyle={styles.cardContent}
-          />
+          <BuildStatus urlList={this.state.urlList} listvert />
         </I2OleftBox>
       </Grid>
     );

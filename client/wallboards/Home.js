@@ -8,7 +8,8 @@ import Button from "@material-ui/core/Button";
 // Wallboard Variants
 import GSRWallboard from "./GSRWallboard";
 import TVWallboard from "./TVWallboard";
-import AirforceWallboard from "./AirforceWallboard";
+import SOAESBWallboard from "./SOAESBWallboard";
+import ReflexWallboard from "./ReflexWallboard";
 import I2OWallboard from "./I2OWallboard";
 
 const proxy = props => <Home {...props} />;
@@ -17,7 +18,8 @@ const proxy = props => <Home {...props} />;
 export const wallboards = [
   { path: "/", component: proxy, key: "Home" },
   { path: "/tv/", component: TVWallboard, key: "TV" },
-  { path: "/airforce/", component: AirforceWallboard, key: "Airforce" },
+  { path: "/soaesb/", component: SOAESBWallboard, key: "SOAESB" },
+  { path: "/reflex/", component: ReflexWallboard, key: "Reflex" },
   { path: "/gsr/", component: GSRWallboard, key: "GSR" },
   { path: "/i2o/", component: I2OWallboard, key: "I2O" }
 ];

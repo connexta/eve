@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 
 module.exports = {
-  entry: ["babel-polyfill", "whatwg-fetch", "./src/index.js"],
+  entry: ["babel-polyfill", "whatwg-fetch", "./client/index.js"],
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "target"),
@@ -39,7 +39,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: "Wallboard!!!!",
-      template: "./src/index.html"
+      template: "./client/index.html"
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({

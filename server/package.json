@@ -1,0 +1,16 @@
+{
+  "name": "wallboard",
+  "version": "0.1.0",
+  "main": "server.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "server": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "puppeteer": "1.17.0"
+  }
+}
