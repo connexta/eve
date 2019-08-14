@@ -2,7 +2,7 @@
 
 Wallboard Project for Connexta.
 
-Project EVE serves as a display for important information both for the office and for each project team.  Project EVE includes many different components that can be mixed and matched to fit a given team's need and the information shown on many components can also be customized.  The Wallboard is hosted at [http://eve.phx.connexta.com/](http://eve.phx.connexta.com/).
+Project EVE serves as a display for important information both for the office and for each project team.  Project EVE includes many different components that can be mixed and matched to fit a given team's needs and the information shown on many components can also be customized.  The Wallboard is hosted at [http://eve.phx.connexta.com/](http://eve.phx.connexta.com/).
 
 This project is built using ReactJS and NodeJS.
 
@@ -22,10 +22,7 @@ This project is built using ReactJS and NodeJS.
 
   - **Grafana**: Takes screenshot of the current grafana dashboard executed by NodeJS grafana.js.
 
-- Custom Wallboards: Userse can navigate to wallboards customized to their project team or to the main TV wallboard.
-
-
-You can view the Wallboard by visiting [http://eve.phx.connexta.com/](http://eve.phx.connexta.com/).
+- Custom Wallboards: Users can navigate to wallboards customized to their project team or to the main TV wallboard.
 
 ## Setup
 
@@ -36,11 +33,11 @@ You can view the Wallboard by visiting [http://eve.phx.connexta.com/](http://eve
 - .env (with all necessary environment variable; necessary for local or Dockerized environment testing)
 
 ### Setting up Enviornment Variables
-The Github components require ```GITHUB_TOKEN``` and ```GITHUB_CLIENT_SECRET```
-The Slack components require ```SLACK_CHANNEL``` and ```SLACK_TOKEN```
-The Grafana components require ```SOAESB_BEARER_TOKEN```
+The Github component requires ```GITHUB_TOKEN``` and ```GITHUB_CLIENT_SECRET```.
+The Slack component requires ```SLACK_CHANNEL``` and ```SLACK_TOKEN```.
+The Grafana component requires ```SOAESB_BEARER_TOKEN```.
 
-Place the environment variable in .env file
+Place the environment variables in the .env file
 Example: ```SLACK_CHANNEL=ABC123```
 
 ### Running the Wallboard locally
@@ -54,10 +51,10 @@ For server, run
 yarn server (synonymous with node server/server.js)
 ```
 Then navigate to 0.0.0.0:8080 on Mac or localhost:8080 on Windows.
-It is necessary to run server if you are to test components that utilize backend API calls (i.e. Grafana)
+It is necessary to run the server if you are testing components that utilize backend API calls (i.e. Grafana)
   
 ### Running the Wallboard in Dockerized environment
-run
+Make sure Docker is running, then run
 ```
 make go
 ```
@@ -75,7 +72,7 @@ Then navigate to 0.0.0.0:8080 on Mac or localhost:8080 on Windows.
 You can kill the container through the command ```docker kill wallboard```  
 
 #### Jenkins
-The Jenkins has already been setup in devops/eve-wallboard of Jenkins server
+The Jenkins has already been setup in devops/eve-wallboard of the Jenkins server
 
 Required build setup:
 - Github Webhook setup : An admin needs to add a webhook to the Jenkins service in the Github repository settings.
