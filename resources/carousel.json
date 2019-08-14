@@ -1,23 +1,23 @@
 {
   "cards": [
     {
-      "title": "Ice Cream Social",
-      "body": "Come to the Ice Cream Social in the first floor kitchen!",
-      "media": "icecreamsocial.png",
+      "title": "'Around The World' at the Ping Pong Tournament",
+      "body": "",
+      "media": "AroundTheWorld.jpg",
       "link": "http://www.google.com"
     },
 
     {
-      "title": "New Hire: Goose",
-      "body": "This is Goose, he is a new hire.  His skills include laying golden eggs and writing on chalkboards.",
-      "media": "duck-duck-goose.jpg",
+      "title": "Congrats Josh!",
+      "body": "Congrats to Josh on winning the ping pong tournament! Thanks to everyone who organized the event.",
+      "media": "JoshWinner.jpg",
       "link": ""
     },
 
     {
       "title": "Fun at the offsite!",
-      "body": "Were there water slides at the offsite? Not sure! Here's one anyway.",
-      "media": "waterslide.jpg",
+      "body": "Great views from the company offsite!",
+      "media": "Offsite.jpg",
       "link": ""
     }
   ]

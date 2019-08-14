@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { withStyles } from "@material-ui/core/styles";
-import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
 import { BoxStyle, BoxHeader } from "../styles/styles";
 import { time } from "../utils/TimeUtils";
 import { callApi } from "./Calendar/GraphService";
@@ -13,16 +11,14 @@ import {
   ListItem,
   ListItemText,
   DialogTitle,
-  MobileStepper,
   Button,
   Divider
 } from "@material-ui/core";
 import makeTrashable from "trashable";
 
-const ROTATE_FREQ = time({ seconds: 5 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
-const DAYS_AFTER = 7;
-const NUM_EVENTS = 5; //limit on number of events to grab
+const DAYS_AFTER = 7; // how many days in the future to grab events
+const NUM_EVENTS = 5; //limit on number of events to display
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 
 const ButtonContainer = styled.div`
@@ -34,15 +30,30 @@ const ButtonContainer = styled.div`
   right: 0;
 `;
 
+const EventContainer = styled.div`
+  margin-top: 72px;
+`;
+
+const EventBlock = styled.div`
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
+
+const EventTime = styled.div`
+  display: inline-block;
+  width: 120px;
+`;
+
+const EventDescription = styled.div`
+  display: inline-block;
+  vertical-align: top;
+  width: 70%;
+  margin-left: 20px;
+`;
+
 const StyledButton = styled(Button)`
   height: 32px;
   vertical-align: top;
-`;
-
-const RightButton = styled(StyledButton)`
-  && {
-    border-radius: "0 4px 4px 0";
-  }
 `;
 
 export const CarouselContent = styled.div`
@@ -91,6 +102,26 @@ function getDayofWeek(num) {
     default:
       return "";
   }
+}
+
+//formats time for Date object
+function getTimeString(date) {
+  let suffix = " AM";
+  let time = date.getHours() + ":";
+
+  if (date.getHours() >= 12) {
+    suffix = " PM";
+    if (date.getHours() > 12) {
+      time = date.getHours() - 12 + ":";
+    }
+  }
+
+  time =
+    date.getMinutes() < 10
+      ? time + "0" + date.getMinutes()
+      : time + date.getMinutes();
+
+  return time + suffix;
 }
 
 // Function to toggle between log in / log out button depending on state
@@ -280,11 +311,6 @@ export default class MediaComponent extends React.Component {
   // grabs list of calendars from Microsft Graph API
   async getCalendars() {
     try {
-      // Get the access token silently
-      // If the cache contains a non-expired token, this function
-      // will just return the cached token. Otherwise, it will
-      // make a request to the Azure OAuth endpoint to get a token
-
       this.trashableAccessToken = makeTrashable(
         this.userAgentApplication.acquireTokenSilent({
           scopes: config.scopes
@@ -327,7 +353,6 @@ export default class MediaComponent extends React.Component {
       let accessToken = await this.trashableAccessToken;
 
       if (accessToken) {
-        // Get the user's profile from Graph
         let startDate = new Date();
 
         let endDate = new Date();
@@ -365,39 +390,12 @@ export default class MediaComponent extends React.Component {
     }, CALL_FREQ);
   }
 
+  // Clear unmet promises
   componentWillUnmount() {
     clearInterval(this.timerIntervalID);
     if (this.trashableAccessToken) this.trashableAccessToken.trash();
     if (this.trashableAPICall) this.trashableAPICall.trash();
     if (this.trashableLogIn) this.trashableLogIn.trash();
-  }
-
-  rotateCard() {
-    this.setState({
-      displayIndex:
-        this.state.displayIndex == this.state.events.length - 1
-          ? 0
-          : this.state.displayIndex + 1
-    });
-  }
-
-  // Manually changes which PR to display, resets timer
-  switchCard(i) {
-    if (i >= this.state.events.length) i = 0;
-    if (i < 0) i = this.state.events.length - 1;
-    this.setState({ displayIndex: i });
-    clearInterval(this.rotateInterval);
-    this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
-  }
-
-  // Gets user data and sets timer for refreshing data and rotating displayed PR
-  componentDidMount() {
-    this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
-  }
-
-  // Clears interval and destroys remaining promises when component unmounted
-  componentWillUnmount() {
-    clearInterval(this.rotateInterval);
   }
 
   render() {
@@ -421,69 +419,35 @@ export default class MediaComponent extends React.Component {
             {calButton}
           </ButtonContainer>
         </Header>
-        <div style={{ marginTop: "60px" }}>
+        <EventContainer>
           <Divider />
           {this.state.events.map((event, i) => {
             let day = getDayofWeek(event.start.getDay());
             let date = event.start.getMonth() + "/" + event.start.getDate();
 
-            let startTimeSuffix = " AM -";
-            let startTime = event.start.getHours() + ":";
-
-            if (event.start.getHours() >= 12) {
-              startTimeSuffix = " PM -";
-              if (event.start.getHours() > 12) {
-                startTime = event.start.getHours() - 12 + ":";
-              }
-            }
-
-            startTime =
-              event.start.getMinutes() < 10
-                ? startTime + "0" + event.start.getMinutes()
-                : startTime + event.start.getMinutes();
-
-            let endTimeSuffix = " AM";
-            let endTime = event.end.getHours() + ":";
-
-            if (event.end.getHours() >= 12) {
-              endTimeSuffix = " PM";
-              if (event.end.getHours() > 12) {
-                endTime = event.end.getHours() - 12 + ":";
-              }
-            }
-
-            endTime =
-              event.end.getMinutes() < 10
-                ? endTime + "0" + event.end.getMinutes()
-                : endTime + event.end.getMinutes();
+            let startTime = getTimeString(event.start);
+            let endTime = getTimeString(event.end);
 
             return (
               <div key={i}>
                 <Divider />
-                <div style={{ marginTop: "20px", marginBottom: "20px" }}>
-                  <div style={{ display: "inline-block", width: "120px" }}>
+                <EventBlock>
+                  <EventTime>
                     <div>{day + " " + date}</div>
-                    <div>{startTime + startTimeSuffix}</div>
-                    <div>{endTime + endTimeSuffix}</div>
-                  </div>
-                  <div
-                    style={{
-                      display: "inline-block",
-                      verticalAlign: "top",
-                      width: "70%",
-                      marginLeft: "20px"
-                    }}
-                  >
+                    <div>{startTime + " -"}</div>
+                    <div>{endTime}</div>
+                  </EventTime>
+                  <EventDescription>
                     <div>{event.title}</div>
                     <div>{event.location}</div>
-                  </div>
-                </div>
+                  </EventDescription>
+                </EventBlock>
                 <Divider />
               </div>
             );
           })}
           <Divider />
-        </div>
+        </EventContainer>
       </MediaCard>
     );
   }

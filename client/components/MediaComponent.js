@@ -1,32 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  MobileStepper,
-  Button,
-  Dialog,
-  DialogTitle,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField
-} from "@material-ui/core";
+import { MobileStepper, Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
 import { BoxStyle, BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
-import {
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  Edit,
-  Add,
-  Delete,
-  Save
-} from "@material-ui/icons";
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 import Carousel from "../../resources/carousel.json";
 import { time } from "../utils/TimeUtils";
 
@@ -58,11 +36,6 @@ const CarouselMedia = styled.img`
   border-radius: 4px;
 `;
 
-const CarouselText = styled.div`
-  position: absolute;
-  bottom: 60px;
-`;
-
 const CarouselBody = styled.p`
   text-align: left;
   margin: 0 24px 0 24px;
@@ -86,127 +59,6 @@ const StyledMobileStepper = withStyles({
     backgroundColor: CX_GRAY_BLUE
   }
 })(MobileStepper);
-
-class MediaEdit extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      open: false,
-      edit: false,
-      add: false,
-      title: null,
-      body: null,
-      media: null,
-      link: null
-    };
-  }
-
-  handleClickOpen() {
-    this.setState({ open: true });
-  }
-
-  handleClose(value) {
-    this.setState({ open: false });
-    this.props.remove(value);
-  }
-
-  save() {
-    let myReader = new FileReader();
-    myReader.onloadend = function(e) {
-      this.save(myReader.result);
-    };
-    myReader.readAsDataURL(file);
-  }
-
-  send(stream) {
-    this.setState({ media: stream });
-
-    fetch("http://localhost:3000/carousel", {
-      method: "POST",
-      body: JSON.stringify(this.state),
-      headers: { "Content-Type": "application/json" }
-    })
-      .then(res => res.text())
-      .then(res => console.log(res.body));
-  }
-
-  render() {
-    return (
-      <div style={{ display: "inline-block", position: "absolute", right: 20 }}>
-        <Edit onClick={this.handleClickOpen.bind(this)} />
-        <Dialog
-          onClose={this.handleClose.bind(this)}
-          aria-labelledby="select-calendar-dialog"
-          open={this.state.open}
-        >
-          <DialogTitle id="select-calendar-dialog-title">
-            Add/Remove Media
-          </DialogTitle>
-          <Table size={"small"}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Action</TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>Body</TableCell>
-                <TableCell>Media</TableCell>
-                <TableCell>Link</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.props.media.map((media, i) => (
-                <TableRow key={media.title}>
-                  <TableCell>
-                    <Delete onClick={() => this.props.remove(i)} />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    {media.title}
-                  </TableCell>
-                  <TableCell>{media.body}</TableCell>
-                  <TableCell>{media.media}</TableCell>
-                  <TableCell>{media.link}</TableCell>
-                </TableRow>
-              ))}
-              {this.state.add ? (
-                <TableRow>
-                  <TableCell>
-                    <Save onClick={() => this.send()} />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      onChange={e => this.setState({ title: e.target.value })}
-                      id="title"
-                    ></TextField>
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      onChange={e => this.setState({ body: e.target.value })}
-                      id="body"
-                    ></TextField>
-                  </TableCell>
-                  <TableCell>
-                    <input
-                      onChange={e => this.setState({ media: e.target.value })}
-                      type="file"
-                      name="file"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      onChange={e => this.setState({ link: e.target.value })}
-                      id="link"
-                    ></TextField>
-                  </TableCell>
-                </TableRow>
-              ) : null}
-            </TableBody>
-          </Table>
-          <Add onClick={() => this.setState({ add: true })} />
-        </Dialog>
-      </div>
-    );
-  }
-}
 
 export default class MediaComponent extends React.Component {
   constructor(props) {
@@ -267,14 +119,7 @@ export default class MediaComponent extends React.Component {
     if (this.state.numCards <= 0) {
       return (
         <MediaCard raised={true}>
-          <Header>
-            Company Media
-            <MediaEdit
-              media={this.state.carousel}
-              remove={this.removeMedia.bind(this)}
-              add={this.addMedia.bind(this)}
-            />
-          </Header>
+          <Header>Company Media</Header>
         </MediaCard>
       );
     } else {
@@ -283,14 +128,7 @@ export default class MediaComponent extends React.Component {
 
       return (
         <MediaCard raised={true}>
-          <Header>
-            Company Media
-            <MediaEdit
-              media={this.state.carousel}
-              remove={this.removeMedia.bind(this)}
-              add={this.addMedia.bind(this)}
-            />
-          </Header>
+          <Header>Company Media</Header>
           <CarouselContent
             onClick={() => {
               if (card.link != "") window.open(card.link);
