@@ -13,7 +13,7 @@ module.exports = {
       ? await puppeteer.launch({
           executablePath: "/usr/bin/chromium-browser",
           headless: true,
-          args: ["--no-sandbox"],
+          args: ["--no-sandbox", "--disable-dev-shm-usage"],
           env: {
             TZ: timezone
           }
@@ -21,7 +21,7 @@ module.exports = {
       : await puppeteer.launch({
           defaultViewport: null,
           headless: false,
-          args: ["--start-maximized"],
+          args: ["--start-maximized", "--disable-dev-shm-usage"],
           env: {
             TZ: timezone
           }

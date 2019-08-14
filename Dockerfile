@@ -1,5 +1,15 @@
 # client build
 FROM node:latest as build
+
+ARG SLACK_CHANNEL
+ARG SLACK_TOKEN
+ARG GITHUB_CLIENT_ID
+ARG GITHUB_CLIENT_SECRET
+ENV SLACK_CHANNEL=$SLACK_CHANNEL \
+    SLACK_TOKEN=$SLACK_TOKEN \
+    GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID \
+    GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET 
+
 COPY . /app
 WORKDIR /app
 RUN yarn install
@@ -8,13 +18,18 @@ RUN yarn build
 # server build
 FROM node:alpine
 
-RUN apk update && apk upgrade && \
-    echo @edge http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
-    echo @edge http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories && \
-    apk add --no-cache \
-      chromium@edge \
-      nss@edge \
-      harfbuzz@edge
+# Installs latest Chromium (76) package.
+# Puppeteer v1.17.0 works with Chromium 76.
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      freetype-dev \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont \
+      nodejs \
+      yarn 
 
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
@@ -30,18 +45,9 @@ RUN yarn install --production=true
 
 EXPOSE 3000
 
-## Environment variable setup
-ARG SLACK_CHANNEL
-ARG SLACK_TOKEN
-ARG GITHUB_CLIENT_ID
-ARG GITHUB_CLIENT_SECRET
 ARG NODE_ENV
 ARG SOAESB_BEARER_TOKEN
-ENV SLACK_CHANNEL=$SLACK_CHANNEL \
-    SLACK_TOKEN=$SLACK_TOKEN \
-    GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID \
-    GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET \
-    NODE_ENV=$NODE_ENV \
+ENV NODE_ENV=$NODE_ENV \
     SOAESB_BEARER_TOKEN=$SOAESB_BEARER_TOKEN
 
 CMD [ "node", "server.js"]

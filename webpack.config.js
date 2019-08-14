@@ -50,8 +50,7 @@ module.exports = {
       ),
       "process.env.GITHUB_CLIENT_SECRET": JSON.stringify(
         process.env.GITHUB_CLIENT_SECRET
-      ),
-      "process.env.BEARER_TOKEN": JSON.stringify(process.env.BEARER_TOKEN)
+      )
     })
   ],
   devServer: {
