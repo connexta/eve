@@ -1,22 +1,25 @@
 import React from "react";
 import styled from "styled-components";
 import { TextField } from "@material-ui/core";
-import { BoxStyle, BoxHeader } from "../styles/styles";
+import {
+  BoxStyle,
+  BoxHeader,
+  FlexRowCardContent,
+  FlexRowSubHeading
+} from "../styles/styles";
 import { Edit, Save } from "@material-ui/icons";
 import makeTrashable from "trashable";
-import { StyledDate } from "./BuildIcon";
-import { StyledCardContent } from "./BuildStatus";
 
 const VersionBox = styled(BoxStyle)`
   width: 340px;
 `;
 
-const VersionCardContent = styled(StyledCardContent)`
+const VersionCardContent = styled(FlexRowCardContent)`
   flex-direction: column;
   justify-content: space-around;
 `;
 
-const VersionStyledDate = styled(StyledDate)`
+const VersionStyledDate = styled(FlexRowSubHeading)`
   margin-left: 0px;
 `;
 
@@ -43,8 +46,6 @@ export default class ReleaseVersion extends React.Component {
       versions: {},
       isEditing: false
     };
-
-    this.getVersions();
   }
 
   // Call server to load version numbers
@@ -94,12 +95,16 @@ export default class ReleaseVersion extends React.Component {
           return res.text();
         }
       })
-      .then(res => console.log(res));
+      .then(res => console.log("Server response: " + res));
   }
 
   // Flips state between editing and non editing mode
   toggle() {
     if (!this.state.isEditing) this.setState({ toggle: !this.state.toggle });
+  }
+
+  componentDidMount() {
+    this.getVersions();
   }
 
   // Trash any unmet promises
@@ -126,31 +131,35 @@ export default class ReleaseVersion extends React.Component {
           )}
         </IconBox>
         <VersionCardContent>
-          {Object.keys(this.state.versions).map((item, i) => {
-            return (
-              <div key={i}>
-                <div>{item}</div>
-                {this.state.isEditing ? (
-                  <VersionStyledDate>
-                    Version:
-                    <StyledTextField
-                      onChange={e => {
-                        let temp = this.state.versions;
-                        temp[item] = e.target.value;
-                        this.setState({ versions: temp });
-                      }}
-                      defaultValue={this.state.versions[item]}
-                      margin="dense"
-                    />
-                  </VersionStyledDate>
-                ) : (
-                  <VersionStyledDateNoField>
-                    Version: {this.state.versions[item]}
-                  </VersionStyledDateNoField>
-                )}
-              </div>
-            );
-          })}
+          {this.state.versions == null ? (
+            <VersionStyledDate>Data failed to load</VersionStyledDate>
+          ) : (
+            Object.keys(this.state.versions).map((item, i) => {
+              return (
+                <div key={i}>
+                  <div>{item}</div>
+                  {this.state.isEditing ? (
+                    <VersionStyledDate>
+                      Version:
+                      <StyledTextField
+                        onChange={e => {
+                          let temp = this.state.versions;
+                          temp[item] = e.target.value;
+                          this.setState({ versions: temp });
+                        }}
+                        defaultValue={this.state.versions[item]}
+                        margin="dense"
+                      />
+                    </VersionStyledDate>
+                  ) : (
+                    <VersionStyledDateNoField>
+                      Version: {this.state.versions[item]}
+                    </VersionStyledDateNoField>
+                  )}
+                </div>
+              );
+            })
+          )}
         </VersionCardContent>
       </VersionBox>
     );

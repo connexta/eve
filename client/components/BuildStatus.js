@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
-import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+import {
+  BoxStyle,
+  BoxHeader,
+  CARD_SIDE_MARGINS,
+  FlexRowCardContent
+} from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
@@ -12,18 +17,6 @@ const TOGGLE_INTERVAL = time({ seconds: 10 });
 
 const StyledCard = styled(BoxStyle)`
   width: calc(100% - ${CARD_SIDE_MARGINS}px);
-`;
-
-export const StyledCardContent = styled(CardContent)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  font-size: 32px;
-  clear: both;
-  && {
-    padding: 0;
-  }
 `;
 
 const ButtonDefault = styled(Button)`
@@ -205,7 +198,7 @@ class BuildStatus extends React.Component {
       <StyledCard raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
-        <StyledCardContent>{this.getBuildDisplay()}</StyledCardContent>
+        <FlexRowCardContent>{this.getBuildDisplay()}</FlexRowCardContent>
       </StyledCard>
     );
   }

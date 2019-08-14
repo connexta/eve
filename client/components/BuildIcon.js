@@ -4,16 +4,8 @@ import GoodState from "@material-ui/icons/CheckCircleOutline";
 import NeutralState from "@material-ui/icons/RemoveCircleOutline";
 import BadState from "@material-ui/icons/HighlightOff";
 import CardContent from "@material-ui/core/CardContent";
+import { FlexRowSubHeading } from "../styles/styles";
 import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
-
-export const StyledDate = styled.div`
-  background: ${CX_OFF_WHITE};
-  font-size: 20px;
-  color: ${BATMAN_GRAY};
-  font-family: ${CX_FONT};
-  font-style: italic;
-  margin-left: 32px;
-`;
 
 class BuildIcon extends React.Component {
   constructor(props) {
@@ -33,7 +25,7 @@ class BuildIcon extends React.Component {
           }}
         />
         {this.props.name}
-        <StyledDate>{this.props.subtitle}</StyledDate>
+        <FlexRowSubHeading>{this.props.subtitle}</FlexRowSubHeading>
       </CardContent>
     ) : this.props.score >= 40 ? (
       <CardContent style={this.props.cardContentStyle}>
@@ -47,7 +39,7 @@ class BuildIcon extends React.Component {
           }}
         />
         {this.props.name}
-        <StyledDate>{this.props.subtitle}</StyledDate>
+        <FlexRowSubHeading>{this.props.subtitle}</FlexRowSubHeading>
       </CardContent>
     ) : (
       <CardContent style={this.props.cardContentStyle}>
@@ -61,7 +53,7 @@ class BuildIcon extends React.Component {
           }}
         />
         {this.props.name}
-        <StyledDate>{this.props.subtitle}</StyledDate>
+        <FlexRowSubHeading>{this.props.subtitle}</FlexRowSubHeading>
       </CardContent>
     );
   }

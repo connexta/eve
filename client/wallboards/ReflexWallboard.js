@@ -1,6 +1,5 @@
 import React from "react";
 import BuildStatus from "../components/BuildStatus";
-import BuildAF from "../components/BuildAF";
 import SlackComponent from "../components/SlackComponent";
 import { LeftBox, RightBox } from "../styles/WallboardStyles";
 import Grid from "@material-ui/core/Grid";

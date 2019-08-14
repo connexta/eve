@@ -11,22 +11,31 @@ const app = express();
 const port = process.env.PORT || 3000;
 const prod = process.env.NODE_ENV === "production";
 
+/* URL */
+const soaesb_url =
+  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
+const urlList = {
+  SOAESB: soaesb_url
+};
+
 app.use(express.static("target"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
 /* ROUTE */
-//create screenshot of grafana dashboard
-
-/* ROUTE */
 app.get("/versions", function(req, res) {
-  var content = fs.readFileSync("versions.json");
+  var content = fs.readFileSync(
+    prod ? "versions.json" : "server/versions.json"
+  );
   res.send(JSON.parse(content));
 });
 
 app.post("/versions", function(req, res) {
-  fs.writeFileSync("versions.json", JSON.stringify(req.body));
+  fs.writeFileSync(
+    prod ? "versions.json" : "server/versions.json",
+    JSON.stringify(req.body)
+  );
   res.end();
 });
 
