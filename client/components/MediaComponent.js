@@ -83,7 +83,7 @@ export default class MediaComponent extends React.Component {
   // Manually changes which media to display, resets timer
   switchCard(index) {
     if (index >= this.state.numCards) index = 0;
-    if (index < 0) i = this.state.numCards - 1;
+    if (index < 0) index = this.state.numCards - 1;
     this.setState({ displayIndex: index });
     clearInterval(this.rotateInterval);
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
