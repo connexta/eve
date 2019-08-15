@@ -359,7 +359,6 @@ export default class MediaComponent extends React.Component {
 
   render() {
     let numEvents = Math.floor((this.state.height - 480) / 110);
-    console.log(numEvents);
     let eventData = this.state.events.slice(0, numEvents);
 
     let calButton = this.state.isAuthenticated ? (
