@@ -170,7 +170,8 @@ export default class MediaComponent extends React.Component {
       isAuthenticated: user !== null,
       events: [],
       calendars: [],
-      chosenCal: cal
+      chosenCal: cal,
+      height: window.innerHeight
     };
 
     if (user) {
@@ -205,10 +206,6 @@ export default class MediaComponent extends React.Component {
       eventData.sort((a, b) => {
         return a.start.getTime() - b.start.getTime();
       });
-
-      let numEvents = Math.floor((window.innerHeight - 480) / 110);
-      console.log(numEvents);
-      eventData = eventData.slice(0, numEvents);
 
       this.setState({
         isAuthenticated: true,
@@ -325,6 +322,10 @@ export default class MediaComponent extends React.Component {
     }
   }
 
+  handleResize() {
+    this.setState({ height: window.innerHeight });
+  }
+
   // Refresh user information/calendar events
   componentDidMount() {
     if (this.state.isAuthenticated && this.state.chosenCal)
@@ -333,6 +334,7 @@ export default class MediaComponent extends React.Component {
       if (this.state.isAuthenticated && this.state.chosenCal)
         this.getCalendarEvents(this.state.chosenCal);
     }, CALL_FREQ);
+    window.addEventListener("resize", this.handleResize.bind(this));
   }
 
   // Clear unmet promises
@@ -356,6 +358,10 @@ export default class MediaComponent extends React.Component {
   }
 
   render() {
+    let numEvents = Math.floor((this.state.height - 480) / 110);
+    console.log(numEvents);
+    let eventData = this.state.events.slice(0, numEvents);
+
     let calButton = this.state.isAuthenticated ? (
       <DialogAndButton
         calendars={this.state.calendars}
@@ -381,7 +387,7 @@ export default class MediaComponent extends React.Component {
         ) : (
           <EventContainer>
             <Divider />
-            {this.state.events.map((event, i) => {
+            {eventData.map((event, i) => {
               let day = getDayofWeek(event.start.getDay());
               let date = event.start.getMonth() + "/" + event.start.getDate();
 
