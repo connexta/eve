@@ -10,12 +10,17 @@ import { jenkinsURLList } from "../utils/Link";
 import MediaComponent from "../components/MediaComponent";
 import EventComponent from "../components/EventComponent";
 
-const styles = {
-  cardContent: {
-    padding: "4px",
-    width: "15%"
-  }
-};
+/*
+You can change the size of any component through the use of styled components.
+
+< Example >
+To change height of BuildStatus...
+
+const StyledBuildStatus = styled(BuildStatus)`
+  height: 100px;
+`
+
+*/
 
 export default class TVWallboard extends React.Component {
   render() {
@@ -24,7 +29,6 @@ export default class TVWallboard extends React.Component {
         <LeftBox item>
           <BuildStatus
             urlList={jenkinsURLList}
-            cardContentStyle={styles.cardContent}
           />
           <Grid
             container
