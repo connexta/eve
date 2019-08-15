@@ -8,30 +8,31 @@ import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 import Carousel from "../../resources/carousel.json";
 import { time } from "../utils/TimeUtils";
 
-const ROTATE_FREQ = time({ seconds: 5 });
+const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 export const MEDIA_CARD_MARGINS = 20;
+
+export const MediaCard = styled(BoxStyle)`
+  width: calc((100% / 2) - 24px);
+  margin: 0 0 0 24px;
+  height: 100%;
+  position: relative;
+`;
 
 export const CarouselContent = styled.div`
   text-align: center;
   cursor: pointer;
+  width: 100%;
+  height: calc(100% - 132px);
+  margin: 52px 0 0 0;
   position: absolute;
   bottom: 60px;
   left: 0;
-  width: 100%;
-  margin: ${MEDIA_CARD_MARGINS}px 0 0 0;
-`;
-
-export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  height: ${MEDIA_EVENT_CARD_HEIGHT}px;
-  margin: 0 0 0 24px;
-  position: relative;
 `;
 
 const CarouselMedia = styled.img`
   max-width: calc(100% - 48px);
-  max-height: calc(${MEDIA_EVENT_CARD_HEIGHT}px - ${BOX_HEADER_SIZE}px - 212px);
+  max-height: calc(100% - 120px);
   border-radius: 4px;
 `;
 

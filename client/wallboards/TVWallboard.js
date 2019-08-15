@@ -26,7 +26,11 @@ export default class TVWallboard extends React.Component {
             urlList={jenkinsURLList}
             cardContentStyle={styles.cardContent}
           />
-          <Grid container direction="row">
+          <Grid
+            container
+            direction="row"
+            style={{ height: "calc(100% - 260px)" }}
+          >
             <MediaComponent />
             <EventComponent />
           </Grid>

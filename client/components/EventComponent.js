@@ -22,9 +22,7 @@ import {
 } from "@material-ui/core";
 import makeTrashable from "trashable";
 
-export const MEDIA_EVENT_CARD_HEIGHT = 696;
 const DAYS_AFTER = 7; // how many days in the future to grab events
-const NUM_EVENTS_DISPLAY = 5; //limit on number of events to display
 const NUM_EVENTS_GRAB = 50; //limit on number of events to grab from API
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 
@@ -75,7 +73,7 @@ export const CarouselContent = styled.div`
 
 export const MediaCard = styled(BoxStyle)`
   width: calc((100% / 2) - 24px);
-  height: ${MEDIA_EVENT_CARD_HEIGHT}px;
+  height: 100%;
   margin: 0 0 0 24px;
   position: relative;
 `;
@@ -208,7 +206,9 @@ export default class MediaComponent extends React.Component {
         return a.start.getTime() - b.start.getTime();
       });
 
-      eventData = eventData.slice(0, NUM_EVENTS_DISPLAY);
+      let numEvents = Math.floor((window.innerHeight - 480) / 110);
+      console.log(numEvents);
+      eventData = eventData.slice(0, numEvents);
 
       this.setState({
         isAuthenticated: true,
