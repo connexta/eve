@@ -9,7 +9,6 @@ const timeout = 120000; //2 minutes
 //use Puppeteer to take screenshot and write it to the respond url.
 module.exports = {
   getScreenshot: async function(prod, url, timezone) {
-    console.log(puppeteer.executablePath());
     const browser = prod
       ? await puppeteer.launch({
           executablePath: "/usr/bin/chromium-browser",
