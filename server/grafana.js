@@ -12,8 +12,7 @@ module.exports = {
     console.log(puppeteer.executablePath());
     const browser = prod
       ? await puppeteer.launch({
-          // executablePath: "/usr/bin/chromium-browser",
-          executablePath: puppeteer.executablePath(),
+          executablePath: "/usr/bin/chromium-browser",
           headless: true,
           args: ["--no-sandbox", "--disable-dev-shm-usage", '--headless'],
           env: {
