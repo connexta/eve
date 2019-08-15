@@ -3,6 +3,72 @@ const minute = second * 60;
 const hour = minute * 60;
 const day = hour * 24;
 
+//Returns string with formatted time (hours, minutes, and AM/PM suffix) for Date object
+export function getTimeString(date) {
+  let suffix = " AM";
+  let time = date.getHours() + ":";
+
+  if (date.getHours() >= 12) {
+    suffix = " PM";
+    if (date.getHours() > 12) {
+      time = date.getHours() - 12 + ":";
+    }
+  }
+
+  time =
+    date.getMinutes() < 10
+      ? time + "0" + date.getMinutes()
+      : time + date.getMinutes();
+
+  return time + suffix;
+}
+
+// catch and clean error before printing to console
+export function catchError(err) {
+  var error = {};
+  if (typeof err === "string") {
+    let errParts = err.split("|");
+    error =
+      errParts.length > 1
+        ? { message: errParts, debug: errParts }
+        : { message: err };
+  } else {
+    error = {
+      message: err.message,
+      debug: JSON.stringify(err)
+    };
+  }
+
+  console.log(error);
+}
+
+// Returns string for day of week based on numeric value
+export function getDayofWeek(num) {
+  switch (num) {
+    case 0:
+      return "Sun";
+    case 1:
+      return "Mon";
+    case 2:
+      return "Tue";
+    case 3:
+      return "Wed";
+    case 4:
+      return "Thu";
+    case 5:
+      return "Fri";
+    case 6:
+      return "Sat";
+    default:
+      return "";
+  }
+}
+
+// Converts dateTimeTimeZone to Date object (used w Microsoft Graph API)
+export function localizeTime(time, timezone) {
+  return new Date(time.split("T") + " " + timezone);
+}
+
 // Appends s to word if value is not 1
 export function addS(val) {
   return val == 1 ? "" : "s";

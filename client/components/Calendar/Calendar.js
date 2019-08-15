@@ -7,25 +7,16 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "!style-loader!css-loader!../../styles/Calendar.css";
 import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../../styles/styles";
-import {
-  Dialog,
-  List,
-  ListItem,
-  ListItemText,
-  DialogTitle
-} from "@material-ui/core";
-import { time, hour } from "../../utils/TimeUtils";
+import { time, hour, localizeTime, catchError } from "../../utils/TimeUtils";
 import makeTrashable from "trashable";
-
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
+import { LogInOut, DialogAndButton } from "../EventComponent";
 
 const TIME_BEFORE = 1; //num months before to grab events
 const TIME_AFTER = 1; //num months after to grab events
 const NUM_EVENTS = 200; //limit on number of events to grab
 const START_HOUR = 8; // earliest hour to display in week/day view
 const END_HOUR = 18; // latest hour to display
-const WIP_MESSAGE_SPACE = 68; //height of the message buffer so that it doesn't overlap with working progress message.
+const WIP_MESSAGE_SPACE = 68; // Space to ensure Work in Progress Message is visible
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 const CARD_HEIGHT_MARGINS = 36;
 
@@ -33,7 +24,6 @@ const StyledHeader = styled(BoxHeader)`
   margin-bottom: 16px;
 `;
 
-//157px: to align calendar to buildstatus
 const StyledCard = styled(BoxStyle)`
   height: calc(
     100% - ${CARD_HEIGHT_MARGINS}px - ${WIP_MESSAGE_SPACE}px - 157px
@@ -57,93 +47,6 @@ const ButtonContainer = styled.div`
   flex-direction: row;
   vertical-align: bottom;
 `;
-
-const StyledButton = styled.button`
-  display: inline-block;
-  && {
-    margin: 8px 0 0;
-  }
-  height: 30px;
-  vertical-align: bottom;
-  margin-top: 8px;
-`;
-
-const RightButton = styled(StyledButton)`
-  && {
-    border-radius: "0 4px 4px 0";
-  }
-`;
-
-// Localizes time for big-react-calendar
-const localizer = momentLocalizer(moment);
-
-function localizeTime(time, timezone) {
-  return new Date(time.split("T") + " " + timezone);
-}
-
-// Function to toggle between log in / log out button depending on state
-function LogInOut(props) {
-  return props.isAuthenticated ? (
-    <StyledButton type="button" onClick={props.logOut}>
-      Log Out
-    </StyledButton>
-  ) : (
-    <StyledButton type="button" onClick={props.logIn}>
-      Log In
-    </StyledButton>
-  );
-}
-
-// "Select Calendar" button and dialog
-class DialogAndButton extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      open: false,
-      selectedValue: this.props.calendars[0]
-    };
-  }
-
-  handleClickOpen() {
-    this.setState({ open: true });
-  }
-
-  handleClose(value) {
-    this.setState({ open: false });
-    this.props.callback(value);
-  }
-
-  render() {
-    return (
-      <div>
-        <RightButton type="button" onClick={this.handleClickOpen.bind(this)}>
-          Select Calendar
-        </RightButton>
-        <Dialog
-          onClose={this.handleClose.bind(this)}
-          aria-labelledby="select-calendar-dialog"
-          open={this.state.open}
-        >
-          <DialogTitle id="select-calendar-dialog-title">
-            Select Calendar
-          </DialogTitle>
-          <List>
-            {this.props.calendars.map((cal, i) => (
-              <ListItem button onClick={() => this.handleClose(cal.id)} key={i}>
-                <ListItemText primary={cal.name} />
-              </ListItem>
-            ))}
-          </List>
-        </Dialog>
-      </div>
-    );
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
 
 class CalendarCaller extends React.Component {
   constructor(props) {
