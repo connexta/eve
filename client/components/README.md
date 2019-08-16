@@ -10,7 +10,7 @@ Displays the health of builds as reported by Jenkins and toggles between the hea
 
 #### Props:
 - **urlList**: array of key/value pairs with the keys being the names of the builds and the values being links to the Jenkins build status
-- **cardContentStyle**: stylings of the BuildStatus card
+- **listvert**: Boolean value which will list the build statuses vertically when true, rather than the default horizontal listing.
 
 #### API:
 This component relies on the Jenkins API.
