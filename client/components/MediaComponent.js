@@ -93,6 +93,7 @@ export default class MediaComponent extends React.Component {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
 
+  // Fetches all images to be displayed
   getMedia() {
     let media = this.state.carousel.map((card, i) => {
       return require("../../resources/carouselMedia/" + card.media);

@@ -5,7 +5,7 @@ import {
   CX_FONT
 } from "../utils/Constants";
 import styled from "styled-components";
-import { Card } from "@material-ui/core";
+import { Card, CardContent } from "@material-ui/core";
 
 export const BOX_HEADER_SIZE = 44;
 
@@ -27,3 +27,24 @@ export const BoxHeader = styled.div`
 `;
 
 export const CARD_SIDE_MARGINS = 24;
+
+export const FlexRowCardContent = styled(CardContent)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 32px;
+  clear: both;
+  && {
+    padding: 0;
+  }
+`;
+
+export const FlexRowSubHeading = styled.div`
+  background: ${CX_OFF_WHITE};
+  font-size: 20px;
+  color: ${BATMAN_GRAY};
+  font-family: ${CX_FONT};
+  font-style: italic;
+  margin-left: 32px;
+`;
