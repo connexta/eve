@@ -67,7 +67,8 @@ export default class MediaComponent extends React.Component {
     this.state = {
       carousel: Carousel.cards,
       displayIndex: 0,
-      numCards: Carousel.cards ? Carousel.cards.length : 0
+      numCards: Carousel.cards ? Carousel.cards.length : 0,
+      media: []
     };
   }
 
@@ -89,9 +90,18 @@ export default class MediaComponent extends React.Component {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
 
+  getMedia() {
+    let media = this.state.carousel.map((card, i) => {
+      return require("../../resources/carouselMedia/" + card.media);
+    });
+
+    this.setState({ media: media });
+  }
+
   // Sets timer for rotating displayed media
   componentDidMount() {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
+    this.getMedia();
   }
 
   // Clears interval and destroys remaining promises when component unmounted
@@ -120,7 +130,6 @@ export default class MediaComponent extends React.Component {
       );
     } else {
       let card = this.state.carousel[this.state.displayIndex];
-      let src = require("../../resources/carouselMedia/" + card.media);
 
       return (
         <MediaCard raised={true}>
@@ -130,7 +139,9 @@ export default class MediaComponent extends React.Component {
               if (card.link != "") window.open(card.link);
             }}
           >
-            <CarouselMedia src={src}></CarouselMedia>
+            <CarouselMedia
+              src={this.state.media[this.state.displayIndex]}
+            ></CarouselMedia>
             <p>{card.title}</p>
             <CarouselBody>{card.body}</CarouselBody>
           </CarouselContent>
