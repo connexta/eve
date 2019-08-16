@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { time, hour, minute } from "../utils/TimeUtils";
+import { time, minute } from "../utils/TimeUtils";
 import throttle from "lodash.throttle";
 import { DotLoader } from "react-spinners";
 import { CX_LIGHT_BLUE } from "../utils/Constants";
@@ -33,23 +33,29 @@ export default class Grafana extends React.Component {
   }
 
   async componentDidMount() {
-    (await this.doesImageExist())
-      ? this.setState({ isLoading: false })
-      : this.createImage();
-    this.timerIntervalID = setInterval(() => this.createImage(), minute);
-    this.reloadIntervalID = setInterval(() => location.reload(), hour);
+    this.setState({ isLoading: !(await this.doesImageExist()) });
+    this.timerIntervalID = setInterval(() => this.updateDisplayImage(), minute);
     window.addEventListener("resize", this.throttledHandleWindowResize());
   }
 
   componentWillUnmount() {
     clearInterval(this.timerIntervalID);
-    clearInterval(this.reloadIntervalID);
     window.removeEventListener("resize", this.throttledHandleWindowResize());
+  }
+
+  async updateDisplayImage() {
+    let getURL = "/display/?name=" + this.props.name + "?" + Date.now();
+    this.setState({
+      isLoading: !(await this.doesImageExist()),
+      imageURL: getURL
+    });
+    localStorage.setItem(this.props.name, getURL);
   }
 
   //Check if image URL is functioning and exists; resolves promise received from checkImageExists() to obtain boolean value.
   //return true if localStorage contains cacheed image url & image url functions
   async doesImageExist() {
+    console.log("requesting to check if image exists");
     let imageExist = false;
     await this.checkImageExist(this.state.imageURL)
       .then(response => {
@@ -81,30 +87,6 @@ export default class Grafana extends React.Component {
       xhr.open("HEAD", url, true);
       xhr.send();
     });
-  }
-
-  //create grafana dashboard screenshot through NodeJS. Stored the results into localStorage and state.
-  async createImage() {
-    let setURL =
-      "/grafana/?name=" + this.props.name + "&timezone=" + this.getTimezone();
-    await fetch(setURL, {
-      method: "GET"
-    }).catch(err => {
-      console.log("Unable to take grafana screenshot ", err);
-    });
-
-    let getURL = "/display/?name=" + this.props.name + "?" + Date.now();
-    localStorage.setItem(this.props.name, getURL);
-
-    this.setState({
-      imageURL: getURL,
-      isLoading: !(await this.doesImageExist())
-    });
-  }
-
-  //get browser's current timezone.
-  getTimezone() {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
   //throttle method to prevent explosive rendering during window resizing.

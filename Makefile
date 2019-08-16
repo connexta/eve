@@ -39,7 +39,7 @@ lf:
 .PHONY: run
 run:
 	@echo "RUNNING image: $$(docker images | grep -E 'master' | awk -e '{print $$3}')"
-	@docker kill wallboard; docker run --rm -p 3000:3000 --name wallboard $$(docker images | grep -E 'master' | awk -e '{print $$3}'); docker kill wallboard
+	@docker kill wallboard; docker run --rm -p 3000:3000 --name wallboard $$(docker images | grep -E 'master' | awk -e '{print $$3}')
 
 .PHONY: shell
 shell:
