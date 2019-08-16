@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const grafana = require("./grafana");
 const fs = require("fs");
 const cron = require("./cron");
+const multer = require("multer");
 
 dotenv.config();
 const app = express();
@@ -49,6 +50,28 @@ app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
 cron.grafanaCron(prod, app, soaesb_url);
 
 /* ROUTE */
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors());
+
+/* ROUTE */
+app.post("/carousel", function(req, res) {
+  console.log(req.body);
+  fs.writeFileSync("./resources/carousel.json", JSON.stringify(req.body));
+  res.end(
+    "text=%3Ca+href%3D%22javascript%3Awindow.open%28%27%27%2C%27_self%27%29.close%28%29%3B%22%3Eclose%3C%2Fa%3E"
+  );
+});
+
+app.post("/upload", function(req, res) {
+  upload(req, res, function(err) {
+    if (err) {
+      return res.end("Something went wrong!");
+    }
+    return res.end("<meta http-equiv>");
+  });
+});
+
 app.get("/versions", function(req, res) {
   var content = fs.readFileSync(
     prod ? "versions.json" : "server/versions.json"
