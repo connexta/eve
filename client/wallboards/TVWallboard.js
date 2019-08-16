@@ -27,9 +27,7 @@ export default class TVWallboard extends React.Component {
     return (
       <Grid container style={{ height: "100%" }} spacing={0}>
         <LeftBox item>
-          <BuildStatus
-            urlList={jenkinsURLList}
-          />
+          <BuildStatus urlList={jenkinsURLList} />
           <Grid
             container
             direction="row"

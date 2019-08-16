@@ -3,11 +3,7 @@ import styled from "styled-components";
 import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
-import {
-  BoxStyle,
-  BoxHeader,
-  CARD_SIDE_MARGINS
-} from "../styles/styles";
+import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
