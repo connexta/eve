@@ -21,13 +21,16 @@ export const MediaCard = styled(BoxStyle)`
 
 export const CarouselContent = styled.div`
   text-align: center;
-  cursor: pointer;
   width: 100%;
   height: calc(100% - 132px);
   margin: 52px 0 0 0;
   position: absolute;
   bottom: 60px;
   left: 0;
+`;
+
+const CarouselContentLink = styled(CarouselContent)`
+  cursor: pointer;
 `;
 
 const CarouselMedia = styled.img`
@@ -134,17 +137,27 @@ export default class MediaComponent extends React.Component {
       return (
         <MediaCard raised={true}>
           <BoxHeader>Company Media</BoxHeader>
-          <CarouselContent
-            onClick={() => {
-              if (card.link != "") window.open(card.link);
-            }}
-          >
-            <CarouselMedia
-              src={this.state.media[this.state.displayIndex]}
-            ></CarouselMedia>
-            <p>{card.title}</p>
-            <CarouselBody>{card.body}</CarouselBody>
-          </CarouselContent>
+          {card.link == "" ? (
+            <CarouselContent>
+              <CarouselMedia
+                src={this.state.media[this.state.displayIndex]}
+              ></CarouselMedia>
+              <p>{card.title}</p>
+              <CarouselBody>{card.body}</CarouselBody>
+            </CarouselContent>
+          ) : (
+            <CarouselContentLink
+              onClick={() => {
+                window.open(card.link);
+              }}
+            >
+              <CarouselMedia
+                src={this.state.media[this.state.displayIndex]}
+              ></CarouselMedia>
+              <p>{card.title}</p>
+              <CarouselBody>{card.body}</CarouselBody>
+            </CarouselContentLink>
+          )}
           <StyledMobileStepper
             activeStep={this.state.displayIndex}
             steps={this.state.numCards}
