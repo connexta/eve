@@ -56,8 +56,7 @@ app.get("/display", async (req, res) => {
         "Content-Length": screenshotBuffer.length
       });
       res.end(screenshotBuffer);
-    }
-    else {
+    } else {
       res.end();
     }
   } catch (error) {

@@ -1,7 +1,7 @@
 const grafana = require("./grafana");
 const CronJob = require("cron").CronJob;
 
- module.exports = {
+module.exports = {
   grafanaCron: function(prod, app, url) {
     new CronJob(
       "0 0 */1 * * *",

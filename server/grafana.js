@@ -12,7 +12,12 @@ module.exports = {
       ? await puppeteer.launch({
           executablePath: "/usr/bin/chromium-browser",
           headless: true,
-          args: ['--no-sandbox', '--disable-setuid-sandbox', "--disable-dev-shm-usage", '--headless'],
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--headless"
+          ],
           env: {
             TZ: "America/Phoenix"
           }

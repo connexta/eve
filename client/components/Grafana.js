@@ -23,9 +23,9 @@ export default class Grafana extends React.Component {
     super(props);
     let url = "/display/?name=" + this.props.name + "?" + Date.now();
     this.state = {
+      isLoading: true,
       screenWidth: window.innerWidth,
       screenHeight: window.innerHeight,
-      isLoading: true,
       imageURL: localStorage.getItem(this.props.name)
         ? localStorage.getItem(this.props.name)
         : url
@@ -33,8 +33,8 @@ export default class Grafana extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({isLoading: !(await this.doesImageExist())});
-    this.timerIntervalID = setInterval(async () => this.updateDisplayImage(), minute);
+    this.setState({ isLoading: !(await this.doesImageExist()) });
+    this.timerIntervalID = setInterval(() => this.updateDisplayImage(), minute);
     window.addEventListener("resize", this.throttledHandleWindowResize());
   }
 
@@ -49,7 +49,7 @@ export default class Grafana extends React.Component {
       isLoading: !(await this.doesImageExist()),
       imageURL: getURL
     });
-    localStorage.setItem(this.props.name, getURL)
+    localStorage.setItem(this.props.name, getURL);
   }
 
   //Check if image URL is functioning and exists; resolves promise received from checkImageExists() to obtain boolean value.
