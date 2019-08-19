@@ -388,7 +388,8 @@ export default class MediaComponent extends React.Component {
             <Divider />
             {eventData.map((event, i) => {
               let day = getDayofWeek(event.start.getDay());
-              let date = event.start.getMonth() + "/" + event.start.getDate();
+              let date =
+                event.start.getMonth() + 1 + "/" + event.start.getDate();
 
               let startTime = getTimeString(event.start);
               let endTime = getTimeString(event.end);

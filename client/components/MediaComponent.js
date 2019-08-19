@@ -21,13 +21,16 @@ export const MediaCard = styled(BoxStyle)`
 
 export const CarouselContent = styled.div`
   text-align: center;
-  cursor: pointer;
   width: 100%;
   height: calc(100% - 132px);
   margin: 52px 0 0 0;
   position: absolute;
   bottom: 60px;
   left: 0;
+`;
+
+const CarouselContentLink = styled(CarouselContent)`
+  cursor: pointer;
 `;
 
 const CarouselMedia = styled.img`
@@ -67,7 +70,8 @@ export default class MediaComponent extends React.Component {
     this.state = {
       carousel: Carousel.cards,
       displayIndex: 0,
-      numCards: Carousel.cards ? Carousel.cards.length : 0
+      numCards: Carousel.cards ? Carousel.cards.length : 0,
+      media: []
     };
   }
 
@@ -89,9 +93,20 @@ export default class MediaComponent extends React.Component {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
 
+
+  // Fetches all images to be displayed
+  getMedia() {
+    let media = this.state.carousel.map((card, i) => {
+      return require("../../resources/carouselMedia/" + card.media);
+    });
+
+    this.setState({ media: media });
+  }
+
   // Sets timer for rotating displayed media
   componentDidMount() {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
+    this.getMedia();
   }
 
   // Clears interval and destroys remaining promises when component unmounted
@@ -120,20 +135,31 @@ export default class MediaComponent extends React.Component {
       );
     } else {
       let card = this.state.carousel[this.state.displayIndex];
-      let src = require("../../resources/carouselMedia/" + card.media);
 
       return (
         <MediaCard raised={true}>
           <BoxHeader>Company Media</BoxHeader>
-          <CarouselContent
-            onClick={() => {
-              if (card.link != "") window.open(card.link);
-            }}
-          >
-            <CarouselMedia src={src}></CarouselMedia>
-            <p>{card.title}</p>
-            <CarouselBody>{card.body}</CarouselBody>
-          </CarouselContent>
+          {card.link == "" ? (
+            <CarouselContent>
+              <CarouselMedia
+                src={this.state.media[this.state.displayIndex]}
+              ></CarouselMedia>
+              <p>{card.title}</p>
+              <CarouselBody>{card.body}</CarouselBody>
+            </CarouselContent>
+          ) : (
+            <CarouselContentLink
+              onClick={() => {
+                window.open(card.link);
+              }}
+            >
+              <CarouselMedia
+                src={this.state.media[this.state.displayIndex]}
+              ></CarouselMedia>
+              <p>{card.title}</p>
+              <CarouselBody>{card.body}</CarouselBody>
+            </CarouselContentLink>
+          )}
           <StyledMobileStepper
             activeStep={this.state.displayIndex}
             steps={this.state.numCards}
