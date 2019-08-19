@@ -2,12 +2,17 @@
 
 #### Who is reviewing it?
 <!--(please choose AT LEAST two reviewers that need to approve the PR before it can get merged)-->
-@vinamartin @Kjames5269 @bankent1 @alchucam @mcalcote @haydenudelson
+@vinamartin @alchucam @mcalcote @haydenudelson
+<!--(please choose AT LEAST one UI team reviewer)-->
+@Bdthomson @adimka @samuelechu @djblue @gordocanchola
 
 #### How should this be tested?
 
 #### Screenshots
 <!--(if appropriate)-->
+
+#### Checklist:
+- [ ] Documentation Updated
 
 #### Review Comment Legend:
 - ✏️ (Pencil) This comment is a nitpick or style suggestion, no action required for approval. This comment should provide a suggestion either as an in line code snippet or a gist.
