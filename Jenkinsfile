@@ -22,20 +22,20 @@ pipeline {
       }
     }
     stage('Build Image') {
-      when {
-        allOf {
-          expression { env.CHANGE_ID == null }
-          expression { env.BRANCH_NAME == "master" || "DEV" }
-        }
-      }
       steps {
         withCredentials([
           string(credentialsId: 'SLACK_TOKEN', variable: 'SLACK_TOKEN'),
           string(credentialsId: 'SLACK_CHANNEL', variable: 'SLACK_CHANNEL'),
           string(credentialsId: 'GITHUB_CLIENT_ID', variable: 'GITHUB_CLIENT_ID'),
-          string(credentialsId: 'GITHUB_CLIENT_SECRET', variable: 'GITHUB_CLIENT_SECRET')
+          string(credentialsId: 'GITHUB_CLIENT_SECRET', variable: 'GITHUB_CLIENT_SECRET'),
+          string(credentialsId: 'SOAESB_BEARER_TOKEN', variable: 'SOAESB_BEARER_TOKEN')
         ]) {
-          sh 'make image SLACK_TOKEN=${SLACK_TOKEN} SLACK_CHANNEL=${SLACK_CHANNEL} GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID} GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET} GIT_BRANCH=' + env.BRANCH_NAME
+          sh 'make image SLACK_TOKEN=${SLACK_TOKEN} \
+          SLACK_CHANNEL=${SLACK_CHANNEL} \
+          GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID} \
+          GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET} \
+          SOAESB_BEARER_TOKEN=${SOAESB_BEARER_TOKEN} \
+          GIT_BRANCH=' + env.BRANCH_NAME
         }
       }
     }
