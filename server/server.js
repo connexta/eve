@@ -13,9 +13,30 @@ const app = express();
 const port = process.env.EVE_PORT || 3000;
 const prod = process.env.NODE_ENV === "production";
 
+const dir = path.join(__dirname, "carouselMedia");
+
+app.use(express.static(dir));
+
+/* URL */
+const soaesb_url =
+  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
+const urlList = {
+  SOAESB: soaesb_url
+};
+
+app.use(express.static("target"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors());
+
+// /* CRON JOB */
+// //CRON JOB for SOAESB grafana
+// app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+// cron.grafanaCron(prod, app, soaesb_url);
+
 const storage = multer.diskStorage({
   destination: function(req, file, callback) {
-    callback(null, "./resources/carouselMedia");
+    callback(null, "server/carouselMedia");
   },
   filename: function(req, file, callback) {
     // callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
@@ -27,51 +48,37 @@ var upload = multer({
   storage: storage
 }).array("imgUploader", 3);
 
-// Add headers
-// mediaApp.use(function(req, res, next) {
-//   // Website you wish to allow to connect
-//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
-
-/* URL */
-const soaesb_url =
-  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
-const urlList = {
-  SOAESB: soaesb_url
-};
-
-app.use(express.static("target"));
-//app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
-
-/* CRON JOB */
-//CRON JOB for SOAESB grafana
-app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-cron.grafanaCron(prod, app, soaesb_url);
-
 /* ROUTE */
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
+app.get("/carousel", function(req, res) {
+  var content = fs.readFileSync("./resources/carousel.json");
+  res.send(JSON.parse(content));
+});
 
-/* ROUTE */
 app.post("/carousel", function(req, res) {
-  console.log(req.body);
   fs.writeFileSync("./resources/carousel.json", JSON.stringify(req.body));
-  res.end(
-    "text=%3Ca+href%3D%22javascript%3Awindow.open%28%27%27%2C%27_self%27%29.close%28%29%3B%22%3Eclose%3C%2Fa%3E"
-  );
+  res.end("Data sent successfully");
 });
 
 app.post("/upload", function(req, res) {
   upload(req, res, function(err) {
     if (err) {
-      return res.end("Something went wrong!");
+      return res.end(err);
     }
-    return res.end("<meta http-equiv>");
+    return res.end("File uploaded successfully");
   });
 });
 
+app.post("/remove", function(req, res) {
+  let media = req.body.media;
+  fs.unlink("server/carouselMedia/" + media, function(err) {
+    if (err) console.log(err);
+    console.log("image deleted");
+  });
+
+  res.end("Card deleted successfully");
+});
+
+/* ROUTE */
 app.get("/versions", function(req, res) {
   var content = fs.readFileSync(
     prod ? "versions.json" : "server/versions.json"
@@ -87,39 +94,24 @@ app.post("/versions", function(req, res) {
   res.end();
 });
 
-//image url to display created grafana screenshot
-app.get("/display", async (req, res) => {
-  try {
-    const name = req.query.name.split("?")[0];
-    const screenshotBuffer = await app.get(name);
-    if (screenshotBuffer) {
-      res.writeHead(200, {
-        "Content-Type": "image/png",
-        "Content-Length": screenshotBuffer.length
-      });
-      res.end(screenshotBuffer);
-    } else {
-      res.end();
-app.post("/carousel", function(req, res) {
-  console.log(req.body);
-  fs.writeFileSync("./resources/carousel.json", JSON.stringify(req.body));
-  res.end();
-});
-
-app.post("/upload", function(req, res) {
-  upload(req, res, function(err) {
-    if (err) {
-      return res.end("Something went wrong!");
-    }
-<<<<<<< HEAD
-  } catch (error) {
-    console.log("Error in /display ", error);
-  }
-=======
-    return res.end("File uploaded successfully!");
-  });
->>>>>>> working but with redirect
-});
+// //image url to display created grafana screenshot
+// app.get("/display", async (req, res) => {
+//   try {
+//     const name = req.query.name.split("?")[0];
+//     const screenshotBuffer = await app.get(name);
+//     if (screenshotBuffer) {
+//       res.writeHead(200, {
+//         "Content-Type": "image/png",
+//         "Content-Length": screenshotBuffer.length
+//       });
+//       res.end(screenshotBuffer);
+//     } else {
+//       res.end();
+//     }
+//   } catch (error) {
+//     console.log("Error in /display ", error);
+//   }
+// });
 
 app.get("*", (req, res) => {
   let targetPath =

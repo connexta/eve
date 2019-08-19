@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BoxStyle, BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
-import Carousel from "../../resources/carousel.json";
+import { BoxStyle, BoxHeader } from "../styles/styles";
 import { time } from "../utils/TimeUtils";
 import {
   MobileStepper,
@@ -24,12 +23,18 @@ import {
   Delete,
   Save
 } from "@material-ui/icons";
-import Carousel from "../../resources/carousel.json";
-import { time } from "../utils/TimeUtils";
+import { withStyles } from "@material-ui/styles";
 
-const ROTATE_FREQ = time({ seconds: 15 });
+const ROTATE_FREQ = time({ seconds: 5 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 export const MEDIA_CARD_MARGINS = 20;
+
+export const MediaCard = styled(BoxStyle)`
+  width: calc((100% / 2) - 24px);
+  margin: 0 0 0 24px;
+  height: 100%;
+  position: relative;
+`;
 
 export const CarouselContent = styled.div`
   text-align: center;
@@ -39,6 +44,10 @@ export const CarouselContent = styled.div`
   position: absolute;
   bottom: 60px;
   left: 0;
+`;
+
+const CarouselContentLink = styled(CarouselContent)`
+  cursor: pointer;
 `;
 
 const CarouselMedia = styled.img`
@@ -96,11 +105,24 @@ class MediaEdit extends React.Component {
 
   handleClose(value) {
     this.setState({ open: false });
-    this.props.remove(value);
   }
 
-  send() {
+  async send() {
     this.formRef.current.submit();
+
+    await fetch("/carousel", {
+      method: "POST",
+      body: this.state.file,
+      header: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+      .then(response => response.text())
+      .then(success => {
+        console.log(success);
+      })
+      .catch(error => console.log(error));
+
     this.props.addMedia({
       body: this.state.body,
       title: this.state.title,
@@ -108,18 +130,7 @@ class MediaEdit extends React.Component {
       link: this.state.link
     });
 
-    fetch("http://localhost:8080/upload", {
-      method: "POST",
-      body: this.state.file,
-      header: {
-        "Content-Type": "multipart/form-data"
-      }
-    })
-      .then(response => response.json())
-      .then(success => {
-        console.log(success);
-      })
-      .catch(error => console.log(error));
+    this.setState({ add: false });
   }
 
   render() {
@@ -130,6 +141,7 @@ class MediaEdit extends React.Component {
           onClose={this.handleClose.bind(this)}
           aria-labelledby="select-calendar-dialog"
           open={this.state.open}
+          maxWidth={false}
         >
           <DialogTitle id="select-calendar-dialog-title">
             Add/Remove Media
@@ -179,7 +191,7 @@ class MediaEdit extends React.Component {
                     <form
                       target="_blank"
                       id="frmUploader"
-                      action="http://localhost:8080/upload"
+                      action="/upload"
                       method="post"
                       ref={this.formRef}
                       encType="multipart/form-data"
@@ -217,15 +229,51 @@ class MediaEdit extends React.Component {
   }
 }
 
+///////////////////////////////////
+///////////////////////////////////
+
 export default class MediaComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      carousel: Carousel.cards,
+      carousel: [],
       displayIndex: 0,
-      numCards: Carousel.cards ? Carousel.cards.length : 0,
-      media: []
+      numCards: 0
     };
+  }
+
+  async getCarousel() {
+    await fetch("/carousel", {
+      method: "GET"
+    })
+      .catch(err => console.log(err))
+      .then(res => {
+        if (!res.ok) {
+          console.log("Failed to fetch carousel data");
+          return;
+        } else {
+          console.log("Carousel data received");
+          return res.json();
+        }
+      })
+      .then(res => {
+        console.log(res);
+        this.setState({
+          carousel: res.cards,
+          numCards: res.cards.length
+        });
+      });
+  }
+
+  // Sets timer for rotating displayed media
+  componentDidMount() {
+    this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
+    this.getCarousel();
+  }
+
+  // Clears interval and destroys remaining promises when component unmounted
+  componentWillUnmount() {
+    clearInterval(this.rotateInterval);
   }
 
   rotateCard() {
@@ -246,68 +294,68 @@ export default class MediaComponent extends React.Component {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
 
-  // Fetches all images to be displayed
-  getMedia() {
-    let media = this.state.carousel.map((card, i) => {
-      return require("../../resources/carouselMedia/" + card.media);
-    });
-
-    this.setState({ media: media });
-  }
-
-  // Sets timer for rotating displayed media
-  componentDidMount() {
-    this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
-    this.getMedia();
-  }
-
-  // Clears interval and destroys remaining promises when component unmounted
-  componentWillUnmount() {
-    clearInterval(this.rotateInterval);
-  }
-
   removeMedia(num) {
-    if (num >= 0 && num < this.state.numCards) {
-      let temp = this.state.carousel.filter((card, i) => i != num);
-      this.setState({
-        carousel: temp
-      });
-      if (this.state.numCards - 1 == this.state.displayIndex)
-        this.setState({ displayIndex: this.state.displayIndex - 1 });
-      this.setState({ numCards: this.state.numCards - 1 });
+    let media = this.state.carousel[num].media;
+    if (media != null) {
+      fetch("/remove", {
+        method: "POST",
+        body: JSON.stringify({ media: media }),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(res => res.text())
+        .then(res => console.log(res));
     }
+
+    let temp = this.state.carousel.filter((card, i) => i != num);
+    this.setState({
+      carousel: temp
+    });
+    this.send({ cards: temp });
+
+    if (this.state.numCards - 1 == this.state.displayIndex)
+      this.setState({ displayIndex: this.state.displayIndex - 1 });
+    this.setState({ numCards: this.state.numCards - 1 });
   }
 
-  addMedia(media) {
-    let temp = this.state.carousel;
-    temp.push(media);
-    this.setState({ carousel: temp, numCards: this.state.numCards + 1 });
+  send(data) {
+    console.log("Sending: ", data);
 
-    this.send();
-  }
-
-  send() {
-    fetch("http://localhost:8080/carousel", {
+    fetch("/carousel", {
       method: "POST",
-      body: JSON.stringify({ cards: this.state.carousel }),
+      body: JSON.stringify(data),
       headers: { "Content-Type": "application/json" }
     })
       .then(res => res.text())
       .then(res => console.log(res));
   }
 
+  addMedia(media) {
+    let temp = this.state.carousel;
+    temp.push(media);
+
+    this.send({ cards: temp });
+
+    let tempMedia = this.state.media;
+    media = this.state.carousel[this.state.numCards].media;
+
+    this.setState({
+      carousel: temp,
+      numCards: this.state.numCards + 1
+    });
+  }
+
   render() {
     if (this.state.numCards <= 0) {
       return (
         <MediaCard raised={true}>
-          <Header>
+          <BoxHeader>
             Company Media
             <MediaEdit
               media={this.state.carousel}
               remove={this.removeMedia.bind(this)}
               addMedia={this.addMedia.bind(this)}
             />
-          </Header>
+          </BoxHeader>
         </MediaCard>
       );
     } else {
@@ -323,10 +371,10 @@ export default class MediaComponent extends React.Component {
               addMedia={this.addMedia.bind(this)}
             />
           </BoxHeader>
-          {card.link == "" ? (
+          {card.link == null ? (
             <CarouselContent>
               <CarouselMedia
-                src={this.state.media[this.state.displayIndex]}
+                src={"/" + this.state.carousel[this.state.displayIndex].media}
               ></CarouselMedia>
               <p>{card.title}</p>
               <CarouselBody>{card.body}</CarouselBody>
@@ -338,7 +386,7 @@ export default class MediaComponent extends React.Component {
               }}
             >
               <CarouselMedia
-                src={this.state.media[this.state.displayIndex]}
+                src={"/" + this.state.carousel[this.state.displayIndex].media}
               ></CarouselMedia>
               <p>{card.title}</p>
               <CarouselBody>{card.body}</CarouselBody>
