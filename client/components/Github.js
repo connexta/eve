@@ -170,21 +170,16 @@ export default class Github extends React.Component {
 
   // Function to make class to GitHub API, trashable used to protect against broken promises
   async fetchGithub(call) {
-    this.trashableRequestGithub = makeTrashable(fetch(call));
+    try {
+      this.trashableRequestGithub = makeTrashable(
+        fetch("/fetch/?type=JSON&url=" + call)
+      );
 
-    return await this.trashableRequestGithub
-      .catch(e => console.log("Error fetching GitHub data", e))
-      .then(res => {
-        if (!res.ok) {
-          console.log("Failed to fetch GitHub data: " + call);
-          return;
-        } else {
-          return res.json();
-        }
-      })
-      .then(res => {
-        return res;
-      });
+      return await this.trashableRequestGithub
+      .then(response => response.json())
+    } catch (error) {
+      console.log("error", e);
+    }
   }
 
   // Finds and sets name of repo

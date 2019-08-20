@@ -10,7 +10,8 @@
     "go": "yarn install && yarn build && yarn start",
     "up": "cd server && yarn install",
     "serve": "node server/server.js",
-    "server": "yarn up && yarn serve"
+    "server": "yarn up && yarn serve",
+    "https": "yarn server https"
   },
   "dependencies": {
     "@material-ui/core": "^4.2.1",

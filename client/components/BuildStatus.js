@@ -125,7 +125,7 @@ class BuildStatus extends React.Component {
 
   //fetch data from the jenkin url
   fetchData(URL) {
-    return fetch(URL)
+    return fetch("/fetch/?type=JSON&url=" + URL)
       .then(response => response.json())
       .catch(e => console.log("error", e));
   }
