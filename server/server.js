@@ -28,24 +28,11 @@ const targetPath = prod ? "/target" : "../target";
 //CRON JOB for SOAESB grafana
 app.set("SOAESB", grafana.getScreenshot(prod, links.soaesb_url)); //initial run
 cron.grafanaCron(prod, app, links.soaesb_url);
-//CRON JOB for Github
-var github_list = ["codice/ddf"];
-// app.set(github_list[0])
-console.log(github_list);
-// app.set()
-// console.log(app.get("codice/ddf"))
-// app.set("codice/ddf", "ho");
-// console.log(app.get("codice/ddf"))
-// console.log(links.github.reponame("codice/ddf"))
-// console.log(links);
-
 
 /* ROUTE */
 app.get("/fetch", async (req, res) => {
   const url = req.query.url;
   const type = req.query.type;
-  // console.log("type is " + type);
-  // console.log("THE URL " + url);
   try {
     const response = await fetch(url);
     switch (type) {
@@ -57,7 +44,7 @@ app.get("/fetch", async (req, res) => {
         res.send(response);
     }
   } catch (error) {
-    console.log(error);
+    console.log("Error in /fetch ", error);
   }
   res.end();
 });
@@ -100,6 +87,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, targetPath, "index.html"));
 });
 
+/* Deploy */
 if (process.argv.length >= 2 && process.argv[2] === "https") { //DEV setup for HTTPS enviornment
   const options = {
     key: fs.readFileSync( './localhost.key' ),

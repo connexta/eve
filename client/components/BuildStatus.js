@@ -155,7 +155,7 @@ class BuildStatus extends React.Component {
       return "Data not Found";
     } else {
       return (
-        item.weatherScore / weatherScoreDivisor +
+        Math.floor(item.weatherScore / weatherScoreDivisor) +
         "/" +
         divisor.toString() +
         " Succeeded"
