@@ -46,9 +46,13 @@ For client, run
 ```
 yarn go (synonymous with yarn install && yarn build && yarn start)
 ```
-For server, run
+For server in http, run
 ```
 yarn server (synonymous with node server/server.js)
+```
+Or for server in https, run
+```
+yarn https
 ```
 Then navigate to 0.0.0.0:8080 on Mac or localhost:8080 on Windows.
 It is necessary to run the server if you are testing components that utilize backend API calls (i.e. Grafana)

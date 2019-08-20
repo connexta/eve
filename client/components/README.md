@@ -61,6 +61,13 @@ All information for this component is pulled from the GitHub API.  Calls are aut
 
 Take and display screenshot of grafana dashboard.
 
+#### Packages:
+- **throttle**: Implement throttle to prevent explosive number of setState during window resizing.
+
+#### Props:
+  * **name**: name of grafana dashboard
+  * **url**: url of grafana dashboard to display
+
 ## SlackComponent
 Displays the 10 most recent slack messages, rotating through the messages on a set interval. The slack widget is a fixed size and will only show as many messages as can fit. The component is currently not interactive in any way.
 
