@@ -132,22 +132,26 @@ class SlackComponent extends React.Component {
       this.fetchData(url)
     );
 
-    const data = await this.trashableRequestList[0];
-    let messageList = [];
-    let msgCount = 0;
-    data.messages.forEach(message => {
-      // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)
-      if (!message.parent_user_id && (!message.subtype || message.bot_id)) {
-        msgCount++;
-        if (msgCount > MAX_MSGS) return;
-        messageList.push(message);
-      }
-    });
-    this.setState({ 
-      messages: messageList, 
-      msgLoading: false 
-    });
-    this.setSlackMsg();
+    try {
+      const data = await this.trashableRequestList[0];
+      let messageList = [];
+      let msgCount = 0;
+      data.messages.forEach(message => {
+        // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)
+        if (!message.parent_user_id && (!message.subtype || message.bot_id)) {
+          msgCount++;
+          if (msgCount > MAX_MSGS) return;
+          messageList.push(message);
+        }
+      });
+      this.setState({ 
+        messages: messageList, 
+        msgLoading: false 
+      });
+      this.setSlackMsg();
+    } catch (error) {
+      console.log("Failed to fetch slack messages ", error);
+    }
   }
 
   // fetch user list
@@ -157,12 +161,15 @@ class SlackComponent extends React.Component {
     this.trashableRequestList[1] = makeTrashable(
       this.fetchData(url)
     );
-
-    const data = await this.trashableRequestList[1];
-    this.setState({
-      slackUsers: data.members,
-      userLoading: false
-    });
+    try {
+      const data = await this.trashableRequestList[1];
+      this.setState({
+        slackUsers: data.members,
+        userLoading: false
+      });
+    } catch (error) {
+      console.log("Failed to fetch slack users ", error);
+    }
   }
 
   // fetch custom emoji list
@@ -172,12 +179,15 @@ class SlackComponent extends React.Component {
     this.trashableRequestList[2] = makeTrashable(
       this.fetchData(url)
     );
-
-    const data = await this.trashableRequestList[2];
-    this.setState({ 
-      emojis: data.emoji,
-      emojiLoading: false 
-    });
+    try {
+      const data = await this.trashableRequestList[2];
+      this.setState({ 
+        emojis: data.emoji,
+        emojiLoading: false 
+      });
+    } catch (error) {
+      console.log("Failed to fetch slack emojis ", error);
+    }
   }
 
   async setChannels() {
@@ -186,18 +196,21 @@ class SlackComponent extends React.Component {
     this.trashableRequestList[3] = makeTrashable(
       this.fetchData(url)
     );
-
-    const data = await this.trashableRequestList[3];
-    this.setState({ 
-      channels: data.channels, 
-      chanLoading: false 
-    });
+    try {
+      const data = await this.trashableRequestList[3];
+      this.setState({ 
+        channels: data.channels, 
+        chanLoading: false 
+      });
+    } catch (error) {
+      console.log("Failed to fetch slack channels ", error);
+    }
   }
 
   fetchData(URL) {
     return fetch("/fetch/?type=JSON&url=" + URL)
       .then(response => response.json())
-      .catch(e => console.log("error", e)); 
+      .catch(e => console.log("fetch data error", e)); 
   }
 
   getChannelName(id) {
