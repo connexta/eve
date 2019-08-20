@@ -89,7 +89,6 @@ class MediaEdit extends React.Component {
 
     this.state = {
       open: false,
-      edit: false,
       add: false,
       title: null,
       body: null,
@@ -108,20 +107,9 @@ class MediaEdit extends React.Component {
   }
 
   async send() {
-    this.formRef.current.submit();
-
-    await fetch("/carousel", {
-      method: "POST",
-      body: this.state.file,
-      header: {
-        "Content-Type": "multipart/form-data"
-      }
-    })
-      .then(response => response.text())
-      .then(success => {
-        console.log(success);
-      })
-      .catch(error => console.log(error));
+    if (this.inputRef.current.value.length > 0) {
+      this.formRef.current.submit();
+    }
 
     this.props.addMedia({
       body: this.state.body,
@@ -130,7 +118,13 @@ class MediaEdit extends React.Component {
       link: this.state.link
     });
 
-    this.setState({ add: false });
+    this.setState({
+      add: false,
+      body: null,
+      title: null,
+      media: null,
+      link: null
+    });
   }
 
   render() {
@@ -139,14 +133,12 @@ class MediaEdit extends React.Component {
         <Edit onClick={this.handleClickOpen.bind(this)} />
         <Dialog
           onClose={this.handleClose.bind(this)}
-          aria-labelledby="select-calendar-dialog"
+          aria-labelledby="edit-media-dialog"
           open={this.state.open}
           maxWidth={false}
         >
-          <DialogTitle id="select-calendar-dialog-title">
-            Add/Remove Media
-          </DialogTitle>
-          <Table size={"small"}>
+          <DialogTitle>Add/Remove Media</DialogTitle>
+          <Table size={"small"} style={{ width: 800 }}>
             <TableHead>
               <TableRow>
                 <TableCell>Action</TableCell>
@@ -178,13 +170,11 @@ class MediaEdit extends React.Component {
                   <TableCell component="th" scope="row">
                     <TextField
                       onChange={e => this.setState({ title: e.target.value })}
-                      id="title"
                     ></TextField>
                   </TableCell>
                   <TableCell>
                     <TextField
                       onChange={e => this.setState({ body: e.target.value })}
-                      id="body"
                     ></TextField>
                   </TableCell>
                   <TableCell>
@@ -197,7 +187,7 @@ class MediaEdit extends React.Component {
                       encType="multipart/form-data"
                     >
                       <input
-                        id="inputFile"
+                        ref={this.inputRef}
                         type="file"
                         name="imgUploader"
                         onChange={e =>
@@ -208,21 +198,24 @@ class MediaEdit extends React.Component {
                             )
                           })
                         }
-                        multiple
                       />
                     </form>
                   </TableCell>
                   <TableCell>
                     <TextField
                       onChange={e => this.setState({ link: e.target.value })}
-                      id="link"
                     ></TextField>
                   </TableCell>
                 </TableRow>
-              ) : null}
+              ) : (
+                <TableRow>
+                  <TableCell>
+                    <Add onClick={() => this.setState({ add: true })} />
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
-          <Add onClick={() => this.setState({ add: true })} />
         </Dialog>
       </div>
     );
@@ -276,16 +269,18 @@ export default class MediaComponent extends React.Component {
     clearInterval(this.rotateInterval);
   }
 
+  // switches which card is displayed
   rotateCard() {
     this.setState({
       displayIndex:
-        this.state.displayIndex == this.state.numCards - 1
+        this.state.displayIndex == this.state.numCards - 1 ||
+        this.state.numCards == 0
           ? 0
           : this.state.displayIndex + 1
     });
   }
 
-  // Manually changes which PR to display, resets timer
+  // Manually changes which media to display, resets timer
   switchCard(index) {
     if (index >= this.state.numCards) index = 0;
     if (index < 0) index = this.state.numCards - 1;
@@ -294,6 +289,7 @@ export default class MediaComponent extends React.Component {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
 
+  // removes media from carousel, updates backend and state
   removeMedia(num) {
     let media = this.state.carousel[num].media;
     if (media != null) {
@@ -307,36 +303,42 @@ export default class MediaComponent extends React.Component {
     }
 
     let temp = this.state.carousel.filter((card, i) => i != num);
+    let numCards = this.state.numCards <= 0 ? 0 : this.state.numCards - 1;
     this.setState({
       carousel: temp
     });
-    this.send({ cards: temp });
+    this.send(temp);
 
-    if (this.state.numCards - 1 == this.state.displayIndex)
+    if (numCards == 0) {
+      this.setState({ displayIndex: 0 });
+    } else if (numCards == this.state.displayIndex) {
       this.setState({ displayIndex: this.state.displayIndex - 1 });
-    this.setState({ numCards: this.state.numCards - 1 });
+    }
+    this.setState({ numCards: numCards });
   }
 
+  // sends carousel data to backend
   send(data) {
     console.log("Sending: ", data);
 
     fetch("/carousel", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify({ cards: data }),
       headers: { "Content-Type": "application/json" }
     })
       .then(res => res.text())
       .then(res => console.log(res));
   }
 
+  // Adds media to carousel, updates backend and state
   addMedia(media) {
+    if (media.body == null && media.title == null && media.media == null)
+      return;
+
     let temp = this.state.carousel;
     temp.push(media);
 
-    this.send({ cards: temp });
-
-    let tempMedia = this.state.media;
-    media = this.state.carousel[this.state.numCards].media;
+    this.send(temp);
 
     this.setState({
       carousel: temp,
@@ -373,9 +375,12 @@ export default class MediaComponent extends React.Component {
           </BoxHeader>
           {card.link == null ? (
             <CarouselContent>
-              <CarouselMedia
-                src={"/" + this.state.carousel[this.state.displayIndex].media}
-              ></CarouselMedia>
+              {this.state.carousel[this.state.displayIndex].media ==
+              null ? null : (
+                <CarouselMedia
+                  src={"/" + this.state.carousel[this.state.displayIndex].media}
+                ></CarouselMedia>
+              )}
               <p>{card.title}</p>
               <CarouselBody>{card.body}</CarouselBody>
             </CarouselContent>
@@ -385,9 +390,12 @@ export default class MediaComponent extends React.Component {
                 window.open(card.link);
               }}
             >
-              <CarouselMedia
-                src={"/" + this.state.carousel[this.state.displayIndex].media}
-              ></CarouselMedia>
+              {this.state.carousel[this.state.displayIndex].media ==
+              null ? null : (
+                <CarouselMedia
+                  src={"/" + this.state.carousel[this.state.displayIndex].media}
+                ></CarouselMedia>
+              )}
               <p>{card.title}</p>
               <CarouselBody>{card.body}</CarouselBody>
             </CarouselContentLink>

@@ -29,56 +29,69 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
-// /* CRON JOB */
-// //CRON JOB for SOAESB grafana
-// app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-// cron.grafanaCron(prod, app, soaesb_url);
+/* CRON JOB */
+//CRON JOB for SOAESB grafana
+app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+cron.grafanaCron(prod, app, soaesb_url);
 
+// Create storage for media images
 const storage = multer.diskStorage({
   destination: function(req, file, callback) {
-    callback(null, "server/carouselMedia");
+    callback(null, prod ? "carouselMedia" : "server/carouselMedia");
   },
   filename: function(req, file, callback) {
-    // callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
     callback(null, file.originalname);
   }
 });
 
+// Multer package handles image storage
 var upload = multer({
   storage: storage
 }).array("imgUploader", 3);
 
 /* ROUTE */
+// Reads JSON data for carousel
 app.get("/carousel", function(req, res) {
-  var content = fs.readFileSync("./resources/carousel.json");
+  var content = fs.readFileSync(
+    prod ? "carousel.json" : "server/carousel.json"
+  );
   res.send(JSON.parse(content));
 });
 
+// Posts JSON data from carousel
 app.post("/carousel", function(req, res) {
-  fs.writeFileSync("./resources/carousel.json", JSON.stringify(req.body));
+  fs.writeFileSync(
+    prod ? "carousel.json" : "server/carousel.json",
+    JSON.stringify(req.body)
+  );
   res.end("Data sent successfully");
 });
 
+// Handles upload of images
 app.post("/upload", function(req, res) {
   upload(req, res, function(err) {
     if (err) {
-      return res.end(err);
+      return res.end(err.toString());
     }
     return res.end("File uploaded successfully");
   });
 });
 
+//Handles deletion of images
 app.post("/remove", function(req, res) {
   let media = req.body.media;
-  fs.unlink("server/carouselMedia/" + media, function(err) {
-    if (err) console.log(err);
-    console.log("image deleted");
-  });
+  fs.unlink(
+    prod ? "carouselMedia/" + media : "server/carouselMedia/" + media,
+    function(err) {
+      if (err) console.log(err);
+      console.log("image deleted");
+    }
+  );
 
   res.end("Card deleted successfully");
 });
 
-/* ROUTE */
+// Reads version data and sends to client
 app.get("/versions", function(req, res) {
   var content = fs.readFileSync(
     prod ? "versions.json" : "server/versions.json"
@@ -86,6 +99,7 @@ app.get("/versions", function(req, res) {
   res.send(JSON.parse(content));
 });
 
+// Writes version data from client
 app.post("/versions", function(req, res) {
   fs.writeFileSync(
     prod ? "versions.json" : "server/versions.json",
@@ -94,24 +108,24 @@ app.post("/versions", function(req, res) {
   res.end();
 });
 
-// //image url to display created grafana screenshot
-// app.get("/display", async (req, res) => {
-//   try {
-//     const name = req.query.name.split("?")[0];
-//     const screenshotBuffer = await app.get(name);
-//     if (screenshotBuffer) {
-//       res.writeHead(200, {
-//         "Content-Type": "image/png",
-//         "Content-Length": screenshotBuffer.length
-//       });
-//       res.end(screenshotBuffer);
-//     } else {
-//       res.end();
-//     }
-//   } catch (error) {
-//     console.log("Error in /display ", error);
-//   }
-// });
+//image url to display created grafana screenshot
+app.get("/display", async (req, res) => {
+  try {
+    const name = req.query.name.split("?")[0];
+    const screenshotBuffer = await app.get(name);
+    if (screenshotBuffer) {
+      res.writeHead(200, {
+        "Content-Type": "image/png",
+        "Content-Length": screenshotBuffer.length
+      });
+      res.end(screenshotBuffer);
+    } else {
+      res.end();
+    }
+  } catch (error) {
+    console.log("Error in /display ", error);
+  }
+});
 
 app.get("*", (req, res) => {
   let targetPath =
