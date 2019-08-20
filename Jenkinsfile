@@ -26,8 +26,6 @@ pipeline {
         withCredentials([
           string(credentialsId: 'SLACK_TOKEN', variable: 'SLACK_TOKEN'),
           string(credentialsId: 'SLACK_CHANNEL', variable: 'SLACK_CHANNEL'),
-          string(credentialsId: 'GITHUB_CLIENT_ID', variable: 'GITHUB_CLIENT_ID'),
-          string(credentialsId: 'GITHUB_CLIENT_SECRET', variable: 'GITHUB_CLIENT_SECRET'),
           string(credentialsId: 'SOAESB_BEARER_TOKEN', variable: 'SOAESB_BEARER_TOKEN'),
           string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')
         ]) {
