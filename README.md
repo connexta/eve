@@ -12,7 +12,9 @@ This project is built using ReactJS and NodeJS.
 
   - **BuildStatus**: Displays the health of major builds as given by Jenkins.  Build health can be toggled between the health of the most recent build or the health of the last 5 builds.  Health is indicated by one of three icons: green check mark for healthy builds, yellow dash for some failtures, and red x for many failed builds.
   
-  - **Calendar**: Displays events from a given Outlook Calendar.  Users can log in/out and select which of their calendars they want displayed.  Users can toggle between day, work week, month, and agenda views.
+  - **Events**: Displays events from a given Outlook Calendar.  Users can log in/out and select which of their calendars they want displayed.
+  
+  - **Media**: Users can add/remove media to be displayed on the wallboard.
   
   - **Clock**: Displays time for relevant timezones to Connexta: Phoenix (MST), Denver (MDT), Boston/DC (EST), United Kingdom (GMT), Melbourne (AEST).
   
