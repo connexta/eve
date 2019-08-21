@@ -33,12 +33,14 @@ This project is built using ReactJS and NodeJS.
 - .env (with all necessary environment variable; necessary for local or Dockerized environment testing)
 
 ### Setting up Enviornment Variables
-The Github component requires ```GITHUB_TOKEN``` and ```GITHUB_CLIENT_SECRET```.
+The Github component requires ```GITHUB_TOKEN```.
 The Slack component requires ```SLACK_CHANNEL``` and ```SLACK_TOKEN```.
 The Grafana component requires ```SOAESB_BEARER_TOKEN```.
 
 Place the environment variables in the .env file
 Example: ```SLACK_CHANNEL=ABC123```
+
+The environment variable must also be added to webpack.config.js, Dockerfile, Jenkinsfile, and Makefile. Simply follow the format of existing environment variables.  To test locally, you must add the environment variable to your machine as well.
 
 ### Running the Wallboard locally
 In two separate terminals,
