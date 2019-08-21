@@ -33,7 +33,7 @@ This project is built using ReactJS and NodeJS.
 - .env (with all necessary environment variable; necessary for local or Dockerized environment testing)
 
 ### Setting up Enviornment Variables
-The Github component requires ```GITHUB_TOKEN```.
+The Github component requires ```GITHUB_TOKEN``` and ```GITHUB_CLIENT_SECRET```.
 The Slack component requires ```SLACK_CHANNEL``` and ```SLACK_TOKEN```.
 The Grafana component requires ```SOAESB_BEARER_TOKEN```.
 
