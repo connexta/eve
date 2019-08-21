@@ -16,8 +16,7 @@ help: ## Display help.
 image: ## Build docker image
 	@echo "\nBuilding image: $(BUILD_TAG):$(GIT_BRANCH)\n"
 	@docker build --pull -t $(BUILD_TAG):$(GIT_BRANCH) --build-arg SLACK_CHANNEL=$(SLACK_CHANNEL) --build-arg SLACK_TOKEN=$(SLACK_TOKEN) \
-	--build-arg GITHUB_CLIENT_ID=$(GITHUB_CLIENT_ID) --build-arg GITHUB_CLIENT_SECRET=$(GITHUB_CLIENT_SECRET) \
-	--build-arg NODE_ENV=production --build-arg SOAESB_BEARER_TOKEN=$(SOAESB_BEARER_TOKEN) .
+	--build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) --build-arg NODE_ENV=production --build-arg SOAESB_BEARER_TOKEN=$(SOAESB_BEARER_TOKEN) .
 
 .PHONY: push
 push: ## Push docker image
