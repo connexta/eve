@@ -19,7 +19,7 @@ This component relies on the Jenkins API.
 
 For each build passed into BuildStatus in the urlList prop, a BuildIcon is generated.  The BuildIcon consists of the name of the build, an icon indicating its health, and the number of recent builds that have succeeded.
 
-## Calendar
+## Calendar/Events
 
 Displays events from a calendar that the user selects.  User can log in/ log out to their Microsoft account, select a calendar from their Outlook calendars, and change the view (between day, work week, month, and agenda).  User authentication and selected calendar are stored in the cache to persist between sessions.
 
@@ -60,6 +60,10 @@ All information for this component is pulled from the GitHub API.  Calls are aut
 ## Grafana
 
 Take and display screenshot of grafana dashboard.
+
+## MediaComponent
+
+Rotates through media to be displayed on the Wallboard.  Each media consists of a title, body, image, and/or link.  Images/data are stored and retrieved from the back-end nodeJS server.
 
 ## SlackComponent
 Displays the 10 most recent slack messages, rotating through the messages on a set interval. The slack widget is a fixed size and will only show as many messages as can fit. The component is currently not interactive in any way.
