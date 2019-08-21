@@ -85,7 +85,7 @@ ReactDOM.render(
             <Route component={NullWallboard} />
           </Switch>
           <StyledDevMsg>
-            <p>Work in Progress, contact @vina, @matt or join #wallboard-dev</p>
+            <p>Work in Progress, contact @vina, @badahdah or join #wallboard-dev</p>
           </StyledDevMsg>
         </BottomGrid>
       </RootGrid>
