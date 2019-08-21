@@ -60,9 +60,17 @@ app.get("/carousel", function(req, res) {
 
 // Posts JSON data from carousel
 app.post("/carousel", function(req, res) {
+  var content = fs.readFileSync(
+    prod ? "carousel.json" : "server/carousel.json"
+  );
+
+  let cards = JSON.parse(content).cards;
+
+  cards.push(req.body.card);
+
   fs.writeFileSync(
     prod ? "carousel.json" : "server/carousel.json",
-    JSON.stringify(req.body)
+    JSON.stringify({ cards: cards })
   );
   res.end("Data sent successfully");
 });
@@ -79,16 +87,41 @@ app.post("/upload", function(req, res) {
 
 //Handles deletion of images
 app.post("/remove", function(req, res) {
-  let media = req.body.media;
-  fs.unlink(
-    prod ? "carouselMedia/" + media : "server/carouselMedia/" + media,
-    function(err) {
-      if (err) console.log(err);
-      console.log("image deleted");
-    }
+  var content = fs.readFileSync(
+    prod ? "carousel.json" : "server/carousel.json"
   );
 
-  res.end("Card deleted successfully");
+  let removed = req.body.card;
+
+  let temp = JSON.parse(content).cards.filter(
+    card =>
+      !(
+        card.body == removed.body &&
+        card.title == removed.title &&
+        card.media == removed.media
+      )
+  );
+
+  fs.writeFileSync(
+    prod ? "carousel.json" : "server/carousel.json",
+    JSON.stringify({ cards: temp })
+  );
+
+  let media = removed.media;
+  if (media != null) {
+    fs.unlink(
+      prod ? "carouselMedia/" + media : "server/carouselMedia/" + media,
+      function(err) {
+        if (err) {
+          res.end(err.toString());
+          return;
+        } else {
+          res.end("Card deleted successfully");
+          return;
+        }
+      }
+    );
+  }
 });
 
 // Reads version data and sends to client

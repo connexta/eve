@@ -25,9 +25,11 @@ import {
 } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
 
-const ROTATE_FREQ = time({ seconds: 5 });
+const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 export const MEDIA_CARD_MARGINS = 20;
+const SIZE_LIMIT = 20 * Math.pow(10, 6); // max size of images in bytes
+const FETCH_FREQ = time({ minutes: 1 });
 
 export const MediaCard = styled(BoxStyle)`
   width: calc((100% / 2) - 24px);
@@ -102,13 +104,46 @@ class MediaEdit extends React.Component {
     this.setState({ open: true });
   }
 
-  handleClose(value) {
+  handleClose() {
     this.setState({ open: false });
   }
 
+  isImage(filename) {
+    let parts = filename.split(".");
+    let ext = parts[parts.length - 1].toLowerCase();
+    switch (ext) {
+      case "jpg":
+      case "jpeg":
+      case "png":
+      case "gif":
+        return true;
+    }
+    return false;
+  }
+
+  isValidLink(link) {
+    let regexp = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+    if (regexp.test(link)) return true;
+    else return false;
+  }
+
   async send() {
-    if (this.inputRef.current.value.length > 0) {
-      this.formRef.current.submit();
+    if (
+      this.inputRef.current.value.length > 0 &&
+      this.inputRef.current.files[0]
+    ) {
+      if (!this.isImage(this.inputRef.current.value)) {
+        console.log("Image type invalid");
+        return;
+      } else if (this.inputRef.current.files[0].size > SIZE_LIMIT) {
+        console.log("Image too large to be uploaded");
+        return;
+      } else this.formRef.current.submit();
+    }
+
+    if (this.state.link != null && !this.isValidLink(this.state.link)) {
+      console.log("Link invalid");
+      return;
     }
 
     this.props.addMedia({
@@ -150,7 +185,7 @@ class MediaEdit extends React.Component {
             </TableHead>
             <TableBody>
               {this.props.media.map((media, i) => (
-                <TableRow key={media.title}>
+                <TableRow key={i}>
                   <TableCell>
                     <Delete onClick={() => this.props.remove(i)} />
                   </TableCell>
@@ -190,6 +225,7 @@ class MediaEdit extends React.Component {
                         ref={this.inputRef}
                         type="file"
                         name="imgUploader"
+                        accept={"image/*"}
                         onChange={e =>
                           this.setState({
                             media: e.target.value.substr(
@@ -245,12 +281,10 @@ export default class MediaComponent extends React.Component {
           console.log("Failed to fetch carousel data");
           return;
         } else {
-          console.log("Carousel data received");
           return res.json();
         }
       })
       .then(res => {
-        console.log(res);
         this.setState({
           carousel: res.cards,
           numCards: res.cards.length
@@ -260,13 +294,16 @@ export default class MediaComponent extends React.Component {
 
   // Sets timer for rotating displayed media
   componentDidMount() {
-    this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
     this.getCarousel();
+
+    this.carouselInterval = setInterval(() => this.getCarousel(), FETCH_FREQ);
+    this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
 
   // Clears interval and destroys remaining promises when component unmounted
   componentWillUnmount() {
     clearInterval(this.rotateInterval);
+    clearInterval(this.carouselInterval);
   }
 
   // switches which card is displayed
@@ -291,23 +328,18 @@ export default class MediaComponent extends React.Component {
 
   // removes media from carousel, updates backend and state
   removeMedia(num) {
-    let media = this.state.carousel[num].media;
-    if (media != null) {
-      fetch("/remove", {
-        method: "POST",
-        body: JSON.stringify({ media: media }),
-        headers: { "Content-Type": "application/json" }
-      })
-        .then(res => res.text())
-        .then(res => console.log(res));
-    }
+    let card = this.state.carousel[num];
+    fetch("/remove", {
+      method: "POST",
+      body: JSON.stringify({ card: card }),
+      headers: { "Content-Type": "application/json" }
+    });
 
     let temp = this.state.carousel.filter((card, i) => i != num);
     let numCards = this.state.numCards <= 0 ? 0 : this.state.numCards - 1;
     this.setState({
       carousel: temp
     });
-    this.send(temp);
 
     if (numCards == 0) {
       this.setState({ displayIndex: 0 });
@@ -315,19 +347,6 @@ export default class MediaComponent extends React.Component {
       this.setState({ displayIndex: this.state.displayIndex - 1 });
     }
     this.setState({ numCards: numCards });
-  }
-
-  // sends carousel data to backend
-  send(data) {
-    console.log("Sending: ", data);
-
-    fetch("/carousel", {
-      method: "POST",
-      body: JSON.stringify({ cards: data }),
-      headers: { "Content-Type": "application/json" }
-    })
-      .then(res => res.text())
-      .then(res => console.log(res));
   }
 
   // Adds media to carousel, updates backend and state
@@ -338,11 +357,15 @@ export default class MediaComponent extends React.Component {
     let temp = this.state.carousel;
     temp.push(media);
 
-    this.send(temp);
-
     this.setState({
       carousel: temp,
       numCards: this.state.numCards + 1
+    });
+
+    fetch("/carousel", {
+      method: "POST",
+      body: JSON.stringify({ card: media }),
+      headers: { "Content-Type": "application/json" }
     });
   }
 
