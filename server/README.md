@@ -9,6 +9,7 @@ Main entry file for backend side server (NodeJS) to host the server and any back
 - **body-parser**: middleware for parsing incoming request bodies. Parses application/json and application/x-www-form-urlencoded.
 - **path**: utilities for working with file and directory paths.
 - **dotenv**: utilities for extract .env environment variable in dev environment.
+- **multer**: handles saving images to disk
 
 #### Details:
 - **port**: in final production level, it'll pick up process.env.EVE_PORT from dcos service which is set to 3000.
