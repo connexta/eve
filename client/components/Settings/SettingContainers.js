@@ -21,12 +21,27 @@ import { Dialog, DialogTitle, List, ListItem, ListItemText,
 // }
 
 
-const SettingContainers = (props) => {
-    const handleClose = () => {
+// const SettingContainers = (props) => {
+class SettingContainers extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            open: this.props.open
+        }
+    }
+
+    handleClose(){
         console.log("CLCLCLCL");
+        
     };
 
-    const settingTable = () => {
+    componentDidUpdate(prevProps) {
+        // if (this.state.open !== prevProps.open) {
+        //     this.props.
+        // }
+    }
+
+     settingTable(){
         return (
             <Table>
             <TableBody>
@@ -38,7 +53,7 @@ const SettingContainers = (props) => {
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell onClick={() => handleClose()}>
+                    <TableCell onClick={() => this.props.onChange()}>
                         Cancel
                     </TableCell>
                 </TableRow>
@@ -49,21 +64,24 @@ const SettingContainers = (props) => {
 
 
 
-    console.log(props.components);
+    
+    render() {
+        console.log(this.props.components);
     // console.log(props.editMode);
-    console.log("EDIDIDIDIT", props.isEdit);
-    return (
-        <Dialog
-        onClose={handleClose()}
-        aria-labelledby="edit"
-        open={this.state.open}
-        maxWidth={false}
-      >
-        <DialogTitle>
-          Editing a Component
-        </DialogTitle>
-        {settingTable()}
-      </Dialog>
+    console.log("EDIDIDIDIT", this.props.isEdit);
+        return (
+            this.settingTable()
+        //     <Dialog
+        //     onClose={this.handleClose()}
+        //     aria-labelledby="edit"
+        //     open={this.state.open}
+        //     maxWidth={false}
+        // >
+        //     <DialogTitle>
+        //     Editing a Component
+        //     </DialogTitle>
+        //     {this.settingTable()}
+        // </Dialog>
         // <List>
         //     {props.components.map((element, index) => (
         //         <ListItem button onClick={() => this.handleClose()} key={index}>
@@ -71,7 +89,9 @@ const SettingContainers = (props) => {
         //         </ListItem>
         //     ))}
         // </List>
-    )
+        )
+    }
+    
 }
 
 const mapStateToProps = (state) => ({

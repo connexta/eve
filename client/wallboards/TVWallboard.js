@@ -15,6 +15,8 @@ import {bindActionCreators} from 'redux';
 import { CARD_SIDE_MARGINS } from "../styles/styles";
 import { GITHUB_HEIGHT } from "../components/Github";
 
+const CHANNEL = process.env.SLACK_CHANNEL;
+
 /*
 You can change the size of any component through the use of styled components.
 
@@ -86,7 +88,13 @@ class TVWallboard extends React.Component {
       <Grid container style={{ height: "100%" }} spacing={0}>
         <LeftBox item>
           {/* {this.ClickedComponent( */}
-            <BuildStatus width={buildStatusWidth} isEdit={this.props.isEdit} urlList={jenkinsURLList}/>
+            <BuildStatus 
+              width={buildStatusWidth} 
+              isEdit={this.props.isEdit} 
+              urlList={jenkinsURLList}
+              name="BuildStatus"
+              type="URL"
+              />
             {/* <BuildStatus width="100%" isEdit={this.props.isEdit} urlList={jenkinsURLList}/> */}
           {/* <BuildStatus isEdit={this.props.isEdit} urlList={jenkinsURLList} onClick={this.handleClick}/> */}
           <Grid
@@ -99,7 +107,12 @@ class TVWallboard extends React.Component {
           </Grid>
         </LeftBox>
         <RightBox item>
-          <SlackComponent height={SlackHeight} isEdit={this.props.isEdit} />
+          <SlackComponent 
+            height={SlackHeight} 
+            isEdit={this.props.isEdit}
+            CHANNEL={CHANNEL}
+            type="CHANNEL"
+            />
           <Github repoPath={"codice/ddf"} />
         </RightBox>
       </Grid>

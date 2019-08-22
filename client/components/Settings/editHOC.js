@@ -3,7 +3,8 @@ import {connect} from 'react-redux';
 import styled, {css} from "styled-components";
 import { CX_DARK_BLUE } from "../../utils/Constants";
 import { BoxStyle, CARD_SIDE_MARGINS } from "../../styles/styles";
-import { Dialog, DialogTitle } from "@material-ui/core";
+import { Dialog, DialogTitle,
+    Table, TableBody, TableCell, TableHead, TableRow, TableFooter, TextField } from "@material-ui/core";
 import SettingContainers from "./SettingContainers";
 
 const editHOC = (WrappedComponent) => {
@@ -36,18 +37,45 @@ const editHOC = (WrappedComponent) => {
             // this.props.leaveEdit();
           }
 
+          settingTable(){
+            return (
+                <Table>
+                <TableBody>
+                    <TableRow>
+                        <TableCell>
+                            {this.props.type}
+                        </TableCell>
+                        <TableCell>
+                            <TextField>
+
+                            </TextField>
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+                <TableFooter>
+                    <TableRow>
+                        <TableCell onClick={this.handleClose.bind(this)} style={{cursor:"pointer"}} >
+                            Cancel
+                        </TableCell>
+                    </TableRow>
+                </TableFooter>
+            </Table>
+            )
+        }
+
         displayDialog() {
             return(
                 <Dialog
                 onClose={this.handleClose.bind(this)}
                 aria-labelledby="edit"
                 open={this.state.open}
-                maxWidth={false}
+                // maxWidth={false}
               >
                 <DialogTitle>
                   Editing a Component
                 </DialogTitle>
-                <SettingContainers/>
+                {this.settingTable()}
+                {/* <SettingContainers onChange={()=>this.handleClose()} id="hahaha"/> */}
               </Dialog>
             )
           }
@@ -55,16 +83,21 @@ const editHOC = (WrappedComponent) => {
         render() {
             console.log("HOC" + this.props.isEdit);
             return (
+                
                 this.props.isEdit ?
-                <StyledWrapper width={this.props.width} height={this.props.height} isedit={this.props.isEdit.toString()} onClick={this.handleClick.bind(this)}>
-                    <WrappedComponent {...this.props} />
+                <span>
+                    <StyledWrapper width={this.props.width} height={this.props.height} isedit={this.props.isEdit.toString()} onClick={this.handleClick.bind(this)}>
+                        <WrappedComponent {...this.props} />
+                    </StyledWrapper>
                     {this.displayDialog()} 
-                </StyledWrapper>
+                </span>
                 :
-                <StyledWrapper width={this.props.width} height={this.props.height} isedit={this.props.isEdit.toString()}>
-                    <WrappedComponent {...this.props} />
+                <span>
+                    <StyledWrapper width={this.props.width} height={this.props.height} isedit={this.props.isEdit.toString()}>
+                        <WrappedComponent {...this.props} />
+                    </StyledWrapper>
                     {this.displayDialog()} 
-                </StyledWrapper>
+                </span>
             )
         }
     }

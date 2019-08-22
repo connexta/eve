@@ -10,7 +10,6 @@ import Collapse from "@material-ui/core/Collapse";
 import editHOC from "./Settings/editHOC";
 
 const TOKEN = process.env.SLACK_TOKEN;
-const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
  
@@ -134,7 +133,7 @@ class SlackComponent extends React.Component {
         "https://slack.com/api/channels.history?token=" +
           TOKEN +
           "&channel=" +
-          CHANNEL
+          this.props.CHANNEL
       ).catch(e => console.log("error", e))
     );
 
@@ -323,7 +322,7 @@ class SlackComponent extends React.Component {
       return (
         <CardContainer raised={true}>
           <span>
-            <CardHeader>#{this.getChannelName(CHANNEL)}</CardHeader>
+            <CardHeader>#{this.getChannelName(this.props.CHANNEL)}</CardHeader>
           </span>
           <GradientBlock />
           <WhiteBlock />

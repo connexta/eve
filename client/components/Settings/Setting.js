@@ -47,14 +47,14 @@ class Setting extends React.Component {
   // }
 
   handleClick() {
-    this.setState({ open: true });
+    // this.setState({ open: true });
     // this.props.enterEdit();
     this.props.toggleEdit();
     console.log("opened");
   }
 
   handleClose() {
-    this.setState({ open: false });
+    // this.setState({ open: false });
     console.log("closed");
     // this.props.leaveEdit();
   }
