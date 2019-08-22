@@ -4,12 +4,14 @@ import Fab from '@material-ui/core/Fab';
 // import SettingsIcon from '@material-ui/icons/Settings';
 // import { settings } from '@material-ui/core/Icon';
 // import Icon from '@material-ui/core/Icon';
-import { Settings } from "@material-ui/icons"
+import { Settings, Cancel } from "@material-ui/icons"
 import { ThemeProvider } from "@material-ui/styles";
 // import Modal from '@material-ui/core/Modal';
 import { Dialog, DialogTitle } from "@material-ui/core";
-import { settingTheme } from "../utils/Constants";
-
+import { settingTheme } from "../../utils/Constants";
+import SettingContainers from "./SettingContainers";
+import { connect } from 'react-redux'
+import { enterEdit, leaveEdit, toggleEdit } from "../../actions";
 
 const ImgContainer = styled.div`
   padding: 24px;
@@ -24,7 +26,7 @@ const DotLoaderContainer = styled.div`
   height: 90%;
 `;
 
-export default class Setting extends React.Component {
+class Setting extends React.Component {
   constructor(props) {
     super(props);
     // this.handleOpen = this.handleOpen.bind(this);
@@ -44,14 +46,26 @@ export default class Setting extends React.Component {
   //   // this.setOpen(true);
   // }
 
-  handleClickOpen() {
+  handleClick() {
     this.setState({ open: true });
+    // this.props.enterEdit();
+    this.props.toggleEdit();
+    console.log("opened");
   }
 
-  handleClose(value) {
+  handleClose() {
     this.setState({ open: false });
+    console.log("closed");
+    // this.props.leaveEdit();
   }
 
+  toggleFabIcon() {
+    return (!this.props.editMode ? 
+    <Settings color="secondary"/> :
+    <Cancel color="secondary"/>
+    )
+  }
+  
   displayDialog() {
     return(
       <Dialog
@@ -61,8 +75,9 @@ export default class Setting extends React.Component {
         maxWidth={false}
       >
         <DialogTitle>
-          Testing
+          Select a component to edit
         </DialogTitle>
+        <SettingContainers/>
       </Dialog>
     )
   }
@@ -75,15 +90,35 @@ export default class Setting extends React.Component {
               aria-label="settings" 
               color="primary" 
               size="small"
-              onClick={this.handleClickOpen.bind(this)} > 
+              onClick={this.handleClick.bind(this)} > 
                 {/* <SettingsIcon color="red"/> */}
                 {/* <Icon>code</Icon> */}
                 <ThemeProvider theme={settingTheme}>
-                  <Settings color="secondary"/>
+                  {this.toggleFabIcon()}
                 </ThemeProvider>
             </Fab>
-            {this.displayDialog()}
+            {/* {this.displayDialog()} */}
       </ThemeProvider>
     );
   }
 }
+
+// const mapDispatchToProps = dispatch => ({
+//   clickEdit,
+//   leaveEdit
+// })
+// const map
+
+const mapStateToProps = state => ({
+  // components: state.currentComponents,
+  editMode: state.editMode
+})
+
+const mapDispatchToProps = {
+  enterEdit,
+  leaveEdit,
+  toggleEdit
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Setting)

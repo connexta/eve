@@ -9,12 +9,14 @@ import {
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { wallboards } from "./wallboards/Home";
 import NullWallboard from "./wallboards/NullWallboard";
-import Setting from "./components/Setting";
+import Setting from "./components/Settings/Setting";
 import logo from "../resources/logo-offwhite.png";
 import Clock from "./components/Clock";
 import Grid from "@material-ui/core/Grid";
 
 import { StylesProvider } from "@material-ui/styles";
+import {connect} from 'react-redux';
+import { addComponents } from "./actions";
 
 export const BANNER_HEIGHT = 100;
 
@@ -71,7 +73,19 @@ const Logo = () => {
   return <StyledLogo src={logo} alt="Logo" height="104px" />;
 };
 
-export default class App extends React.Component {
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            
+        }
+    }
+
+    componentDidMount(){
+        console.log("attempting to add components");
+        console.log(this.props.components);
+        this.props.addComponents(["App"]);
+      }
 
     render(){
         return (
@@ -108,3 +122,12 @@ export default class App extends React.Component {
         );
     }
 }
+const mapStateToProps = state => ({
+    components: state.currentComponents
+  })
+  
+  const mapDispatchToProps = dispatch => ({
+      addComponents: component => dispatch(addComponents(component))
+  })
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

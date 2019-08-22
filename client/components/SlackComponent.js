@@ -7,20 +7,23 @@ import { minute, time } from "../utils/TimeUtils";
 import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
 import Collapse from "@material-ui/core/Collapse";
+import editHOC from "./Settings/editHOC";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
-
-const CardContainer = styled(BoxStyle)`
+ 
+// const CardContainer = styled(BoxStyle)`
+const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   position: relative;
 
-  /*Height of Slack Card is size of window beneath banner minus size of github card and margins*/
-  height: calc(100% - ${GITHUB_HEIGHT}px - 72px - 32px);
+  /*Height of Slack Card is size of window beneath banner minus size of github card and margins */
+  /* height: calc(100% - ${GITHUB_HEIGHT}px - 72px - 32px); */
+  height: 100%;
 `;
 
 const CardHeader = styled(BoxHeader)`
@@ -35,7 +38,7 @@ const SlackCardContainer = styled.div`
 const GradientBlock = styled.div`
   height: 15%;
   width: 100%;
-  bottom: 10px;
+  bottom: -20px; /*go down below as much as the padding*/
   background: linear-gradient(transparent, ${CX_OFF_WHITE});
   position: absolute;
   z-index: 2;
@@ -45,7 +48,7 @@ const WhiteBlock = styled.div`
   position: absolute;
   height: 12px;
   width: 100%;
-  bottom: 0px;
+  bottom: -20px;
   background: ${CX_OFF_WHITE};
   z-index: 3;
 `;
@@ -334,4 +337,5 @@ class SlackComponent extends React.Component {
   }
 }
 
-export default SlackComponent;
+const WrappedComponent = editHOC(SlackComponent);
+export default WrappedComponent;

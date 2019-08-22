@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
@@ -7,11 +7,30 @@ import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
+import editHOC from "./Settings/editHOC";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
-const StyledCard = styled(BoxStyle)`
-  width: calc(100% - ${CARD_SIDE_MARGINS}px);
+// const 
+
+//make function? take boolean.
+// const StyledCard = styled(BoxStyle)`
+const StyledCard = styled.div`
+  /* width: calc(100% - ${CARD_SIDE_MARGINS}px); */
+  
+  /* -webkit-transition: border-width 0.1s;
+  transition: border 0.1s ease-in-out;
+  box-shadow: 0 0 5px rgba(81, 203, 238, 1); */
+
+
+  /* ${({ editMode }) => ``} */
+  /* border: ${props => props.isedit === "true" && css`10px solid ${CX_DARK_BLUE}`}; */
+  
+  /* ${props => props.show && css`10px solid red`} */
+  /* border: ${props => 
+    props.editMode ? "10px solid ${CX_DARK_BLUE}" : "10px solid red"
+  }; */
+  /* color: "red"; */
 `;
 
 // if listvert is not true, it will list the items horizontally,
@@ -213,21 +232,46 @@ class BuildStatus extends React.Component {
     );
   }
 
-  render() {
-    return this.state.isLoading ? (
-      <StyledCard raised={true}>
+  showContent(){
+    return (this.state.isLoading ? (
+      <span>
         <BoxHeader>Loading Build Health. . .</BoxHeader>
-      </StyledCard>
+      </span>
     ) : (
-      <StyledCard raised={true}>
+      <span>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
         <StyledCardContent listvert={this.props.listvert}>
           {this.getBuildDisplay()}
         </StyledCardContent>
+      </span>
+    ));
+  }
+
+  // editModeToggle(){
+  //   return (this.props.isEdit ? (
+  //     <Clickable>
+  //       <StyledCard isedit={this.props.isEdit.toString()} raised={true} onClick={this.handleClick}>
+  //           {this.showContent()}
+  //       </StyledCard>
+  //     </Clickable>
+  //   ) : (
+
+  //   ))
+  // }
+
+  render() {
+    // console.log(this.props.isEdit);
+    // const { isEdit, ...rest } = props;
+    return (
+      // <StyledCard isedit={this.props.isEdit.toString()} raised={true}>
+      <StyledCard isedit={this.props.isEdit.toString()} raised={true}>
+        {this.showContent()}
       </StyledCard>
-    );
+    )
+    // return this.editModeToggle();
   }
 }
 
-export default BuildStatus;
+const WrappedComponent = editHOC(BuildStatus);
+export default WrappedComponent;
