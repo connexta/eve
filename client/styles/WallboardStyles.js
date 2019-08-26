@@ -12,11 +12,6 @@ export const RightBox = styled(Grid)`
   width: 34%;
 `;
 
-export const I2OleftBox = styled(Grid)`
-  height: 100%;
-  width: 30%;
-`;
-
 export const WallBoardButtons = styled.div`
   display: flex;
   flex-direction: row;

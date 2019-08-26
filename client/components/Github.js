@@ -21,8 +21,6 @@ import GoodState from "@material-ui/icons/Done";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
-export const GITHUB_HEIGHT = 400;
-
 const MAXPULLS = 5; // Max number of pull requests to display
 const NUM_STATUSES = 2; // Max number of statuses to display for each PR
 const REQ_APPROVALS = 2; // Required number of approvals for a given PR
@@ -30,10 +28,6 @@ const CALL_FREQ = hour; // Frequency to refresh GitHub data
 const ROTATE_FREQ = time({ seconds: 10 }); // Frequency to rotate displayed PR
 const IGNORE_CONTEXTS = ["snyk", "license/cla"]; // list of contexts to ignore for statuses
 const TOKEN = process.env.GITHUB_TOKEN;
-
-const GithubCard = styled(BoxStyle)`
-  height: ${GITHUB_HEIGHT}px;
-`;
 
 const Header = styled(BoxHeader)`
   width: 100%;
@@ -327,10 +321,10 @@ export default class Github extends React.Component {
   render() {
     if (this.state.prs.length == 0)
       return (
-        <GithubCard raised={true}>
+        <BoxStyle raised={true}>
           <Header>{this.state.name} Pull Requests</Header>
           <CardContent>No pull requests</CardContent>
-        </GithubCard>
+        </BoxStyle>
       );
     else {
       let pr = this.state.prs[this.state.displayIndex];
@@ -345,7 +339,7 @@ export default class Github extends React.Component {
         ) : null;
 
       return (
-        <GithubCard raised={true}>
+        <BoxStyle raised={true}>
           <Header>{this.state.name} Pull Requests</Header>
           <CardContent>
             <MainAndSubline onClick={() => window.open(pr.url)}>
@@ -392,7 +386,7 @@ export default class Github extends React.Component {
               </Button>
             }
           />
-        </GithubCard>
+        </BoxStyle>
       );
     }
   }

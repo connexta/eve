@@ -12,10 +12,7 @@ const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 export const MEDIA_CARD_MARGINS = 20;
 
-export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  margin: 0 0 0 24px;
-  height: 100%;
+const MediaCard = styled(BoxStyle)`
   position: relative;
 `;
 
@@ -92,7 +89,6 @@ export default class MediaComponent extends React.Component {
     clearInterval(this.rotateInterval);
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
-
 
   // Fetches all images to be displayed
   getMedia() {

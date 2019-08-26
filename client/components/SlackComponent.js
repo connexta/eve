@@ -9,7 +9,6 @@ import makeTrashable from "trashable";
 import Collapse from "@material-ui/core/Collapse";
 
 const TOKEN = process.env.SLACK_TOKEN;
-const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
 
@@ -18,9 +17,6 @@ const CardContainer = styled(BoxStyle)`
   flex-direction: column;
   justify-content: flex-start;
   position: relative;
-
-  /*Height of Slack Card is size of window beneath banner minus size of github card and margins*/
-  height: calc(100% - ${GITHUB_HEIGHT}px - 72px - 32px);
 `;
 
 const CardHeader = styled(BoxHeader)`
@@ -54,6 +50,7 @@ class SlackComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      channelID: this.props.channelID,
       emojis: [],
       messages: [],
       slackUsers: [],
@@ -131,7 +128,7 @@ class SlackComponent extends React.Component {
         "https://slack.com/api/channels.history?token=" +
           TOKEN +
           "&channel=" +
-          CHANNEL
+          this.state.channelID
       ).catch(e => console.log("error", e))
     );
 
@@ -320,7 +317,9 @@ class SlackComponent extends React.Component {
       return (
         <CardContainer raised={true}>
           <span>
-            <CardHeader>#{this.getChannelName(CHANNEL)}</CardHeader>
+            <CardHeader>
+              #{this.getChannelName(this.state.channelID)}
+            </CardHeader>
           </span>
           <GradientBlock />
           <WhiteBlock />

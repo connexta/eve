@@ -26,6 +26,9 @@ const REFLEXURL =
 export const IONURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/ION/";
 
+export const GSRPIPELINEURL =
+  "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/gsr/";
+
 export const jenkinsURLList = [
   { Alliance: AllianceURL },
   { DDF: DDFURL },
