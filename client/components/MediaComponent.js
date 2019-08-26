@@ -108,6 +108,7 @@ class MediaEdit extends React.Component {
     this.setState({ open: false });
   }
 
+  // checks if image type is valid
   isImage(filename) {
     let parts = filename.split(".");
     let ext = parts[parts.length - 1].toLowerCase();
@@ -121,14 +122,14 @@ class MediaEdit extends React.Component {
     return false;
   }
 
+  // checks if scheme name, characters are valid
   isValidLink(link) {
-    // regular expression to check validity of links
-    // Checks scheme name, validity of characters in URL
     let regexp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm;
     if (regexp.test(link)) return true;
     else return false;
   }
 
+  // checks inputs, calls addMedia(), resets state after save button call
   async send() {
     if (
       this.inputRef.current.value.length > 0 &&
@@ -273,6 +274,7 @@ export default class MediaComponent extends React.Component {
     };
   }
 
+  // get media info from backend
   async getCarousel() {
     await fetch("/carousel", {
       method: "GET"

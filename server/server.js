@@ -13,9 +13,9 @@ const app = express();
 const port = process.env.EVE_PORT || 3000;
 const prod = process.env.NODE_ENV === "production";
 
-const dir = path.join(__dirname, "carouselMedia");
+const dir = path.join(process.cwd(), "eve/carouselMedia");
 
-app.use(express.static(dir));
+app.use(express.static(prod ? "/eve/carouselMedia" : dir));
 
 /* URL */
 const soaesb_url =
@@ -37,7 +37,7 @@ cron.grafanaCron(prod, app, soaesb_url);
 // Create storage for media images
 const storage = multer.diskStorage({
   destination: function(req, file, callback) {
-    callback(null, prod ? "carouselMedia" : "server/carouselMedia");
+    callback(null, prod ? "/eve/carouselMedia" : "eve/carouselMedia");
   },
   filename: function(req, file, callback) {
     callback(null, file.originalname);
@@ -53,7 +53,7 @@ var upload = multer({
 // Reads JSON data for carousel
 app.get("/carousel", function(req, res) {
   var content = fs.readFileSync(
-    prod ? "carousel.json" : "server/carousel.json"
+    prod ? "/eve/carousel.json" : "eve/carousel.json"
   );
   res.send(JSON.parse(content));
 });
@@ -61,7 +61,7 @@ app.get("/carousel", function(req, res) {
 // Posts JSON data from carousel
 app.post("/carousel", function(req, res) {
   var content = fs.readFileSync(
-    prod ? "carousel.json" : "server/carousel.json"
+    prod ? "/eve/carousel.json" : "eve/carousel.json"
   );
 
   let cards = JSON.parse(content).cards;
@@ -69,7 +69,7 @@ app.post("/carousel", function(req, res) {
   cards.push(req.body.card);
 
   fs.writeFileSync(
-    prod ? "carousel.json" : "server/carousel.json",
+    prod ? "/eve/carousel.json" : "eve/carousel.json",
     JSON.stringify({ cards: cards })
   );
   res.end("Data sent successfully");
@@ -88,7 +88,7 @@ app.post("/upload", function(req, res) {
 //Handles deletion of images
 app.post("/remove", function(req, res) {
   var content = fs.readFileSync(
-    prod ? "carousel.json" : "server/carousel.json"
+    prod ? "/eve/carousel.json" : "eve/carousel.json"
   );
 
   let removed = req.body.card;
@@ -103,14 +103,14 @@ app.post("/remove", function(req, res) {
   );
 
   fs.writeFileSync(
-    prod ? "carousel.json" : "server/carousel.json",
+    prod ? "/eve/carousel.json" : "eve/carousel.json",
     JSON.stringify({ cards: temp })
   );
 
   let media = removed.media;
   if (media != null) {
     fs.unlink(
-      prod ? "carouselMedia/" + media : "server/carouselMedia/" + media,
+      prod ? "/eve/carouselMedia/" + media : "eve/carouselMedia/" + media,
       function(err) {
         if (err) {
           res.end(err.toString());
