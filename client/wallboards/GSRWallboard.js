@@ -6,11 +6,11 @@ import Github from "../components/Github";
 import MediaComponent from "../components/MediaComponent";
 import ReleaseVersion from "../components/ReleaseVersion";
 import SlackComponent from "../components/SlackComponent";
-import TeamBuildStatus from "../components/TeamBuildStatus";
+import BuildStatus from "../components/BuildStatus";
 
 import { LeftBox, RightBox } from "../styles/WallboardStyles";
-import { GSRPIPELINEURL } from "../utils/Link";
-import { SLACK_WALLBOARD_CHANNEL } from "../utils/Config";
+import { GSRUrlList } from "../utils/Link";
+import { SLACK_GSR_DEV_CHANNEL } from "../utils/Config";
 import Grid from "@material-ui/core/Grid";
 
 const GITHUB_HEIGHT = 400;
@@ -59,11 +59,7 @@ export default class GSRWallboard extends React.Component {
         <LeftBox>
           <Grid container direction="row">
             <StyleBuildStatus>
-              <TeamBuildStatus
-                url={GSRPIPELINEURL}
-                vertical={false}
-                name={"GSR"}
-              />
+              <BuildStatus urlList={GSRUrlList} />
             </StyleBuildStatus>
             <StyleRelease>
               <ReleaseVersion />
@@ -84,7 +80,7 @@ export default class GSRWallboard extends React.Component {
         </LeftBox>
         <RightBox item>
           <StyleSlack>
-            <SlackComponent channelID={SLACK_WALLBOARD_CHANNEL} />
+            <SlackComponent channelID={SLACK_GSR_DEV_CHANNEL} />
           </StyleSlack>
           <StyleGithub>
             <Github repoPath={"connexta/gsr-yorktown"} />

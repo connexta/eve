@@ -1,7 +1,5 @@
 import React from "react";
 import BuildStatus from "../components/BuildStatus";
-import { I2OleftBox } from "../styles/WallboardStyles";
-import Grid from "@material-ui/core/Grid";
 import { hour } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 
@@ -46,6 +44,7 @@ export default class I2OWallboard extends React.Component {
       fetch(url)
         .then(response => response.json())
         .then(json => {
+          console.log("Pipleline URL:", json);
           return json.pipelineFolderNames;
         })
         .then(pipelineFolderNames => {
@@ -53,6 +52,7 @@ export default class I2OWallboard extends React.Component {
           pipelineURLList = pipelineFolderNames.map(name => {
             return { [name]: url + name };
           });
+
           return pipelineURLList;
         })
         .catch(e => console.log("error", e))
@@ -88,8 +88,6 @@ export default class I2OWallboard extends React.Component {
   }
 
   render() {
-    console.log(this.state.urlList);
-
     return this.state.vertical ? (
       <BuildStatus urlList={this.state.urlList} listvert />
     ) : (

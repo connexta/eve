@@ -19,6 +19,7 @@ const getListStyle = listvert => {
   flex-direction: row; \
   justify-content: space-between; \
   flex-wrap: wrap; \
+  width: calc(100% - 20px); \
     ";
   } else return ``;
 };
@@ -155,7 +156,7 @@ class BuildStatus extends React.Component {
         item.weatherScore / weatherScoreDivisor +
         "/" +
         divisor.toString() +
-        " Succeeded"
+        " Built"
       );
     }
   }

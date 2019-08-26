@@ -8,7 +8,7 @@ import SlackComponent from "../components/SlackComponent";
 import TeamBuildStatus from "../components/TeamBuildStatus";
 
 import { RightBox } from "../styles/WallboardStyles";
-import { SLACK_WALLBOARD_CHANNEL } from "../utils/Config";
+import { SLACK_REPLICATION_CHANNEL } from "../utils/Config";
 
 const GITHUB_HEIGHT = 400;
 const DEV_SPACE = 60;
@@ -49,7 +49,7 @@ export default class I2OWallboard extends React.Component {
         </StyleEvent>
         <RightBox item>
           <StyleSlack>
-            <SlackComponent channelID={SLACK_WALLBOARD_CHANNEL} />
+            <SlackComponent channelID={SLACK_REPLICATION_CHANNEL} />
           </StyleSlack>
           <StyleGithub>
             <Github repoPath={"codice/ddf"} />
