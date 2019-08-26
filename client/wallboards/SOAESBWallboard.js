@@ -22,7 +22,7 @@ const StyleGrafana = styled.div`
 `;
 
 const StyleGithub = styled.div`
-  height: calc(100% - ${BUILD_STATUS_HEIGHT}px - 60px);
+  height: calc(100% - ${BUILD_STATUS_HEIGHT}px - 100px);
   width: calc(100% - 30px);
   margin: 20px 20px 20px 10px;
 `;

@@ -94,7 +94,7 @@ class I2OWallboard extends React.Component {
         </StyleEvent>
         <RightBox item>
           <StyleSlack>
-            <SlackComponent channelID={SLACK_WALLBOARD_CHANNEL} />
+            <SlackComponent channelID={SLACK_REPLICATION_CHANNEL} />
           </StyleSlack>
           <StyleGithub>
             <Github repoPath={"codice/ddf"} />

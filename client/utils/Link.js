@@ -38,6 +38,21 @@ export const jenkinsURLList = [
   { REFLEX: REFLEXURL }
 ];
 
+export const GSRUrlList = [
+  {
+    master:
+      "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/master/"
+  },
+  {
+    "11.x":
+      "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/11.x/"
+  },
+  {
+    "13.x":
+      "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/13.x/"
+  }
+];
+
 /*AF team*/
 
 //Specific AF team Git build pipeline to keep track of
