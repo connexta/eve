@@ -10,10 +10,6 @@ import Button from "@material-ui/core/Button";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
-const StyledCard = styled(BoxStyle)`
-  width: calc(100% - ${CARD_SIDE_MARGINS}px);
-`;
-
 // if listvert is not true, it will list the items horizontally,
 // otherwise it will list them vertically
 const getListStyle = listvert => {
@@ -61,6 +57,7 @@ const ButtonSelected = styled(Button)`
 class BuildStatus extends React.Component {
   constructor(props) {
     super(props);
+
     this.toggle = this.toggle.bind(this);
     this.state = {
       currentData: [],
@@ -215,17 +212,17 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <StyledCard raised={true}>
+      <BoxStyle raised={true}>
         <BoxHeader>Loading Build Health. . .</BoxHeader>
-      </StyledCard>
+      </BoxStyle>
     ) : (
-      <StyledCard raised={true}>
+      <BoxStyle raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
         <StyledCardContent listvert={this.props.listvert}>
           {this.getBuildDisplay()}
         </StyledCardContent>
-      </StyledCard>
+      </BoxStyle>
     );
   }
 }

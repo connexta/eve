@@ -1,17 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { BATMAN_GRAY } from "../utils/Constants.js";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
 import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
-
-const StyledBox = styled(BoxStyle)`
-  margin: 24px;
-`;
+import GoodState from "@material-ui/icons/CheckCircleOutline";
+import BadState from "@material-ui/icons/HighlightOff";
+import { withStyles } from "@material-ui/core/styles";
 
 const StyledHeader = styled(BoxHeader)`
   cursor: pointer;
@@ -19,16 +16,22 @@ const StyledHeader = styled(BoxHeader)`
 
 const SubHeader = styled.div`
   margin: 0px;
-  font-size: 24px;
+  font-size: 20px;
 `;
 
-const StyledListItemText = styled(ListItemText)`
-  color: ${BATMAN_GRAY};
+const StyleListItemIcon = styled(ListItemIcon)`
+  font-size: 40px;
 `;
 
 const ListItemTextDots = styled(ListItemText)`
   color: ${BATMAN_GRAY};
   text-align: center;
+`;
+
+const Subline = styled.div`
+  color: ${BATMAN_GRAY};
+  font-size: 20px;
+  font-style: italic;
 `;
 
 class BuildAF extends React.Component {
@@ -88,20 +91,6 @@ class BuildAF extends React.Component {
     return failedData;
   }
 
-  //@return:
-  //  icon of success or failure depends on the result
-  //  followed by description of data content
-  formatData(data) {
-    //\u2705: WHITE HEAVY CHECK MARK to represent successful build
-    //\u274C: CROSS MARK to represent failed build
-    const icon = data.result === "SUCCESS" ? "	\u2705" : " \u274C";
-    const description = data.description
-      ? data.description
-      : "build title not provided";
-
-    return icon + " ( " + data.result + " ) " + description;
-  }
-
   //@param:
   //  causes: name for the userID value pair in JSON format
   //@return:
@@ -130,6 +119,10 @@ class BuildAF extends React.Component {
   //@return:
   //  display list of build contents (builder [data.causes], build start time, build result, build description)
   displayListContents(data, index) {
+    const description = data.description
+      ? data.description
+      : "build title not provided";
+
     return (
       <ListItem
         disableGutters={true}
@@ -138,16 +131,37 @@ class BuildAF extends React.Component {
         component="a"
         href={AFJenkinLink + data.id}
       >
-        <StyledListItemText
-          primary={this.formatData(data)}
-          secondary={
-            parseTimeString(data.startTime) +
-            " Triggered by " +
-            this.formatCauses(data.causes)
-          }
-          primaryTypographyProps={{ variant: "h5" }}
-          secondaryTypographyProps={{ variant: "h6" }}
-        />
+        <StyleListItemIcon>
+          {data.result === "SUCCESS" ? (
+            <GoodState
+              fontSize={"inherit"}
+              style={{
+                color: "green",
+                padding: "1 0",
+                float: "left",
+                transform: "scale(0.9)"
+              }}
+            />
+          ) : (
+            <BadState
+              fontSize={"inherit"}
+              style={{
+                color: "red",
+                padding: "1 0",
+                float: "left",
+                transform: "scale(0.9)"
+              }}
+            />
+          )}
+        </StyleListItemIcon>
+        <div>
+          {description}
+          <Subline>
+            {parseTimeString(data.startTime) +
+              " Triggered by " +
+              this.formatCauses(data.causes)}
+          </Subline>
+        </div>
       </ListItem>
     );
   }
@@ -199,9 +213,9 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <StyledBox raised={true}>Loading AF Builds. . .</StyledBox>
+      <BoxStyle raised={true}>Loading AF Builds. . .</BoxStyle>
     ) : (
-      <StyledBox raised={true}>
+      <BoxStyle raised={true}>
         <StyledHeader onClick={() => window.open(AFJenkinLink)}>
           {AFpipeline}
           <SubHeader>
@@ -210,7 +224,7 @@ class BuildAF extends React.Component {
           </SubHeader>
         </StyledHeader>
         {this.getListContents(4, 2)}
-      </StyledBox>
+      </BoxStyle>
     );
   }
 }

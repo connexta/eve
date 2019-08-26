@@ -17,6 +17,7 @@ import Grid from "@material-ui/core/Grid";
 import { StylesProvider } from "@material-ui/styles";
 
 export const BANNER_HEIGHT = 124;
+export const DEV_MSG_HEIGHT = 66;
 
 const RootGrid = styled(Grid)`
   height: 100%;

@@ -1,6 +1,5 @@
 import React from "react";
-import BuildStatus from "../components/BuildStatus";
-import { I2OleftBox } from "../styles/WallboardStyles";
+import styled from "styled-components";
 import Grid from "@material-ui/core/Grid";
 import { IONURL } from "../utils/Link";
 import { hour } from "../utils/TimeUtils";
@@ -86,13 +85,22 @@ class I2OWallboard extends React.Component {
 
   render() {
     return (
-      <Grid container style={{ height: "100%" }}>
-        <I2OleftBox item>
-          <BuildStatus urlList={this.state.urlList} listvert />
-        </I2OleftBox>
+      <Grid container style={{ height: "100%" }} direction={"row"} spacing={0}>
+        <StyleBuild>
+          <TeamBuildStatus vertical={true} url={IONURL} name={"I2O"} />
+        </StyleBuild>
+        <StyleEvent>
+          <EventComponent />
+        </StyleEvent>
+        <RightBox item>
+          <StyleSlack>
+            <SlackComponent channelID={SLACK_WALLBOARD_CHANNEL} />
+          </StyleSlack>
+          <StyleGithub>
+            <Github repoPath={"codice/ddf"} />
+          </StyleGithub>
+        </RightBox>
       </Grid>
     );
   }
 }
-
-export default I2OWallboard;
