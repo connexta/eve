@@ -122,7 +122,9 @@ class MediaEdit extends React.Component {
   }
 
   isValidLink(link) {
-    let regexp = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+    // regular expression to check validity of links
+    // Checks scheme name, validity of characters in URL
+    let regexp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm;
     if (regexp.test(link)) return true;
     else return false;
   }
@@ -133,16 +135,16 @@ class MediaEdit extends React.Component {
       this.inputRef.current.files[0]
     ) {
       if (!this.isImage(this.inputRef.current.value)) {
-        console.log("Image type invalid");
+        alert("Image type invalid");
         return;
       } else if (this.inputRef.current.files[0].size > SIZE_LIMIT) {
-        console.log("Image too large to be uploaded");
+        alert("Image too large to be uploaded");
         return;
       } else this.formRef.current.submit();
     }
 
     if (this.state.link != null && !this.isValidLink(this.state.link)) {
-      console.log("Link invalid");
+      alert("Link invalid");
       return;
     }
 
