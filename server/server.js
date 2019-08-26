@@ -21,7 +21,7 @@ app.use(cors());
 
 /* production setting */
 const prod = process.env.NODE_ENV === "production";
-const versionFileLocation = prod ? "versions.json" : "server/versions.json";
+const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
 const targetPath = prod ? "/target" : "../target";
 
 /* CRON JOB */
