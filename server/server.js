@@ -127,7 +127,7 @@ app.post("/remove", function(req, res) {
 // Reads version data and sends to client
 app.get("/versions", function(req, res) {
   var content = fs.readFileSync(
-    prod ? "versions.json" : "server/versions.json"
+    prod ? "/eve/versions.json" : "eve/versions.json"
   );
   res.send(JSON.parse(content));
 });
@@ -135,7 +135,7 @@ app.get("/versions", function(req, res) {
 // Writes version data from client
 app.post("/versions", function(req, res) {
   fs.writeFileSync(
-    prod ? "versions.json" : "server/versions.json",
+    prod ? "/eve/versions.json" : "eve/versions.json",
     JSON.stringify(req.body)
   );
   res.end();
@@ -161,8 +161,7 @@ app.get("/display", async (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  let targetPath =
-    process.env.NODE_ENV === "production" ? "/target" : "../target";
+  let targetPath = prod ? "/target" : "../target";
   res.sendFile(path.join(__dirname, targetPath, "index.html"));
 });
 
