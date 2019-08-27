@@ -24,7 +24,7 @@ const VersionStyledDateNoField = styled(VersionStyledDate)`
 `;
 
 const StyledTextField = styled(TextField)`
-  width: 120px;
+  width: 80px;
   margin-top: 0;
   font-size: 20px;
 `;
