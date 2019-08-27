@@ -127,7 +127,7 @@ class SlackComponent extends React.Component {
       "https://slack.com/api/channels.history?token=" +
         TOKEN +
         "&channel=" +
-        CHANNEL
+        this.state.channelID
     );
     this.trashableRequestList[0] = makeTrashable(
       fetch(
@@ -139,8 +139,11 @@ class SlackComponent extends React.Component {
     );
 
     try {
-      const data = await this.trashableRequestList[0];
+      const response = await this.trashableRequestList[0];
       let messageList = [];
+      this.trashableGetJSON = makeTrashable(response.json());
+      let data = await this.trashableGetJSON;
+
       let msgCount = 0;
       data.messages.forEach(message => {
         // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)

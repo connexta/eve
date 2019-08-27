@@ -33,6 +33,7 @@ cron.grafanaCron(prod, app, links.soaesb_url);
 app.get("/fetch", async (req, res) => {
   const url = req.query.url;
   const type = req.query.type;
+
   try {
     const response = await fetch(url);
     switch (type) {
@@ -50,17 +51,12 @@ app.get("/fetch", async (req, res) => {
 });
 
 app.get("/versions", function(req, res) {
-  var content = fs.readFileSync(
-    versionFileLocation
-  );
+  var content = fs.readFileSync(versionFileLocation);
   res.send(JSON.parse(content));
 });
 
 app.post("/versions", function(req, res) {
-  fs.writeFileSync(
-    versionFileLocation,
-    JSON.stringify(req.body)
-  );
+  fs.writeFileSync(versionFileLocation, JSON.stringify(req.body));
   res.end();
 });
 
@@ -88,19 +84,20 @@ app.get("*", (req, res) => {
 });
 
 /* Deploy */
-if (process.argv.length >= 2 && process.argv[2] === "https") { //DEV setup for HTTPS enviornment
+if (process.argv.length >= 2 && process.argv[2] === "https") {
+  //DEV setup for HTTPS enviornment
   const options = {
-    key: fs.readFileSync( './localhost.key' ),
-    cert: fs.readFileSync( './localhost.cert' ),
+    key: fs.readFileSync("./localhost.key"),
+    cert: fs.readFileSync("./localhost.cert"),
     requestCert: false,
     rejectUnauthorized: false
-  }
-  const server = https.createServer( options, app );
+  };
+  const server = https.createServer(options, app);
   server.listen(port, () => {
     console.log(`App listening on https://localhost:${port}`);
   });
-}
-else { //DEV setup for HTTP or production level
+} else {
+  //DEV setup for HTTP or production level
   app.listen(port, () => {
     console.log(`App listening on http://localhost:${port}`);
   });
