@@ -40,7 +40,7 @@ class I2OWallboard extends React.Component {
 
     //get existing pipelines in ION team
     this.trashablePipeline = makeTrashable(
-      fetch(IONURL)
+      fetch("/fetch/?type=JSON&url=" + IONURL)
         .then(response => response.json())
         .then(json => {
           return json.pipelineFolderNames;
@@ -59,7 +59,7 @@ class I2OWallboard extends React.Component {
     //For each existing pipelines, obtain the url if it has master branch
     for (let i = 0; i < pipelineNameList.length; i++) {
       this.trashableBranchExists[i] = makeTrashable(
-        fetch(Object.values(pipelineNameList[i]))
+        fetch("/fetch/?type=JSON&url=" + Object.values(pipelineNameList[i]))
           .then(response => response.json())
           .catch(e => console.log("error fetching the i2o pipelines", e))
       );
