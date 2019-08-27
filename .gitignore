@@ -4,3 +4,5 @@ target/
 .env*
 debug.log
 .vscode/
+localhost.cert
+localhost.key

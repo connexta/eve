@@ -123,6 +123,8 @@ class SlackComponent extends React.Component {
   // fetch latest slack messages
   async setMessages() {
     console.log("Fetching latest slack messages...");
+    const url = encodeURIComponent("https://slack.com/api/channels.history?token=" +
+      TOKEN + "&channel=" + CHANNEL);
     this.trashableRequestList[0] = makeTrashable(
       fetch(
         "https://slack.com/api/channels.history?token=" +
@@ -132,13 +134,9 @@ class SlackComponent extends React.Component {
       ).catch(e => console.log("error", e))
     );
 
-    const response = await this.trashableRequestList[0];
-
-    if (response.ok) {
+    try {
+      const data = await this.trashableRequestList[0];
       let messageList = [];
-      this.trashableRequestList[1] = makeTrashable(response.json());
-      let data = await this.trashableRequestList[1];
-
       let msgCount = 0;
       data.messages.forEach(message => {
         // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)
@@ -148,73 +146,73 @@ class SlackComponent extends React.Component {
           messageList.push(message);
         }
       });
-      this.setState({ messages: messageList, msgLoading: false });
+      this.setState({ 
+        messages: messageList, 
+        msgLoading: false 
+      });
       this.setSlackMsg();
-    } else {
-      console.log("Failed to fetch slack messages");
+    } catch (error) {
+      console.log("Failed to fetch slack messages ", error);
     }
   }
 
   // fetch user list
   async setUserList() {
     console.log("Fetching slack users...");
-    this.trashableRequestList[2] = makeTrashable(
-      fetch("https://slack.com/api/users.list?token=" + TOKEN).catch(e =>
-        console.log("error", e)
-      )
+    const url = "https://slack.com/api/users.list?token=" + TOKEN;
+    this.trashableRequestList[1] = makeTrashable(
+      this.fetchData(url)
     );
-
-    const response = await this.trashableRequestList[2];
-
-    if (response.ok) {
-      this.trashableRequestList[3] = makeTrashable(response.json());
-      let data = await this.trashableRequestList[3];
+    try {
+      const data = await this.trashableRequestList[1];
       this.setState({
         slackUsers: data.members,
         userLoading: false
       });
-    } else {
-      console.log("Failed to fetch slack users");
+    } catch (error) {
+      console.log("Failed to fetch slack users ", error);
     }
   }
 
   // fetch custom emoji list
   async setEmojiList() {
     console.log("Fetching emojis...");
-    this.trashableRequestList[4] = makeTrashable(
-      fetch("https://slack.com/api/emoji.list?token=" + TOKEN).catch(e =>
-        console.log("error", e)
-      )
+    const url = "https://slack.com/api/emoji.list?token=" + TOKEN;
+    this.trashableRequestList[2] = makeTrashable(
+      this.fetchData(url)
     );
-
-    const response = await this.trashableRequestList[4];
-
-    if (response.ok) {
-      this.trashableRequestList[5] = makeTrashable(response.json());
-      let data = await this.trashableRequestList[5];
-      this.setState({ emojis: data.emoji, emojiLoading: false });
-    } else {
-      console.log("Failed to fetch slack emojis");
+    try {
+      const data = await this.trashableRequestList[2];
+      this.setState({ 
+        emojis: data.emoji,
+        emojiLoading: false 
+      });
+    } catch (error) {
+      console.log("Failed to fetch slack emojis ", error);
     }
   }
 
   async setChannels() {
     console.log("Fetching slack channels...");
-    this.trashableRequestList[6] = makeTrashable(
-      fetch("https://slack.com/api/channels.list?token=" + TOKEN).catch(e =>
-        console.log("error", e)
-      )
+    const url = "https://slack.com/api/channels.list?token=" + TOKEN;
+    this.trashableRequestList[3] = makeTrashable(
+      this.fetchData(url)
     );
-
-    const response = await this.trashableRequestList[6];
-
-    if (response.ok) {
-      this.trashableRequestList[7] = makeTrashable(response.json());
-      let data = await this.trashableRequestList[7];
-      this.setState({ channels: data.channels, chanLoading: false });
-    } else {
-      console.log("Failed to fetch slack channels");
+    try {
+      const data = await this.trashableRequestList[3];
+      this.setState({ 
+        channels: data.channels, 
+        chanLoading: false 
+      });
+    } catch (error) {
+      console.log("Failed to fetch slack channels ", error);
     }
+  }
+
+  fetchData(URL) {
+    return fetch("/fetch/?type=JSON&url=" + URL)
+      .then(response => response.json())
+      .catch(e => console.log("fetch data error", e)); 
   }
 
   getChannelName(id) {
