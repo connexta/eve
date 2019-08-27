@@ -61,6 +61,13 @@ All information for this component is pulled from the GitHub API.  Calls are aut
 
 Take and display screenshot of grafana dashboard.
 
+#### Packages:
+- **throttle**: Implement throttle to prevent explosive number of setState during window resizing.
+
+#### Props:
+  * **name**: name of grafana dashboard
+  * **url**: url of grafana dashboard to display
+
 ## MediaComponent
 
 Rotates through media to be displayed on the Wallboard.  Each media consists of a title, body, image, and/or link.  Images/data are stored and retrieved from the back-end nodeJS server.

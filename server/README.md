@@ -10,6 +10,8 @@ Main entry file for backend side server (NodeJS) to host the server and any back
 - **path**: utilities for working with file and directory paths.
 - **dotenv**: utilities for extract .env environment variable in dev environment.
 - **multer**: handles saving images to disk
+- **fs**: read and write files
+- **https**: dev purpose to run in https environment.
 
 #### Details:
 - **port**: in final production level, it'll pick up process.env.EVE_PORT from dcos service which is set to 3000.
@@ -25,6 +27,8 @@ Use Puppeteer library to take a screenshot of grafana dashboard
 #### Details:
 - **getScreenshot**: parameter (prod: true if production level, url: url to take a screenshot of, timezone: timezone of browser used by user). Runs in headless mode in production to not display full chrome popup.
 
+## links
+Contains links for fetch calls
 
 ### Data Storage
 
