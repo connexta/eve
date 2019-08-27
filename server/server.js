@@ -33,9 +33,10 @@ app.use(bodyParser.json());
 app.use(cors());
 
 /* production setting */
-const prod = process.env.NODE_ENV === "production";
 const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
 const targetPath = prod ? "/target" : "../target";
+const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
+const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 
 /* CRON JOB */
 //CRON JOB for SOAESB grafana
@@ -45,7 +46,7 @@ cron.grafanaCron(prod, app, links.soaesb_url);
 // Create storage for media images
 const storage = multer.diskStorage({
   destination: function(req, file, callback) {
-    callback(null, prod ? "/eve/carouselMedia" : "eve/carouselMedia");
+    callback(null, mediaFolder);
   },
   filename: function(req, file, callback) {
     callback(null, file.originalname);
@@ -60,26 +61,19 @@ var upload = multer({
 /* ROUTE */
 // Reads JSON data for carousel
 app.get("/carousel", function(req, res) {
-  var content = fs.readFileSync(
-    prod ? "/eve/carousel.json" : "eve/carousel.json"
-  );
+  var content = fs.readFileSync(mediaFile);
   res.send(JSON.parse(content));
 });
 
 // Posts JSON data from carousel
 app.post("/carousel", function(req, res) {
-  var content = fs.readFileSync(
-    prod ? "/eve/carousel.json" : "eve/carousel.json"
-  );
+  var content = fs.readFileSync(mediaFile);
 
   let cards = JSON.parse(content).cards;
 
   cards.push(req.body.card);
 
-  fs.writeFileSync(
-    prod ? "/eve/carousel.json" : "eve/carousel.json",
-    JSON.stringify({ cards: cards })
-  );
+  fs.writeFileSync(mediaFile, JSON.stringify({ cards: cards }));
   res.end("Data sent successfully");
 });
 
@@ -95,9 +89,7 @@ app.post("/upload", function(req, res) {
 
 //Handles deletion of images
 app.post("/remove", function(req, res) {
-  var content = fs.readFileSync(
-    prod ? "/eve/carousel.json" : "eve/carousel.json"
-  );
+  var content = fs.readFileSync(mediaFile);
 
   let removed = req.body.card;
 
@@ -110,25 +102,19 @@ app.post("/remove", function(req, res) {
       )
   );
 
-  fs.writeFileSync(
-    prod ? "/eve/carousel.json" : "eve/carousel.json",
-    JSON.stringify({ cards: temp })
-  );
+  fs.writeFileSync(mediaFile, JSON.stringify({ cards: temp }));
 
   let media = removed.media;
   if (media != null) {
-    fs.unlink(
-      prod ? "/eve/carouselMedia/" + media : "eve/carouselMedia/" + media,
-      function(err) {
-        if (err) {
-          res.end(err.toString());
-          return;
-        } else {
-          res.end("Card deleted successfully");
-          return;
-        }
+    fs.unlink(mediaFolder + "/" + media, function(err) {
+      if (err) {
+        res.end(err.toString());
+        return;
+      } else {
+        res.end("Card deleted successfully");
+        return;
       }
-    );
+    });
   }
 });
 
