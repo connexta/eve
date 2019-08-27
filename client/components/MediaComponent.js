@@ -32,9 +32,6 @@ const SIZE_LIMIT = 20 * Math.pow(10, 6); // max size of images in bytes
 const FETCH_FREQ = time({ minutes: 1 });
 
 export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  margin: 0 0 0 24px;
-  height: 100%;
   position: relative;
 `;
 
