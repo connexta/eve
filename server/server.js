@@ -56,7 +56,7 @@ const storage = multer.diskStorage({
 });
 
 // Multer package handles image storage
-var upload = multer({
+const upload = multer({
   storage: storage
 }).array("imgUploader", 3);
 
@@ -64,7 +64,7 @@ var upload = multer({
 // Reads JSON data for carousel
 app.get("/carousel", function(req, res) {
   if (fs.existsSync(mediaFile)) {
-    var content = fs.readFileSync(mediaFile);
+    let content = fs.readFileSync(mediaFile);
     res.send(JSON.parse(content));
   } else res.send({ cards: [] });
 });
@@ -72,7 +72,7 @@ app.get("/carousel", function(req, res) {
 // Posts JSON data from carousel
 app.post("/carousel", function(req, res) {
   if (fs.existsSync(mediaFile)) {
-    var content = fs.readFileSync(mediaFile);
+    let content = fs.readFileSync(mediaFile);
 
     let cards = JSON.parse(content).cards;
 
@@ -83,6 +83,7 @@ app.post("/carousel", function(req, res) {
   } else {
     let content = { cards: [req.body.card] };
     fs.writeFileSync(mediaFile, JSON.stringify(content));
+    res.end("Data send successfully!");
   }
 });
 
@@ -101,7 +102,7 @@ app.post("/upload", function(req, res) {
 //Handles deletion of images
 app.post("/remove", function(req, res) {
   if (fs.existsSync(mediaFile)) {
-    var content = fs.readFileSync(mediaFile);
+    let content = fs.readFileSync(mediaFile);
 
     let removed = req.body.card;
 
@@ -157,7 +158,7 @@ app.get("/fetch", async (req, res) => {
 
 app.get("/versions", function(req, res) {
   if (fs.existsSync(versionFileLocation)) {
-    var content = fs.readFileSync(versionFileLocation);
+    let content = fs.readFileSync(versionFileLocation);
     res.send(JSON.parse(content));
   } else {
     res.send({ GSR: "", Alliance: "", DDF: "" });
