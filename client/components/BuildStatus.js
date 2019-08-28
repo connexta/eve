@@ -107,28 +107,35 @@ class BuildStatus extends React.Component {
   //overallData: temporary array to collect each team status before pushing to setState: data
   //update data for displayName, score, last build time.
   async refreshBuildStatus() {
-    let overallData = [];
-    this.trashableRequestList = [];
-    for (let index in this.props.content) {
-      this.trashableRequestList.push(
-        makeTrashable(this.fetchData(Object.values(this.props.content[index])))
-      );
+    try {
+      let overallData = [];
+      this.trashableRequestList = [];
+      for (let index in this.props.content) {
+        console.log("LETS SEE THE FUTURE")
+        console.log(this.props.content);
+        
+        this.trashableRequestList.push(
+          makeTrashable(this.fetchData(this.props.content[index].URL))
+        );
+      }
+      //fetch and update jenkins information for all team
+      await Promise.all(this.trashableRequestList)
+        .then(linklist => {
+          for (let index = 0; index < linklist.length; index++) {
+            this.updateData(
+              linklist[index],
+              overallData,
+              this.props.content[index].NAME,
+              index
+            );
+          }
+        })
+        .catch(e => console.log("error", e));
+      //push all collected data to data state, and make it ready to display.
+      this.setState({ currentData: overallData, isLoading: false });
+    } catch (error) {
+      console.log("Unable to refresh Build status ", error);
     }
-    //fetch and update jenkins information for all team
-    await Promise.all(this.trashableRequestList)
-      .then(linklist => {
-        for (let index = 0; index < linklist.length; index++) {
-          this.updateData(
-            linklist[index],
-            overallData,
-            Object.keys(this.props.content[index]),
-            index
-          );
-        }
-      })
-      .catch(e => console.log("error", e));
-    //push all collected data to data state, and make it ready to display.
-    this.setState({ currentData: overallData, isLoading: false });
   }
 
   toggle() {
@@ -144,6 +151,8 @@ class BuildStatus extends React.Component {
 
   //fetch data from the jenkin url
   fetchData(URL) {
+    console.log("YOU ARE L");
+    console.log(URL);
     return fetch(URL)
       .then(response => response.json())
       .catch(e => console.log("error", e));
@@ -170,7 +179,7 @@ class BuildStatus extends React.Component {
         displayName: "INVALID",
         oneScore: 0,
         fiveScore: 0,
-        oneSubtitle: "",
+        oneSubtitle: "INVALID",
         fiveSubtitle: "INVALID"
       };
     }
@@ -204,7 +213,7 @@ class BuildStatus extends React.Component {
             <BuildIcon
               score={item.oneScore}
               name={item.displayName}
-              key={Date.now() + index + item.displayName + item.oneSubtitle}
+              key={Date.now() + index + "A" + item.oneSubtitle}
               subtitle={item.oneSubtitle}
             />
           );
@@ -214,7 +223,7 @@ class BuildStatus extends React.Component {
             <BuildIcon
               score={item.fiveScore}
               name={item.displayName}
-              key={Date.now() + index + item.displayName + item.fiveSubtitle}
+              key={Date.now() + index + "B" + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
             />
           );

@@ -4,3 +4,4 @@ target/
 .env*
 debug.log
 .vscode/
+coverage/

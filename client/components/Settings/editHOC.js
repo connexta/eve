@@ -52,7 +52,6 @@ const editHOC = (WrappedComponent) => {
         },
     }))
 
-
     const SaveFabWrapper = styled(Save)`
         margin-right: 8px;
     `;
@@ -60,16 +59,6 @@ const editHOC = (WrappedComponent) => {
     const CancelFabWrapper = styled(Cancel)`
         margin-right: 8px;
     `;
-
-    // const CancelFab = () => {
-    //     const classes = useStyles();
-    //     return (
-    //         <Button className={classes.button}>
-    //             <Cancel className={classes.leftIcon} />
-    //             Cancel
-    //         </Button>
-    //     )
-    // }
 
 
     class HOC extends React.Component {
@@ -80,21 +69,15 @@ const editHOC = (WrappedComponent) => {
                 open: false,
                 resultsOpen: false,
                 key: Date.now(),
-                metSaveRequirement: false,
-
+                metSaveRequirement: false
             }
             this.handleMultipleSave = this.handleMultipleSave.bind(this);
             this.getMultipleCells = this.getMultipleCells.bind(this);
+
         }
 
-        // componentDidUpdate(prevProps){
-        //     if (this.props.content !== prevProps.content) {
-        //         console.log("component did update");
-        //         this.props.updateContent("CKJBH2KQV");
-        //     }
-        // }
-
         metRequirement(type, text){
+            if (text === undefined) return false;
             switch (type) {
                 case "CHANNEL":
                     return this.slackRequirement(text);
@@ -183,56 +166,111 @@ const editHOC = (WrappedComponent) => {
             // this.props.leaveEdit();
           }
 
-        handleSave(){
-            console.log("saved");
-            let metSaveRequirement = this.metRequirement(this.props.type, this.state.text)
-            if (metSaveRequirement){
-                this.props.updateContent(this.state.text);
-                // location.reload();
-                this.setState({key: Date.now()})
-                // this.handleClose();
-                // console.log("CURRENT COMPONENT " + this.constructor.displayName);
-                console.log("currentWallboard " + this.props.currentWallboard);
-                console.log("name " + this.props.name);
-                console.log("data: " + this.state.text);
-                fetch("/theme?wallboard="+this.props.currentWallboard+"&component="+this.props.name, {
-                    method: "POST",
-                    headers: { "Content-Type": 'application/json' },
-                    body: JSON.stringify({"data":this.state.text})
-                    
-                })
 
 
+        postData(isArray, data, index){
+            let dataToUpdate;
+            if (isArray){
+                dataToUpdate = this.props.content.slice();
+                dataToUpdate[index] = data;
             }
             else {
-                // alert("Invalid context to save");
-                // this.setState({resultsOpen: true})
+                dataToUpdate = data;
             }
-            this.setState({
-                resultsOpen: true,
-                metSaveRequirement: metSaveRequirement
+            fetch("/theme?wallboard="+this.props.currentWallboard+"&component="+this.props.name, {
+                method: "POST",
+                headers: { "Content-Type": 'application/json' },
+                body: JSON.stringify({"data":dataToUpdate})       
             })
-            // this.props.updateContent("CKJBH2KQV");
+        }
+        
+        // onChange={e => {this.setState({[e.target.name]: e.target.value})}}
+/*
 
+                                    name={typeArray[jndex]+numArray[index]}
+                                    onChange={e => {this.setState({[e.target.name]: e.target.value})}}
+        //                             */
+        // async handleSave(e){
+        //     let metSaveRequirement = this.metRequirement(this.props.type[0], this.state.text)
+        //     if (metSaveRequirement){
+        //         await this.props.updateContent(this.state.text);
+        //         this.setState({key: Date.now()})
+        //         fetch("/theme?wallboard="+this.props.currentWallboard+"&component="+this.props.name, {
+        //             method: "POST",
+        //             headers: { "Content-Type": 'application/json' },
+        //             body: JSON.stringify({"data":this.state.text})       
+        //         })
+        //     }
+        //     this.setState({
+        //         resultsOpen: true,
+        //         metSaveRequirement: metSaveRequirement
+        //     })
+
+        // }
+
+        async handleMultipleSave(e, row, column) {
+            let metSaveRequirement = true;
+            let metOneRequirement = false;
+            let isArray = !(row == 1 && column == 1); 
+            for (let index = 0; index < row; index++){
+                metSaveRequirement = true; 
+                //check if valid response has been inputted
+                for (let jndex = 0; jndex < column; jndex++){
+                    let inputData = this.state[this.props.type[jndex]+index];
+                    console.log("INPPUT");
+                    console.log(inputData);
+                    metSaveRequirement = metSaveRequirement && 
+                        this.metRequirement(this.props.type[jndex], inputData);
+                }
+                if (metSaveRequirement){
+                    let sendData;
+                    for (let jndex = 0; jndex < column; jndex++){
+                        // let inputName = [this.state]
+                        let inputName = this.props.type[jndex];
+                        let inputData = this.state[this.props.type[jndex]+index];
+                        sendData = isArray ? 
+                        {...sendData, ...{[inputName]:inputData}}
+                        :
+                        inputData
+                        ;
+                    }
+                    await this.props.updateContent(sendData, index, this.props.name);
+                    this.postData(isArray, sendData, index);
+                    metOneRequirement = true;
+                    this.setState({
+                        key: Date.now()
+                    })
+                }
+            }
+            this.setState({         
+                metSaveRequirement: metOneRequirement, //if at least one requirement has met.
+                resultsOpen: true,
+                
+            })
         }
 
-        displaySaveFab() {
+        displaySaveFab(row, column) {
             return (
-                <Button onClick={this.handleSave.bind(this)}>
+                // <Button onClick={this.handleSave.bind(this)}>
+                <Button onClick={e => 
+                    // (row == 1 && column == 1) ?
+                    // this.handleSave(e) :
+                    this.handleMultipleSave(e, row, column)
+                }>
                     <SaveFabWrapper/>
                     Save
                 </Button>
             )
         }
 
-        displayMultipleSaveFab(numFields) {
-            return (
-                <Button onClick={e => this.handleMultipleSave(e, numFields)}>
-                    <SaveFabWrapper/>
-                    Save
-                </Button>
-            )
-        }
+        // displayMultipleSaveFab(row, column) {
+        //     return (
+        //         <Button onClick={e => this.handleMultipleSave(e, row, column)}>
+        //             <SaveFabWrapper/>
+        //             Save
+        //         </Button>
+        //     )
+        // }
 
         displayCancelFab() {
             // const classes = useStyles();
@@ -245,31 +283,7 @@ const editHOC = (WrappedComponent) => {
             )
           }
 
-        async handleMultipleSave(e, numFields) {
-            console.log("TESTIGNA DFKAS DFASD FASDF");
-            console.log(numFields);
-            for (let index = 0; index < numFields; index++){
-                console.log([this.props.type+index]);
-                console.log(this.state["key"]);
-                let inputURL = this.state[this.props.type+index];
-                
-                console.log(index + " " + inputURL);
-                let sendData = {[this.state["NAME"+index]]:this.state[this.props.type+index]};
-                console.log(sendData);
-                if (inputURL !== undefined){
-                    console.log("CALLING " + index);
-                    await this.props.updateContent(sendData, index);
-                    // console.log(inputURL);
-                }
-            }
-            this.setState({key: Date.now()})
-            // this.setState({ [e.target.name]: e.target.value})
-            // console.log("handling multiple saves");
-            // console.log(this.state[e.target.name]);
-            // console.log(index);
-            // this.props.updateContent(this.state[e.target.name]);
-            // this.props.updateContent(this.state.text);
-        }
+
 
         settingTable(){
             return (
@@ -306,39 +320,32 @@ const editHOC = (WrappedComponent) => {
             )
         }
 
-        getMultipleCells(numFields){
+        
+        getMultipleCells(row, column, typeArray){
             let tables = [];
             console.log("creating Multiple cells");
-            for (let index = 0; index < numFields; index++) {
-                // let cellName = "url#"+(index+1);
-                let urlName = this.props.type + index;
-                let displayName = "NAME" + index;
+            for (let index = 0; index < row; index++) {
+                let columnCells = [];
+                for (let jndex = 0; jndex < column; jndex++){
+                    columnCells.push(
+                        <React.Fragment key={index.toString()+jndex.toString()}>
+                            <TableCell>
+                                {typeArray[jndex]+index}
+                            </TableCell>
+                            <TableCell>
+                                <TextField
+                                    name={typeArray[jndex]+index}
+                                    onChange={e => {this.setState({[e.target.name]: e.target.value})}}
+                                >
+                                </TextField>
+                            </TableCell>
+                        </React.Fragment>
+                    )
+                }
                 tables.push(
                     <TableRow key={index}>
-                        <TableCell>
-                            {displayName}
-                        </TableCell>
-                        <TableCell>
-                            <TextField
-                                name={displayName}
-                                onChange={e => {this.setState({[e.target.name]: e.target.value})}}
-                                // onChange={e => this.handleMultipleSave(e, numFields)}
-                            >
-                            </TextField>
-                        </TableCell>
-                        <TableCell>
-                            {urlName}
-                        </TableCell>
-                        <TableCell>
-                            <TextField
-                                name={urlName}
-                                onChange={e => {this.setState({[e.target.name]: e.target.value})}}
-                                // onChange={e => this.handleMultipleSave(e, numFields)}
-                            >
-                            </TextField>
-                        </TableCell>
+                        {columnCells}
                     </TableRow>
-
                 )
             }
             console.log(tables);
@@ -347,38 +354,20 @@ const editHOC = (WrappedComponent) => {
 
         
 
-        settingTableMultiple(numFields) {
-            console.log("MULTIPLE");
+        settingTableMultiple(row, column, typeArray) {
             return (
                 <Table>
                     <TableBody>
-                        {this.getMultipleCells(numFields)}
-                        {/* <TableRow>
-                            <TableCell>
-                                {this.props.type}
-                            </TableCell>
-                            {this.getMultipleCells(numFields)}
-                            {/* <TableCell>
-                                <TextField
-                                    onChange={e => this.setState({text: e.target.value})}
-                                >
-                                </TextField>
-                            </TableCell> 
-                        </TableRow> */}
+                        {this.getMultipleCells(row, column, typeArray)}
                     </TableBody>
                     <TableFooter>
                         <TableRow>
                             <TableCell>
-                                {this.displayMultipleSaveFab(numFields)}
-                                {/* <SaveFab /> */}
+                                {this.displaySaveFab(row, column)}
                             </TableCell>
                             <TableCell>
-                                {/* <CancelFab /> */}
                                 {this.displayCancelFab()}
                             </TableCell>
-                            {/* <TableCell onClick={this.handleClose.bind(this)} style={{cursor:"pointer"}} >
-                                Cancel
-                            </TableCell> */}
                         </TableRow>
                     </TableFooter>
                 </Table>
@@ -386,8 +375,13 @@ const editHOC = (WrappedComponent) => {
         }
 
         displayDialog() {
-            console.log("WHATS YOU NAME")
-            console.log(this.props.name);
+            let row = this.props.dimension[0];
+            let column = this.props.dimension[1];
+            // let typeArray = [];
+            // for (let i = 0; i < column; i++){
+            //     typeArray.push(this.props.type[i]);
+            // }
+            
             return(
                 <Dialog
                 onClose={this.handleClose.bind(this)}
@@ -398,39 +392,19 @@ const editHOC = (WrappedComponent) => {
                 <DialogTitle>
                   Editing a Component
                 </DialogTitle>
-                {this.props.name === "BUILDSTATUS" ?
-                 this.settingTableMultiple(this.props.num)
+                {this.settingTableMultiple(row, column, this.props.type)}
+                {/* {this.props.name === "BUILDSTATUS" ?
+                 this.settingTableMultiple(row, column, typeArray)
                 :
                 this.settingTable()
-                }
+                } */}
                
-                {/* <SettingContainers onChange={()=>this.handleClose()} id="hahaha"/> */}
               </Dialog>
             )
           }
 
-        //   test() {
-        //     fetch("/theme?wallboard="+this.props.currentWallboard+"&component="+this.props.name, {
-        //         method: "GET",
-        //         headers: { "Content-Type": 'application/json' }
-        //     })
-        //     .then(response=>{
-        //         console.log("RESPONSING response");
-        //         console.log(response)
-        //     })
-        //     .then(data=>{
-        //         console.log("RESPONSING data");
-        //         console.log(data)
-        //     })
-        //     .catch(err=>{
-        //         console.log(err);
-        //     })
-        //   }
-        displayBanner() {
-            console.log("display ");
-            console.log(this.props.isEdit);
-            console.log(this.props.name);
 
+        displayBanner() {
             return (
                 this.props.isEdit ?
                 <BannerWrapper
@@ -451,17 +425,10 @@ const editHOC = (WrappedComponent) => {
                 <WrappedComponent {...this.props} />
             </BannerWrapper>
             )
-
         }
 
         render() {
-            // console.log("HOC" + this.props.isEdit);
-            // console.log("test");
-            // console.log(this.test());
-            console.log("iyutsuide");
-            console.log(this.props.isEdit);
-            console.log(this.props.name);
-            console.log(this.props.content);
+
             return (
                 this.props.name === "BANNER" ?
                     <>

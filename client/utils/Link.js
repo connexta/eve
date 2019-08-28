@@ -26,13 +26,22 @@ const REFLEXURL =
 export const IONURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/ION/";
 
+// export const jenkinsURLList = [
+//   { Alliance: AllianceURL },
+//   { DDF: DDFURL },
+//   { DIB: DIBURL },
+//   { GSR: GSRURL },
+//   { SOAESB: SOAESBURL },
+//   { REFLEX: REFLEXURL }
+// ];
+
 export const jenkinsURLList = [
-  { Alliance: AllianceURL },
-  { DDF: DDFURL },
-  { DIB: DIBURL },
-  { GSR: GSRURL },
-  { SOAESB: SOAESBURL },
-  { REFLEX: REFLEXURL }
+  { "NAME": "Alliance", "URL": AllianceURL },
+  { "NAME": "DDF", "URL": DDFURL },
+  { "NAME": "DIB", "URL": DIBURL },
+  { "NAME": "GSR", "URL": GSRURL },
+  { "NAME": "SOAESB", "URL": SOAESBURL },
+  { "NAME": "REFLEX", "URL": REFLEXURL }
 ];
 
 /*AF team*/

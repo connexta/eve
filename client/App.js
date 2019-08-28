@@ -90,7 +90,7 @@ class App extends React.Component {
             console.log("RESPONSING data");
             console.log("SETTING");
             console.log(data)
-            if (data){
+            if (data && Object.keys(data).length){
               this.setState({[component]:data.data})
               retrieved = true;
             }
@@ -121,8 +121,9 @@ class App extends React.Component {
                   isEdit={this.props.isEdit}
                   content={this.state.BANNER}
                   updateContent={(content) => {console.log("calling updatecontent"); this.setState({BANNER: content})}}
-                  type="COLOR"
+                  type={["COLOR"]}
                   name="BANNER"
+                  dimension={[1,1]}
                   />
                 <BottomGrid item>
                   <Switch>
