@@ -50,7 +50,6 @@ class SlackComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      channelID: this.props.channelID,
       emojis: [],
       messages: [],
       slackUsers: [],
@@ -127,14 +126,14 @@ class SlackComponent extends React.Component {
       "https://slack.com/api/channels.history?token=" +
         TOKEN +
         "&channel=" +
-        this.state.channelID
+        this.props.channelID
     );
     this.trashableRequestList[0] = makeTrashable(
       fetch(
         "https://slack.com/api/channels.history?token=" +
           TOKEN +
           "&channel=" +
-          this.state.channelID
+          this.props.channelID
       ).catch(e => console.log("error", e))
     );
 
@@ -317,7 +316,7 @@ class SlackComponent extends React.Component {
         <CardContainer raised={true}>
           <span>
             <CardHeader>
-              #{this.getChannelName(this.state.channelID)}
+              #{this.getChannelName(this.props.channelID)}
             </CardHeader>
           </span>
           <GradientBlock />

@@ -3,7 +3,7 @@ import BuildStatus from "../components/BuildStatus";
 import { hour } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 
-export default class I2OWallboard extends React.Component {
+export default class TeamBuildStatus extends React.Component {
   constructor(props) {
     super(props);
 
@@ -11,17 +11,14 @@ export default class I2OWallboard extends React.Component {
       urlList: localStorage.getItem(this.props.name)
         ? JSON.parse(localStorage.getItem(this.props.name))
         : [], //format of array with object {<Name of Pipeline>: <master URL>}
-      isLoading: true,
-      pipelineUrl: this.props.url,
-      vertical: this.props.vertical,
-      name: this.props.name
+      isLoading: true
     };
   }
 
   componentDidMount() {
-    localStorage.getItem(this.state.name)
+    localStorage.getItem(this.props.name)
       ? this.setState({ isLoading: false })
-      : this.createJenkinsURLList(this.state.pipelineUrl);
+      : this.createJenkinsURLList(this.props.url);
     this.getPipelineId = setInterval(() => this.createJenkinsURLList(), hour);
   }
 
@@ -84,11 +81,11 @@ export default class I2OWallboard extends React.Component {
     }
 
     this.setState({ urlList: urlList, isLoading: false });
-    localStorage.setItem(this.state.name, JSON.stringify(urlList));
+    localStorage.setItem(this.props.name, JSON.stringify(urlList));
   }
 
   render() {
-    return this.state.vertical ? (
+    return this.props.vertical ? (
       <BuildStatus urlList={this.state.urlList} listvert />
     ) : (
       <BuildStatus urlList={this.state.urlList} />

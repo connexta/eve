@@ -52,7 +52,7 @@ export default class I2OWallboard extends React.Component {
             <SlackComponent channelID={SLACK_REPLICATION_CHANNEL} />
           </StyleSlack>
           <StyleGithub>
-            <Github repoPath={"codice/ddf"} />
+            <Github repoPath={"connexta/replication"} />
           </StyleGithub>
         </RightBox>
       </Grid>
