@@ -11,6 +11,7 @@ const StyledCardContent = styled(CardContent)`
   /* Force priority over .MuiCardContent-root:last-child */
   && {
     padding: 4px;
+    width: 14%;
   }
 `;
 

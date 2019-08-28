@@ -8,6 +8,7 @@ import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
 import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
 import makeTrashable from "trashable";
+import editHOC from "./Settings/editHOC";
 
 const StyledBox = styled(BoxStyle)`
   margin: 24px;
@@ -199,9 +200,9 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <StyledBox raised={true}>Loading AF Builds. . .</StyledBox>
+      <span>Loading AF Builds. . .</span>
     ) : (
-      <StyledBox raised={true}>
+      <span>
         <StyledHeader onClick={() => window.open(AFJenkinLink)}>
           {AFpipeline}
           <SubHeader>
@@ -210,9 +211,10 @@ class BuildAF extends React.Component {
           </SubHeader>
         </StyledHeader>
         {this.getListContents(4, 2)}
-      </StyledBox>
+      </span>
     );
   }
 }
 
-export default BuildAF;
+const WrappedComponent = editHOC(BuildAF);
+export default WrappedComponent;

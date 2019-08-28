@@ -36,9 +36,9 @@ class SettingContainers extends React.Component {
     };
 
     componentDidUpdate(prevProps) {
-        // if (this.state.open !== prevProps.open) {
-        //     this.props.
-        // }
+        if (this.state.open !== prevProps.open) {
+            this.props.onChange();
+        }
     }
 
      settingTable(){

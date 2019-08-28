@@ -14,14 +14,13 @@ import PullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import { addS } from "../utils/TimeUtils";
+import editHOC from "./Settings/editHOC";
 
 import NeutralState from "@material-ui/icons/Remove";
 import BadState from "@material-ui/icons/Clear";
 import GoodState from "@material-ui/icons/Done";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-
-export const GITHUB_HEIGHT = 400;
 
 const MAXPULLS = 5; // Max number of pull requests to display
 const NUM_STATUSES = 2; // Max number of statuses to display for each PR
@@ -32,9 +31,10 @@ const IGNORE_CONTEXTS = ["snyk", "license/cla"]; // list of contexts to ignore f
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+// styled(BoxStyle)`
+  /* height: ${GITHUB_HEIGHT}px; */
+const GithubCard = styled.div`
 
-const GithubCard = styled(BoxStyle)`
-  height: ${GITHUB_HEIGHT}px;
 `;
 
 const Header = styled(BoxHeader)`
@@ -153,8 +153,8 @@ function Statuses(props) {
   return statuses;
 }
 
-// repoPath: the path to the desired repo (":org/:repo")
-export default class Github extends React.Component {
+// content: the path to the desired repo (":org/:repo")
+class Github extends React.Component {
   constructor(props) {
     super(props);
 
@@ -191,7 +191,7 @@ export default class Github extends React.Component {
   async getRepoName() {
     let call =
       "https://api.github.com/repos/" +
-      this.props.repoPath +
+      this.props.content +
       "?client_secret=" +
       CLIENT_SECRET +
       "&client_id=" +
@@ -204,7 +204,7 @@ export default class Github extends React.Component {
   async getApprovals(prNum) {
     let call =
       "https://api.github.com/repos/" +
-      this.props.repoPath +
+      this.props.content +
       "/pulls/" +
       prNum +
       "/reviews";
@@ -265,7 +265,7 @@ export default class Github extends React.Component {
 
   // Calls GitHub to fetch PR, status, and review data & stores in this.state.pulls
   async loadUserData() {
-    let call = "https://api.github.com/repos/" + this.props.repoPath + "/pulls";
+    let call = "https://api.github.com/repos/" + this.props.content + "/pulls";
     let data = await this.fetchGithub(call);
 
     let pulls = [];
@@ -274,6 +274,8 @@ export default class Github extends React.Component {
     });
 
     for (let i = 0; i < this.state.numPulls; i++) {
+      console.log("data[i]");
+      console.log(data[i])
       let approvals = await this.getApprovals(data[i].number);
       let statuses = await this.getStatuses(data[i].statuses_url);
       let description = this.formatDescription(data[i].body);
@@ -329,10 +331,10 @@ export default class Github extends React.Component {
   render() {
     if (this.state.prs.length == 0)
       return (
-        <GithubCard raised={true}>
+        <span>
           <Header>{this.state.name} Pull Requests</Header>
           <CardContent>No pull requests</CardContent>
-        </GithubCard>
+        </span>
       );
     else {
       let pr = this.state.prs[this.state.displayIndex];
@@ -347,7 +349,7 @@ export default class Github extends React.Component {
         ) : null;
 
       return (
-        <GithubCard raised={true}>
+        <span>
           <Header>{this.state.name} Pull Requests</Header>
           <CardContent>
             <MainAndSubline onClick={() => window.open(pr.url)}>
@@ -394,8 +396,11 @@ export default class Github extends React.Component {
               </Button>
             }
           />
-        </GithubCard>
+        </span>
       );
     }
   }
 }
+
+const WrappedComponent = editHOC(Github);
+export default WrappedComponent;

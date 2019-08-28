@@ -4,7 +4,6 @@ import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
 import { BoxStyle, BoxHeader } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
-import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
 import Collapse from "@material-ui/core/Collapse";
 import editHOC from "./Settings/editHOC";
@@ -20,8 +19,6 @@ const CardContainer = styled.div`
   justify-content: flex-start;
   position: relative;
 
-  /*Height of Slack Card is size of window beneath banner minus size of github card and margins */
-  /* height: calc(100% - ${GITHUB_HEIGHT}px - 72px - 32px); */
   height: 100%;
 `;
 
@@ -133,7 +130,7 @@ class SlackComponent extends React.Component {
         "https://slack.com/api/channels.history?token=" +
           TOKEN +
           "&channel=" +
-          this.props.CHANNEL
+          this.props.content
       ).catch(e => console.log("error", e))
     );
 
@@ -314,15 +311,15 @@ class SlackComponent extends React.Component {
   render() {
     if (this.anyStillLoading()) {
       return (
-        <CardContainer raised={true}>
+        <CardContainer>
           <CardHeader>Loading Slack...</CardHeader>
         </CardContainer>
       );
     } else {
       return (
-        <CardContainer raised={true}>
+        <CardContainer>
           <span>
-            <CardHeader>#{this.getChannelName(this.props.CHANNEL)}</CardHeader>
+            <CardHeader>#{this.getChannelName(this.props.content)}</CardHeader>
           </span>
           <GradientBlock />
           <WhiteBlock />

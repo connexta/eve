@@ -109,9 +109,9 @@ class BuildStatus extends React.Component {
   async refreshBuildStatus() {
     let overallData = [];
     this.trashableRequestList = [];
-    for (let index in this.props.urlList) {
+    for (let index in this.props.content) {
       this.trashableRequestList.push(
-        makeTrashable(this.fetchData(Object.values(this.props.urlList[index])))
+        makeTrashable(this.fetchData(Object.values(this.props.content[index])))
       );
     }
     //fetch and update jenkins information for all team
@@ -121,7 +121,7 @@ class BuildStatus extends React.Component {
           this.updateData(
             linklist[index],
             overallData,
-            Object.keys(this.props.urlList[index]),
+            Object.keys(this.props.content[index]),
             index
           );
         }
@@ -156,13 +156,25 @@ class BuildStatus extends React.Component {
   //  name: processed name to be displayed on the wallboard
   //  index: used to assign for each build information in the array
   updateData(item, overallData, name, index) {
-    overallData[index] = {
-      displayName: name,
-      oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
-      fiveScore: item.weatherScore,
-      oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
-      fiveSubtitle: this.getFiveSubtitle(item)
-    };
+    if (item){
+      overallData[index] = {
+        displayName: name,
+        oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
+        fiveScore: item.weatherScore,
+        oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
+        fiveSubtitle: this.getFiveSubtitle(item)
+      };
+    }
+    else {
+      overallData[index] = {
+        displayName: "INVALID",
+        oneScore: 0,
+        fiveScore: 0,
+        oneSubtitle: "",
+        fiveSubtitle: "INVALID"
+      };
+    }
+
   }
 
   //get last five builds subtitles based on the number of weatherscore and number of total builds
@@ -187,22 +199,22 @@ class BuildStatus extends React.Component {
   //else, list of last 5 builds
   getBuildDisplay() {
     const display = this.state.toggle
-      ? this.state.currentData.map(item => {
+      ? this.state.currentData.map((item,index) => {
           return (
             <BuildIcon
               score={item.oneScore}
               name={item.displayName}
-              key={item.displayName + item.oneSubtitle}
+              key={Date.now() + index + item.displayName + item.oneSubtitle}
               subtitle={item.oneSubtitle}
             />
           );
         })
-      : this.state.currentData.map(item => {
+      : this.state.currentData.map((item,index) => {
           return (
             <BuildIcon
               score={item.fiveScore}
               name={item.displayName}
-              key={item.displayName + item.fiveSubtitle}
+              key={Date.now() + index + item.displayName + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
             />
           );
@@ -265,9 +277,9 @@ class BuildStatus extends React.Component {
     // const { isEdit, ...rest } = props;
     return (
       // <StyledCard isedit={this.props.isEdit.toString()} raised={true}>
-      <StyledCard isedit={this.props.isEdit.toString()} raised={true}>
-        {this.showContent()}
-      </StyledCard>
+      // <StyledCard isedit={this.props.isEdit.toString()} raised={true}>
+        this.showContent()
+      // </StyledCard>
     )
     // return this.editModeToggle();
   }

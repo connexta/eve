@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { BANNER_HEIGHT } from "../App";
 import Grid from "@material-ui/core/Grid";
 
 export const LeftBox = styled(Grid)`
@@ -27,7 +26,6 @@ export const WallBoardButtons = styled.div`
 export const Homebase = styled.div`
   font-size: 30px;
   position: absolute;
-  top: ${BANNER_HEIGHT}px;
   bottom: 0;
   overflow: hidden;
   width: 100%;

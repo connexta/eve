@@ -10,13 +10,13 @@ import { jenkinsURLList } from "../utils/Link";
 import MediaComponent from "../components/MediaComponent";
 import EventComponent from "../components/EventComponent";
 import {connect} from 'react-redux';
-import { addComponents, deleteComponents } from "../actions";
+import { addComponents, deleteComponents, updateCurrentWallboard, leaveEdit } from "../actions";
 import {bindActionCreators} from 'redux';
 import { CARD_SIDE_MARGINS } from "../styles/styles";
-import { GITHUB_HEIGHT } from "../components/Github";
+import { TV_GITHUB_HEIGHT } from "../utils/Constants";
 
 const CHANNEL = process.env.SLACK_CHANNEL;
-
+const REPOPATH = "codice/ddf";
 /*
 You can change the size of any component through the use of styled components.
 
@@ -28,47 +28,46 @@ const StyledBuildStatus = styled(BuildStatus)`
 `
 
 */
-// const hoc = (WrappedComponent) => (props) => {
-//   return (
-//     <span>
-//       {this.props.isEdit ? (
-//         <WrappedComponent {...props} onClick={this.handleClick}>
-//           {this.props.isEdit}
-//         </WrappedComponent>
-//       ) : (
-//         <WrappedComponent {...props}>
-//         {this.props.isEdit}
-//       </WrappedComponent>
-//       )}
-//     </span>
-//   )
-// }
-// const BuildStatusHOC = editHOC(BuildStatus);
+
 const buildStatusWidth = `calc(100% - ${CARD_SIDE_MARGINS}px)`;
-const SlackHeight = `calc(100% - ${GITHUB_HEIGHT}px - 72px - 32px)`;
+/*Height of Slack Card is size of window beneath banner minus size of github card and margins */
+const SlackHeight = `calc(100% - ${TV_GITHUB_HEIGHT}px - 72px - 32px)`; 
+const GithubHeight = `${TV_GITHUB_HEIGHT}px`;
 
 class TVWallboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      isLoading: true,
       localComponents: ["BuildStatus", "Media", "Event", "Slack", "Github"],
-      //BuildStatus: urlList
-      //SlackComponent: channel
-      //Github: repoPath. //show examples as well.
-      //pass down hidden/show mode.
+      SLACKCHANNEL: "",
+      GITHUB: "",
+      BUILDSTATUS: ""
     }
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     console.log("attempting to add components");
     console.log(this.props.components);
     this.props.addComponents(this.state.localComponents);
+    await this.props.updateCurrentWallboard("TV");
+    console.log("UPDATING SLACK CHANNEL");
+    await this.updateContent("SLACKCHANNEL",CHANNEL);
+    await this.updateContent("GITHUB",REPOPATH);
+    await this.updateContent("BUILDSTATUS",jenkinsURLList);
+    console.log("Done loading");
+    this.setState({isLoading: false});
   }
 
   componentWillUnmount() {
     this.props.deleteComponents(this.state.localComponents);
+    this.props.updateCurrentWallboard("HOME");
+    this.props.leaveEdit();
+    console.log("unboarding");
   }
+
+
 
   handleClick(){
     console.log("clickeD!");
@@ -79,21 +78,71 @@ class TVWallboard extends React.Component {
     return <Component/>
   }
 
+  async updateContent(component, defaultData){
+    console.log("UPDATING CONTENT");
+    let retrieved = false;
+    await fetch("/theme?wallboard="+this.props.currentWallboard+"&component="+component, {
+        method: "GET",
+        headers: { "Content-Type": 'application/json' }
+    })
+    .then(response=>{
+        console.log("RESPONSING response");
+        console.log(response)
+        return response.json()
+    })
+    .then(data=>{
+        console.log("RESPONSING data");
+        console.log("SETTING");
+        console.log(data)
+        if (data){
+          this.setState({[component]:data.data})
+          retrieved = true;
+        }
+        console.log("SETTING END hmm");
+        
+    })
+    .catch(err=>{
+        console.log(err);
+    })
 
+    //if unable to retrieve data from backend, fall back to provided defaultData
+    if (!retrieved) {
+      console.log("Unable to retrieve");
+      this.setState({[component]:defaultData})
+    }
+  }
+
+  specificUpdate(content, index){
+    let temp = this.state.BUILDSTATUS.slice();
+    console.log("TMEP TEMP");
+    console.log(temp);
+    temp[index] = content;
+    console.log(temp);
+    console.log(content);
+    this.setState({BUILDSTATUS: temp});
+  }
 
 
   render() {
-    console.log("EDDDDDDDDD" + this.props.isEdit);
+
+    console.log("SLAC VALUE " + this.state.SLACKCHANNEL)
+    console.log("GIOT VAL " + this.state.GITHUB)
     return (
+      this.state.isLoading ?
+      <Grid container style={{ height: "100%" }} spacing={0}/>
+      :
       <Grid container style={{ height: "100%" }} spacing={0}>
         <LeftBox item>
           {/* {this.ClickedComponent( */}
             <BuildStatus 
               width={buildStatusWidth} 
               isEdit={this.props.isEdit} 
-              urlList={jenkinsURLList}
-              name="BuildStatus"
+              // content={jenkinsURLList}
+              content={this.state.BUILDSTATUS}
+              updateContent={(content,index) => this.specificUpdate(content,index)}
               type="URL"
+              name="BUILDSTATUS"
+              num="6"
               />
             {/* <BuildStatus width="100%" isEdit={this.props.isEdit} urlList={jenkinsURLList}/> */}
           {/* <BuildStatus isEdit={this.props.isEdit} urlList={jenkinsURLList} onClick={this.handleClick}/> */}
@@ -110,26 +159,54 @@ class TVWallboard extends React.Component {
           <SlackComponent 
             height={SlackHeight} 
             isEdit={this.props.isEdit}
-            CHANNEL={CHANNEL}
+            content={this.state.SLACKCHANNEL}
+            updateContent={(content) => {console.log("calling updatecontent"); this.setState({SLACKCHANNEL: content})}}
             type="CHANNEL"
+            name="SLACKCHANNEL"
             />
-          <Github repoPath={"codice/ddf"} />
+          <Github 
+            height={GithubHeight}
+            isEdit={this.props.isEdit}
+            content={this.state.GITHUB}
+            updateContent={(content) => this.setState({GITHUB: content})}
+            // content="codice/ddf"
+            type="REPOPATH"
+            name="GITHUB"
+            // repoPath="codice/ddf"
+            // updateContent={() => {}}
+            />
         </RightBox>
       </Grid>
     );
   }
 }
+/*
+      SLACKCHANNEL: CHANNEL,
+      GITHUB: REPOPATH,
+*/
 
 const mapStateToProps = state => ({
   components: state.currentComponents,
-  isEdit: state.editMode
+  isEdit: state.editMode,
+  currentWallboard: state.currentWallboard
+  
 })
 
-const mapDispatchToProps = dispatch => ({
-    addComponents: component => dispatch(addComponents(component)),
-    deleteComponents: component => dispatch(deleteComponents(component)),
-    // toggleEdit: dispatch(toggleEdit)
-})
+const mapDispatchToProps = {
+    addComponents,
+    deleteComponents,
+    updateCurrentWallboard,
+    leaveEdit
+}
+// const mapDispatchToProps = dispatch => ({
+//     addComponents: component => dispatch(addComponents(component)),
+//     deleteComponents: component => dispatch(deleteComponents(component)),
+//     updateCurrentWallboard: wallboard => dispatch(updateCurrentWallboard(wallboard)),
+//     leaveEdit: dispatch(leaveEdit())
+
+
+//     // toggleEdit: dispatch(toggleEdit)
+// })
 // function mapDispatchToProps(dispatch) {
 //   // return {AddComponents: function() {
 //   //   dispatch(AddComponents(ownProps.components))
@@ -146,3 +223,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(TVWallboard);
 // export default connect(mapStateToProps)(TVWallboard);
 // export default connect()(TVWallboard);
 //addComponents
+
+/*
+
+const mapDispatchToProps = {
+  enterEdit,
+  leaveEdit,
+  toggleEdit
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Setting)
+
+*/

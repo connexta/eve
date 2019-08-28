@@ -46,6 +46,8 @@ class I2OWallboard extends React.Component {
           return json.pipelineFolderNames;
         })
         .then(pipelineFolderNames => {
+          console.log("all the pipeline folder names");
+          console.log(pipelineFolderNames);
           let pipelineURLList = [];
           pipelineURLList = pipelineFolderNames.map(name => {
             return { [name]: IONURL + name };
@@ -85,6 +87,7 @@ class I2OWallboard extends React.Component {
   }
 
   render() {
+    console.log(this.state.urlList);
     return (
       <Grid container style={{ height: "100%" }}>
         <I2OleftBox item>

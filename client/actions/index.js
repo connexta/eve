@@ -21,11 +21,7 @@ export const toggleEdit = () => ({
     type: "TOGGLE"
 })
 
-
-/*
-export const Visibility = {
-    SHOW: "SHOW"
-    HIDDEN: "HIDDEN"
-}
-
-*/
+export const updateCurrentWallboard = wallboard => ({
+    type: "UP_WALL",
+    wallboard
+})
