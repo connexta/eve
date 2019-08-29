@@ -1,16 +1,35 @@
 import React from "react";
 import styled from "styled-components";
-import { MobileStepper, Button } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
-import { BoxStyle, BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
-import Carousel from "../../resources/carousel.json";
+import { BoxStyle, BoxHeader } from "../styles/styles";
 import { time } from "../utils/TimeUtils";
+import {
+  MobileStepper,
+  Button,
+  Dialog,
+  DialogTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField
+} from "@material-ui/core";
+import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
+import {
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  Edit,
+  Add,
+  Delete,
+  Save
+} from "@material-ui/icons";
+import { withStyles } from "@material-ui/styles";
 
 const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 export const MEDIA_CARD_MARGINS = 20;
+const SIZE_LIMIT = 20 * Math.pow(10, 6); // max size of images in bytes
+const FETCH_FREQ = time({ minutes: 1 });
 
 export const MediaCard = styled(BoxStyle)`
   width: calc((100% / 2) - 24px);
@@ -63,22 +82,240 @@ const StyledMobileStepper = withStyles({
   }
 })(MobileStepper);
 
-export default class MediaComponent extends React.Component {
+class MediaEdit extends React.Component {
   constructor(props) {
     super(props);
 
+    this.formRef = React.createRef();
+    this.inputRef = React.createRef();
+
     this.state = {
-      carousel: Carousel.cards,
-      displayIndex: 0,
-      numCards: Carousel.cards ? Carousel.cards.length : 0,
-      media: []
+      open: false,
+      add: false,
+      title: null,
+      body: null,
+      media: null,
+      link: null,
+      file: null
     };
   }
 
+  handleClickOpen() {
+    this.setState({ open: true });
+  }
+
+  handleClose() {
+    this.setState({ open: false });
+  }
+
+  // checks if image type is valid
+  isImage(filename) {
+    let parts = filename.split(".");
+    let ext = parts[parts.length - 1].toLowerCase();
+    switch (ext) {
+      case "jpg":
+      case "jpeg":
+      case "png":
+      case "gif":
+        return true;
+    }
+    return false;
+  }
+
+  // checks if scheme name, characters are valid
+  isValidLink(link) {
+    let regexp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm;
+    if (regexp.test(link)) return true;
+    else return false;
+  }
+
+  // checks inputs, calls addMedia(), resets state after save button call
+  async send() {
+    if (
+      this.inputRef.current.value.length > 0 &&
+      this.inputRef.current.files[0]
+    ) {
+      if (!this.isImage(this.inputRef.current.value)) {
+        alert("Image type invalid");
+        return;
+      } else if (this.inputRef.current.files[0].size > SIZE_LIMIT) {
+        alert("Image too large to be uploaded");
+        return;
+      } else this.formRef.current.submit();
+    }
+
+    if (this.state.link != null && !this.isValidLink(this.state.link)) {
+      alert("Link invalid");
+      return;
+    }
+
+    this.props.addMedia({
+      body: this.state.body,
+      title: this.state.title,
+      media: this.state.media,
+      link: this.state.link
+    });
+
+    this.setState({
+      add: false,
+      body: null,
+      title: null,
+      media: null,
+      link: null
+    });
+  }
+
+  render() {
+    return (
+      <div style={{ display: "inline-block", position: "absolute", right: 20 }}>
+        <Edit onClick={this.handleClickOpen.bind(this)} />
+        <Dialog
+          onClose={this.handleClose.bind(this)}
+          aria-labelledby="edit-media-dialog"
+          open={this.state.open}
+          maxWidth={false}
+        >
+          <DialogTitle>Add/Remove Media</DialogTitle>
+          <Table size={"small"} style={{ width: 800 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Action</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Body</TableCell>
+                <TableCell>Media</TableCell>
+                <TableCell>Link</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.props.media.map((media, i) => (
+                <TableRow key={i}>
+                  <TableCell>
+                    <Delete onClick={() => this.props.remove(i)} />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {media.title}
+                  </TableCell>
+                  <TableCell>{media.body}</TableCell>
+                  <TableCell>{media.media}</TableCell>
+                  <TableCell>{media.link}</TableCell>
+                </TableRow>
+              ))}
+              {this.state.add ? (
+                <TableRow>
+                  <TableCell>
+                    <Save onClick={() => this.send()} />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <TextField
+                      onChange={e => this.setState({ title: e.target.value })}
+                    ></TextField>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      onChange={e => this.setState({ body: e.target.value })}
+                    ></TextField>
+                  </TableCell>
+                  <TableCell>
+                    <form
+                      target="_blank"
+                      id="frmUploader"
+                      action="/upload"
+                      method="post"
+                      ref={this.formRef}
+                      encType="multipart/form-data"
+                    >
+                      <input
+                        ref={this.inputRef}
+                        type="file"
+                        name="imgUploader"
+                        accept={"image/*"}
+                        onChange={e =>
+                          this.setState({
+                            media: e.target.value.substr(
+                              12,
+                              e.target.value.length - 1
+                            )
+                          })
+                        }
+                      />
+                    </form>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      onChange={e => this.setState({ link: e.target.value })}
+                    ></TextField>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <TableRow>
+                  <TableCell>
+                    <Add onClick={() => this.setState({ add: true })} />
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Dialog>
+      </div>
+    );
+  }
+}
+
+///////////////////////////////////
+///////////////////////////////////
+
+export default class MediaComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      carousel: [],
+      displayIndex: 0,
+      numCards: 0
+    };
+  }
+
+  // get media info from backend
+  async getCarousel() {
+    await fetch("/carousel", {
+      method: "GET"
+    })
+      .catch(err => console.log(err))
+      .then(res => {
+        if (!res.ok) {
+          console.log("Failed to fetch carousel data");
+          return;
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => {
+        this.setState({
+          carousel: res.cards,
+          numCards: res.cards.length
+        });
+      });
+  }
+
+  // Sets timer for rotating displayed media
+  componentDidMount() {
+    this.getCarousel();
+
+    this.carouselInterval = setInterval(() => this.getCarousel(), FETCH_FREQ);
+    this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
+  }
+
+  // Clears interval and destroys remaining promises when component unmounted
+  componentWillUnmount() {
+    clearInterval(this.rotateInterval);
+    clearInterval(this.carouselInterval);
+  }
+
+  // switches which card is displayed
   rotateCard() {
     this.setState({
       displayIndex:
-        this.state.displayIndex == this.state.numCards - 1
+        this.state.displayIndex == this.state.numCards - 1 ||
+        this.state.numCards == 0
           ? 0
           : this.state.displayIndex + 1
     });
@@ -93,43 +330,61 @@ export default class MediaComponent extends React.Component {
     this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
   }
 
-  // Fetches all images to be displayed
-  getMedia() {
-    let media = this.state.carousel.map((card, i) => {
-      return require("../../resources/carouselMedia/" + card.media);
+  // removes media from carousel, updates backend and state
+  removeMedia(num) {
+    let card = this.state.carousel[num];
+    fetch("/remove", {
+      method: "POST",
+      body: JSON.stringify({ card: card }),
+      headers: { "Content-Type": "application/json" }
     });
 
-    this.setState({ media: media });
-  }
+    let temp = this.state.carousel.filter((card, i) => i != num);
+    let numCards = this.state.numCards <= 0 ? 0 : this.state.numCards - 1;
+    this.setState({
+      carousel: temp
+    });
 
-  // Sets timer for rotating displayed media
-  componentDidMount() {
-    this.rotateInterval = setInterval(() => this.rotateCard(), ROTATE_FREQ);
-    this.getMedia();
-  }
-
-  // Clears interval and destroys remaining promises when component unmounted
-  componentWillUnmount() {
-    clearInterval(this.rotateInterval);
-  }
-
-  removeMedia(num) {
-    if (num >= 0 && num < this.state.numCards) {
-      let temp = this.state.carousel.filter((card, i) => i != num);
-      this.setState({
-        carousel: temp
-      });
-      if (this.state.numCards - 1 == this.state.displayIndex)
-        this.setState({ displayIndex: this.state.displayIndex - 1 });
-      this.setState({ numCards: this.state.numCards - 1 });
+    if (numCards == 0) {
+      this.setState({ displayIndex: 0 });
+    } else if (numCards == this.state.displayIndex) {
+      this.setState({ displayIndex: this.state.displayIndex - 1 });
     }
+    this.setState({ numCards: numCards });
+  }
+
+  // Adds media to carousel, updates backend and state
+  addMedia(media) {
+    if (media.body == null && media.title == null && media.media == null)
+      return;
+
+    let temp = this.state.carousel;
+    temp.push(media);
+
+    this.setState({
+      carousel: temp,
+      numCards: this.state.numCards + 1
+    });
+
+    fetch("/carousel", {
+      method: "POST",
+      body: JSON.stringify({ card: media }),
+      headers: { "Content-Type": "application/json" }
+    });
   }
 
   render() {
     if (this.state.numCards <= 0) {
       return (
         <MediaCard raised={true}>
-          <BoxHeader>Company Media</BoxHeader>
+          <BoxHeader>
+            Company Media
+            <MediaEdit
+              media={this.state.carousel}
+              remove={this.removeMedia.bind(this)}
+              addMedia={this.addMedia.bind(this)}
+            />
+          </BoxHeader>
         </MediaCard>
       );
     } else {
@@ -137,12 +392,22 @@ export default class MediaComponent extends React.Component {
 
       return (
         <MediaCard raised={true}>
-          <BoxHeader>Company Media</BoxHeader>
-          {card.link == "" ? (
+          <BoxHeader>
+            Company Media
+            <MediaEdit
+              media={this.state.carousel}
+              remove={this.removeMedia.bind(this)}
+              addMedia={this.addMedia.bind(this)}
+            />
+          </BoxHeader>
+          {card.link == null ? (
             <CarouselContent>
-              <CarouselMedia
-                src={this.state.media[this.state.displayIndex]}
-              ></CarouselMedia>
+              {this.state.carousel[this.state.displayIndex].media ==
+              null ? null : (
+                <CarouselMedia
+                  src={"/" + this.state.carousel[this.state.displayIndex].media}
+                ></CarouselMedia>
+              )}
               <p>{card.title}</p>
               <CarouselBody>{card.body}</CarouselBody>
             </CarouselContent>
@@ -152,9 +417,12 @@ export default class MediaComponent extends React.Component {
                 window.open(card.link);
               }}
             >
-              <CarouselMedia
-                src={this.state.media[this.state.displayIndex]}
-              ></CarouselMedia>
+              {this.state.carousel[this.state.displayIndex].media ==
+              null ? null : (
+                <CarouselMedia
+                  src={"/" + this.state.carousel[this.state.displayIndex].media}
+                ></CarouselMedia>
+              )}
               <p>{card.title}</p>
               <CarouselBody>{card.body}</CarouselBody>
             </CarouselContentLink>

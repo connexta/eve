@@ -28,9 +28,7 @@ const REQ_APPROVALS = 2; // Required number of approvals for a given PR
 const CALL_FREQ = hour; // Frequency to refresh GitHub data
 const ROTATE_FREQ = time({ seconds: 10 }); // Frequency to rotate displayed PR
 const IGNORE_CONTEXTS = ["snyk", "license/cla"]; // list of contexts to ignore for statuses
-
-const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+const TOKEN = process.env.GITHUB_TOKEN;
 
 const Header = styled(BoxHeader)`
   width: 100%;
@@ -63,7 +61,6 @@ const PRSubline = styled.div`
 
 const Description = styled.p`
   margin: 0 0 0 0;
-  max-height: 48px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -163,7 +160,14 @@ class Github extends React.Component {
 
   // Function to make class to GitHub API, trashable used to protect against broken promises
   async fetchGithub(call) {
-    this.trashableRequestGithub = makeTrashable(fetch(call));
+    this.trashableRequestGithub = makeTrashable(
+      fetch(call, {
+        method: "GET",
+        headers: new Headers({
+          Authorization: "token " + TOKEN
+        })
+      })
+    );
 
     return await this.trashableRequestGithub
       .catch(e => console.log("Error fetching GitHub data", e))
@@ -182,13 +186,7 @@ class Github extends React.Component {
 
   // Finds and sets name of repo
   async getRepoName() {
-    let call =
-      "https://api.github.com/repos/" +
-      this.props.content +
-      "?client_secret=" +
-      CLIENT_SECRET +
-      "&client_id=" +
-      CLIENT_ID;
+    let call = "https://api.github.com/repos/" + this.props.content;
     let name = (await this.fetchGithub(call)).name.toUpperCase();
     this.setState({ name: name });
   }
@@ -252,7 +250,7 @@ class Github extends React.Component {
       return desc.substring(start + tag.length + 1, end);
     } else {
       let end = desc.indexOf("\r\n");
-      return desc.substring(0, end);
+      return end >= 0 ? desc.substring(0, end) : desc;
     }
   }
 

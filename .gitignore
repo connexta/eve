@@ -5,3 +5,5 @@ target/
 debug.log
 .vscode/
 coverage/
+localhost.cert
+localhost.key

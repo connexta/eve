@@ -19,7 +19,7 @@ This component relies on the Jenkins API.
 
 For each build passed into BuildStatus in the urlList prop, a BuildIcon is generated.  The BuildIcon consists of the name of the build, an icon indicating its health, and the number of recent builds that have succeeded.
 
-## Calendar
+## Calendar/Events
 
 Displays events from a calendar that the user selects.  User can log in/ log out to their Microsoft account, select a calendar from their Outlook calendars, and change the view (between day, work week, month, and agenda).  User authentication and selected calendar are stored in the cache to persist between sessions.
 
@@ -61,9 +61,21 @@ All information for this component is pulled from the GitHub API.  Calls are aut
 
 Take and display screenshot of grafana dashboard.
 
+#### Packages:
+- **throttle**: Implement throttle to prevent explosive number of setState during window resizing.
+
+#### Props:
+  * **name**: name of grafana dashboard
+  * **url**: url of grafana dashboard to display
+  
 ## Settings
 
 Once the user clicks the setting icon, the user enters an edit mode where the user can select a component from the current screen/wallboard to edit the contents of the component. Currently, the user can modify the color of the banner in the Home screen, slack channel of the SlackComponent, repo path of the Github, jenkins url of the BuildStatus, jenkins url of the BuildAF. The directory contains Setting.js which contains the setting icon container, and componentHOC.js which creates a HOC of editable components.
+
+
+## MediaComponent
+
+Rotates through media to be displayed on the Wallboard.  Each media consists of a title, body, image, and/or link.  Images/data are stored and retrieved from the back-end nodeJS server.
 
 ## SlackComponent
 Displays the 10 most recent slack messages, rotating through the messages on a set interval. The slack widget is a fixed size and will only show as many messages as can fit. The component is currently not interactive in any way.

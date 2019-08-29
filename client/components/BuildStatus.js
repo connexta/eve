@@ -126,7 +126,7 @@ class BuildStatus extends React.Component {
 
   //fetch data from the jenkin url
   fetchData(URL) {
-    return fetch(URL)
+    return fetch("/fetch/?type=JSON&url=" + URL)
       .then(response => response.json())
       .catch(e => console.log("error", e));
   }
@@ -166,7 +166,7 @@ class BuildStatus extends React.Component {
       return "Data not Found";
     } else {
       return (
-        item.weatherScore / weatherScoreDivisor +
+        Math.floor(item.weatherScore / weatherScoreDivisor) +
         "/" +
         divisor.toString() +
         " Succeeded"

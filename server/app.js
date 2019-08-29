@@ -3,10 +3,11 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const path = require("path");
 const dotenv = require("dotenv");
-const jsonfile = require("jsonfile");
 const grafana = require("./grafana");
 const fs = require("fs");
 const cron = require("./cron");
+const fetch = require("node-fetch");
+const multer = require("multer");
 
 dotenv.config();
 const app = express();
@@ -25,9 +26,15 @@ app.use(cors());
 
 /* production setting */
 const prod = process.env.NODE_ENV === "production";
+const dir = path.join(process.cwd(), "eve/carouselMedia");
+app.use(express.static(prod ? "/eve/carouselMedia" : dir));
 const themeFileLocation = prod
   ? "/eve/theme.json"
   : path.join(process.cwd(), "eve/theme.json");
+const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
+const targetPath = prod ? "/target" : "../target";
+const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
+const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 
 /* CRON JOB */
 //CRON JOB for SOAESB grafana
@@ -36,7 +43,101 @@ if (prod) {
   cron.grafanaCron(prod, app, soaesb_url);
 }
 
+// Create storage for media images
+const storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, mediaFolder);
+  },
+  filename: function(req, file, callback) {
+    callback(null, file.originalname);
+  }
+});
+
+// Multer package handles image storage
+var upload = multer({
+  storage: storage
+}).array("imgUploader", 3);
+
 /* ROUTE */
+// Reads JSON data for carousel
+app.get("/carousel", function(req, res) {
+  var content = fs.readFileSync(mediaFile);
+  res.send(JSON.parse(content));
+});
+
+// Posts JSON data from carousel
+app.post("/carousel", function(req, res) {
+  var content = fs.readFileSync(mediaFile);
+
+  let cards = JSON.parse(content).cards;
+
+  cards.push(req.body.card);
+
+  fs.writeFileSync(mediaFile, JSON.stringify({ cards: cards }));
+  res.end("Data sent successfully");
+});
+
+// Handles upload of images
+app.post("/upload", function(req, res) {
+  upload(req, res, function(err) {
+    if (err) {
+      return res.end(err.toString());
+    }
+    return res.end("File uploaded successfully");
+  });
+});
+
+//Handles deletion of images
+app.post("/remove", function(req, res) {
+  var content = fs.readFileSync(mediaFile);
+
+  let removed = req.body.card;
+
+  let temp = JSON.parse(content).cards.filter(
+    card =>
+      !(
+        card.body == removed.body &&
+        card.title == removed.title &&
+        card.media == removed.media
+      )
+  );
+
+  fs.writeFileSync(mediaFile, JSON.stringify({ cards: temp }));
+
+  let media = removed.media;
+  if (media != null) {
+    fs.unlink(mediaFolder + "/" + media, function(err) {
+      if (err) {
+        res.end(err.toString());
+        return;
+      } else {
+        res.end("Card deleted successfully");
+        return;
+      }
+    });
+  }
+});
+
+// Reads version data and sends to client
+app.get("/fetch", async (req, res) => {
+  const url = req.query.url;
+  const type = req.query.type;
+  try {
+    const response = await fetch(url);
+    switch (type) {
+      case "JSON":
+        const json = await response.json();
+        res.send(json);
+        break;
+      default:
+        res.send(response);
+    }
+  } catch (error) {
+    console.log("Error in /fetch ", error);
+  }
+  res.end();
+});
+
 app.get("/theme", function(req, res) {
   try {
     const wallboard = req.query.wallboard;
@@ -64,9 +165,6 @@ app.get("/theme", function(req, res) {
 app.post("/theme", function(req, res) {
   const wallboard = req.query.wallboard;
   const component = req.query.component;
-  console.log("let's write file!");
-  console.log(wallboard);
-  console.log(component);
   if (wallboard && component) {
     //case: invalid update input
     let finalData;
@@ -77,18 +175,12 @@ app.post("/theme", function(req, res) {
         let addedData = { [wallboard]: { [component]: req.body.data } };
         finalData = { ...addedData, ...data };
       } else {
-        console.log("case if if else");
-        console.log(data);
         data[wallboard][component] = req.body.data;
         finalData = data;
       }
     } else {
-      console.log("case if else");
       finalData = { [wallboard]: { [component]: req.body.data } };
     }
-    console.log("writing to the file!");
-    console.log(finalData);
-    console.log(themeFileLocation);
     fs.writeFileSync(themeFileLocation, JSON.stringify(finalData), function(
       err
     ) {
@@ -100,17 +192,13 @@ app.post("/theme", function(req, res) {
 });
 
 app.get("/versions", function(req, res) {
-  var content = fs.readFileSync(
-    prod ? "versions.json" : "server/versions.json"
-  );
+  var content = fs.readFileSync(versionFileLocation);
   res.send(JSON.parse(content));
 });
 
+// Writes version data from client
 app.post("/versions", function(req, res) {
-  fs.writeFileSync(
-    prod ? "versions.json" : "server/versions.json",
-    JSON.stringify(req.body)
-  );
+  fs.writeFileSync(versionFileLocation, JSON.stringify(req.body));
   res.end();
 });
 
@@ -134,8 +222,6 @@ app.get("/display", async (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  let targetPath =
-    process.env.NODE_ENV === "production" ? "/target" : "../target";
   res.sendFile(path.join(__dirname, targetPath, "index.html"));
 });
 

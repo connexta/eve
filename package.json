@@ -12,7 +12,8 @@
     "serve": "node server/server.js",
     "server": "yarn up && yarn serve",
     "jest": "jest",
-    "jest-coverage": "yarn jest --coverage"
+    "jest-coverage": "yarn jest --coverage",
+    "https": "yarn server https"
   },
   "dependencies": {
     "@material-ui/core": "^4.2.1",
