@@ -2,23 +2,21 @@ import React from "react";
 import styled from "styled-components";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
-import { BoxStyle, BoxHeader } from "../styles/styles";
+import { BoxHeader } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import Collapse from "@material-ui/core/Collapse";
-import editHOC from "./Settings/editHOC";
+import componentHOC from "./Settings/componentHOC";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
- 
-// const CardContainer = styled(BoxStyle)`
+
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   position: relative;
-
   height: 100%;
 `;
 
@@ -333,5 +331,5 @@ class SlackComponent extends React.Component {
   }
 }
 
-const WrappedComponent = editHOC(SlackComponent);
+const WrappedComponent = componentHOC(SlackComponent);
 export default WrappedComponent;

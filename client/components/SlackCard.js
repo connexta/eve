@@ -293,7 +293,7 @@ class SlackCard extends React.Component {
 
     let author;
     let avatar;
-    if (message != undefined){
+    if (message != undefined) {
       // check if author is bot or unknown
       author =
         message.attachments == undefined
@@ -304,8 +304,7 @@ class SlackCard extends React.Component {
         message.attachments == undefined
           ? this.userIdToAvatar(message.user)
           : message.attachments[0].author_icon;
-    }
-    else {
+    } else {
       author = undefined;
       avatar = undefined;
     }

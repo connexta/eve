@@ -9,12 +9,12 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
-import { BoxStyle, BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
+import { BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
 import PullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import { addS } from "../utils/TimeUtils";
-import editHOC from "./Settings/editHOC";
+import componentHOC from "./Settings/componentHOC";
 
 import NeutralState from "@material-ui/icons/Remove";
 import BadState from "@material-ui/icons/Clear";
@@ -31,11 +31,6 @@ const IGNORE_CONTEXTS = ["snyk", "license/cla"]; // list of contexts to ignore f
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-// styled(BoxStyle)`
-  /* height: ${GITHUB_HEIGHT}px; */
-const GithubCard = styled.div`
-
-`;
 
 const Header = styled(BoxHeader)`
   width: 100%;
@@ -153,7 +148,6 @@ function Statuses(props) {
   return statuses;
 }
 
-// content: the path to the desired repo (":org/:repo")
 class Github extends React.Component {
   constructor(props) {
     super(props);
@@ -164,7 +158,6 @@ class Github extends React.Component {
       displayIndex: 0,
       numPulls: MAXPULLS
     };
-
     this.getRepoName();
   }
 
@@ -274,8 +267,6 @@ class Github extends React.Component {
     });
 
     for (let i = 0; i < this.state.numPulls; i++) {
-      console.log("data[i]");
-      console.log(data[i])
       let approvals = await this.getApprovals(data[i].number);
       let statuses = await this.getStatuses(data[i].statuses_url);
       let description = this.formatDescription(data[i].body);
@@ -402,5 +393,5 @@ class Github extends React.Component {
   }
 }
 
-const WrappedComponent = editHOC(Github);
+const WrappedComponent = componentHOC(Github);
 export default WrappedComponent;

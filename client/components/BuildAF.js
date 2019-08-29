@@ -5,13 +5,9 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
-import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+import { BoxHeader } from "../styles/styles";
 import makeTrashable from "trashable";
-import editHOC from "./Settings/editHOC";
-
-const StyledBox = styled(BoxStyle)`
-  margin: 24px;
-`;
+import componentHOC from "./Settings/componentHOC";
 
 const StyledHeader = styled(BoxHeader)`
   cursor: pointer;
@@ -62,7 +58,9 @@ class BuildAF extends React.Component {
 
   //fetch
   async updateBuildStatus() {
-    this.trashableFetchPromise = makeTrashable(fetch(this.props.content[1] + "runs/"));
+    this.trashableFetchPromise = makeTrashable(
+      fetch(this.props.content[0].URL + "runs/")
+    );
 
     await this.trashableFetchPromise
       .then(response => response.json())
@@ -136,7 +134,7 @@ class BuildAF extends React.Component {
         key={index}
         button
         component="a"
-        href={this.props.content[0] + data.id}
+        href={this.props.content[0].LINK + data.id}
       >
         <StyledListItemText
           primary={this.formatData(data)}
@@ -202,8 +200,8 @@ class BuildAF extends React.Component {
       <span>Loading AF Builds. . .</span>
     ) : (
       <span>
-        <StyledHeader onClick={() => window.open(this.props.content[0])}>
-          {this.props.content[2]}
+        <StyledHeader onClick={() => window.open(this.props.content[0].LINK)}>
+          {this.props.content[0].NAME}
           <SubHeader>
             Display failed build from most recent up to the last successful
             build
@@ -215,5 +213,5 @@ class BuildAF extends React.Component {
   }
 }
 
-const WrappedComponent = editHOC(BuildAF);
+const WrappedComponent = componentHOC(BuildAF);
 export default WrappedComponent;

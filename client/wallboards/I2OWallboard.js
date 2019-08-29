@@ -5,7 +5,12 @@ import Grid from "@material-ui/core/Grid";
 import { IONURL } from "../utils/Link";
 import { hour } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
+import { connect } from "react-redux";
+import { CARD_SIDE_MARGINS } from "../styles/styles";
+import { updateCurrentWallboard, leaveEdit } from "../actions";
 
+const buildStatusWidth = `100%`;
+// const buildStatusWidth = `calc(100% - ${CARD_SIDE_MARGINS}px)`;
 class I2OWallboard extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +22,8 @@ class I2OWallboard extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.updateCurrentWallboard("I2O");
     localStorage.getItem("I2O")
       ? this.setState({ isLoading: false })
       : this.createJenkinsURLList();
@@ -25,6 +31,8 @@ class I2OWallboard extends React.Component {
   }
 
   componentWillUnmount() {
+    this.props.updateCurrentWallboard("HOME");
+    this.props.leaveEdit();
     clearInterval(this.getPipelineId);
     if (this.trashablePipeline) {
       this.trashablePipeline.trash();
@@ -46,8 +54,6 @@ class I2OWallboard extends React.Component {
           return json.pipelineFolderNames;
         })
         .then(pipelineFolderNames => {
-          console.log("all the pipeline folder names");
-          console.log(pipelineFolderNames);
           let pipelineURLList = [];
           pipelineURLList = pipelineFolderNames.map(name => {
             return { [name]: IONURL + name };
@@ -87,15 +93,28 @@ class I2OWallboard extends React.Component {
   }
 
   render() {
-    console.log(this.state.urlList);
-    return (
+    return this.state.isLoading ? (
+      <></>
+    ) : (
       <Grid container style={{ height: "100%" }}>
         <I2OleftBox item>
-          <BuildStatus urlList={this.state.urlList} listvert />
+          <BuildStatus
+            width={buildStatusWidth}
+            name="BuildStatus"
+            listvert
+            disable
+          />
         </I2OleftBox>
       </Grid>
     );
   }
 }
 
-export default I2OWallboard;
+const mapDispatchToProps = {
+  updateCurrentWallboard,
+  leaveEdit
+};
+export default connect(
+  null,
+  mapDispatchToProps
+)(I2OWallboard);

@@ -1,4 +1,4 @@
-const app = require('./app')
+const app = require("./app");
 const dotenv = require("dotenv");
 dotenv.config();
 const port = process.env.EVE_PORT || 3000;

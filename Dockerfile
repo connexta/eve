@@ -41,6 +41,9 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN mkdir -p /usr/src/app/server/target
 COPY --from=build /app/target /usr/src/app/server/target
 
+RUN mkdir -p /eve
+COPY --from=build /app/eve /eve
+
 WORKDIR /usr/src/app
 ADD ./server ./server
 

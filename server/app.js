@@ -18,8 +18,6 @@ const urlList = {
   SOAESB: soaesb_url
 };
 
-
-
 app.use(express.static("target"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -27,13 +25,15 @@ app.use(cors());
 
 /* production setting */
 const prod = process.env.NODE_ENV === "production";
-const themeFileLocation = prod ? "/eve/theme.json" :  path.join(process.cwd(), "eve/theme.json");
+const themeFileLocation = prod
+  ? "/eve/theme.json"
+  : path.join(process.cwd(), "eve/theme.json");
 
 /* CRON JOB */
 //CRON JOB for SOAESB grafana
 if (prod) {
-    app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-    cron.grafanaCron(prod, app, soaesb_url);
+  app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+  cron.grafanaCron(prod, app, soaesb_url);
 }
 
 /* ROUTE */
@@ -41,135 +41,63 @@ app.get("/theme", function(req, res) {
   try {
     const wallboard = req.query.wallboard;
     const component = req.query.component;
-    console.log(wallboard);
-    console.log(component);
 
     //check if file exists
-    if (fs.existsSync(themeFileLocation)){
-        // console.log(JSON.parfs.readFileSync(themeFileLocation))
-        let data = JSON.parse(fs.readFileSync(themeFileLocation));
-        console.log("get theme data");
-        console.log(data);
-        // console.log(JSON.parse(data));
-        // let filteredData = data.filter(
-        //   content => 
-        //   (
-        //     content.wallboard == wallboard &&
-        //     content.wallboard.component == component
-        //   )
-        // )
-        let filteredData;
-        if (data && wallboard && component && data[wallboard]){
-            filteredData = data[wallboard][component];
-        }
-        else {
-            filteredData = undefined;
-        }
-        
-        // console.log(content);
-        // console.log("fi");
-        console.log("FILTERED DATA");
-        console.log(filteredData);
-        // res.send({filteredData});
-        res.send({"data":filteredData});
+    if (fs.existsSync(themeFileLocation)) {
+      let data = JSON.parse(fs.readFileSync(themeFileLocation));
+      let filteredData;
+      if (data && wallboard && component && data[wallboard]) {
+        filteredData = data[wallboard][component];
+      } else {
+        filteredData = undefined;
+      }
+      res.send({ data: filteredData });
+    } else {
+      res.send({ data: undefined });
     }
-    else {
-        res.send({"data":undefined});
-    }
-    
-  }
-  catch (error) {
+  } catch (error) {
     console.log("Error in GET /theme: ", error);
   }
   res.end();
 });
 
 app.post("/theme", function(req, res) {
-  console.log("Writing into ");
   const wallboard = req.query.wallboard;
   const component = req.query.component;
-  // console.log(req);
-  // console.log(req.body.data);
-  // const bodyData = JSON.stringify(req.body);
-  // console.log(JSON.stringify(req.body));
-  // const bodyData = JSON.parse(req.body);
-  // console.log(bodyData);
-  // console.log(JSON.parse(req.body));
-
-    if (wallboard && component) { //case: invalid update input
-        let finalData;
-        if (fs.existsSync(themeFileLocation)){
-            let data = JSON.parse(fs.readFileSync(themeFileLocation));
-            if (!data[wallboard]) { //case: wallboard data doesn't exist at all
-                let addedData = {[wallboard]:{[component]:req.body.data}};
-                finalData = {...addedData, ...data};
-            }
-            else {
-                data[wallboard][component] = req.body.data;
-                finalData = data;
-            }
-        }
-        else {
-            console.log("file doesn't exists");
-            console.log(wallboard);
-            finalData = {[wallboard]:{[component]:req.body.data}};
-        }
-        fs.writeFileSync(themeFileLocation, JSON.stringify(finalData), function (err) {
-            if (err) console.log("Unable to write theme to the non-existing file ",err)
-        })
+  console.log("let's write file!");
+  console.log(wallboard);
+  console.log(component);
+  if (wallboard && component) {
+    //case: invalid update input
+    let finalData;
+    if (fs.existsSync(themeFileLocation)) {
+      let data = JSON.parse(fs.readFileSync(themeFileLocation));
+      if (!data[wallboard]) {
+        //case: wallboard data doesn't exist at all
+        let addedData = { [wallboard]: { [component]: req.body.data } };
+        finalData = { ...addedData, ...data };
+      } else {
+        console.log("case if if else");
+        console.log(data);
+        data[wallboard][component] = req.body.data;
+        finalData = data;
+      }
+    } else {
+      console.log("case if else");
+      finalData = { [wallboard]: { [component]: req.body.data } };
     }
-
-
-//   if (wallboard && component) {
-//     if (fs.existsSync(themeFileLocation)){
-//         let data = JSON.parse(fs.readFileSync(themeFileLocation));
-//         if (!data[wallboard]) {
-//             let addedData = {[wallboard]:{[component]:req.body.data}};
-//             fs.writeFileSync(themeFileLocation, JSON.stringify(data), function (err) {
-//                 if (err) console.log("Unable to write theme to the non-existing file ",err)
-//             })
-//         }
-//         else {
-//             data[wallboard][component] = req.body.data;
-//             fs.writeFileSync(themeFileLocation, JSON.stringify(data), function (err) {
-//                 if (err) console.log("Unable to write theme to the file ", err);
-//                 })
-//         }
-//         // console.log(data);
-//         // console.log(req.body.data);
-//         // // console.log(JSON.parse(req.body.data));
-//         // // data[wallboard][component] = req.body.data;
-
-//         // // let data = {[wallboard]: {[component]: req.body.data}};
-//         // console.log("pre");
-//         // console.log(data);
-//         /*
-    
-//     Object.values(data.TV).forEach((element)=>console.log(element))
-    
-//         */
-//         // console.log("Writing to file " + themeFileLocation);
-//         // console.log(data);
-
-//     }
-//     else {
-//         console.log("file doesn't exists");
-//         console.log(wallboard);
-//         let data = {[wallboard]:{[component]:req.body.data}};
-//         fs.writeFileSync(themeFileLocation, JSON.stringify(data), function (err) {
-//             if (err) console.log("Unable to write theme to the non-existing file ",err)
-//         })
-//     }
-//   }
-
-  // fs.writeFileSync(
-  //   themeFileLocation,
-  //   JSON.stringify()
-  // )
-//   console.log()
+    console.log("writing to the file!");
+    console.log(finalData);
+    console.log(themeFileLocation);
+    fs.writeFileSync(themeFileLocation, JSON.stringify(finalData), function(
+      err
+    ) {
+      if (err)
+        console.log("Unable to write theme to the non-existing file ", err);
+    });
+  }
   res.end();
 });
-
 
 app.get("/versions", function(req, res) {
   var content = fs.readFileSync(

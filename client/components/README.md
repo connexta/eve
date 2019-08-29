@@ -9,7 +9,7 @@ Displays the health of builds as reported by Jenkins and toggles between the hea
 - **Trashable**: uses makeTrashable from Trashable.
 
 #### Props:
-- **urlList**: array of key/value pairs with the keys being the names of the builds and the values being links to the Jenkins build status
+- **content**: array of key/value pairs with the keys being the names of the builds and the values being links to the Jenkins build status
 - **listvert**: Boolean value which will list the build statuses vertically when true, rather than the default horizontal listing.
 
 #### API:
@@ -51,7 +51,7 @@ Displays time for timezones pertinent to Connexta: Phoenix (MST), Denver (MDT), 
 Displays the 5 most recent pull requests for a specified repository.  For each pull request, it displays the title, pull request number, excerpt from the description, number of approvals, and any pertinent status checks (such as Jenkins build status).  The component is clickable to navigate to the displayed PR.
 
 #### Props:
-- **repoPath**: the path to reach the desired repository during API calls.  Typically takes the form of `[ORGANIZATION]/[REPOSITORY]`.  See [GitHub API documentation](https://developer.github.com/v3/repos/) for more details.
+- **content**: the path to reach the desired repository during API calls.  Typically takes the form of `[ORGANIZATION]/[REPOSITORY]`.  See [GitHub API documentation](https://developer.github.com/v3/repos/) for more details.
 
 #### API:
 
@@ -60,6 +60,10 @@ All information for this component is pulled from the GitHub API.  Calls are aut
 ## Grafana
 
 Take and display screenshot of grafana dashboard.
+
+## Settings
+
+Once the user clicks the setting icon, the user enters an edit mode where the user can select a component from the current screen/wallboard to edit the contents of the component. Currently, the user can modify the color of the banner in the Home screen, slack channel of the SlackComponent, repo path of the Github, jenkins url of the BuildStatus, jenkins url of the BuildAF. The directory contains Setting.js which contains the setting icon container, and componentHOC.js which creates a HOC of editable components.
 
 ## SlackComponent
 Displays the 10 most recent slack messages, rotating through the messages on a set interval. The slack widget is a fixed size and will only show as many messages as can fit. The component is currently not interactive in any way.

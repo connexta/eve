@@ -1,37 +1,15 @@
 import React from "react";
-import styled, {css} from "styled-components";
+import styled from "styled-components";
 import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
-import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+import { BoxHeader } from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
-import editHOC from "./Settings/editHOC";
+import componentHOC from "./Settings/componentHOC";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
-
-// const 
-
-//make function? take boolean.
-// const StyledCard = styled(BoxStyle)`
-const StyledCard = styled.div`
-  /* width: calc(100% - ${CARD_SIDE_MARGINS}px); */
-  
-  /* -webkit-transition: border-width 0.1s;
-  transition: border 0.1s ease-in-out;
-  box-shadow: 0 0 5px rgba(81, 203, 238, 1); */
-
-
-  /* ${({ editMode }) => ``} */
-  /* border: ${props => props.isedit === "true" && css`10px solid ${CX_DARK_BLUE}`}; */
-  
-  /* ${props => props.show && css`10px solid red`} */
-  /* border: ${props => 
-    props.editMode ? "10px solid ${CX_DARK_BLUE}" : "10px solid red"
-  }; */
-  /* color: "red"; */
-`;
 
 // if listvert is not true, it will list the items horizontally,
 // otherwise it will list them vertically
@@ -111,9 +89,6 @@ class BuildStatus extends React.Component {
       let overallData = [];
       this.trashableRequestList = [];
       for (let index in this.props.content) {
-        console.log("LETS SEE THE FUTURE")
-        console.log(this.props.content);
-        
         this.trashableRequestList.push(
           makeTrashable(this.fetchData(this.props.content[index].URL))
         );
@@ -151,8 +126,6 @@ class BuildStatus extends React.Component {
 
   //fetch data from the jenkin url
   fetchData(URL) {
-    console.log("YOU ARE L");
-    console.log(URL);
     return fetch(URL)
       .then(response => response.json())
       .catch(e => console.log("error", e));
@@ -165,7 +138,7 @@ class BuildStatus extends React.Component {
   //  name: processed name to be displayed on the wallboard
   //  index: used to assign for each build information in the array
   updateData(item, overallData, name, index) {
-    if (item){
+    if (item) {
       overallData[index] = {
         displayName: name,
         oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
@@ -173,8 +146,7 @@ class BuildStatus extends React.Component {
         oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
         fiveSubtitle: this.getFiveSubtitle(item)
       };
-    }
-    else {
+    } else {
       overallData[index] = {
         displayName: "INVALID",
         oneScore: 0,
@@ -183,7 +155,6 @@ class BuildStatus extends React.Component {
         fiveSubtitle: "INVALID"
       };
     }
-
   }
 
   //get last five builds subtitles based on the number of weatherscore and number of total builds
@@ -208,7 +179,7 @@ class BuildStatus extends React.Component {
   //else, list of last 5 builds
   getBuildDisplay() {
     const display = this.state.toggle
-      ? this.state.currentData.map((item,index) => {
+      ? this.state.currentData.map((item, index) => {
           return (
             <BuildIcon
               score={item.oneScore}
@@ -218,7 +189,7 @@ class BuildStatus extends React.Component {
             />
           );
         })
-      : this.state.currentData.map((item,index) => {
+      : this.state.currentData.map((item, index) => {
           return (
             <BuildIcon
               score={item.fiveScore}
@@ -253,8 +224,8 @@ class BuildStatus extends React.Component {
     );
   }
 
-  showContent(){
-    return (this.state.isLoading ? (
+  render() {
+    return this.state.isLoading ? (
       <span>
         <BoxHeader>Loading Build Health. . .</BoxHeader>
       </span>
@@ -266,33 +237,9 @@ class BuildStatus extends React.Component {
           {this.getBuildDisplay()}
         </StyledCardContent>
       </span>
-    ));
-  }
-
-  // editModeToggle(){
-  //   return (this.props.isEdit ? (
-  //     <Clickable>
-  //       <StyledCard isedit={this.props.isEdit.toString()} raised={true} onClick={this.handleClick}>
-  //           {this.showContent()}
-  //       </StyledCard>
-  //     </Clickable>
-  //   ) : (
-
-  //   ))
-  // }
-
-  render() {
-    // console.log(this.props.isEdit);
-    // const { isEdit, ...rest } = props;
-    return (
-      // <StyledCard isedit={this.props.isEdit.toString()} raised={true}>
-      // <StyledCard isedit={this.props.isEdit.toString()} raised={true}>
-        this.showContent()
-      // </StyledCard>
-    )
-    // return this.editModeToggle();
+    );
   }
 }
 
-const WrappedComponent = editHOC(BuildStatus);
+const WrappedComponent = componentHOC(BuildStatus);
 export default WrappedComponent;

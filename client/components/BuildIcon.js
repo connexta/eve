@@ -5,13 +5,11 @@ import NeutralState from "@material-ui/icons/RemoveCircleOutline";
 import BadState from "@material-ui/icons/HighlightOff";
 import CardContent from "@material-ui/core/CardContent";
 import { FlexRowSubHeading } from "../styles/styles";
-import { CX_OFF_WHITE, CX_FONT, BATMAN_GRAY } from "../utils/Constants.js";
 
 const StyledCardContent = styled(CardContent)`
   /* Force priority over .MuiCardContent-root:last-child */
   && {
     padding: 4px;
-    width: 14%;
   }
 `;
 
