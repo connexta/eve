@@ -6,3 +6,4 @@ debug.log
 .vscode/
 localhost.cert
 localhost.key
+coverage/
