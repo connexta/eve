@@ -16,9 +16,11 @@ const app = express();
 const port = process.env.EVE_PORT || 3000;
 const prod = process.env.NODE_ENV === "production";
 
-const dir = path.join(process.cwd(), "eve/carouselMedia");
+const mediaDir = prod
+  ? "/eve/carouselMedia"
+  : path.join(process.cwd(), "eve/carouselMedia");
 
-app.use(express.static(prod ? "/eve/carouselMedia" : dir));
+app.use(express.static(mediaDir));
 
 /* URL */
 const soaesb_url =
@@ -54,45 +56,57 @@ const storage = multer.diskStorage({
 });
 
 // Multer package handles image storage
-var upload = multer({
+const upload = multer({
   storage: storage
 }).array("imgUploader", 3);
 
 /* ROUTE */
 // Reads JSON data for carousel
 app.get("/carousel", function(req, res) {
-  let content = JSON.parse(fs.readFileSync(mediaFile));
-  const route = req.query.route;
+  if (fs.existsSync(mediaFile)) {
+    let content = JSON.parse(fs.readFileSync(mediaFile));
 
-  let cards = content.routes.find(item => item.route === route).cards;
+    let route = content.routes.find(item => item.route === req.query.route);
 
-  res.send({ cards: cards });
+    if (route == undefined) res.send({ cards: [] });
+    else res.send({ cards: route.cards });
+  } else res.send({ cards: [] });
 });
 
 // Posts JSON data from carousel
 app.post("/carousel", function(req, res) {
-  var content = JSON.parse(fs.readFileSync(mediaFile));
+  if (fs.existsSync(mediaFile)) {
+    var content = JSON.parse(fs.readFileSync(mediaFile));
 
-  let index;
-  let route = content.routes.find((item, i) => {
-    index = i;
-    return item.route === req.body.route;
-  });
+    let index;
+    let route = content.routes.find((item, i) => {
+      index = i;
+      return item.route === req.body.route;
+    });
 
-  route.cards.push(req.body.card);
+    if (route == undefined) {
+      content.routes.push({ route: req.body.route, cards: [req.body.card] });
+    } else {
+      route.cards.push(req.body.card);
+      content.routes[index] = route;
+    }
 
-  console.log("Route: ", route);
+    fs.writeFileSync(mediaFile, JSON.stringify(content));
+    res.end("Data sent successfully");
+  } else {
+    let content = {
+      routes: [{ route: req.body.route, cards: [req.body.card] }]
+    };
 
-  content.routes[index] = route;
-
-  console.log("Content", content);
-
-  fs.writeFileSync(mediaFile, JSON.stringify(content));
-  res.end("Data sent successfully");
+    fs.writeFileSync(mediaFile, JSON.stringify(content));
+    res.end("Data sent successfully!");
+  }
 });
 
 // Handles upload of images
 app.post("/upload", function(req, res) {
+  if (!fs.existsSync(mediaDir)) fs.mkdirSync(mediaDir);
+
   upload(req, res, function(err) {
     if (err) {
       return res.end(err.toString());
@@ -103,41 +117,45 @@ app.post("/upload", function(req, res) {
 
 //Handles deletion of images
 app.post("/remove", function(req, res) {
-  var content = JSON.parse(fs.readFileSync(mediaFile));
+  if (fs.existsSync(mediaFile)) {
+    var content = JSON.parse(fs.readFileSync(mediaFile));
 
-  let removed = req.body.card;
-  let index;
+    let removed = req.body.card;
+    let index;
 
-  let route = content.routes.find((item, i) => {
-    index = i;
-    return item.route === req.body.route;
-  });
-
-  content.routes[index].cards = route.cards.filter(
-    card =>
-      !(
-        card.body == removed.body &&
-        card.title == removed.title &&
-        card.media == removed.media
-      )
-  );
-
-  console.log(content);
-
-  fs.writeFileSync(mediaFile, JSON.stringify(content));
-
-  let media = removed.media;
-  if (media != null) {
-    fs.unlink(mediaFolder + "/" + media, function(err) {
-      if (err) {
-        res.end(err.toString());
-        return;
-      } else {
-        res.end("Card deleted successfully");
-        return;
-      }
+    let route = content.routes.find((item, i) => {
+      index = i;
+      return item.route === req.body.route;
     });
+
+    if (route != undefined) {
+      content.routes[index].cards = route.cards.filter(
+        card =>
+          !(
+            card.body == removed.body &&
+            card.title == removed.title &&
+            card.media == removed.media
+          )
+      );
+
+      fs.writeFileSync(mediaFile, JSON.stringify(content));
+    }
+
+    let media = removed.media;
+    if (media != null) {
+      fs.unlink(mediaFolder + "/" + media, function(err) {
+        if (err) {
+          res.end(err.toString());
+          return;
+        } else {
+          res.end("Card deleted successfully");
+          return;
+        }
+      });
+    }
   }
+
+  res.end("No card to delete");
 });
 
 // Reads version data and sends to client
@@ -162,8 +180,12 @@ app.get("/fetch", async (req, res) => {
 });
 
 app.get("/versions", function(req, res) {
-  var content = fs.readFileSync(versionFileLocation);
-  res.send(JSON.parse(content));
+  if (fs.existsSync(versionFileLocation)) {
+    let content = fs.readFileSync(versionFileLocation);
+    res.send(JSON.parse(content));
+  } else {
+    res.send({ GSR: "", Alliance: "", DDF: "" });
+  }
 });
 
 // Writes version data from client

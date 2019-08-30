@@ -71,7 +71,7 @@ export default class GSRWallboard extends React.Component {
             style={{ height: "calc(100% - 260px)" }}
           >
             <StyleMedia>
-              <MediaComponent />
+              <MediaComponent wallboard={"gsr"} />
             </StyleMedia>
             <StyleEvent>
               <EventComponent />

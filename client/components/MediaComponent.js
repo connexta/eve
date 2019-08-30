@@ -138,7 +138,7 @@ class MediaEdit extends React.Component {
       } else if (this.inputRef.current.files[0].size > SIZE_LIMIT) {
         alert("Image too large to be uploaded");
         return;
-      } else this.formRef.current.submit();
+      } else await this.formRef.current.submit();
     }
 
     if (this.state.link != null && !this.isValidLink(this.state.link)) {

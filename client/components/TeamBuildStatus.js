@@ -85,6 +85,7 @@ export default class TeamBuildStatus extends React.Component {
   }
 
   render() {
+    console.log("urlList: ", this.state.urlList);
     return this.props.vertical ? (
       <BuildStatus urlList={this.state.urlList} listvert />
     ) : (

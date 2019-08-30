@@ -63,7 +63,7 @@ export default class AirforceWallboard extends React.Component {
             style={{ height: "calc(100% - 260px)" }}
           >
             <StyleMedia>
-              <MediaComponent />
+              <MediaComponent wallboard={"reflex"} />
             </StyleMedia>
             <StyleEvent>
               <EventComponent />

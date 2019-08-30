@@ -97,6 +97,7 @@ class BuildStatus extends React.Component {
     await Promise.all(this.trashableRequestList)
       .then(linklist => {
         for (let index = 0; index < linklist.length; index++) {
+          console.log(linklist[index]);
           this.updateData(
             linklist[index],
             overallData,
