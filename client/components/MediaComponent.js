@@ -160,6 +160,8 @@ class MediaEdit extends React.Component {
       media: null,
       link: null
     });
+
+    location.reload();
   }
 
   render() {
@@ -358,15 +360,15 @@ export default class MediaComponent extends React.Component {
     let temp = this.state.carousel;
     temp.push(media);
 
-    this.setState({
-      carousel: temp,
-      numCards: this.state.numCards + 1
-    });
-
     fetch("/carousel", {
       method: "POST",
       body: JSON.stringify({ route: this.props.wallboard, card: media }),
       headers: { "Content-Type": "application/json" }
+    });
+
+    this.setState({
+      carousel: temp,
+      numCards: this.state.numCards + 1
     });
   }
 
