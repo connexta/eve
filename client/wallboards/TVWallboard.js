@@ -57,7 +57,7 @@ export default class TVWallboard extends React.Component {
             style={{ height: "calc(100% - 260px)" }}
           >
             <StyleMedia>
-              <MediaComponent />
+              <MediaComponent wallboard={"tv"} />
             </StyleMedia>
             <StyleEvent>
               <EventComponent />

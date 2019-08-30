@@ -273,7 +273,7 @@ export default class MediaComponent extends React.Component {
 
   // get media info from backend
   async getCarousel() {
-    await fetch("/carousel", {
+    await fetch("/carousel?route=" + this.props.wallboard, {
       method: "GET"
     })
       .catch(err => console.log(err))
@@ -332,7 +332,7 @@ export default class MediaComponent extends React.Component {
     let card = this.state.carousel[num];
     fetch("/remove", {
       method: "POST",
-      body: JSON.stringify({ card: card }),
+      body: JSON.stringify({ route: this.props.wallboard, card: card }),
       headers: { "Content-Type": "application/json" }
     });
 
@@ -365,7 +365,7 @@ export default class MediaComponent extends React.Component {
 
     fetch("/carousel", {
       method: "POST",
-      body: JSON.stringify({ card: media }),
+      body: JSON.stringify({ route: this.props.wallboard, card: media }),
       headers: { "Content-Type": "application/json" }
     });
   }

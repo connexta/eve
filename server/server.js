@@ -40,8 +40,8 @@ const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 
 /* CRON JOB */
 //CRON JOB for SOAESB grafana
-app.set("SOAESB", grafana.getScreenshot(prod, links.soaesb_url)); //initial run
-cron.grafanaCron(prod, app, links.soaesb_url);
+// app.set("SOAESB", grafana.getScreenshot(prod, links.soaesb_url)); //initial run
+// cron.grafanaCron(prod, app, links.soaesb_url);
 
 // Create storage for media images
 const storage = multer.diskStorage({
@@ -61,19 +61,33 @@ var upload = multer({
 /* ROUTE */
 // Reads JSON data for carousel
 app.get("/carousel", function(req, res) {
-  var content = fs.readFileSync(mediaFile);
-  res.send(JSON.parse(content));
+  let content = JSON.parse(fs.readFileSync(mediaFile));
+  const route = req.query.route;
+
+  let cards = content.routes.find(item => item.route === route).cards;
+
+  res.send({ cards: cards });
 });
 
 // Posts JSON data from carousel
 app.post("/carousel", function(req, res) {
-  var content = fs.readFileSync(mediaFile);
+  var content = JSON.parse(fs.readFileSync(mediaFile));
 
-  let cards = JSON.parse(content).cards;
+  let index;
+  let route = content.routes.find((item, i) => {
+    index = i;
+    return item.route === req.body.route;
+  });
 
-  cards.push(req.body.card);
+  route.cards.push(req.body.card);
 
-  fs.writeFileSync(mediaFile, JSON.stringify({ cards: cards }));
+  console.log("Route: ", route);
+
+  content.routes[index] = route;
+
+  console.log("Content", content);
+
+  fs.writeFileSync(mediaFile, JSON.stringify(content));
   res.end("Data sent successfully");
 });
 
@@ -89,11 +103,17 @@ app.post("/upload", function(req, res) {
 
 //Handles deletion of images
 app.post("/remove", function(req, res) {
-  var content = fs.readFileSync(mediaFile);
+  var content = JSON.parse(fs.readFileSync(mediaFile));
 
   let removed = req.body.card;
+  let index;
 
-  let temp = JSON.parse(content).cards.filter(
+  let route = content.routes.find((item, i) => {
+    index = i;
+    return item.route === req.body.route;
+  });
+
+  content.routes[index].cards = route.cards.filter(
     card =>
       !(
         card.body == removed.body &&
@@ -102,7 +122,9 @@ app.post("/remove", function(req, res) {
       )
   );
 
-  fs.writeFileSync(mediaFile, JSON.stringify({ cards: temp }));
+  console.log(content);
+
+  fs.writeFileSync(mediaFile, JSON.stringify(content));
 
   let media = removed.media;
   if (media != null) {
