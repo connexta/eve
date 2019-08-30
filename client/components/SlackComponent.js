@@ -9,7 +9,6 @@ import makeTrashable from "trashable";
 import Collapse from "@material-ui/core/Collapse";
 
 const TOKEN = process.env.SLACK_TOKEN;
-const CHANNEL = process.env.SLACK_CHANNEL;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
 
@@ -18,9 +17,6 @@ const CardContainer = styled(BoxStyle)`
   flex-direction: column;
   justify-content: flex-start;
   position: relative;
-
-  /*Height of Slack Card is size of window beneath banner minus size of github card and margins*/
-  height: calc(100% - ${GITHUB_HEIGHT}px - 72px - 32px);
 `;
 
 const CardHeader = styled(BoxHeader)`
@@ -126,15 +122,27 @@ class SlackComponent extends React.Component {
   // fetch latest slack messages
   async setMessages() {
     console.log("Fetching latest slack messages...");
-    const url = encodeURIComponent("https://slack.com/api/channels.history?token=" +
-      TOKEN + "&channel=" + CHANNEL);
+    const url = encodeURIComponent(
+      "https://slack.com/api/channels.history?token=" +
+        TOKEN +
+        "&channel=" +
+        this.props.channelID
+    );
     this.trashableRequestList[0] = makeTrashable(
-      this.fetchData(url)
+      fetch(
+        "https://slack.com/api/channels.history?token=" +
+          TOKEN +
+          "&channel=" +
+          this.props.channelID
+      ).catch(e => console.log("error", e))
     );
 
     try {
-      const data = await this.trashableRequestList[0];
+      const response = await this.trashableRequestList[0];
       let messageList = [];
+      this.trashableGetJSON = makeTrashable(response.json());
+      let data = await this.trashableGetJSON;
+
       let msgCount = 0;
       data.messages.forEach(message => {
         // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)
@@ -144,9 +152,9 @@ class SlackComponent extends React.Component {
           messageList.push(message);
         }
       });
-      this.setState({ 
-        messages: messageList, 
-        msgLoading: false 
+      this.setState({
+        messages: messageList,
+        msgLoading: false
       });
       this.setSlackMsg();
     } catch (error) {
@@ -158,9 +166,7 @@ class SlackComponent extends React.Component {
   async setUserList() {
     console.log("Fetching slack users...");
     const url = "https://slack.com/api/users.list?token=" + TOKEN;
-    this.trashableRequestList[1] = makeTrashable(
-      this.fetchData(url)
-    );
+    this.trashableRequestList[1] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[1];
       this.setState({
@@ -176,14 +182,12 @@ class SlackComponent extends React.Component {
   async setEmojiList() {
     console.log("Fetching emojis...");
     const url = "https://slack.com/api/emoji.list?token=" + TOKEN;
-    this.trashableRequestList[2] = makeTrashable(
-      this.fetchData(url)
-    );
+    this.trashableRequestList[2] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[2];
-      this.setState({ 
+      this.setState({
         emojis: data.emoji,
-        emojiLoading: false 
+        emojiLoading: false
       });
     } catch (error) {
       console.log("Failed to fetch slack emojis ", error);
@@ -193,14 +197,12 @@ class SlackComponent extends React.Component {
   async setChannels() {
     console.log("Fetching slack channels...");
     const url = "https://slack.com/api/channels.list?token=" + TOKEN;
-    this.trashableRequestList[3] = makeTrashable(
-      this.fetchData(url)
-    );
+    this.trashableRequestList[3] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[3];
-      this.setState({ 
-        channels: data.channels, 
-        chanLoading: false 
+      this.setState({
+        channels: data.channels,
+        chanLoading: false
       });
     } catch (error) {
       console.log("Failed to fetch slack channels ", error);
@@ -210,7 +212,7 @@ class SlackComponent extends React.Component {
   fetchData(URL) {
     return fetch("/fetch/?type=JSON&url=" + URL)
       .then(response => response.json())
-      .catch(e => console.log("fetch data error", e)); 
+      .catch(e => console.log("fetch data error", e));
   }
 
   getChannelName(id) {
@@ -313,7 +315,9 @@ class SlackComponent extends React.Component {
       return (
         <CardContainer raised={true}>
           <span>
-            <CardHeader>#{this.getChannelName(CHANNEL)}</CardHeader>
+            <CardHeader>
+              #{this.getChannelName(this.props.channelID)}
+            </CardHeader>
           </span>
           <GradientBlock />
           <WhiteBlock />

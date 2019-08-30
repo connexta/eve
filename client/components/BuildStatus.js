@@ -10,10 +10,6 @@ import Button from "@material-ui/core/Button";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
-const StyledCard = styled(BoxStyle)`
-  width: calc(100% - ${CARD_SIDE_MARGINS}px);
-`;
-
 // if listvert is not true, it will list the items horizontally,
 // otherwise it will list them vertically
 const getListStyle = listvert => {
@@ -23,6 +19,7 @@ const getListStyle = listvert => {
   flex-direction: row; \
   justify-content: space-between; \
   flex-wrap: wrap; \
+  width: calc(100% - 20px); \
     ";
   } else return ``;
 };
@@ -61,6 +58,7 @@ const ButtonSelected = styled(Button)`
 class BuildStatus extends React.Component {
   constructor(props) {
     super(props);
+
     this.toggle = this.toggle.bind(this);
     this.state = {
       currentData: [],
@@ -99,6 +97,7 @@ class BuildStatus extends React.Component {
     await Promise.all(this.trashableRequestList)
       .then(linklist => {
         for (let index = 0; index < linklist.length; index++) {
+          console.log(linklist[index]);
           this.updateData(
             linklist[index],
             overallData,
@@ -158,7 +157,7 @@ class BuildStatus extends React.Component {
         Math.floor(item.weatherScore / weatherScoreDivisor) +
         "/" +
         divisor.toString() +
-        " Succeeded"
+        " Built"
       );
     }
   }
@@ -215,17 +214,17 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <StyledCard raised={true}>
+      <BoxStyle raised={true}>
         <BoxHeader>Loading Build Health. . .</BoxHeader>
-      </StyledCard>
+      </BoxStyle>
     ) : (
-      <StyledCard raised={true}>
+      <BoxStyle raised={true}>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
         <StyledCardContent listvert={this.props.listvert}>
           {this.getBuildDisplay()}
         </StyledCardContent>
-      </StyledCard>
+      </BoxStyle>
     );
   }
 }

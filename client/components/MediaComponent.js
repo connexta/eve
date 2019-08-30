@@ -32,9 +32,6 @@ const SIZE_LIMIT = 20 * Math.pow(10, 6); // max size of images in bytes
 const FETCH_FREQ = time({ minutes: 1 });
 
 export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  margin: 0 0 0 24px;
-  height: 100%;
   position: relative;
 `;
 
@@ -141,7 +138,7 @@ class MediaEdit extends React.Component {
       } else if (this.inputRef.current.files[0].size > SIZE_LIMIT) {
         alert("Image too large to be uploaded");
         return;
-      } else this.formRef.current.submit();
+      } else await this.formRef.current.submit();
     }
 
     if (this.state.link != null && !this.isValidLink(this.state.link)) {
@@ -163,6 +160,8 @@ class MediaEdit extends React.Component {
       media: null,
       link: null
     });
+
+    location.reload();
   }
 
   render() {
@@ -276,7 +275,7 @@ export default class MediaComponent extends React.Component {
 
   // get media info from backend
   async getCarousel() {
-    await fetch("/carousel", {
+    await fetch("/carousel?route=" + this.props.wallboard, {
       method: "GET"
     })
       .catch(err => console.log(err))
@@ -335,7 +334,7 @@ export default class MediaComponent extends React.Component {
     let card = this.state.carousel[num];
     fetch("/remove", {
       method: "POST",
-      body: JSON.stringify({ card: card }),
+      body: JSON.stringify({ route: this.props.wallboard, card: card }),
       headers: { "Content-Type": "application/json" }
     });
 
@@ -361,15 +360,15 @@ export default class MediaComponent extends React.Component {
     let temp = this.state.carousel;
     temp.push(media);
 
+    fetch("/carousel", {
+      method: "POST",
+      body: JSON.stringify({ route: this.props.wallboard, card: media }),
+      headers: { "Content-Type": "application/json" }
+    });
+
     this.setState({
       carousel: temp,
       numCards: this.state.numCards + 1
-    });
-
-    fetch("/carousel", {
-      method: "POST",
-      body: JSON.stringify({ card: media }),
-      headers: { "Content-Type": "application/json" }
     });
   }
 

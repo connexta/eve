@@ -10,12 +10,8 @@ import {
 import { Edit, Save } from "@material-ui/icons";
 import makeTrashable from "trashable";
 
-const VersionBox = styled(BoxStyle)`
-  width: 340px;
-`;
-
 const VersionCardContent = styled(FlexRowCardContent)`
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
 `;
 
@@ -28,7 +24,7 @@ const VersionStyledDateNoField = styled(VersionStyledDate)`
 `;
 
 const StyledTextField = styled(TextField)`
-  width: 120px;
+  width: 80px;
   margin-top: 0;
   font-size: 20px;
 `;
@@ -115,7 +111,7 @@ export default class ReleaseVersion extends React.Component {
 
   render() {
     return (
-      <VersionBox>
+      <BoxStyle raised={true}>
         <BoxHeader>Version Numbers</BoxHeader>
         <IconBox>
           {this.state.isEditing ? (
@@ -161,7 +157,7 @@ export default class ReleaseVersion extends React.Component {
             })
           )}
         </VersionCardContent>
-      </VersionBox>
+      </BoxStyle>
     );
   }
 }
