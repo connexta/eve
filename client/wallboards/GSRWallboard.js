@@ -74,7 +74,7 @@ export default class GSRWallboard extends React.Component {
               <MediaComponent wallboard={"gsr"} />
             </StyleMedia>
             <StyleEvent>
-              <EventComponent />
+              <EventComponent wallboard={"gsr"} />
             </StyleEvent>
           </Grid>
         </LeftBox>

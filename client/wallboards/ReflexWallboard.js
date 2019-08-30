@@ -66,7 +66,7 @@ export default class AirforceWallboard extends React.Component {
               <MediaComponent wallboard={"reflex"} />
             </StyleMedia>
             <StyleEvent>
-              <EventComponent />
+              <EventComponent wallboard={"reflex"} />
             </StyleEvent>
           </Grid>
         </LeftBox>

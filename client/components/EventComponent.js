@@ -160,7 +160,7 @@ export default class MediaComponent extends React.Component {
     });
 
     let user = this.userAgentApplication.getAccount();
-    let cal = localStorage.getItem("chosenCalendar");
+    let cal = localStorage.getItem("chosenCalendar" + this.props.wallboard);
 
     this.state = {
       displayIndex: 0,
@@ -276,7 +276,7 @@ export default class MediaComponent extends React.Component {
   // stores chosenCal in state and in cache before calling getCalendarEvents()
   async changeState(cal) {
     this.setState({ chosenCal: cal });
-    localStorage.setItem("chosenCalendar", cal);
+    localStorage.setItem("chosenCalendar" + this.props.wallboard, cal);
     this.getCalendarEvents(cal);
   }
 

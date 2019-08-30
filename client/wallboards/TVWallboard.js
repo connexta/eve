@@ -60,7 +60,7 @@ export default class TVWallboard extends React.Component {
               <MediaComponent wallboard={"tv"} />
             </StyleMedia>
             <StyleEvent>
-              <EventComponent />
+              <EventComponent wallboard={"tv"} />
             </StyleEvent>
           </Grid>
         </LeftBox>

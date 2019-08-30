@@ -45,7 +45,7 @@ export default class I2OWallboard extends React.Component {
           <TeamBuildStatus vertical={true} url={IONURL} name={"I2O"} />
         </StyleBuild>
         <StyleEvent>
-          <EventComponent />
+          <EventComponent wallboard={"I2O"} />
         </StyleEvent>
         <RightBox item>
           <StyleSlack>
