@@ -1,7 +1,7 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 
 // banner
-export const BANNER_HEIGHT = 100;
+export const BANNER_HEIGHT = 124;
 
 // fonts
 export const CX_FONT = '"Open Sans", "Arial"';

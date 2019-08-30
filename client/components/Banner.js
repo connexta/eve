@@ -17,7 +17,7 @@ class Banner extends React.Component {
   render() {
     return (
       <>
-        <Link to="/">
+        <Link to={this.props.edit ? undefined : "/"}>
           <Logo />
         </Link>
         <Clock timezone="US/Arizona" place="PHX" />

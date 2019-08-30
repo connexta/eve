@@ -1,6 +1,6 @@
 const currentWallboard = (state = "HOME", action) => {
   switch (action.type) {
-    case "UP_WALL":
+    case "UPDATE_WALLBOARD":
       return action.wallboard;
     default:
       return state;

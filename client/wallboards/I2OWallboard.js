@@ -6,11 +6,10 @@ import { IONURL } from "../utils/Link";
 import { hour } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import { connect } from "react-redux";
-import { CARD_SIDE_MARGINS } from "../styles/styles";
 import { updateCurrentWallboard, leaveEdit } from "../actions";
 
 const buildStatusWidth = `100%`;
-// const buildStatusWidth = `calc(100% - ${CARD_SIDE_MARGINS}px)`;
+
 class I2OWallboard extends React.Component {
   constructor(props) {
     super(props);

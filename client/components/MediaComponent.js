@@ -24,6 +24,7 @@ import {
   Save
 } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
+import { connect } from "react-redux";
 
 const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
@@ -168,7 +169,7 @@ class MediaEdit extends React.Component {
   render() {
     return (
       <div style={{ display: "inline-block", position: "absolute", right: 20 }}>
-        <Edit onClick={this.handleClickOpen.bind(this)} />
+        {this.props.edit ? <Edit onClick={this.handleClickOpen.bind(this)}/> : undefined }
         <Dialog
           onClose={this.handleClose.bind(this)}
           aria-labelledby="edit-media-dialog"
@@ -264,7 +265,7 @@ class MediaEdit extends React.Component {
 ///////////////////////////////////
 ///////////////////////////////////
 
-export default class MediaComponent extends React.Component {
+class MediaComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -383,6 +384,7 @@ export default class MediaComponent extends React.Component {
               media={this.state.carousel}
               remove={this.removeMedia.bind(this)}
               addMedia={this.addMedia.bind(this)}
+              edit={this.props.edit}
             />
           </BoxHeader>
         </MediaCard>
@@ -398,6 +400,7 @@ export default class MediaComponent extends React.Component {
               media={this.state.carousel}
               remove={this.removeMedia.bind(this)}
               addMedia={this.addMedia.bind(this)}
+              edit={this.props.edit}
             />
           </BoxHeader>
           {card.link == null ? (
@@ -456,3 +459,11 @@ export default class MediaComponent extends React.Component {
     }
   }
 }
+
+const mapStateToProps = state => ({
+  edit: state.edit
+})
+
+export default connect(
+  mapStateToProps
+)(MediaComponent);

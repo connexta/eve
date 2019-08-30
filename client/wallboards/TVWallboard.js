@@ -27,6 +27,7 @@ const buildStatusWidth = `calc(100% - ${CARD_SIDE_MARGINS}px)`;
 /*Height of Slack Card is size of window beneath banner minus size of github card and margins */
 const SlackHeight = `calc(100% - ${TV_GITHUB_HEIGHT}px - 72px - 32px)`;
 const GithubHeight = `${TV_GITHUB_HEIGHT}px`;
+const MediaHeight = `calc((100% / 2) - 24px)`;
 
 class TVWallboard extends React.Component {
   constructor(props) {
@@ -72,7 +73,7 @@ class TVWallboard extends React.Component {
             height={SlackHeight}
             type={["CHANNEL"]}
             name="SlackComponent"
-          />
+          />  
           <Github height={GithubHeight} type={["REPOPATH"]} name="Github" />
         </RightBox>
       </Grid>

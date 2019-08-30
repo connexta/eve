@@ -21,6 +21,7 @@ import {
   Divider
 } from "@material-ui/core";
 import makeTrashable from "trashable";
+import { connect } from "react-redux";
 
 const DAYS_AFTER = 7; // how many days in the future to grab events
 const NUM_EVENTS_GRAB = 50; //limit on number of events to grab from API
@@ -146,7 +147,7 @@ export class DialogAndButton extends React.Component {
   }
 }
 
-export default class MediaComponent extends React.Component {
+class EventComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -372,7 +373,8 @@ export default class MediaComponent extends React.Component {
       <MediaCard raised={true}>
         <Header>
           Company Events
-          <ButtonContainer>
+          {this.props.edit ? 
+            <ButtonContainer>
             <LogInOut
               isAuthenticated={this.state.isAuthenticated}
               logIn={this.login.bind(this)}
@@ -380,6 +382,9 @@ export default class MediaComponent extends React.Component {
             />
             {calButton}
           </ButtonContainer>
+          :
+          undefined
+          }
         </Header>
         {this.state.events.length <= 0 ? (
           this.noEventMessage()
@@ -419,3 +424,11 @@ export default class MediaComponent extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  edit: state.edit
+})
+
+export default connect(
+  mapStateToProps
+)(EventComponent);

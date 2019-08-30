@@ -13,7 +13,6 @@ describe("GET ", () => {
           "/theme?wallboard=TV&component=BANNER"
         );
         expect(response.body).toEqual(expect.not.objectContaining({}));
-        // expect(response.body).toEqual({data:"red"});
         expect(response.statusCode).toBe(200);
       }),
       test("with non-existing query", async () => {

@@ -30,11 +30,9 @@ const mediaDir = prod
   ? "/eve/carouselMedia"
   : path.join(process.cwd(), "eve/carouselMedia");
 app.use(express.static(mediaDir));
-const themeFileLocation = prod
-  ? "/eve/theme.json"
-  : path.join(process.cwd(), "eve/theme.json");
-const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
 const targetPath = prod ? "/target" : "../target";
+const themeFileLocation = prod ? "/eve/theme.json" : "eve/theme.json";
+const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
 const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
 const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 

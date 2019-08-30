@@ -148,7 +148,7 @@ class BuildStatus extends React.Component {
       };
     } else {
       overallData[index] = {
-        displayName: "INVALID",
+        displayName: name ? "INVALID" : name,
         oneScore: 0,
         fiveScore: 0,
         oneSubtitle: "INVALID",

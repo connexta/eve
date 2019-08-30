@@ -1,7 +1,5 @@
 import { CX_DARK_BLUE } from "./Constants";
 import { jenkinsURLList, AFJenkinLink, AFURL, AFpipeline } from "./Link";
-const CHANNEL = process.env.SLACK_CHANNEL;
-const REPOPATH = "codice/ddf";
 
 const buildAFList = [
   {
@@ -13,8 +11,8 @@ const buildAFList = [
 
 export const DefaultData = {
   Banner: CX_DARK_BLUE,
-  SlackComponent: CHANNEL,
+  SlackComponent: process.env.SLACK_CHANNEL,
   BuildStatus: jenkinsURLList,
-  Github: REPOPATH,
+  Github: "codice/ddf",
   BuildAF: buildAFList
 };

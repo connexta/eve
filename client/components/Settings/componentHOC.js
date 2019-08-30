@@ -20,6 +20,7 @@ import {
 import Button from "@material-ui/core/Button";
 import { DefaultData } from "../../utils/DefaultData";
 import { Save, Cancel } from "@material-ui/icons";
+import { time } from "../../utils/TimeUtils";
 
 const componentHOC = WrappedComponent => {
   const ComponentWrapper = styled(BoxStyle)`
@@ -51,14 +52,6 @@ const componentHOC = WrappedComponent => {
     position: relative;
   `;
 
-  const rowDisplay = css`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    background: #ff0000;
-  `;
-
   const SaveFabWrapper = styled(Save)`
     margin-right: 8px;
   `;
@@ -78,7 +71,7 @@ const componentHOC = WrappedComponent => {
         isLoading: true,
         edit: this.props.disable ? false : this.props.edit
       };
-      this.handleMultipleSave = this.handleMultipleSave.bind(this);
+    //   this.handleMultipleSave = this.handleMultipleSave.bind(this);
     }
 
     async componentDidMount() {
@@ -188,29 +181,29 @@ const componentHOC = WrappedComponent => {
       this.setState({ open: false });
     }
 
+    //if it's Banner, always Post it to HOME since Getting Banner data always come from HOME
+    bannerPost(isBanner){
+        let curWallboard = isBanner ? "HOME" : this.props.currentWallboard;
+        return "/theme?wallboard=" + curWallboard + "&component=" + this.props.name;
+    }
+
     postData() {
       let dataToUpdate = this.state.content;
-      fetch(
-        "/theme?wallboard=" +
-          this.props.currentWallboard +
-          "&component=" +
-          this.props.name,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: dataToUpdate })
-        }
-      );
+      fetch(this.bannerPost(this.props.name === "Banner"),
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: dataToUpdate })
+      });
     }
 
     //handle saving the contents to the state and to the backend
     //saving method differs whether the data is a string or an array (checked by isArray)
     async handleMultipleSave(e, row, column) {
-      let metSaveRequirement = true;
       let metOneRequirement = false;
       let isArray = !(row == 1 && column == 1);
       for (let index = 0; index < row; index++) {
-        metSaveRequirement = true;
+        let metSaveRequirement = true;
         //check if valid response has been inputted
         for (let jndex = 0; jndex < column; jndex++) {
           let inputData = this.state[this.props.type[jndex] + index];
@@ -255,7 +248,7 @@ const componentHOC = WrappedComponent => {
       return (
         <Button onClick={this.handleClose.bind(this)}>
           <CancelFabWrapper />
-          Cancel
+          Close
         </Button>
       );
     }
@@ -305,7 +298,8 @@ const componentHOC = WrappedComponent => {
       let message = this.state.metSaveRequirement
         ? "Successfully updated the component."
         : "Failed: Please provide correct input.";
-
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(()=>{this.setState({ resultsOpen:false })}, time({seconds:2}));
       return (
         <Dialog
           onClose={() => {
@@ -315,16 +309,6 @@ const componentHOC = WrappedComponent => {
           open={this.state.resultsOpen}
         >
           <DialogTitle>{message}</DialogTitle>
-          <Button
-            onClick={() => {
-              this.setState({ resultsOpen: false });
-            }}
-          >
-            {" "}
-            {/* close the opened result popup */}
-            <CancelFabWrapper />
-            Cancel
-          </Button>
         </Dialog>
       );
     }
@@ -363,7 +347,8 @@ const componentHOC = WrappedComponent => {
     }
 
     displayBanner() {
-      let editable = this.state.edit && this.props.currentWallboard === "HOME";
+    //   let editable = this.state.edit && this.props.currentWallboard === "HOME";
+    let editable = this.state.edit;
       return (
         <BannerWrapper
           edit={editable ? "true" : undefined}
@@ -385,7 +370,7 @@ const componentHOC = WrappedComponent => {
             ? this.displayBanner()
             : this.displayComponent()}
           {this.displayDialog()}
-          {this.displaySaveResults()}
+          {this.state.resultsOpen ? this.displaySaveResults() : undefined}
         </>
       );
     }

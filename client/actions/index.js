@@ -1,14 +1,4 @@
 //Action Creators
-export const addComponents = component => ({
-  type: "ADD_COMP",
-  component
-});
-
-export const deleteComponents = component => ({
-  type: "DEL_COMP",
-  component
-});
-
 export const enterEdit = () => ({
   type: "EDIT"
 });
@@ -22,6 +12,6 @@ export const toggleEdit = () => ({
 });
 
 export const updateCurrentWallboard = wallboard => ({
-  type: "UP_WALL",
+  type: "UPDATE_WALLBOARD",
   wallboard
 });
