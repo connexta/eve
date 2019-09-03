@@ -37,11 +37,12 @@ const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
 const targetPath = prod ? "/target" : "../target";
 const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
 const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
+const eventFile = prod ? "/eve/events.json" : "eve/events.json";
 
 /* CRON JOB */
 //CRON JOB for SOAESB grafana
-app.set("SOAESB", grafana.getScreenshot(prod, links.soaesb_url)); //initial run
-cron.grafanaCron(prod, app, links.soaesb_url);
+// app.set("SOAESB", grafana.getScreenshot(prod, links.soaesb_url)); //initial run
+// cron.grafanaCron(prod, app, links.soaesb_url);
 
 // Create storage for media images
 const storage = multer.diskStorage({
@@ -75,6 +76,47 @@ app.post("/carousel", function(req, res) {
 
   fs.writeFileSync(mediaFile, JSON.stringify({ cards: cards }));
   res.end("Data sent successfully");
+});
+
+app.get("/event", function(req, res) {
+  if (fs.existsSync(eventFile)) {
+    let content = fs.readFileSync(eventFile);
+    res.send(JSON.parse(content));
+  } else {
+    res.send(JSON.parse({ events: [] }));
+  }
+});
+
+app.post("/event", function(req, res) {
+  if (fs.existsSync(eventFile)) {
+    let content = fs.readFileSync(eventFile);
+    let events = JSON.parse(content).events;
+    events.push(req.body.event);
+    fs.writeFileSync(eventFile, JSON.stringify({ events: events }));
+    res.end("Event data sent successfully!");
+  } else {
+    let content = { events: [req.body.card] };
+    fs.writeFileSync(eventFile, JSON.stringify(content));
+  }
+});
+
+app.post("/removeEvent", function(req, res) {
+  if (fs.existsSync(eventFile)) {
+    let content = fs.readFileSync(eventFile);
+    let removed = req.body.event;
+
+    let temp = JSON.parse(content).events.filter(
+      event =>
+        !(
+          event.title == removed.title &&
+          event.location == removed.location &&
+          event.startTime == removed.startTime &&
+          event.endTime == removed.endTime
+        )
+    );
+
+    fs.writeFileSync(eventFile, JSON.stringify({ events: temp }));
+  }
 });
 
 // Handles upload of images
