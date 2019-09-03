@@ -10,7 +10,8 @@ import { Card, CardContent } from "@material-ui/core";
 export const BOX_HEADER_SIZE = 44;
 
 export const BoxStyle = styled(Card)`
-  margin: 24px;
+  width: 100%;
+  height: 100%;
   font-size: 20px;
   color: ${BATMAN_GRAY};
   background-color: ${CX_OFF_WHITE};
@@ -24,6 +25,7 @@ export const BoxHeader = styled.div`
   color: ${CX_GRAY_BLUE};
   margin-bottom: 12px;
   float: left;
+  position: relative;
 `;
 
 export const CARD_SIDE_MARGINS = 24;

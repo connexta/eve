@@ -9,19 +9,18 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
-import { BoxStyle, BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
+import { BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
 import PullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
 import { addS } from "../utils/TimeUtils";
+import componentHOC from "./Settings/componentHOC";
 
 import NeutralState from "@material-ui/icons/Remove";
 import BadState from "@material-ui/icons/Clear";
 import GoodState from "@material-ui/icons/Done";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-
-export const GITHUB_HEIGHT = 400;
 
 const MAXPULLS = 5; // Max number of pull requests to display
 const NUM_STATUSES = 2; // Max number of statuses to display for each PR
@@ -30,10 +29,6 @@ const CALL_FREQ = hour; // Frequency to refresh GitHub data
 const ROTATE_FREQ = time({ seconds: 10 }); // Frequency to rotate displayed PR
 const IGNORE_CONTEXTS = ["snyk", "license/cla"]; // list of contexts to ignore for statuses
 const TOKEN = process.env.GITHUB_TOKEN;
-
-const GithubCard = styled(BoxStyle)`
-  height: ${GITHUB_HEIGHT}px;
-`;
 
 const Header = styled(BoxHeader)`
   width: 100%;
@@ -120,7 +115,9 @@ function Statuses(props) {
         <ListItem
           key={i}
           disableGutters={true}
-          onClick={() => window.open(props.statuses[i].link)}
+          onClick={() =>
+            this.props.edit ? undefined : window.open(props.statuses[i].link)
+          }
         >
           <ListItemIcon key={i}>{icon}</ListItemIcon>
           <LinkText>
@@ -140,7 +137,7 @@ function Statuses(props) {
       <ListItem
         disableGutters={true}
         key={NUM_STATUSES}
-        onClick={() => window.open(props.url)}
+        onClick={() => (this.props.edit ? undefined : window.open(props.url))}
       >
         + {props.statuses.length - (NUM_STATUSES - 1)} statuses not shown
       </ListItem>
@@ -150,8 +147,7 @@ function Statuses(props) {
   return statuses;
 }
 
-// repoPath: the path to the desired repo (":org/:repo")
-export default class Github extends React.Component {
+class Github extends React.Component {
   constructor(props) {
     super(props);
 
@@ -161,7 +157,6 @@ export default class Github extends React.Component {
       displayIndex: 0,
       numPulls: MAXPULLS
     };
-
     this.getRepoName();
   }
 
@@ -193,7 +188,7 @@ export default class Github extends React.Component {
 
   // Finds and sets name of repo
   async getRepoName() {
-    let call = "https://api.github.com/repos/" + this.props.repoPath;
+    let call = "https://api.github.com/repos/" + this.props.content;
     let name = (await this.fetchGithub(call)).name.toUpperCase();
     this.setState({ name: name });
   }
@@ -202,7 +197,7 @@ export default class Github extends React.Component {
   async getApprovals(prNum) {
     let call =
       "https://api.github.com/repos/" +
-      this.props.repoPath +
+      this.props.content +
       "/pulls/" +
       prNum +
       "/reviews";
@@ -263,7 +258,7 @@ export default class Github extends React.Component {
 
   // Calls GitHub to fetch PR, status, and review data & stores in this.state.pulls
   async loadUserData() {
-    let call = "https://api.github.com/repos/" + this.props.repoPath + "/pulls";
+    let call = "https://api.github.com/repos/" + this.props.content + "/pulls";
     let data = await this.fetchGithub(call);
 
     let pulls = [];
@@ -327,10 +322,10 @@ export default class Github extends React.Component {
   render() {
     if (this.state.prs.length == 0)
       return (
-        <GithubCard raised={true}>
+        <span>
           <Header>{this.state.name} Pull Requests</Header>
           <CardContent>No pull requests</CardContent>
-        </GithubCard>
+        </span>
       );
     else {
       let pr = this.state.prs[this.state.displayIndex];
@@ -345,10 +340,14 @@ export default class Github extends React.Component {
         ) : null;
 
       return (
-        <GithubCard raised={true}>
+        <>
           <Header>{this.state.name} Pull Requests</Header>
           <CardContent>
-            <MainAndSubline onClick={() => window.open(pr.url)}>
+            <MainAndSubline
+              onClick={() =>
+                this.props.edit ? undefined : window.open(pr.url)
+              }
+            >
               <PRTitle>
                 <PRNumber>{" #" + pr.number}</PRNumber> {pr.title}
               </PRTitle>
@@ -392,8 +391,11 @@ export default class Github extends React.Component {
               </Button>
             }
           />
-        </GithubCard>
+        </>
       );
     }
   }
 }
+
+const WrappedComponent = componentHOC(Github);
+export default WrappedComponent;
