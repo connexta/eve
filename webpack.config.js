@@ -1,7 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
-const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: ["babel-polyfill", "whatwg-fetch", "./client/index.js"],
@@ -43,7 +42,11 @@ module.exports = {
       template: "./client/index.html"
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new Dotenv()
+    new webpack.DefinePlugin({
+      "process.env.SLACK_TOKEN": JSON.stringify(process.env.SLACK_TOKEN),
+      "process.env.SLACK_CHANNEL": JSON.stringify(process.env.SLACK_CHANNEL),
+      "process.env.GITHUB_TOKEN": JSON.stringify(process.env.GITHUB_TOKEN)
+    })
   ],
   devServer: {
     contentBase: path.join(__dirname, "target"),

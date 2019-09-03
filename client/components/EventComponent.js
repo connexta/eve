@@ -14,13 +14,14 @@ import config from "./Calendar/GraphConfig";
 import { UserAgentApplication } from "msal";
 import makeTrashable from "trashable";
 import EventEdit from "./EventEdit";
+import componentHOC from "./Settings/componentHOC";
 
 const MONTHS_AFTER = 2; // how many days in the future to grab events
 const NUM_EVENTS_GRAB = 50; //limit on number of events to grab from API
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 
 const ButtonContainer = styled.div`
-  width: 300px;
+  width: 280px;
   margin-left: calc(5% - 3px); /* 3 px to accomodate rbc-btn-group margins */
   display: flex;
   flex-direction: row;
@@ -59,10 +60,7 @@ export const CarouselContent = styled.div`
   margin: 20px 0 0 0;
 `;
 
-export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  height: 100%;
-  margin: 0 0 0 24px;
+export const EventCard = styled(BoxStyle)`
   position: relative;
 `;
 
@@ -70,9 +68,10 @@ const Header = styled(BoxHeader)`
   width: 100%;
   display: flex;
   flex-direction: row;
+  position: relative;
 `;
 
-export default class MediaComponent extends React.Component {
+class EventComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -89,7 +88,7 @@ export default class MediaComponent extends React.Component {
     });
 
     let user = this.userAgentApplication.getAccount();
-    let cal = localStorage.getItem("chosenCalendar");
+    let cal = localStorage.getItem("chosenCalendar" + this.props.wallboard);
 
     this.state = {
       displayIndex: 0,
@@ -106,7 +105,7 @@ export default class MediaComponent extends React.Component {
   }
 
   async getDefaultEvents() {
-    let eventData = await fetch("/event", {
+    let eventData = await fetch("/event?route=" + this.props.wallboard, {
       method: "GET"
     })
       .catch(err => console.log(err))
@@ -134,8 +133,6 @@ export default class MediaComponent extends React.Component {
       return a.start.getTime() - b.start.getTime();
     });
 
-    console.log("getDefaultEvents: ", sorted);
-
     return sorted;
   }
 
@@ -162,16 +159,11 @@ export default class MediaComponent extends React.Component {
         );
       }
 
-      console.log("State: ", this.state.events);
-      console.log("Calendar Events: ", eventData);
-
       let temp = eventData.concat(this.state.events);
 
       temp.sort((a, b) => {
         return a.start.getTime() - b.start.getTime();
       });
-
-      console.log("Concat & Sort: ", temp);
 
       this.setState({
         isAuthenticated: true,
@@ -246,7 +238,7 @@ export default class MediaComponent extends React.Component {
   // stores chosenCal in state and in cache before calling getCalendarEvents()
   async changeState(cal) {
     this.setState({ chosenCal: cal });
-    localStorage.setItem("chosenCalendar", cal);
+    localStorage.setItem("chosenCalendar" + this.props.wallboard, cal);
     this.setEvents();
   }
 
@@ -269,7 +261,7 @@ export default class MediaComponent extends React.Component {
 
         if (newMonth > 11) {
           endDate.setMonth(newDate - 12);
-          endDate.setFullYear(endDate.getFullYear + 1);
+          endDate.setFullYear(endDate.getFullYear() + 1);
         } else endDate.setMonth(newMonth);
 
         let call =
@@ -336,9 +328,9 @@ export default class MediaComponent extends React.Component {
 
   noEventMessage() {
     if (!this.state.isAuthenticated) {
-      return <div>Please sign in</div>;
+      return <div>Please sign in from settings mode</div>;
     } else if (!this.state.chosenCal) {
-      return <div>Select calendar to display events</div>;
+      return <div>Select calendar to display events from settings mode</div>;
     } else if (this.state.events.length <= 0) {
       return <div>No events to display</div>;
     } else {
@@ -349,6 +341,9 @@ export default class MediaComponent extends React.Component {
   addEvent(event) {
     let temp = this.state.events;
     temp.push(event);
+    temp.sort((a, b) => {
+      return a.start.getTime() - b.start.getTime();
+    });
 
     this.setState({
       events: temp
@@ -356,7 +351,7 @@ export default class MediaComponent extends React.Component {
 
     fetch("/event", {
       method: "POST",
-      body: JSON.stringify({ event: event }),
+      body: JSON.stringify({ route: this.props.wallboard, event: event }),
       headers: { "Content-Type": "application/json" }
     });
   }
@@ -366,7 +361,7 @@ export default class MediaComponent extends React.Component {
 
     fetch("/removeEvent", {
       method: "POST",
-      body: JSON.stringify({ event: event }),
+      body: JSON.stringify({ route: this.props.wallboard, event: event }),
       headers: { "Content-Type": "application/json" }
     });
 
@@ -377,10 +372,9 @@ export default class MediaComponent extends React.Component {
 
   render() {
     let eventData = this.state.events.slice(0, this.state.numEvents);
-    console.log(this.state.numEvents);
 
     return (
-      <MediaCard raised={true}>
+      <>
         <Header>
           Company Events
           <ButtonContainer>
@@ -430,7 +424,10 @@ export default class MediaComponent extends React.Component {
             <Divider />
           </EventContainer>
         )}
-      </MediaCard>
+      </>
     );
   }
 }
+
+const WrappedComponent = componentHOC(EventComponent);
+export default WrappedComponent;
