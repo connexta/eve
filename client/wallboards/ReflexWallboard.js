@@ -16,32 +16,32 @@ const DEV_SPACE = 60;
 const StyleBuildStatus = {
   height: `160px`,
   width: `calc(100% - 30px)`,
-  margin: `20px`,
+  margin: `20px`
 };
 
 const StyleMedia = {
   height: `100%`,
   width: `calc(50% - 25px)`,
   margin: `0px 10px 20px 20px`
-}
+};
 
 const StyleEvent = {
   height: `100`,
   width: `calc(50% - 25px)`,
   margin: `0px 0px 20px 10px`
-}
+};
 
 const StyleSlack = {
   width: `calc(100% - 30px)`,
   height: `calc(100% - ${DEV_SPACE}px - ${GITHUB_HEIGHT}px - 40px)`,
   margin: `20px 20px 10px 10px`
-}
+};
 
 const StyleGithub = {
   width: `calc(100% - 30px)`,
   height: `${GITHUB_HEIGHT}px`,
   margin: `20px 20px 20px 10px`
-}
+};
 
 class ReflexWallboard extends React.Component {
   constructor(props) {
@@ -78,16 +78,16 @@ class ReflexWallboard extends React.Component {
             direction="row"
             style={{ height: "calc(100% - 260px)" }}
           >
-              <MediaComponent 
+            <MediaComponent
               style={StyleMedia}
-              wallboard={"reflex"} 
+              wallboard={"reflex"}
               disableEffect
-              />
-              <EventComponent 
-                style={StyleEvent}
-                wallboard={"reflex"}
-                disableEffect
-                />
+            />
+            <EventComponent
+              style={StyleEvent}
+              wallboard={"reflex"}
+              disableEffect
+            />
           </Grid>
         </LeftBox>
         <RightBox item>
@@ -97,11 +97,7 @@ class ReflexWallboard extends React.Component {
             name="SlackComponent"
             default={SLACK_REFLEX_CHANNEL}
           />
-          <Github 
-            style={StyleGithub}
-            type={["REPOPATH"]}
-            name="Github"
-            />
+          <Github style={StyleGithub} type={["REPOPATH"]} name="Github" />
         </RightBox>
       </Grid>
     );

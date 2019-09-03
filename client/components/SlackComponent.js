@@ -122,8 +122,12 @@ class SlackComponent extends React.Component {
   // fetch latest slack messages
   async setMessages() {
     console.log("Fetching latest slack messages...");
-    const url = encodeURIComponent("https://slack.com/api/channels.history?token=" +
-      TOKEN + "&channel=" + this.props.content);
+    const url = encodeURIComponent(
+      "https://slack.com/api/channels.history?token=" +
+        TOKEN +
+        "&channel=" +
+        this.props.content
+    );
     this.trashableRequestList[0] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[0];
@@ -292,13 +296,13 @@ class SlackComponent extends React.Component {
   render() {
     if (this.anyStillLoading()) {
       return (
-        <CardContainer style={{position:"unset"}}>
+        <CardContainer style={{ position: "unset" }}>
           <CardHeader>Loading Slack...</CardHeader>
         </CardContainer>
       );
     } else {
       return (
-        <CardContainer style={{position:"unset"}}>
+        <CardContainer style={{ position: "unset" }}>
           <span>
             <CardHeader>#{this.getChannelName(this.props.content)}</CardHeader>
           </span>

@@ -71,7 +71,8 @@ export default class TeamBuildStatus extends React.Component {
             let name = Object.keys(pipelineNameList[i]).toString();
             let updatedName = name.replace("ion-", ""); //remove ion- in the name if it has any.
             urlList.push({
-              NAME: updatedName, URL: Object.values(pipelineNameList[i]) + "/master/"
+              NAME: updatedName,
+              URL: Object.values(pipelineNameList[i]) + "/master/"
             });
           }
         })
@@ -94,6 +95,6 @@ export default class TeamBuildStatus extends React.Component {
         listvert={this.props.listvert}
         default={this.state.urlList}
       />
-    )
+    );
   }
 }

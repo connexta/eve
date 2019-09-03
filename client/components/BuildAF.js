@@ -117,61 +117,56 @@ class BuildAF extends React.Component {
     );
   }
 
-
-  displayItems(data, index){
+  displayItems(data, index) {
     const description = data.description
-    ? data.description
-    : "build title not provided";
-    
+      ? data.description
+      : "build title not provided";
+
     return (
       <>
-      <StyleListItemIcon>
-      {data.result === "SUCCESS" ? (
-        <GoodState
-          fontSize={"inherit"}
-          style={{
-            color: "green",
-            padding: "1 0",
-            float: "left",
-            transform: "scale(0.9)"
-          }}
-        />
-      ) : (
-        <BadState
-          fontSize={"inherit"}
-          style={{
-            color: "red",
-            padding: "1 0",
-            float: "left",
-            transform: "scale(0.9)"
-          }}
-        />
-      )}
-    </StyleListItemIcon>
-    <div>
-      {description}
-      <Subline>
-        {parseTimeString(data.startTime) +
-          " Triggered by " +
-          this.formatCauses(data.causes)}
-      </Subline>
-    </div>
-    </>
-    )
+        <StyleListItemIcon>
+          {data.result === "SUCCESS" ? (
+            <GoodState
+              fontSize={"inherit"}
+              style={{
+                color: "green",
+                padding: "1 0",
+                float: "left",
+                transform: "scale(0.9)"
+              }}
+            />
+          ) : (
+            <BadState
+              fontSize={"inherit"}
+              style={{
+                color: "red",
+                padding: "1 0",
+                float: "left",
+                transform: "scale(0.9)"
+              }}
+            />
+          )}
+        </StyleListItemIcon>
+        <div>
+          {description}
+          <Subline>
+            {parseTimeString(data.startTime) +
+              " Triggered by " +
+              this.formatCauses(data.causes)}
+          </Subline>
+        </div>
+      </>
+    );
   }
 
   //@return:
   //  display list of build contents (builder [data.causes], build start time, build result, build description)
   displayListContents(data, index) {
-    return (
-      this.props.edit ?
-      <ListItem
-        disableGutters={true}
-        key={index}
-      >
+    return this.props.edit ? (
+      <ListItem disableGutters={true} key={index}>
         {this.displayItems(data, index)}
       </ListItem>
-      :
+    ) : (
       <ListItem
         disableGutters={true}
         key={index}
@@ -234,7 +229,13 @@ class BuildAF extends React.Component {
       <span>Loading AF Builds. . .</span>
     ) : (
       <span>
-        <StyledHeader onClick={() => this.props.edit ? undefined : window.open(this.props.content[0].LINK)}>
+        <StyledHeader
+          onClick={() =>
+            this.props.edit
+              ? undefined
+              : window.open(this.props.content[0].LINK)
+          }
+        >
           {this.props.content[0].NAME}
           <SubHeader>
             Display failed build from most recent up to the last successful

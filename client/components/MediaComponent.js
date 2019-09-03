@@ -164,7 +164,11 @@ class MediaEdit extends React.Component {
   render() {
     return (
       <div style={{ display: "inline-block", position: "absolute", right: 0 }}>
-        {this.props.edit ? <Edit onClick={this.handleClickOpen.bind(this)}/> : undefined }
+        {this.props.edit ? (
+          <Edit onClick={this.handleClickOpen.bind(this)} />
+        ) : (
+          undefined
+        )}
         <Dialog
           onClose={this.handleClose.bind(this)}
           aria-labelledby="edit-media-dialog"
@@ -373,7 +377,7 @@ class MediaComponent extends React.Component {
     if (this.state.numCards <= 0) {
       return (
         <>
-          <BoxHeader style={{width:"100%"}}>
+          <BoxHeader style={{ width: "100%" }}>
             Company Media
             <MediaEdit
               media={this.state.carousel}
@@ -382,14 +386,14 @@ class MediaComponent extends React.Component {
               edit={this.props.edit}
             />
           </BoxHeader>
-          </>
+        </>
       );
     } else {
       let card = this.state.carousel[this.state.displayIndex];
 
       return (
         <>
-          <BoxHeader style={{width:"100%"}}>
+          <BoxHeader style={{ width: "100%" }}>
             Company Media
             <MediaEdit
               media={this.state.carousel}
@@ -449,7 +453,7 @@ class MediaComponent extends React.Component {
               </Button>
             }
           />
-         </>
+        </>
       );
     }
   }

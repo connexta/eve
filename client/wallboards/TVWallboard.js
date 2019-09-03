@@ -52,7 +52,7 @@ const StyleSlack = {
 
 const StyleGithub = {
   width: `calc(100% - 30px)`,
-  height:`${GITHUB_HEIGHT}px`,
+  height: `${GITHUB_HEIGHT}px`,
   margin: `20px 20px 20px 10px`
 };
 
@@ -91,16 +91,8 @@ class TVWallboard extends React.Component {
             direction="row"
             style={{ height: "calc(100% - 260px)" }}
           >
-              <MediaComponent 
-              style={StyleMedia}
-              wallboard={"tv"} 
-              disableEffect
-              />
-              <EventComponent 
-                style={StyleEvent}
-                wallboard={"tv"}
-                disableEffect
-                />
+            <MediaComponent style={StyleMedia} wallboard={"tv"} disableEffect />
+            <EventComponent style={StyleEvent} wallboard={"tv"} disableEffect />
           </Grid>
         </LeftBox>
         <RightBox item>
@@ -108,11 +100,8 @@ class TVWallboard extends React.Component {
             style={StyleSlack}
             type={["CHANNEL"]}
             name="SlackComponent"
-          />  
-          <Github 
-            style={StyleGithub}
-            type={["REPOPATH"]} 
-            name="Github" />
+          />
+          <Github style={StyleGithub} type={["REPOPATH"]} name="Github" />
         </RightBox>
       </Grid>
     );

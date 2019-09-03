@@ -17,7 +17,7 @@ class Banner extends React.Component {
   render() {
     return (
       <>
-        <Link to={"/"} style={this.props.edit ? { pointerEvents: 'none' } : {}} >
+        <Link to={"/"} style={this.props.edit ? { pointerEvents: "none" } : {}}>
           <Logo />
         </Link>
 

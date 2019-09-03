@@ -374,18 +374,18 @@ class EventComponent extends React.Component {
       <>
         <Header>
           Company Events
-          {this.props.edit ? 
+          {this.props.edit ? (
             <ButtonContainer>
-            <LogInOut
-              isAuthenticated={this.state.isAuthenticated}
-              logIn={this.login.bind(this)}
-              logOut={this.logout.bind(this)}
-            />
-            {calButton}
-          </ButtonContainer>
-          :
-          undefined
-          }
+              <LogInOut
+                isAuthenticated={this.state.isAuthenticated}
+                logIn={this.login.bind(this)}
+                logOut={this.logout.bind(this)}
+              />
+              {calButton}
+            </ButtonContainer>
+          ) : (
+            undefined
+          )}
         </Header>
         {this.state.events.length <= 0 ? (
           this.noEventMessage()
@@ -421,7 +421,7 @@ class EventComponent extends React.Component {
             <Divider />
           </EventContainer>
         )}
-        </>
+      </>
     );
   }
 }

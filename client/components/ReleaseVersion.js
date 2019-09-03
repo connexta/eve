@@ -114,23 +114,23 @@ class ReleaseVersion extends React.Component {
       // <BoxStyle raised={true}>
       <>
         <BoxHeader>Version Numbers</BoxHeader>
-        {this.props.edit ?
+        {this.props.edit ? (
           <IconBox>
-          {this.state.isEditing ? (
-            <span>
-              <Edit />
-              <Save onClick={() => this.save()} />
-            </span>
-          ) : (
-            <span>
-              <Edit onClick={() => this.setState({ isEditing: true })} />
-              <Save />
-            </span>
-          )}
-        </IconBox>
-        :
-        undefined
-        }
+            {this.state.isEditing ? (
+              <span>
+                <Edit />
+                <Save onClick={() => this.save()} />
+              </span>
+            ) : (
+              <span>
+                <Edit onClick={() => this.setState({ isEditing: true })} />
+                <Save />
+              </span>
+            )}
+          </IconBox>
+        ) : (
+          undefined
+        )}
 
         <VersionCardContent>
           {this.state.versions == null ? (

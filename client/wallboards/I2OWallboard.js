@@ -37,7 +37,6 @@ const StyleGithub = {
   margin: `20px 20px 20px 10px`
 };
 
-
 class I2OWallboard extends React.Component {
   constructor(props) {
     super(props);
@@ -48,7 +47,7 @@ class I2OWallboard extends React.Component {
 
   async componentDidMount() {
     await this.props.updateCurrentWallboard("I2O");
-    this.setState({ isLoading: false })
+    this.setState({ isLoading: false });
   }
 
   componentWillUnmount() {
@@ -61,33 +60,29 @@ class I2OWallboard extends React.Component {
       <></>
     ) : (
       <Grid container style={{ height: "100%" }} direction={"row"} spacing={0}>
-          <TeamBuildStatus
-            style={StyleBuildStatus}
-            type={["URL", "NAME"]}
-            rootURL={IONURL}
-            teamName="ION"
-            name="BuildStatus"
-            listvert
-            disable
-          />
-        <EventComponent 
-          style={StyleEvent}
-          wallboard={"I2O"}
-          disableEffect
-          />
-          <RightBox item>
+        <TeamBuildStatus
+          style={StyleBuildStatus}
+          type={["URL", "NAME"]}
+          rootURL={IONURL}
+          teamName="ION"
+          name="BuildStatus"
+          listvert
+          disable
+        />
+        <EventComponent style={StyleEvent} wallboard={"I2O"} disableEffect />
+        <RightBox item>
           <SlackComponent
             style={StyleSlack}
             type={["CHANNEL"]}
             name="SlackComponent"
             default={SLACK_REPLICATION_CHANNEL}
-          />  
-          <Github 
+          />
+          <Github
             style={StyleGithub}
-            type={["REPOPATH"]} 
-            name="Github" 
+            type={["REPOPATH"]}
+            name="Github"
             default={"connexta/replication"}
-            />
+          />
         </RightBox>
       </Grid>
     );

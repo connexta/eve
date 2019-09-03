@@ -7,9 +7,9 @@ import { CX_LIGHT_BLUE } from "../utils/Constants";
 import { Card } from "@material-ui/core";
 
 const GrafanaContainer = styled.div`
-  width: ${props => props.style ? props.style.width : undefined};
-  height: ${props => props.style ? props.style.height : undefined};
-  margin: ${props => props.style ? props.style.margin : undefined};
+  width: ${props => (props.style ? props.style.width : undefined)};
+  height: ${props => (props.style ? props.style.height : undefined)};
+  margin: ${props => (props.style ? props.style.margin : undefined)};
 `;
 
 const StyleCard = styled(Card)`
@@ -115,22 +115,21 @@ export default class Grafana extends React.Component {
   }
 
   displayContent() {
-    return (
-      this.state.isLoading ? 
+    return this.state.isLoading ? (
       <DotLoaderContainer>
         <DotLoader color={CX_LIGHT_BLUE} loading={this.state.isLoading} />
       </DotLoaderContainer>
-       : 
-       <StyleCard raised={true}>
-       <StyleImg
-         src={this.state.imageURL}
-         alt="Grafana Screenshot"
-         onClick={() => {
-           window.open(this.props.url);
-         }}
-       />
-     </StyleCard>
-    )
+    ) : (
+      <StyleCard raised={true}>
+        <StyleImg
+          src={this.state.imageURL}
+          alt="Grafana Screenshot"
+          onClick={() => {
+            window.open(this.props.url);
+          }}
+        />
+      </StyleCard>
+    );
   }
 
   render() {
@@ -138,6 +137,6 @@ export default class Grafana extends React.Component {
       <GrafanaContainer style={this.props.style}>
         {this.displayContent()}
       </GrafanaContainer>
-    )
+    );
   }
 }

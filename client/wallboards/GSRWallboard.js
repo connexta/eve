@@ -19,37 +19,37 @@ const StyleBuildStatus = {
   height: `160px`,
   width: `calc(50% - 30px)`,
   margin: `20px 10px 10px 20px`
-}
+};
 
 const StyleRelease = {
   height: `160px`,
   width: `calc(50% - 30px)`,
   margin: `20px 0px 10px 10px`
-}
+};
 
 const StyleMedia = {
   height: `100%`,
   width: `calc(50% - 30px)`,
   margin: `10px 10px 20px 20px`
-}
+};
 
 const StyleEvent = {
   height: `100%`,
   width: `calc(50% - 30px)`,
   margin: `10px 10px 20px 10px`
-}
+};
 
 const StyleSlack = {
   margin: `20px 20px 0px 0px`,
   width: `calc(100% - 20px)`,
   height: `calc(100% - ${GITHUB_HEIGHT}px - ${DEV_SPACE}px - 40px)`
-}
+};
 
 const StyleGithub = {
   margin: `20px 20px 20px 0px`,
   width: `calc(100% - 20px)`,
   height: `${GITHUB_HEIGHT}px`
-}
+};
 
 class GSRWallboard extends React.Component {
   constructor(props) {
@@ -70,55 +70,54 @@ class GSRWallboard extends React.Component {
   }
 
   render() {
-    return this.state.isLoading ? <></> : 
+    return this.state.isLoading ? (
+      <></>
+    ) : (
       <Grid container style={{ height: "100%" }}>
         <LeftBox>
           <Grid container direction="row">
-          <BuildStatus
-            style={StyleBuildStatus}
-            type={["URL", "NAME"]}
-            row={3}
-            name="BuildStatus"
-            default={GSRUrlList}
-          />
-            <ReleaseVersion 
-            style={StyleRelease}
-            disableEffect
+            <BuildStatus
+              style={StyleBuildStatus}
+              type={["URL", "NAME"]}
+              row={3}
+              name="BuildStatus"
+              default={GSRUrlList}
             />
+            <ReleaseVersion style={StyleRelease} disableEffect />
           </Grid>
           <Grid
             container
             direction="row"
             style={{ height: "calc(100% - 260px)" }}
           >
-              <MediaComponent 
+            <MediaComponent
               style={StyleMedia}
-              wallboard={"gsr"} 
+              wallboard={"gsr"}
               disableEffect
-              />
-              <EventComponent 
-                style={StyleEvent}
-                wallboard={"gsr"}
-                disableEffect
-                />
+            />
+            <EventComponent
+              style={StyleEvent}
+              wallboard={"gsr"}
+              disableEffect
+            />
           </Grid>
         </LeftBox>
         <RightBox item>
-        <SlackComponent
+          <SlackComponent
             style={StyleSlack}
             type={["CHANNEL"]}
             name="SlackComponent"
             default={SLACK_GSR_DEV_CHANNEL}
           />
-          <Github 
+          <Github
             style={StyleGithub}
-            type={["REPOPATH"]} 
-            name="Github" 
+            type={["REPOPATH"]}
+            name="Github"
             default="connexta/gsr-yorktown"
-            />
+          />
         </RightBox>
       </Grid>
-    ;
+    );
   }
 }
 

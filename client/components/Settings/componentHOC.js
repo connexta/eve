@@ -24,15 +24,17 @@ import { time } from "../../utils/TimeUtils";
 
 const componentHOC = WrappedComponent => {
   const ComponentWrapper = styled(BoxStyle)`
-    width: ${props => props.style ? props.style.width : undefined};
-    height: ${props => props.style ? props.style.height : undefined};
-    margin: ${props => props.style ? props.style.margin : undefined};
+    width: ${props => (props.style ? props.style.width : undefined)};
+    height: ${props => (props.style ? props.style.height : undefined)};
+    margin: ${props => (props.style ? props.style.margin : undefined)};
     position: relative;
     transition: outline 0.6s linear;
     -webkit-transition: outline 0.6s linear;
     cursor: ${props => props.edit && props.outline && css`pointer`};
     outline: ${props =>
-      props.edit && props.outline ? css`10px solid ${CX_DARK_BLUE}` : css`0px solid`};
+      props.edit && props.outline
+        ? css`10px solid ${CX_DARK_BLUE}`
+        : css`0px solid`};
   `;
 
   const BannerWrapper = styled.div`
@@ -77,10 +79,7 @@ const componentHOC = WrappedComponent => {
     }
 
     async componentDidMount() {
-      await this.initialUpdateContent(
-        this.props.name,
-        this.state.default
-      );
+      await this.initialUpdateContent(this.props.name, this.state.default);
       this.setState({ isLoading: false });
     }
 
@@ -183,15 +182,16 @@ const componentHOC = WrappedComponent => {
     }
 
     //if it's Banner, always Post it to HOME since Getting Banner data always come from HOME
-    bannerPost(isBanner){
-        let curWallboard = isBanner ? "HOME" : this.props.currentWallboard;
-        return "/theme?wallboard=" + curWallboard + "&component=" + this.props.name;
+    bannerPost(isBanner) {
+      let curWallboard = isBanner ? "HOME" : this.props.currentWallboard;
+      return (
+        "/theme?wallboard=" + curWallboard + "&component=" + this.props.name
+      );
     }
 
     postData() {
       let dataToUpdate = this.state.content;
-      fetch(this.bannerPost(this.props.name === "Banner"),
-      {
+      fetch(this.bannerPost(this.props.name === "Banner"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: dataToUpdate })
@@ -299,8 +299,10 @@ const componentHOC = WrappedComponent => {
       let message = this.state.metSaveRequirement
         ? "Successfully updated the component."
         : "Failed: Please provide correct input.";
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(()=>{this.setState({ resultsOpen:false })}, time({seconds:2}));
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        this.setState({ resultsOpen: false });
+      }, time({ seconds: 2 }));
       return (
         <Dialog
           onClose={() => {
@@ -335,9 +337,13 @@ const componentHOC = WrappedComponent => {
     displayComponent() {
       return (
         <ComponentWrapper
-         style={this.props.style}
+          style={this.props.style}
           edit={this.state.edit ? "true" : undefined}
-          onClick={this.state.edit && !this.props.disableEffect ? this.handleClick.bind(this) : undefined}
+          onClick={
+            this.state.edit && !this.props.disableEffect
+              ? this.handleClick.bind(this)
+              : undefined
+          }
           key={this.state.key}
           raised={true}
           outline={!this.props.disableEffect ? "true" : undefined}
@@ -348,7 +354,7 @@ const componentHOC = WrappedComponent => {
     }
 
     displayBanner() {
-    let editable = this.state.edit;
+      let editable = this.state.edit;
       return (
         <BannerWrapper
           edit={editable ? "true" : undefined}

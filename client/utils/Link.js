@@ -40,8 +40,16 @@ export const jenkinsURLList = [
 
 export const GSRUrlList = [
   { NAME: "master", URL: GSRURL },
-  { NAME: "11.x", URL: "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/11.x/" },
-  { NAME: "13.x", URL: "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/13.x/" }
+  {
+    NAME: "11.x",
+    URL:
+      "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/11.x/"
+  },
+  {
+    NAME: "13.x",
+    URL:
+      "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/13.x/"
+  }
 ];
 
 /*AF team*/

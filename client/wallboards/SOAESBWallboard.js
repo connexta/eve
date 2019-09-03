@@ -52,23 +52,19 @@ class SOAESBWallboard extends React.Component {
     ) : (
       <Grid container style={{ height: "100%" }} spacing={0}>
         <LeftBox item>
-            <Grafana 
-              style={StyleGrafana}
-              name={"SOAESB"} 
-              url={SOAESB_GRAFANA_URL}
-              />
+          <Grafana
+            style={StyleGrafana}
+            name={"SOAESB"}
+            url={SOAESB_GRAFANA_URL}
+          />
         </LeftBox>
         <RightBox item>
-          <BuildAF 
+          <BuildAF
             style={StyleBuildStatus}
-            type={["LINK", "URL", "NAME"]} 
-            name="BuildAF" 
-            />
-          <Github
-            style={StyleGithub}
-            type={["REPOPATH"]}
-            name="Github"
-            />
+            type={["LINK", "URL", "NAME"]}
+            name="BuildAF"
+          />
+          <Github style={StyleGithub} type={["REPOPATH"]} name="Github" />
         </RightBox>
       </Grid>
     );

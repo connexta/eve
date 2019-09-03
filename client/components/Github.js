@@ -115,7 +115,9 @@ function Statuses(props) {
         <ListItem
           key={i}
           disableGutters={true}
-          onClick={() => this.props.edit ? undefined : window.open(props.statuses[i].link)}
+          onClick={() =>
+            this.props.edit ? undefined : window.open(props.statuses[i].link)
+          }
         >
           <ListItemIcon key={i}>{icon}</ListItemIcon>
           <LinkText>
@@ -135,7 +137,7 @@ function Statuses(props) {
       <ListItem
         disableGutters={true}
         key={NUM_STATUSES}
-        onClick={() => this.props.edit ? undefined : window.open(props.url)}
+        onClick={() => (this.props.edit ? undefined : window.open(props.url))}
       >
         + {props.statuses.length - (NUM_STATUSES - 1)} statuses not shown
       </ListItem>
@@ -341,7 +343,11 @@ class Github extends React.Component {
         <>
           <Header>{this.state.name} Pull Requests</Header>
           <CardContent>
-            <MainAndSubline onClick={() => this.props.edit ? undefined : window.open(pr.url)}>
+            <MainAndSubline
+              onClick={() =>
+                this.props.edit ? undefined : window.open(pr.url)
+              }
+            >
               <PRTitle>
                 <PRNumber>{" #" + pr.number}</PRNumber> {pr.title}
               </PRTitle>
