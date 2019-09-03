@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import { TextField } from "@material-ui/core";
 import {
-  BoxStyle,
   BoxHeader,
   FlexRowCardContent,
   FlexRowSubHeading
 } from "../styles/styles";
 import { Edit, Save } from "@material-ui/icons";
 import makeTrashable from "trashable";
+import componentHOC from "./Settings/componentHOC";
 
 const VersionCardContent = styled(FlexRowCardContent)`
   flex-direction: row;
@@ -34,7 +34,7 @@ const IconBox = styled.div`
   margin-top: 8px;
 `;
 
-export default class ReleaseVersion extends React.Component {
+class ReleaseVersion extends React.Component {
   constructor(props) {
     super(props);
 
@@ -111,21 +111,26 @@ export default class ReleaseVersion extends React.Component {
 
   render() {
     return (
-      <BoxStyle raised={true}>
+      <>
         <BoxHeader>Version Numbers</BoxHeader>
-        <IconBox>
-          {this.state.isEditing ? (
-            <span>
-              <Edit />
-              <Save onClick={() => this.save()} />
-            </span>
-          ) : (
-            <span>
-              <Edit onClick={() => this.setState({ isEditing: true })} />
-              <Save />
-            </span>
-          )}
-        </IconBox>
+        {this.props.edit ? (
+          <IconBox>
+            {this.state.isEditing ? (
+              <span>
+                <Edit />
+                <Save onClick={() => this.save()} />
+              </span>
+            ) : (
+              <span>
+                <Edit onClick={() => this.setState({ isEditing: true })} />
+                <Save />
+              </span>
+            )}
+          </IconBox>
+        ) : (
+          undefined
+        )}
+
         <VersionCardContent>
           {this.state.versions == null ? (
             <VersionStyledDate>Data failed to load</VersionStyledDate>
@@ -157,7 +162,10 @@ export default class ReleaseVersion extends React.Component {
             })
           )}
         </VersionCardContent>
-      </BoxStyle>
+      </>
     );
   }
 }
+
+const WrappedComponent = componentHOC(ReleaseVersion);
+export default WrappedComponent;

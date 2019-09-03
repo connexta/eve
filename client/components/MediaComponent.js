@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BoxStyle, BoxHeader } from "../styles/styles";
+import { BoxHeader } from "../styles/styles";
 import { time } from "../utils/TimeUtils";
 import {
   MobileStepper,
@@ -24,16 +24,13 @@ import {
   Save
 } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
+import componentHOC from "./Settings/componentHOC";
 
 const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 export const MEDIA_CARD_MARGINS = 20;
 const SIZE_LIMIT = 20 * Math.pow(10, 6); // max size of images in bytes
 const FETCH_FREQ = time({ minutes: 1 });
-
-export const MediaCard = styled(BoxStyle)`
-  position: relative;
-`;
 
 export const CarouselContent = styled.div`
   text-align: center;
@@ -166,8 +163,12 @@ class MediaEdit extends React.Component {
 
   render() {
     return (
-      <div style={{ display: "inline-block", position: "absolute", right: 20 }}>
-        <Edit onClick={this.handleClickOpen.bind(this)} />
+      <div style={{ display: "inline-block", position: "absolute", right: 0 }}>
+        {this.props.edit ? (
+          <Edit onClick={this.handleClickOpen.bind(this)} />
+        ) : (
+          undefined
+        )}
         <Dialog
           onClose={this.handleClose.bind(this)}
           aria-labelledby="edit-media-dialog"
@@ -263,7 +264,7 @@ class MediaEdit extends React.Component {
 ///////////////////////////////////
 ///////////////////////////////////
 
-export default class MediaComponent extends React.Component {
+class MediaComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -375,28 +376,30 @@ export default class MediaComponent extends React.Component {
   render() {
     if (this.state.numCards <= 0) {
       return (
-        <MediaCard raised={true}>
-          <BoxHeader>
+        <>
+          <BoxHeader style={{ width: "100%" }}>
             Company Media
             <MediaEdit
               media={this.state.carousel}
               remove={this.removeMedia.bind(this)}
               addMedia={this.addMedia.bind(this)}
+              edit={this.props.edit}
             />
           </BoxHeader>
-        </MediaCard>
+        </>
       );
     } else {
       let card = this.state.carousel[this.state.displayIndex];
 
       return (
-        <MediaCard raised={true}>
-          <BoxHeader>
+        <>
+          <BoxHeader style={{ width: "100%" }}>
             Company Media
             <MediaEdit
               media={this.state.carousel}
               remove={this.removeMedia.bind(this)}
               addMedia={this.addMedia.bind(this)}
+              edit={this.props.edit}
             />
           </BoxHeader>
           {card.link == null ? (
@@ -450,8 +453,11 @@ export default class MediaComponent extends React.Component {
               </Button>
             }
           />
-        </MediaCard>
+        </>
       );
     }
   }
 }
+
+const WrappedComponent = componentHOC(MediaComponent);
+export default WrappedComponent;

@@ -3,10 +3,11 @@ import styled from "styled-components";
 import { CX_DARK_BLUE } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
-import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+import { BoxHeader } from "../styles/styles";
 import makeTrashable from "trashable";
 import { hour, getRelativeTime, time } from "../utils/TimeUtils";
 import Button from "@material-ui/core/Button";
+import componentHOC from "./Settings/componentHOC";
 
 const TOGGLE_INTERVAL = time({ seconds: 10 });
 
@@ -86,29 +87,32 @@ class BuildStatus extends React.Component {
   //overallData: temporary array to collect each team status before pushing to setState: data
   //update data for displayName, score, last build time.
   async refreshBuildStatus() {
-    let overallData = [];
-    this.trashableRequestList = [];
-    for (let index in this.props.urlList) {
-      this.trashableRequestList.push(
-        makeTrashable(this.fetchData(Object.values(this.props.urlList[index])))
-      );
+    try {
+      let overallData = [];
+      this.trashableRequestList = [];
+      for (let index in this.props.content) {
+        this.trashableRequestList.push(
+          makeTrashable(this.fetchData(this.props.content[index].URL))
+        );
+      }
+      //fetch and update jenkins information for all team
+      await Promise.all(this.trashableRequestList)
+        .then(linklist => {
+          for (let index = 0; index < linklist.length; index++) {
+            this.updateData(
+              linklist[index],
+              overallData,
+              this.props.content[index].NAME,
+              index
+            );
+          }
+        })
+        .catch(e => console.log("error", e));
+      //push all collected data to data state, and make it ready to display.
+      this.setState({ currentData: overallData, isLoading: false });
+    } catch (error) {
+      console.log("Unable to refresh Build status ", error);
     }
-    //fetch and update jenkins information for all team
-    await Promise.all(this.trashableRequestList)
-      .then(linklist => {
-        for (let index = 0; index < linklist.length; index++) {
-          console.log(linklist[index]);
-          this.updateData(
-            linklist[index],
-            overallData,
-            Object.keys(this.props.urlList[index]),
-            index
-          );
-        }
-      })
-      .catch(e => console.log("error", e));
-    //push all collected data to data state, and make it ready to display.
-    this.setState({ currentData: overallData, isLoading: false });
   }
 
   toggle() {
@@ -136,13 +140,23 @@ class BuildStatus extends React.Component {
   //  name: processed name to be displayed on the wallboard
   //  index: used to assign for each build information in the array
   updateData(item, overallData, name, index) {
-    overallData[index] = {
-      displayName: name,
-      oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
-      fiveScore: item.weatherScore,
-      oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
-      fiveSubtitle: this.getFiveSubtitle(item)
-    };
+    if (item) {
+      overallData[index] = {
+        displayName: name,
+        oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
+        fiveScore: item.weatherScore,
+        oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
+        fiveSubtitle: this.getFiveSubtitle(item)
+      };
+    } else {
+      overallData[index] = {
+        displayName: name ? "INVALID" : name,
+        oneScore: 0,
+        fiveScore: 0,
+        oneSubtitle: "INVALID",
+        fiveSubtitle: "INVALID"
+      };
+    }
   }
 
   //get last five builds subtitles based on the number of weatherscore and number of total builds
@@ -167,22 +181,22 @@ class BuildStatus extends React.Component {
   //else, list of last 5 builds
   getBuildDisplay() {
     const display = this.state.toggle
-      ? this.state.currentData.map(item => {
+      ? this.state.currentData.map((item, index) => {
           return (
             <BuildIcon
               score={item.oneScore}
               name={item.displayName}
-              key={item.displayName + item.oneSubtitle}
+              key={Date.now() + index + "A" + item.oneSubtitle}
               subtitle={item.oneSubtitle}
             />
           );
         })
-      : this.state.currentData.map(item => {
+      : this.state.currentData.map((item, index) => {
           return (
             <BuildIcon
               score={item.fiveScore}
               name={item.displayName}
-              key={item.displayName + item.fiveSubtitle}
+              key={Date.now() + index + "B" + item.fiveSubtitle}
               subtitle={item.fiveSubtitle}
             />
           );
@@ -214,19 +228,20 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <BoxStyle raised={true}>
+      <>
         <BoxHeader>Loading Build Health. . .</BoxHeader>
-      </BoxStyle>
+      </>
     ) : (
-      <BoxStyle raised={true}>
+      <>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
         <StyledCardContent listvert={this.props.listvert}>
           {this.getBuildDisplay()}
         </StyledCardContent>
-      </BoxStyle>
+      </>
     );
   }
 }
 
-export default BuildStatus;
+const WrappedComponent = componentHOC(BuildStatus);
+export default WrappedComponent;

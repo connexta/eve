@@ -3,12 +3,11 @@ import styled from "styled-components";
 import { BATMAN_GRAY } from "../utils/Constants.js";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
-import { AFJenkinLink, AFURL, AFpipeline } from "../utils/Link.js";
-import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+import { BoxHeader } from "../styles/styles";
 import makeTrashable from "trashable";
+import componentHOC from "./Settings/componentHOC";
 import GoodState from "@material-ui/icons/CheckCircleOutline";
 import BadState from "@material-ui/icons/HighlightOff";
-import { withStyles } from "@material-ui/core/styles";
 
 const StyledHeader = styled(BoxHeader)`
   cursor: pointer;
@@ -65,7 +64,9 @@ class BuildAF extends React.Component {
 
   //fetch
   async updateBuildStatus() {
-    this.trashableFetchPromise = makeTrashable(fetch(AFURL + "runs/"));
+    this.trashableFetchPromise = makeTrashable(
+      fetch(this.props.content[0].URL + "runs/")
+    );
 
     await this.trashableFetchPromise
       .then(response => response.json())
@@ -116,21 +117,13 @@ class BuildAF extends React.Component {
     );
   }
 
-  //@return:
-  //  display list of build contents (builder [data.causes], build start time, build result, build description)
-  displayListContents(data, index) {
+  displayItems(data, index) {
     const description = data.description
       ? data.description
       : "build title not provided";
 
     return (
-      <ListItem
-        disableGutters={true}
-        key={index}
-        button
-        component="a"
-        href={AFJenkinLink + data.id}
-      >
+      <>
         <StyleListItemIcon>
           {data.result === "SUCCESS" ? (
             <GoodState
@@ -162,6 +155,26 @@ class BuildAF extends React.Component {
               this.formatCauses(data.causes)}
           </Subline>
         </div>
+      </>
+    );
+  }
+
+  //@return:
+  //  display list of build contents (builder [data.causes], build start time, build result, build description)
+  displayListContents(data, index) {
+    return this.props.edit ? (
+      <ListItem disableGutters={true} key={index}>
+        {this.displayItems(data, index)}
+      </ListItem>
+    ) : (
+      <ListItem
+        disableGutters={true}
+        key={index}
+        button
+        component="a"
+        href={this.props.content[0].LINK + data.id}
+      >
+        {this.displayItems(data, index)}
       </ListItem>
     );
   }
@@ -213,20 +226,27 @@ class BuildAF extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <BoxStyle raised={true}>Loading AF Builds. . .</BoxStyle>
+      <span>Loading AF Builds. . .</span>
     ) : (
-      <BoxStyle raised={true}>
-        <StyledHeader onClick={() => window.open(AFJenkinLink)}>
-          {AFpipeline}
+      <span>
+        <StyledHeader
+          onClick={() =>
+            this.props.edit
+              ? undefined
+              : window.open(this.props.content[0].LINK)
+          }
+        >
+          {this.props.content[0].NAME}
           <SubHeader>
             Display failed build from most recent up to the last successful
             build
           </SubHeader>
         </StyledHeader>
         {this.getListContents(4, 2)}
-      </BoxStyle>
+      </span>
     );
   }
 }
 
-export default BuildAF;
+const WrappedComponent = componentHOC(BuildAF);
+export default WrappedComponent;

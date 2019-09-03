@@ -8,17 +8,17 @@ export default class TeamBuildStatus extends React.Component {
     super(props);
 
     this.state = {
-      urlList: localStorage.getItem(this.props.name)
-        ? JSON.parse(localStorage.getItem(this.props.name))
-        : [], //format of array with object {<Name of Pipeline>: <master URL>}
+      urlList: localStorage.getItem(this.props.teamName)
+        ? JSON.parse(localStorage.getItem(this.props.teamName))
+        : [],
       isLoading: true
     };
   }
 
   componentDidMount() {
-    localStorage.getItem(this.props.name)
+    localStorage.getItem(this.props.teamName)
       ? this.setState({ isLoading: false })
-      : this.createJenkinsURLList(this.props.url);
+      : this.createJenkinsURLList(this.props.rootURL);
     this.getPipelineId = setInterval(() => this.createJenkinsURLList(), hour);
   }
 
@@ -35,13 +35,11 @@ export default class TeamBuildStatus extends React.Component {
   async createJenkinsURLList(url) {
     let urlList = [];
     this.trashableBranchExists = [];
-
     //get existing pipelines in ION team
     this.trashablePipeline = makeTrashable(
-      fetch(url)
+      fetch("/fetch/?type=JSON&url=" + url)
         .then(response => response.json())
         .then(json => {
-          console.log("Pipleline URL:", json);
           return json.pipelineFolderNames;
         })
         .then(pipelineFolderNames => {
@@ -59,7 +57,7 @@ export default class TeamBuildStatus extends React.Component {
     //For each existing pipelines, obtain the url if it has master branch
     for (let i = 0; i < pipelineNameList.length; i++) {
       this.trashableBranchExists[i] = makeTrashable(
-        fetch(Object.values(pipelineNameList[i]))
+        fetch("/fetch/?type=JSON&url=" + Object.values(pipelineNameList[i]))
           .then(response => response.json())
           .catch(e => console.log("error fetching the i2o pipelines", e))
       );
@@ -73,7 +71,8 @@ export default class TeamBuildStatus extends React.Component {
             let name = Object.keys(pipelineNameList[i]).toString();
             let updatedName = name.replace("ion-", ""); //remove ion- in the name if it has any.
             urlList.push({
-              [updatedName]: Object.values(pipelineNameList[i]) + "/master/"
+              NAME: updatedName,
+              URL: Object.values(pipelineNameList[i]) + "/master/"
             });
           }
         })
@@ -81,15 +80,21 @@ export default class TeamBuildStatus extends React.Component {
     }
 
     this.setState({ urlList: urlList, isLoading: false });
-    localStorage.setItem(this.props.name, JSON.stringify(urlList));
+    localStorage.setItem(this.props.teamName, JSON.stringify(urlList));
   }
 
   render() {
-    console.log("urlList: ", this.state.urlList);
-    return this.props.vertical ? (
-      <BuildStatus urlList={this.state.urlList} listvert />
-    ) : (
-      <BuildStatus urlList={this.state.urlList} />
+    return (
+      <BuildStatus
+        style={this.props.style}
+        type={this.props.type}
+        row={this.props.row}
+        name={this.props.name}
+        disable={this.props.disable}
+        disableEffect={this.props.disableEffect}
+        listvert={this.props.listvert}
+        default={this.state.urlList}
+      />
     );
   }
 }

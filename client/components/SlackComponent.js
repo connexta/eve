@@ -2,17 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import SlackCard from "./SlackCard";
 import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
-import { BoxStyle, BoxHeader } from "../styles/styles";
+import { BoxHeader } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
-import { GITHUB_HEIGHT } from "./Github";
 import makeTrashable from "trashable";
 import Collapse from "@material-ui/core/Collapse";
+import componentHOC from "./Settings/componentHOC";
 
 const TOKEN = process.env.SLACK_TOKEN;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
 
-const CardContainer = styled(BoxStyle)`
+const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -31,7 +31,7 @@ const SlackCardContainer = styled.div`
 const GradientBlock = styled.div`
   height: 15%;
   width: 100%;
-  bottom: 10px;
+  bottom: -20px; /*go down below as much as the padding*/
   background: linear-gradient(transparent, ${CX_OFF_WHITE});
   position: absolute;
   z-index: 2;
@@ -41,7 +41,7 @@ const WhiteBlock = styled.div`
   position: absolute;
   height: 12px;
   width: 100%;
-  bottom: 0px;
+  bottom: -20px;
   background: ${CX_OFF_WHITE};
   z-index: 3;
 `;
@@ -126,23 +126,12 @@ class SlackComponent extends React.Component {
       "https://slack.com/api/channels.history?token=" +
         TOKEN +
         "&channel=" +
-        this.props.channelID
+        this.props.content
     );
-    this.trashableRequestList[0] = makeTrashable(
-      fetch(
-        "https://slack.com/api/channels.history?token=" +
-          TOKEN +
-          "&channel=" +
-          this.props.channelID
-      ).catch(e => console.log("error", e))
-    );
-
+    this.trashableRequestList[0] = makeTrashable(this.fetchData(url));
     try {
-      const response = await this.trashableRequestList[0];
+      const data = await this.trashableRequestList[0];
       let messageList = [];
-      this.trashableGetJSON = makeTrashable(response.json());
-      let data = await this.trashableGetJSON;
-
       let msgCount = 0;
       data.messages.forEach(message => {
         // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)
@@ -307,17 +296,15 @@ class SlackComponent extends React.Component {
   render() {
     if (this.anyStillLoading()) {
       return (
-        <CardContainer raised={true}>
+        <CardContainer style={{ position: "unset" }}>
           <CardHeader>Loading Slack...</CardHeader>
         </CardContainer>
       );
     } else {
       return (
-        <CardContainer raised={true}>
+        <CardContainer style={{ position: "unset" }}>
           <span>
-            <CardHeader>
-              #{this.getChannelName(this.props.channelID)}
-            </CardHeader>
+            <CardHeader>#{this.getChannelName(this.props.content)}</CardHeader>
           </span>
           <GradientBlock />
           <WhiteBlock />
@@ -331,4 +318,5 @@ class SlackComponent extends React.Component {
   }
 }
 
-export default SlackComponent;
+const WrappedComponent = componentHOC(SlackComponent);
+export default WrappedComponent;

@@ -45,9 +45,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.SLACK_TOKEN": JSON.stringify(process.env.SLACK_TOKEN),
       "process.env.SLACK_CHANNEL": JSON.stringify(process.env.SLACK_CHANNEL),
-      "process.env.GITHUB_TOKEN": JSON.stringify(
-        process.env.GITHUB_TOKEN
-      )
+      "process.env.GITHUB_TOKEN": JSON.stringify(process.env.GITHUB_TOKEN)
     })
   ],
   devServer: {
