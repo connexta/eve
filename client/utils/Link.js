@@ -30,25 +30,24 @@ export const GSRPIPELINEURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/gsr/";
 
 export const jenkinsURLList = [
-  { Alliance: AllianceURL },
-  { DDF: DDFURL },
-  { DIB: DIBURL },
-  { GSR: GSRURL },
-  { SOAESB: SOAESBURL },
-  { REFLEX: REFLEXURL }
+  { NAME: "Alliance", URL: AllianceURL },
+  { NAME: "DDF", URL: DDFURL },
+  { NAME: "DIB", URL: DIBURL },
+  { NAME: "GSR", URL: GSRURL },
+  { NAME: "SOAESB", URL: SOAESBURL },
+  { NAME: "REFLEX", URL: REFLEXURL }
 ];
 
 export const GSRUrlList = [
+  { NAME: "master", URL: GSRURL },
   {
-    master:
-      "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/master/"
-  },
-  {
-    "11.x":
+    NAME: "11.x",
+    URL:
       "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/11.x/"
   },
   {
-    "13.x":
+    NAME: "13.x",
+    URL:
       "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/13.x/"
   }
 ];

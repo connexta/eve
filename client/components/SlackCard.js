@@ -291,16 +291,23 @@ class SlackCard extends React.Component {
   getIcon(index) {
     let message = this.props.messages[index];
 
-    // check if author is bot or unknown
-    let author =
-      message.attachments == undefined
-        ? this.userIdToName(message.user)
-        : message.attachments[0].author_name;
+    let author;
+    let avatar;
+    if (message != undefined) {
+      // check if author is bot or unknown
+      author =
+        message.attachments == undefined
+          ? this.userIdToName(message.user)
+          : message.attachments[0].author_name;
 
-    let avatar =
-      message.attachments == undefined
-        ? this.userIdToAvatar(message.user)
-        : message.attachments[0].author_icon;
+      avatar =
+        message.attachments == undefined
+          ? this.userIdToAvatar(message.user)
+          : message.attachments[0].author_icon;
+    } else {
+      author = undefined;
+      avatar = undefined;
+    }
 
     return author != undefined ? avatar : square_logo;
   }

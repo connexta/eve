@@ -25,6 +25,7 @@ export const BoxHeader = styled.div`
   color: ${CX_GRAY_BLUE};
   margin-bottom: 12px;
   float: left;
+  position: relative;
 `;
 
 export const CARD_SIDE_MARGINS = 24;
