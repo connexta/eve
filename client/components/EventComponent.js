@@ -378,17 +378,19 @@ class EventComponent extends React.Component {
         <Header>
           Company Events
           <ButtonContainer>
-            <EventEdit
-              isAuthenticated={this.state.isAuthenticated}
-              logIn={this.login.bind(this)}
-              logOut={this.logout.bind(this)}
-              chosenCal={this.state.chosenCal}
-              calendars={this.state.calendars}
-              callback={this.changeState.bind(this)}
-              events={this.state.events}
-              addEvent={this.addEvent.bind(this)}
-              removeEvent={this.removeEvent.bind(this)}
-            />
+            {this.props.edit ? (
+              <EventEdit
+                isAuthenticated={this.state.isAuthenticated}
+                logIn={this.login.bind(this)}
+                logOut={this.logout.bind(this)}
+                chosenCal={this.state.chosenCal}
+                calendars={this.state.calendars}
+                callback={this.changeState.bind(this)}
+                events={this.state.events}
+                addEvent={this.addEvent.bind(this)}
+                removeEvent={this.removeEvent.bind(this)}
+              />
+            ) : null}
           </ButtonContainer>
         </Header>
         {this.state.events.length <= 0 ? (
