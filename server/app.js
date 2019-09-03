@@ -62,26 +62,42 @@ const upload = multer({
 // Reads JSON data for carousel
 app.get("/carousel", function(req, res) {
   if (fs.existsSync(mediaFile)) {
-    let content = fs.readFileSync(mediaFile);
-    res.send(JSON.parse(content));
+    let content = JSON.parse(fs.readFileSync(mediaFile));
+
+    let route = content.routes.find(item => item.route === req.query.route);
+
+    if (route == undefined) res.send({ cards: [] });
+    else res.send({ cards: route.cards });
   } else res.send({ cards: [] });
 });
 
 // Posts JSON data from carousel
 app.post("/carousel", function(req, res) {
   if (fs.existsSync(mediaFile)) {
-    let content = fs.readFileSync(mediaFile);
+    var content = JSON.parse(fs.readFileSync(mediaFile));
 
-    let cards = JSON.parse(content).cards;
+    let index;
+    let route = content.routes.find((item, i) => {
+      index = i;
+      return item.route === req.body.route;
+    });
 
-    cards.push(req.body.card);
+    if (route == undefined) {
+      content.routes.push({ route: req.body.route, cards: [req.body.card] });
+    } else {
+      route.cards.push(req.body.card);
+      content.routes[index] = route;
+    }
 
-    fs.writeFileSync(mediaFile, JSON.stringify({ cards: cards }));
+    fs.writeFileSync(mediaFile, JSON.stringify(content));
     res.end("Data sent successfully");
   } else {
-    let content = { cards: [req.body.card] };
+    let content = {
+      routes: [{ route: req.body.route, cards: [req.body.card] }]
+    };
+
     fs.writeFileSync(mediaFile, JSON.stringify(content));
-    res.end("Data send successfully!");
+    res.end("Data sent successfully!");
   }
 });
 
@@ -100,24 +116,30 @@ app.post("/upload", function(req, res) {
 //Handles deletion of images
 app.post("/remove", function(req, res) {
   if (fs.existsSync(mediaFile)) {
-    let content = fs.readFileSync(mediaFile);
+    var content = JSON.parse(fs.readFileSync(mediaFile));
 
     let removed = req.body.card;
+    let index;
 
-    let temp = JSON.parse(content).cards.filter(
-      card =>
-        !(
-          card.body == removed.body &&
-          card.title == removed.title &&
-          card.media == removed.media
-        )
-    );
+    let route = content.routes.find((item, i) => {
+      index = i;
+      return item.route === req.body.route;
+    });
 
-    fs.writeFileSync(mediaFile, JSON.stringify({ cards: temp }));
-  }
+    if (route != undefined) {
+      content.routes[index].cards = route.cards.filter(
+        card =>
+          !(
+            card.body == removed.body &&
+            card.title == removed.title &&
+            card.media == removed.media
+          )
+      );
 
-  if (fs.existsSync(mediaDir)) {
-    let media = req.body.card.media;
+      fs.writeFileSync(mediaFile, JSON.stringify(content));
+    }
+
+    let media = removed.media;
     if (media != null) {
       fs.unlink(mediaFolder + "/" + media, function(err) {
         if (err) {
@@ -138,6 +160,7 @@ app.post("/remove", function(req, res) {
 app.get("/fetch", async (req, res) => {
   const url = req.query.url;
   const type = req.query.type;
+
   try {
     const response = await fetch(url);
     switch (type) {

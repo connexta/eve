@@ -338,7 +338,7 @@ class Github extends React.Component {
         ) : null;
 
       return (
-        <span>
+        <>
           <Header>{this.state.name} Pull Requests</Header>
           <CardContent>
             <MainAndSubline onClick={() => this.props.edit ? undefined : window.open(pr.url)}>
@@ -385,7 +385,7 @@ class Github extends React.Component {
               </Button>
             }
           />
-        </span>
+        </>
       );
     }
   }

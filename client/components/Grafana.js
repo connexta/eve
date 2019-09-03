@@ -4,18 +4,33 @@ import { time, minute } from "../utils/TimeUtils";
 import throttle from "lodash.throttle";
 import { DotLoader } from "react-spinners";
 import { CX_LIGHT_BLUE } from "../utils/Constants";
+import { Card } from "@material-ui/core";
 
-const ImgContainer = styled.div`
-  padding: 24px;
-  width: 10px;
-  margin: 0px;
+const GrafanaContainer = styled.div`
+  width: ${props => props.style ? props.style.width : undefined};
+  height: ${props => props.style ? props.style.height : undefined};
+  margin: ${props => props.style ? props.style.margin : undefined};
+`;
+
+const StyleCard = styled(Card)`
+  width: 100%;
+  height: 100%;
+  padding: 0;
+`;
+
+const StyleImg = styled.img`
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
 `;
 
 const DotLoaderContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90%;
+  height: 100%;
+  width: 100%;
 `;
 
 export default class Grafana extends React.Component {
@@ -99,22 +114,30 @@ export default class Grafana extends React.Component {
     }, time({ seconds: 0.2 }));
   }
 
-  render() {
-    return this.state.isLoading ? (
+  displayContent() {
+    return (
+      this.state.isLoading ? 
       <DotLoaderContainer>
         <DotLoader color={CX_LIGHT_BLUE} loading={this.state.isLoading} />
       </DotLoaderContainer>
-    ) : (
-      <ImgContainer>
-        <a href={this.props.url}>
-          <img
-            src={this.state.imageURL}
-            width={this.state.screenWidth * 0.65}
-            height={this.state.screenHeight * 0.78}
-            alt="Grafana Screenshot"
-          />
-        </a>
-      </ImgContainer>
-    );
+       : 
+       <StyleCard raised={true}>
+       <StyleImg
+         src={this.state.imageURL}
+         alt="Grafana Screenshot"
+         onClick={() => {
+           window.open(this.props.url);
+         }}
+       />
+     </StyleCard>
+    )
+  }
+
+  render() {
+    return (
+      <GrafanaContainer style={this.props.style}>
+        {this.displayContent()}
+      </GrafanaContainer>
+    )
   }
 }

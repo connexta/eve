@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BoxStyle, BoxHeader } from "../styles/styles";
+import { BoxHeader } from "../styles/styles";
 import { time } from "../utils/TimeUtils";
 import {
   MobileStepper,
@@ -24,20 +24,13 @@ import {
   Save
 } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
-import { connect } from "react-redux";
+import componentHOC from "./Settings/componentHOC";
 
 const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
 export const MEDIA_CARD_MARGINS = 20;
 const SIZE_LIMIT = 20 * Math.pow(10, 6); // max size of images in bytes
 const FETCH_FREQ = time({ minutes: 1 });
-
-export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  margin: 0 0 0 24px;
-  height: 100%;
-  position: relative;
-`;
 
 export const CarouselContent = styled.div`
   text-align: center;
@@ -142,7 +135,7 @@ class MediaEdit extends React.Component {
       } else if (this.inputRef.current.files[0].size > SIZE_LIMIT) {
         alert("Image too large to be uploaded");
         return;
-      } else this.formRef.current.submit();
+      } else await this.formRef.current.submit();
     }
 
     if (this.state.link != null && !this.isValidLink(this.state.link)) {
@@ -164,11 +157,13 @@ class MediaEdit extends React.Component {
       media: null,
       link: null
     });
+
+    location.reload();
   }
 
   render() {
     return (
-      <div style={{ display: "inline-block", position: "absolute", right: 20 }}>
+      <div style={{ display: "inline-block", position: "absolute", right: 0 }}>
         {this.props.edit ? <Edit onClick={this.handleClickOpen.bind(this)}/> : undefined }
         <Dialog
           onClose={this.handleClose.bind(this)}
@@ -277,7 +272,7 @@ class MediaComponent extends React.Component {
 
   // get media info from backend
   async getCarousel() {
-    await fetch("/carousel", {
+    await fetch("/carousel?route=" + this.props.wallboard, {
       method: "GET"
     })
       .catch(err => console.log(err))
@@ -336,7 +331,7 @@ class MediaComponent extends React.Component {
     let card = this.state.carousel[num];
     fetch("/remove", {
       method: "POST",
-      body: JSON.stringify({ card: card }),
+      body: JSON.stringify({ route: this.props.wallboard, card: card }),
       headers: { "Content-Type": "application/json" }
     });
 
@@ -362,23 +357,23 @@ class MediaComponent extends React.Component {
     let temp = this.state.carousel;
     temp.push(media);
 
+    fetch("/carousel", {
+      method: "POST",
+      body: JSON.stringify({ route: this.props.wallboard, card: media }),
+      headers: { "Content-Type": "application/json" }
+    });
+
     this.setState({
       carousel: temp,
       numCards: this.state.numCards + 1
-    });
-
-    fetch("/carousel", {
-      method: "POST",
-      body: JSON.stringify({ card: media }),
-      headers: { "Content-Type": "application/json" }
     });
   }
 
   render() {
     if (this.state.numCards <= 0) {
       return (
-        <MediaCard raised={true}>
-          <BoxHeader>
+        <>
+          <BoxHeader style={{width:"100%"}}>
             Company Media
             <MediaEdit
               media={this.state.carousel}
@@ -387,14 +382,14 @@ class MediaComponent extends React.Component {
               edit={this.props.edit}
             />
           </BoxHeader>
-        </MediaCard>
+          </>
       );
     } else {
       let card = this.state.carousel[this.state.displayIndex];
 
       return (
-        <MediaCard raised={true}>
-          <BoxHeader>
+        <>
+          <BoxHeader style={{width:"100%"}}>
             Company Media
             <MediaEdit
               media={this.state.carousel}
@@ -454,16 +449,11 @@ class MediaComponent extends React.Component {
               </Button>
             }
           />
-        </MediaCard>
+         </>
       );
     }
   }
 }
 
-const mapStateToProps = state => ({
-  edit: state.edit
-})
-
-export default connect(
-  mapStateToProps
-)(MediaComponent);
+const WrappedComponent = componentHOC(MediaComponent);
+export default WrappedComponent;

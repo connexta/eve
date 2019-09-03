@@ -24,6 +24,3 @@ export const settingTheme = createMuiTheme({
     default: { main: CX_OFF_WHITE }
   }
 });
-
-// CSS values for cards
-export const TV_GITHUB_HEIGHT = 400;

@@ -16,19 +16,10 @@ const TIME_AFTER = 1; //num months after to grab events
 const NUM_EVENTS = 200; //limit on number of events to grab
 const START_HOUR = 8; // earliest hour to display in week/day view
 const END_HOUR = 18; // latest hour to display
-const WIP_MESSAGE_SPACE = 68; // Space to ensure Work in Progress Message is visible
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
-const CARD_HEIGHT_MARGINS = 36;
 
 const StyledHeader = styled(BoxHeader)`
   margin-bottom: 16px;
-`;
-
-const StyledCard = styled(BoxStyle)`
-  height: calc(
-    100% - ${CARD_HEIGHT_MARGINS}px - ${WIP_MESSAGE_SPACE}px - 157px
-  );
-  width: calc(100% - ${CARD_SIDE_MARGINS}px);
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -272,7 +263,7 @@ class CalendarCaller extends React.Component {
     maxTime.setHours(END_HOUR, 0, 0);
 
     return (
-      <StyledCard raised={true}>
+      <BoxStyle raised={true}>
         <StyledHeader>Calendar</StyledHeader>
         <ButtonContainer>
           <div className="rbc-toolbar">
@@ -297,7 +288,7 @@ class CalendarCaller extends React.Component {
           timeslots={1}
           views={["day", "work_week", "month", "agenda"]}
         />
-      </StyledCard>
+      </BoxStyle>
     );
   }
 }

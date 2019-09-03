@@ -20,6 +20,7 @@ const getListStyle = listvert => {
   flex-direction: row; \
   justify-content: space-between; \
   flex-wrap: wrap; \
+  width: calc(100% - 20px); \
     ";
   } else return ``;
 };
@@ -58,6 +59,7 @@ const ButtonSelected = styled(Button)`
 class BuildStatus extends React.Component {
   constructor(props) {
     super(props);
+
     this.toggle = this.toggle.bind(this);
     this.state = {
       currentData: [],
@@ -169,7 +171,7 @@ class BuildStatus extends React.Component {
         Math.floor(item.weatherScore / weatherScoreDivisor) +
         "/" +
         divisor.toString() +
-        " Succeeded"
+        " Built"
       );
     }
   }
@@ -226,17 +228,17 @@ class BuildStatus extends React.Component {
 
   render() {
     return this.state.isLoading ? (
-      <span>
+      <>
         <BoxHeader>Loading Build Health. . .</BoxHeader>
-      </span>
+      </>
     ) : (
-      <span>
+      <>
         <BoxHeader>Jenkins Build Health</BoxHeader>
         {this.buildButtons(this.state.toggle)}
         <StyledCardContent listvert={this.props.listvert}>
           {this.getBuildDisplay()}
         </StyledCardContent>
-      </span>
+      </>
     );
   }
 }

@@ -17,7 +17,6 @@ const CardContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   position: relative;
-  height: 100%;
 `;
 
 const CardHeader = styled(BoxHeader)`
@@ -125,14 +124,19 @@ class SlackComponent extends React.Component {
     console.log("Fetching latest slack messages...");
     const url = encodeURIComponent("https://slack.com/api/channels.history?token=" +
       TOKEN + "&channel=" + this.props.content);
-    this.trashableRequestList[0] = makeTrashable(
-      this.fetchData(url)
-    );
-
+    this.trashableRequestList[0] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[0];
       let messageList = [];
       let msgCount = 0;
+      
+      
+      // // const response = await this.trashableRequestList[0];
+      // // let messageList = [];
+      // // this.trashableGetJSON = makeTrashable(response.json());
+      // // let data = await this.trashableGetJSON;
+
+      // let msgCount = 0;
       data.messages.forEach(message => {
         // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)
         if (!message.parent_user_id && (!message.subtype || message.bot_id)) {
@@ -141,9 +145,9 @@ class SlackComponent extends React.Component {
           messageList.push(message);
         }
       });
-      this.setState({ 
-        messages: messageList, 
-        msgLoading: false 
+      this.setState({
+        messages: messageList,
+        msgLoading: false
       });
       this.setSlackMsg();
     } catch (error) {
@@ -155,9 +159,7 @@ class SlackComponent extends React.Component {
   async setUserList() {
     console.log("Fetching slack users...");
     const url = "https://slack.com/api/users.list?token=" + TOKEN;
-    this.trashableRequestList[1] = makeTrashable(
-      this.fetchData(url)
-    );
+    this.trashableRequestList[1] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[1];
       this.setState({
@@ -173,14 +175,12 @@ class SlackComponent extends React.Component {
   async setEmojiList() {
     console.log("Fetching emojis...");
     const url = "https://slack.com/api/emoji.list?token=" + TOKEN;
-    this.trashableRequestList[2] = makeTrashable(
-      this.fetchData(url)
-    );
+    this.trashableRequestList[2] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[2];
-      this.setState({ 
+      this.setState({
         emojis: data.emoji,
-        emojiLoading: false 
+        emojiLoading: false
       });
     } catch (error) {
       console.log("Failed to fetch slack emojis ", error);
@@ -190,14 +190,12 @@ class SlackComponent extends React.Component {
   async setChannels() {
     console.log("Fetching slack channels...");
     const url = "https://slack.com/api/channels.list?token=" + TOKEN;
-    this.trashableRequestList[3] = makeTrashable(
-      this.fetchData(url)
-    );
+    this.trashableRequestList[3] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[3];
-      this.setState({ 
-        channels: data.channels, 
-        chanLoading: false 
+      this.setState({
+        channels: data.channels,
+        chanLoading: false
       });
     } catch (error) {
       console.log("Failed to fetch slack channels ", error);
@@ -207,7 +205,7 @@ class SlackComponent extends React.Component {
   fetchData(URL) {
     return fetch("/fetch/?type=JSON&url=" + URL)
       .then(response => response.json())
-      .catch(e => console.log("fetch data error", e)); 
+      .catch(e => console.log("fetch data error", e));
   }
 
   getChannelName(id) {
@@ -302,13 +300,13 @@ class SlackComponent extends React.Component {
   render() {
     if (this.anyStillLoading()) {
       return (
-        <CardContainer>
+        <CardContainer style={{position:"unset"}}>
           <CardHeader>Loading Slack...</CardHeader>
         </CardContainer>
       );
     } else {
       return (
-        <CardContainer>
+        <CardContainer style={{position:"unset"}}>
           <span>
             <CardHeader>#{this.getChannelName(this.props.content)}</CardHeader>
           </span>

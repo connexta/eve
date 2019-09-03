@@ -24,13 +24,15 @@ import { time } from "../../utils/TimeUtils";
 
 const componentHOC = WrappedComponent => {
   const ComponentWrapper = styled(BoxStyle)`
-    width: ${props => props.width};
-    height: ${props => props.height};
+    width: ${props => props.style ? props.style.width : undefined};
+    height: ${props => props.style ? props.style.height : undefined};
+    margin: ${props => props.style ? props.style.margin : undefined};
+    position: relative;
     transition: outline 0.6s linear;
     -webkit-transition: outline 0.6s linear;
-    cursor: ${props => props.edit && css`pointer`};
+    cursor: ${props => props.edit && props.outline && css`pointer`};
     outline: ${props =>
-      props.edit ? css`10px solid ${CX_DARK_BLUE}` : css`0px solid`};
+      props.edit && props.outline ? css`10px solid ${CX_DARK_BLUE}` : css`0px solid`};
   `;
 
   const BannerWrapper = styled.div`
@@ -38,7 +40,7 @@ const componentHOC = WrappedComponent => {
     height: ${BANNER_HEIGHT}px;
     width: 100%;
     margin: 0px;
-    padding: 4px 40px 0 40px;
+    padding: 0px 40px 0 40px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -69,15 +71,15 @@ const componentHOC = WrappedComponent => {
         key: Date.now(),
         metSaveRequirement: false,
         isLoading: true,
-        edit: this.props.disable ? false : this.props.edit
+        edit: this.props.disable ? false : this.props.edit,
+        default: this.props.default || DefaultData[this.props.name]
       };
-    //   this.handleMultipleSave = this.handleMultipleSave.bind(this);
     }
 
     async componentDidMount() {
       await this.initialUpdateContent(
         this.props.name,
-        DefaultData[this.props.name]
+        this.state.default
       );
       this.setState({ isLoading: false });
     }
@@ -90,7 +92,6 @@ const componentHOC = WrappedComponent => {
 
     async initialUpdateContent(component, defaultData) {
       let retrieved = false;
-
       await fetch(
         "/theme?wallboard=" +
           this.props.currentWallboard +
@@ -334,12 +335,12 @@ const componentHOC = WrappedComponent => {
     displayComponent() {
       return (
         <ComponentWrapper
-          width={this.props.width}
-          height={this.props.height}
+         style={this.props.style}
           edit={this.state.edit ? "true" : undefined}
-          onClick={this.state.edit ? this.handleClick.bind(this) : undefined}
+          onClick={this.state.edit && !this.props.disableEffect ? this.handleClick.bind(this) : undefined}
           key={this.state.key}
           raised={true}
+          outline={!this.props.disableEffect ? "true" : undefined}
         >
           <WrappedComponent {...this.props} content={this.state.content} />
         </ComponentWrapper>
@@ -347,7 +348,6 @@ const componentHOC = WrappedComponent => {
     }
 
     displayBanner() {
-    //   let editable = this.state.edit && this.props.currentWallboard === "HOME";
     let editable = this.state.edit;
       return (
         <BannerWrapper

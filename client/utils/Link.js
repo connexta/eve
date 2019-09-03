@@ -26,6 +26,9 @@ const REFLEXURL =
 export const IONURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/ION/";
 
+export const GSRPIPELINEURL =
+  "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/gsr/";
+
 export const jenkinsURLList = [
   { NAME: "Alliance", URL: AllianceURL },
   { NAME: "DDF", URL: DDFURL },
@@ -33,6 +36,12 @@ export const jenkinsURLList = [
   { NAME: "GSR", URL: GSRURL },
   { NAME: "SOAESB", URL: SOAESBURL },
   { NAME: "REFLEX", URL: REFLEXURL }
+];
+
+export const GSRUrlList = [
+  { NAME: "master", URL: GSRURL },
+  { NAME: "11.x", URL: "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/11.x/" },
+  { NAME: "13.x", URL: "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/GSR/pipelines/13.x/" }
 ];
 
 /*AF team*/

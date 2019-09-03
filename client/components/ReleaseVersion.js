@@ -9,13 +9,10 @@ import {
 } from "../styles/styles";
 import { Edit, Save } from "@material-ui/icons";
 import makeTrashable from "trashable";
-
-const VersionBox = styled(BoxStyle)`
-  width: 340px;
-`;
+import componentHOC from "./Settings/componentHOC";
 
 const VersionCardContent = styled(FlexRowCardContent)`
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
 `;
 
@@ -28,7 +25,7 @@ const VersionStyledDateNoField = styled(VersionStyledDate)`
 `;
 
 const StyledTextField = styled(TextField)`
-  width: 120px;
+  width: 80px;
   margin-top: 0;
   font-size: 20px;
 `;
@@ -38,7 +35,7 @@ const IconBox = styled.div`
   margin-top: 8px;
 `;
 
-export default class ReleaseVersion extends React.Component {
+class ReleaseVersion extends React.Component {
   constructor(props) {
     super(props);
 
@@ -115,9 +112,11 @@ export default class ReleaseVersion extends React.Component {
 
   render() {
     return (
-      <VersionBox>
+      // <BoxStyle raised={true}>
+      <>
         <BoxHeader>Version Numbers</BoxHeader>
-        <IconBox>
+        {this.props.edit ?
+          <IconBox>
           {this.state.isEditing ? (
             <span>
               <Edit />
@@ -130,6 +129,10 @@ export default class ReleaseVersion extends React.Component {
             </span>
           )}
         </IconBox>
+        :
+        undefined
+        }
+
         <VersionCardContent>
           {this.state.versions == null ? (
             <VersionStyledDate>Data failed to load</VersionStyledDate>
@@ -161,7 +164,10 @@ export default class ReleaseVersion extends React.Component {
             })
           )}
         </VersionCardContent>
-      </VersionBox>
+      </>
     );
   }
 }
+
+const WrappedComponent = componentHOC(ReleaseVersion);
+export default WrappedComponent;

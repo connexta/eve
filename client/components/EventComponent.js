@@ -21,14 +21,14 @@ import {
   Divider
 } from "@material-ui/core";
 import makeTrashable from "trashable";
-import { connect } from "react-redux";
+import componentHOC from "./Settings/componentHOC";
 
-const DAYS_AFTER = 7; // how many days in the future to grab events
+const MONTHS_AFTER = 2; // how many days in the future to grab events
 const NUM_EVENTS_GRAB = 50; //limit on number of events to grab from API
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 
 const ButtonContainer = styled.div`
-  width: 300px;
+  width: 280px;
   margin-left: calc(5% - 3px); /* 3 px to accomodate rbc-btn-group margins */
   display: flex;
   flex-direction: row;
@@ -72,10 +72,7 @@ export const CarouselContent = styled.div`
   margin: 20px 0 0 0;
 `;
 
-export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  height: 100%;
-  margin: 0 0 0 24px;
+export const EventCard = styled(BoxStyle)`
   position: relative;
 `;
 
@@ -83,6 +80,7 @@ const Header = styled(BoxHeader)`
   width: 100%;
   display: flex;
   flex-direction: row;
+  position: relative;
 `;
 
 // Function to toggle between log in / log out button depending on state
@@ -164,7 +162,7 @@ class EventComponent extends React.Component {
     });
 
     let user = this.userAgentApplication.getAccount();
-    let cal = localStorage.getItem("chosenCalendar");
+    let cal = localStorage.getItem("chosenCalendar" + this.props.wallboard);
 
     this.state = {
       displayIndex: 0,
@@ -280,7 +278,7 @@ class EventComponent extends React.Component {
   // stores chosenCal in state and in cache before calling getCalendarEvents()
   async changeState(cal) {
     this.setState({ chosenCal: cal });
-    localStorage.setItem("chosenCalendar", cal);
+    localStorage.setItem("chosenCalendar" + this.props.wallboard, cal);
     this.getCalendarEvents(cal);
   }
 
@@ -299,9 +297,12 @@ class EventComponent extends React.Component {
         let startDate = new Date();
 
         let endDate = new Date();
-        let newDate = endDate.getDate() + DAYS_AFTER;
+        let newMonth = endDate.getMonth() + MONTHS_AFTER;
 
-        endDate.setDate(newDate > 32 ? newDate - 30 : newDate);
+        if (newMonth > 11) {
+          endDate.setMonth(newDate - 12);
+          endDate.setFullYear(endDate.getFullYear() + 1);
+        } else endDate.setMonth(newMonth);
 
         let call =
           "/me/calendars/" +
@@ -348,9 +349,9 @@ class EventComponent extends React.Component {
 
   noEventMessage() {
     if (!this.state.isAuthenticated) {
-      return <div>Please sign in</div>;
+      return <div>Please sign in from settings mode</div>;
     } else if (!this.state.chosenCal) {
-      return <div>Select calendar to display events</div>;
+      return <div>Select calendar to display events from settings mode</div>;
     } else if (this.state.events.length <= 0) {
       return <div>No events to display</div>;
     } else {
@@ -370,7 +371,7 @@ class EventComponent extends React.Component {
     ) : null;
 
     return (
-      <MediaCard raised={true}>
+      <>
         <Header>
           Company Events
           {this.props.edit ? 
@@ -420,15 +421,10 @@ class EventComponent extends React.Component {
             <Divider />
           </EventContainer>
         )}
-      </MediaCard>
+        </>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  edit: state.edit
-})
-
-export default connect(
-  mapStateToProps
-)(EventComponent);
+const WrappedComponent = componentHOC(EventComponent);
+export default WrappedComponent;
