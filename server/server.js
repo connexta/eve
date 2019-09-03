@@ -4,13 +4,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 const port = process.env.EVE_PORT || 3000;
 
-/* URL */
-const soaesb_url =
-  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
-const urlList = {
-  SOAESB: soaesb_url
-};
-
 /* Deploy */
 if (process.argv.length >= 2 && process.argv[2] === "https") {
   //DEV setup for HTTPS enviornment
