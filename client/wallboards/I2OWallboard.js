@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import Grid from "@material-ui/core/Grid";
 import { IONURL } from "../utils/Link";
-import EventComponent from "../components/EventComponent";
+import MediaComponent from "../components/MediaComponent";
 import Github from "../components/Github";
 import SlackComponent from "../components/SlackComponent";
 import TeamBuildStatus from "../components/TeamBuildStatus";
 
 import { RightBox } from "../styles/WallboardStyles";
-import { SLACK_REPLICATION_CHANNEL } from "../utils/Config";
+import { SLACK_WALLBOARD_CHANNEL } from "../utils/Config";
 
 const GITHUB_HEIGHT = 400;
 const DEV_SPACE = 60;
@@ -19,7 +19,7 @@ const StyleBuild = styled.div`
   margin: 20px 10px 20px 20px;
 `;
 
-const StyleEvent = styled.div`
+const StyleMedia = styled.div`
   height: calc(100% - ${DEV_SPACE}px - 20px);
   width: calc(33% - 30px);
   margin: 20px 10px 20px 10px;
@@ -44,12 +44,12 @@ export default class I2OWallboard extends React.Component {
         <StyleBuild>
           <TeamBuildStatus vertical={true} url={IONURL} name={"I2O"} />
         </StyleBuild>
-        <StyleEvent>
-          <EventComponent wallboard={"I2O"} />
-        </StyleEvent>
+        <StyleMedia>
+          <MediaComponent wallboard={"I2O"} />
+        </StyleMedia>
         <RightBox item>
           <StyleSlack>
-            <SlackComponent channelID={SLACK_REPLICATION_CHANNEL} />
+            <SlackComponent channelID={SLACK_WALLBOARD_CHANNEL} />
           </StyleSlack>
           <StyleGithub>
             <Github repoPath={"connexta/replication"} />
