@@ -88,6 +88,31 @@ Required build setup:
 - Jenkins setup: In the Jenkins service website, create multibranch pipeline project to detect github SCM repo.
 - Environment variable setup: In the Jenkins service website, Create secret text in Credentials (i.e. SLACK_TOKEN)
 
+### How to add new Wallboard & new Components
+
+#### Adding new Wallboard
+1. Create a `<wallboard>.js` in client/wallboards
+2. from Redux store, use `updateCurrentWallboard` to update the current wallboard in `componentDidMount()`
+3. from Redux store, use `updateCurrentWallboard` to update to "HOME" in `componentWillUnmount()`
+4. Create a const variable for style and pass it to any new components in the wallboard
+5. Pass appropriate props (see below) to the new components, which will be taken care of in client/Settings/componentHOC.js
+
+- For step 2 - 5, `client/wallboards/TVWallboard.js` is a good example to take a look at.
+- For possible props for components will be
+  - style : takes object with css styling
+  - type : takes array with specific name (i.e. URL, NAME, CHANNEL, REPOPATH) used to test the content and to display in the edit mode Dialog
+  - name : takes a string used as a name to store along with data in the backend\
+  - default : (optional) overrides the existing default (client/utils/DefaultData.js) (format needs to match. If in doubt, check out DefaultData.js)
+  - disable : (optional) disable any edit interaction
+  - disableEffect : (optional) disable effect of edit mode (i.e. outline expansion) but still be able to interact in edit mode
+  - listvert : (optional) specific for BuildStatus or TeamBuildStatus component to vertically display content
+
+#### Adding new Component
+1. Create a `<component>.js` in client/components with appropriate functions
+2. Wrap and export the component with componentHOC.
+
+- All the details of the card containing the component has been taken care by componentHOC.js. Specific width, height or margin should be passed as step 4 of Adding new Wallboard.
+
 ## Format Code
 Use `prettier` for code formatting through yarn. The following command will prettify .js code in all directories including subdirectories.
 ```

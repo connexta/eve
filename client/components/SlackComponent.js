@@ -129,14 +129,6 @@ class SlackComponent extends React.Component {
       const data = await this.trashableRequestList[0];
       let messageList = [];
       let msgCount = 0;
-      
-      
-      // // const response = await this.trashableRequestList[0];
-      // // let messageList = [];
-      // // this.trashableGetJSON = makeTrashable(response.json());
-      // // let data = await this.trashableGetJSON;
-
-      // let msgCount = 0;
       data.messages.forEach(message => {
         // ignore threaded msgs and non-bot subtype msgs (such as join/leave notifications)
         if (!message.parent_user_id && (!message.subtype || message.bot_id)) {
