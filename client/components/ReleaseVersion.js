@@ -111,7 +111,6 @@ class ReleaseVersion extends React.Component {
 
   render() {
     return (
-      // <BoxStyle raised={true}>
       <>
         <BoxHeader>Version Numbers</BoxHeader>
         {this.props.edit ? (
