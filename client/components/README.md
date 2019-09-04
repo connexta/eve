@@ -77,10 +77,6 @@ Once the user clicks the setting icon, the user enters an edit mode where the us
 
 Rotates through media to be displayed on the Wallboard.  Each media consists of a title, body, image, and/or link.  Images/data are stored and retrieved from the back-end nodeJS server.
 
-## MediaComponent
-
-Rotates through media to be displayed on the Wallboard.  Each media consists of a title, body, image, and/or link.  Images/data are stored and retrieved from the back-end nodeJS server.
-
 ## SlackComponent
 Displays the 10 most recent slack messages, rotating through the messages on a set interval. The slack widget is a fixed size and will only show as many messages as can fit. The component is currently not interactive in any way.
 
