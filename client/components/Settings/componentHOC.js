@@ -21,6 +21,8 @@ import Button from "@material-ui/core/Button";
 import { DefaultData } from "../../utils/DefaultData";
 import { Save, Cancel } from "@material-ui/icons";
 import { time } from "../../utils/TimeUtils";
+import ColorPicker from "./ColorPicker";
+import Dropdown from "./Dropdown";
 
 const componentHOC = WrappedComponent => {
   const ComponentWrapper = styled(BoxStyle)`
@@ -80,6 +82,24 @@ const componentHOC = WrappedComponent => {
 
     async componentDidMount() {
       await this.initialUpdateContent(this.props.name, this.state.default);
+      let jenkinsList = await fetch("/jenkinslist")
+        // {
+        //   method: "GET",
+        //   headers: { "Content-Type": "application/json" }
+        // })
+        .then(response => {
+          console.log(response);
+          return response.json();
+        })
+        .catch(err => {
+          console.log("Unable to retrieve data from backend ", err);
+        });
+        // {
+        //   method: "GET",
+        //   headers: { "Content-Type": "application/json" }
+        // });
+      console.log(jenkinsList);
+      this.setState({jenkinsList: jenkinsList});
       this.setState({ isLoading: false });
     }
 
@@ -135,6 +155,26 @@ const componentHOC = WrappedComponent => {
       this.setState({ content: temp });
     }
 
+    //this.setState({ [e.target.name]: e.target.value 
+    //handle onChange of child component ColorPicker
+    handleColorChange(color){
+      this.setState({COLOR:color.hex});
+    }
+
+    handleChannelChange(channelID){
+      this.setState({CHANNEL: channelID})
+    }
+
+    handleJenkinsChange(jenkinsSubBranch){
+      let url = JENKINSROOTURL + jenkinsSubBranch;
+      console.log(url)
+        this.setState({URL:url})
+    }
+
+    updateChannelList(channelList){
+      this.setState({channelList: channelList.filter(channelData => !channelData.is_archived)});
+    }
+
     //check if text is valid based on its type.
     metRequirement(type, text) {
       if (text === undefined) return false;
@@ -143,8 +183,6 @@ const componentHOC = WrappedComponent => {
           return this.slackRequirement(text);
         case "REPOPATH":
           return this.githubRequirement(text);
-        case "COLOR":
-          return this.colorRequirement(text);
         case "TYPE_NOT_PROVIDED":
           return false;
         default:
@@ -163,13 +201,6 @@ const componentHOC = WrappedComponent => {
     //i.e. repo/path
     githubRequirement(text) {
       let regexp = /^[\w-_\.]+\/[\w-_\.]+$/;
-      return regexp.test(text);
-    }
-
-    //matches to color
-    //i.e. #AAA123
-    colorRequirement(text) {
-      let regexp = /^#\w{6}$/;
       return regexp.test(text);
     }
 
@@ -207,7 +238,7 @@ const componentHOC = WrappedComponent => {
         let metSaveRequirement = true;
         //check if valid response has been inputted
         for (let jndex = 0; jndex < column; jndex++) {
-          let inputData = this.state[this.props.type[jndex] + index];
+          let inputData = isArray ? this.state[this.props.type[jndex] + index] : this.state[this.props.type[jndex]];
           metSaveRequirement =
             metSaveRequirement &&
             this.metRequirement(this.props.type[jndex], inputData);
@@ -216,7 +247,7 @@ const componentHOC = WrappedComponent => {
           let sendData;
           for (let jndex = 0; jndex < column; jndex++) {
             let inputName = this.props.type[jndex];
-            let inputData = this.state[this.props.type[jndex] + index];
+            let inputData = isArray ? this.state[this.props.type[jndex] + index] : this.state[this.props.type[jndex]];
             sendData = isArray
               ? { ...sendData, ...{ [inputName]: inputData } }
               : inputData;
@@ -254,6 +285,40 @@ const componentHOC = WrappedComponent => {
       );
     }
 
+    //display input selection based on the type
+    displaySelectionByType(type, index) {
+      switch (type) {
+        case "COLOR":
+          return <ColorPicker handleColorChange={this.handleColorChange.bind(this)} />
+        case "CHANNEL":
+          return <Dropdown 
+                    type="CHANNEL"
+                    channelList={this.state.channelList} 
+                    handleChannelChange={this.handleChannelChange.bind(this)} />
+        case "URL":
+          // let jenkinsList = await jenkinsListCreator();
+
+          console.log("BEFORE DROP{");
+          console.log(this.state.jenkinsList);
+          return (<><Dropdown
+                    type="MAINURL"
+                    jenkinsList={this.state.jenkinsList}
+                    handleJenkinsChange={this.handleJenkinsChange.bind(this)} />
+                  <Dropdown
+                    type="SUBURL"
+                    channelList={this.state.jenkinsList}
+                    handleJenkinsChange={this.handleJenkinsChange.bind(this)} /></>)
+        default:
+          return (
+            <TextField
+            name={type + index}
+            onChange={e => {
+              this.setState({ [e.target.name]: e.target.value });
+            }}
+          />)
+      }
+    }
+
     getMultipleCells(row, column, typeArray) {
       let tables = [];
       for (let index = 0; index < row; index++) {
@@ -265,12 +330,7 @@ const componentHOC = WrappedComponent => {
                 {row > 1 ? typeArray[jndex] + index : typeArray[jndex]}
               </TableCell>
               <TableCell>
-                <TextField
-                  name={typeArray[jndex] + index}
-                  onChange={e => {
-                    this.setState({ [e.target.name]: e.target.value });
-                  }}
-                ></TextField>
+                {this.displaySelectionByType(typeArray[jndex], index)}
               </TableCell>
             </React.Fragment>
           );
@@ -348,7 +408,10 @@ const componentHOC = WrappedComponent => {
           raised={true}
           outline={!this.props.disableEffect ? "true" : undefined}
         >
-          <WrappedComponent {...this.props} content={this.state.content} />
+          <WrappedComponent 
+            {...this.props} 
+            content={this.state.content}
+            updateChannelList={this.updateChannelList.bind(this)} />
         </ComponentWrapper>
       );
     }

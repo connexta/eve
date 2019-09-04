@@ -92,7 +92,8 @@ class BuildStatus extends React.Component {
       this.trashableRequestList = [];
       for (let index in this.props.content) {
         this.trashableRequestList.push(
-          makeTrashable(this.fetchData(this.props.content[index].URL))
+          // makeTrashable(this.fetchData(this.props.content[index].URL))
+          makeTrashable(this.fetchD(this.props.content[index].URL))
         );
       }
       //fetch and update jenkins information for all team
@@ -124,6 +125,12 @@ class BuildStatus extends React.Component {
   clearTimer() {
     clearInterval(this.toggleId);
     this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
+  }
+
+  fetchD(URL) {
+    return fetch(URL)
+    .then(response => response.json())
+    .catch(e => console.log("error", e));
   }
 
   //fetch data from the jenkin url

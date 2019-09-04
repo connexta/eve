@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import Fab from "@material-ui/core/Fab";
 import { Settings, Cancel } from "@material-ui/icons";
 import { ThemeProvider } from "@material-ui/styles";
@@ -6,6 +7,21 @@ import { Dialog, DialogTitle } from "@material-ui/core";
 import { settingTheme } from "../../utils/Constants";
 import { connect } from "react-redux";
 import { toggleEdit } from "../../actions";
+
+const StyleFab = styled(Fab)`
+  visibility: ${props => (props.currentwallboard === "TV" ? "hidden" : "visible")};
+  opacity: ${props => (props.currentwallboard === "TV" ? 0 : 1)};
+  transition: visibility 0.5s, opacity 0.5s linear;
+`;
+
+const FabContainer = styled.div`
+  &:hover {
+    ${StyleFab} {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+`;
 
 class Setting extends React.Component {
   constructor(props) {
@@ -41,25 +57,30 @@ class Setting extends React.Component {
   }
 
   render() {
+    console.log(this.props.currentWallboard);
     return (
-      <ThemeProvider theme={settingTheme}>
-        <Fab
-          aria-label="settings"
-          color="primary"
-          size="small"
-          onClick={this.handleClick.bind(this)}
-        >
-          <ThemeProvider theme={settingTheme}>
-            {this.toggleFabIcon()}
-          </ThemeProvider>
-        </Fab>
-      </ThemeProvider>
+      <FabContainer>
+        <ThemeProvider theme={settingTheme}>
+          <StyleFab
+            aria-label="settings"
+            color="primary"
+            size="small"
+            onClick={this.handleClick.bind(this)}
+            currentwallboard={this.props.currentWallboard}
+          >
+            <ThemeProvider theme={settingTheme}>
+              {this.toggleFabIcon()}
+            </ThemeProvider>
+          </StyleFab>
+        </ThemeProvider>
+      </FabContainer>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  edit: state.edit
+  edit: state.edit,
+  currentWallboard: state.currentWallboard
 });
 
 const mapDispatchToProps = {

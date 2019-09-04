@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
+const jenkins = require("./jenkins");
 const fs = require("fs");
 const cron = require("./cron");
 const fetch = require("node-fetch");
@@ -38,10 +39,15 @@ const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 
 /* CRON JOB */
 //CRON JOB for SOAESB grafana
-if (prod) {
-  app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-  cron.grafanaCron(prod, app, soaesb_url);
-}
+// if (prod) {
+  //grafana cron job
+  // app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+  // cron.grafanaCron(prod, app, soaesb_url);
+
+  //jenkins cron job
+  app.set("JENKINS", jenkins.getJenkinsList());
+  cron.jenkinsCron(app);
+// }
 
 // Create storage for media images
 const storage = multer.diskStorage({
@@ -263,6 +269,15 @@ app.get("/display", async (req, res) => {
     console.log("Error in /display ", error);
   }
 });
+
+app.get("/jenkinslist", async function(req, res) {
+  let jenkinslist = await app.get("JENKINS");
+  console.log(jenkinslist);
+  // res.writeHead(200, {
+  //   "Content-Type": "application/json",
+  // });
+  res.send(jenkinslist);
+})
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, targetPath, "index.html"));

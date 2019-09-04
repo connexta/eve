@@ -77,6 +77,8 @@ class SlackComponent extends React.Component {
     await this.setMessages();
     await this.setChannels();
 
+    await this.props.updateChannelList(this.state.channels);
+
     this.messageIntervalID = setInterval(() => this.setMessages(), minute);
     this.userListIntervalID = setInterval(
       () => this.setUserList(),
