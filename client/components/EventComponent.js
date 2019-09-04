@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { BoxStyle, BoxHeader } from "../styles/styles";
-import { Button, Divider } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
 import {
   time,
   localizeTime,
@@ -16,9 +16,10 @@ import makeTrashable from "trashable";
 import EventEdit from "./EventEdit";
 import componentHOC from "./Settings/componentHOC";
 
-const MONTHS_AFTER = 2; // how many days in the future to grab events
+const MONTHS_AFTER = 2; // how many months in the future to grab events
 const NUM_EVENTS_GRAB = 50; //limit on number of events to grab from API
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
+const EVENT_HEIGHT = 110; //height of one event in pixels
 
 const ButtonContainer = styled.div`
   width: 280px;
@@ -75,6 +76,8 @@ class EventComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    this.divRef = React.createRef();
+
     // grab and store user credentials
     this.userAgentApplication = new UserAgentApplication({
       auth: {
@@ -96,12 +99,12 @@ class EventComponent extends React.Component {
       events: [],
       calendars: [],
       chosenCal: cal,
-      numEvents: this.getNumEvents(window.innerHeight)
+      numEvents: 0
     };
   }
 
   getNumEvents(height) {
-    return Math.floor((height - 480) / 110);
+    return Math.floor(height / EVENT_HEIGHT);
   }
 
   async getDefaultEvents() {
@@ -285,10 +288,16 @@ class EventComponent extends React.Component {
     }
   }
 
+  // Adjusts number of events to display based on size of container
   handleResize() {
-    this.setState({ numEvents: this.getNumEvents(window.innerHeight) });
+    if (this.divRef && this.divRef != null) {
+      this.setState({
+        numEvents: this.getNumEvents(this.divRef.current.clientHeight)
+      });
+    }
   }
 
+  // Grabs default and (if applicable) calendar events
   async setEvents() {
     this.setState({ events: await this.getDefaultEvents() });
 
@@ -304,6 +313,12 @@ class EventComponent extends React.Component {
 
   // Refresh user information/calendar events
   async componentDidMount() {
+    if (this.divRef && this.divRef != null) {
+      this.setState({
+        numEvents: this.getNumEvents(this.divRef.current.clientHeight)
+      });
+    }
+
     if (this.state.isAuthenticated) {
       this.getCalendars();
     }
@@ -324,20 +339,28 @@ class EventComponent extends React.Component {
     if (this.trashableAccessToken) this.trashableAccessToken.trash();
     if (this.trashableAPICall) this.trashableAPICall.trash();
     if (this.trashableLogIn) this.trashableLogIn.trash();
+
+    window.removeEventListener("resize", this.handleResize.bind(this));
   }
 
+  // Text to display if there are no events loaded
   noEventMessage() {
     if (!this.state.isAuthenticated) {
-      return <div>Please sign in from settings mode</div>;
+      return <div>Please sign in or add events in settings mode</div>;
     } else if (!this.state.chosenCal) {
-      return <div>Select calendar to display events from settings mode</div>;
+      return (
+        <div>
+          Select calendar to display events or add events in settings mode
+        </div>
+      );
     } else if (this.state.events.length <= 0) {
-      return <div>No events to display</div>;
+      return <div>No events to display, please add some in settings mode</div>;
     } else {
       return <div>Trouble displaying events</div>;
     }
   }
 
+  // adds manual event to state and to back end list
   addEvent(event) {
     let temp = this.state.events;
     temp.push(event);
@@ -356,6 +379,7 @@ class EventComponent extends React.Component {
     });
   }
 
+  // removes event from state and from back end
   removeEvent(num) {
     let event = this.state.events[num];
 
@@ -393,39 +417,41 @@ class EventComponent extends React.Component {
             ) : null}
           </ButtonContainer>
         </Header>
-        {this.state.events.length <= 0 ? (
-          this.noEventMessage()
-        ) : (
-          <EventContainer>
-            <Divider />
-            {eventData.map((evt, i) => {
-              let day = getDayofWeek(evt.start.getDay());
-              let date = evt.start.getMonth() + 1 + "/" + evt.start.getDate();
+        <div style={{ height: "calc(100% - 92px)" }} ref={this.divRef}>
+          {this.state.events.length <= 0 ? (
+            this.noEventMessage()
+          ) : (
+            <EventContainer>
+              <Divider />
+              {eventData.map((evt, i) => {
+                let day = getDayofWeek(evt.start.getDay());
+                let date = evt.start.getMonth() + 1 + "/" + evt.start.getDate();
 
-              let startTime = getTimeString(evt.start);
-              let endTime = getTimeString(evt.end);
+                let startTime = getTimeString(evt.start);
+                let endTime = getTimeString(evt.end);
 
-              return (
-                <div key={i}>
-                  <Divider />
-                  <EventBlock>
-                    <EventTime>
-                      <div>{day + " " + date}</div>
-                      <div>{startTime + " -"}</div>
-                      <div>{endTime}</div>
-                    </EventTime>
-                    <EventDescription>
-                      <div>{evt.title}</div>
-                      <div>{evt.location}</div>
-                    </EventDescription>
-                  </EventBlock>
-                  <Divider />
-                </div>
-              );
-            })}
-            <Divider />
-          </EventContainer>
-        )}
+                return (
+                  <div key={i}>
+                    <Divider />
+                    <EventBlock>
+                      <EventTime>
+                        <div>{day + " " + date}</div>
+                        <div>{startTime + " -"}</div>
+                        <div>{endTime}</div>
+                      </EventTime>
+                      <EventDescription>
+                        <div>{evt.title}</div>
+                        <div>{evt.location}</div>
+                      </EventDescription>
+                    </EventBlock>
+                    <Divider />
+                  </div>
+                );
+              })}
+              <Divider />
+            </EventContainer>
+          )}
+        </div>
       </>
     );
   }

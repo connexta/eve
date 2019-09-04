@@ -96,8 +96,8 @@ export default class EventEdit extends React.Component {
     );
   }
 
-  // checks inputs, calls addMedia(), resets state after save button call
-  async send() {
+  // checks inputs, calls addEvent(), resets state after save button call
+  send() {
     if (
       this.state.start == null ||
       this.state.end == null ||
@@ -137,11 +137,11 @@ export default class EventEdit extends React.Component {
         <Edit onClick={this.handleClickOpen.bind(this)} />
         <Dialog
           onClose={this.handleClose.bind(this)}
-          aria-labelledby="edit-media-dialog"
+          aria-labelledby="edit-event-dialog"
           open={this.state.open}
           maxWidth={false}
         >
-          <DialogTitle>Add/Remove Media</DialogTitle>
+          <DialogTitle>Add/Remove Events</DialogTitle>
           <LogInOut
             isAuthenticated={this.props.isAuthenticated}
             logIn={this.props.logIn}

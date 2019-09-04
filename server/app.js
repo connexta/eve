@@ -225,6 +225,7 @@ app.post("/removeEvent", function(req, res) {
       fs.writeFileSync(eventFile, JSON.stringify(content));
     }
   }
+  res.end("Data removed successfully");
 });
 
 // Reads version data and sends to client
