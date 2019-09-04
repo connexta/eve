@@ -177,8 +177,11 @@ app.post("/event", function(req, res) {
       index = i;
       return item.route === req.body.route;
     });
-
-    if (route == undefined) {
+    if (content.routes == undefined) {
+      content = {
+        routes: [{ route: req.body.route, events: [req.body.event] }]
+      };
+    } else if (route == undefined) {
       content.routes.push({ route: req.body.route, events: [req.body.event] });
     } else {
       route.events.push(req.body.event);
@@ -188,8 +191,8 @@ app.post("/event", function(req, res) {
     fs.writeFileSync(eventFile, JSON.stringify(content));
     res.end("Data sent successfully");
   } else {
-    let content = {
-      routes: [{ route: req.body.route, cards: [req.body.card] }]
+    content = {
+      routes: [{ route: req.body.route, events: [req.body.event] }]
     };
 
     fs.writeFileSync(eventFile, JSON.stringify(content));
