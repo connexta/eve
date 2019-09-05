@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { withStyles } from "@material-ui/styles";
 import { BoxStyle, BoxHeader } from "../styles/styles";
 import { Divider } from "@material-ui/core";
 import {
@@ -21,17 +22,10 @@ const NUM_EVENTS_GRAB = 50; //limit on number of events to grab from API
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
 const EVENT_HEIGHT = 110; //height of one event in pixels
 
-const ButtonContainer = styled.div`
-  width: 280px;
-  margin-left: calc(5% - 3px); /* 3 px to accomodate rbc-btn-group margins */
-  display: flex;
-  flex-direction: row;
-  position: absolute;
-  right: 0;
-`;
-
 const EventContainer = styled.div`
-  margin-top: 72px;
+  position: absolute;
+  top: 72px;
+  width: 100%;
 `;
 
 const EventBlock = styled.div`
@@ -67,10 +61,13 @@ export const EventCard = styled(BoxStyle)`
 
 const Header = styled(BoxHeader)`
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  position: relative;
 `;
+
+const StyleDivider = withStyles({
+  root: {
+    width: "calc(100% - 40px)"
+  }
+})(Divider);
 
 class EventComponent extends React.Component {
   constructor(props) {
@@ -99,7 +96,8 @@ class EventComponent extends React.Component {
       events: [],
       calendars: [],
       chosenCal: cal,
-      numEvents: 0
+      numEvents: 0,
+      open: false
     };
   }
 
@@ -394,65 +392,79 @@ class EventComponent extends React.Component {
     this.setState({ events: temp });
   }
 
+  setOpen() {
+    this.props.edit ? this.setState({ open: true }) : null;
+  }
+
+  setClose() {
+    this.setState({ open: false });
+  }
+
   render() {
     let eventData = this.state.events.slice(0, this.state.numEvents);
-
     return (
-      <>
-        <Header>
-          Company Events
-          <ButtonContainer>
-            {this.props.edit ? (
-              <EventEdit
-                isAuthenticated={this.state.isAuthenticated}
-                logIn={this.login.bind(this)}
-                logOut={this.logout.bind(this)}
-                chosenCal={this.state.chosenCal}
-                calendars={this.state.calendars}
-                callback={this.changeState.bind(this)}
-                events={this.state.events}
-                addEvent={this.addEvent.bind(this)}
-                removeEvent={this.removeEvent.bind(this)}
-              />
-            ) : null}
-          </ButtonContainer>
-        </Header>
-        <div style={{ height: "calc(100% - 92px)" }} ref={this.divRef}>
-          {this.state.events.length <= 0 ? (
-            this.noEventMessage()
-          ) : (
-            <EventContainer>
-              <Divider />
-              {eventData.map((evt, i) => {
-                let day = getDayofWeek(evt.start.getDay());
-                let date = evt.start.getMonth() + 1 + "/" + evt.start.getDate();
+      <div style={{ height: "100%", width: "100%" }}>
+        <div
+          onClick={() =>
+            this.props.edit ? this.setState({ open: true }) : null
+          }
+          style={{ zIndex: 5, height: "100%", width: "100%" }}
+        >
+          <Header>Company Events</Header>
+          <div
+            style={{ height: "calc(100% - 90px)", width: "100%" }}
+            ref={this.divRef}
+          >
+            {this.state.events.length <= 0 ? (
+              this.noEventMessage()
+            ) : (
+              <EventContainer>
+                <StyleDivider />
+                {eventData.map((evt, i) => {
+                  let day = getDayofWeek(evt.start.getDay());
+                  let date =
+                    evt.start.getMonth() + 1 + "/" + evt.start.getDate();
 
-                let startTime = getTimeString(evt.start);
-                let endTime = getTimeString(evt.end);
+                  let startTime = getTimeString(evt.start);
+                  let endTime = getTimeString(evt.end);
 
-                return (
-                  <div key={i}>
-                    <Divider />
-                    <EventBlock>
-                      <EventTime>
-                        <div>{day + " " + date}</div>
-                        <div>{startTime + " -"}</div>
-                        <div>{endTime}</div>
-                      </EventTime>
-                      <EventDescription>
-                        <div>{evt.title}</div>
-                        <div>{evt.location}</div>
-                      </EventDescription>
-                    </EventBlock>
-                    <Divider />
-                  </div>
-                );
-              })}
-              <Divider />
-            </EventContainer>
-          )}
+                  return (
+                    <div key={i}>
+                      <StyleDivider />
+                      <EventBlock>
+                        <EventTime>
+                          <div>{day + " " + date}</div>
+                          <div>{startTime + " -"}</div>
+                          <div>{endTime}</div>
+                        </EventTime>
+                        <EventDescription>
+                          <div>{evt.title}</div>
+                          <div>{evt.location}</div>
+                        </EventDescription>
+                      </EventBlock>
+                      <StyleDivider />
+                    </div>
+                  );
+                })}
+                <StyleDivider />
+              </EventContainer>
+            )}
+          </div>
         </div>
-      </>
+        <EventEdit
+          isAuthenticated={this.state.isAuthenticated}
+          logIn={this.login.bind(this)}
+          logOut={this.logout.bind(this)}
+          chosenCal={this.state.chosenCal}
+          calendars={this.state.calendars}
+          callback={this.changeState.bind(this)}
+          events={this.state.events}
+          addEvent={this.addEvent.bind(this)}
+          removeEvent={this.removeEvent.bind(this)}
+          open={this.state.open}
+          close={() => this.setState({ open: false })}
+        />
+      </div>
     );
   }
 }

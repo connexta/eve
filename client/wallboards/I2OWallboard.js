@@ -69,7 +69,11 @@ class I2OWallboard extends React.Component {
           listvert
           disable
         />
-        <EventComponent style={StyleEvent} wallboard={"I2O"} disableEffect />
+        <EventComponent
+          style={StyleEvent}
+          wallboard={"I2O"}
+          name="EventComponent"
+        />
         <RightBox item>
           <SlackComponent
             style={StyleSlack}

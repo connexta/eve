@@ -83,7 +83,7 @@ class GSRWallboard extends React.Component {
               name="BuildStatus"
               default={GSRUrlList}
             />
-            <ReleaseVersion style={StyleRelease} disableEffect />
+            <ReleaseVersion style={StyleRelease} name="ReleaseVersion" />
           </Grid>
           <Grid
             container
@@ -93,12 +93,12 @@ class GSRWallboard extends React.Component {
             <MediaComponent
               style={StyleMedia}
               wallboard={"gsr"}
-              disableEffect
+              name="MediaComponent"
             />
             <EventComponent
               style={StyleEvent}
               wallboard={"gsr"}
-              disableEffect
+              name="EventComponent"
             />
           </Grid>
         </LeftBox>

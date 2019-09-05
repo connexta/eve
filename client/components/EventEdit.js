@@ -64,7 +64,6 @@ export default class EventEdit extends React.Component {
     super(props);
 
     this.state = {
-      open: false,
       add: false,
       end: null,
       endTime: null,
@@ -75,12 +74,8 @@ export default class EventEdit extends React.Component {
     };
   }
 
-  handleClickOpen() {
-    this.setState({ open: true });
-  }
-
   handleClose() {
-    this.setState({ open: false });
+    this.props.close();
   }
 
   getDateObject(date, time) {
@@ -133,118 +128,111 @@ export default class EventEdit extends React.Component {
 
   render() {
     return (
-      <EditContainer>
-        <Edit onClick={this.handleClickOpen.bind(this)} />
-        <Dialog
-          onClose={this.handleClose.bind(this)}
-          aria-labelledby="edit-event-dialog"
-          open={this.state.open}
-          maxWidth={false}
-        >
-          <DialogTitle>Add/Remove Events</DialogTitle>
-          <LogInOut
-            isAuthenticated={this.props.isAuthenticated}
-            logIn={this.props.logIn}
-            logOut={this.props.logOut}
-          />
-          {this.props.isAuthenticated ? (
-            <div>
-              <SelectCal>Select Calendar:</SelectCal>
-              <StyleSelect
-                value={
-                  this.props.chosenCal == null ? "None" : this.props.chosenCal
-                }
-                onChange={this.handleSelect.bind(this)}
-                sytle={{ display: "inline-block" }}
-              >
-                <MenuItem key={-1} value={"None"}>
-                  <p>None</p>
+      <Dialog
+        onClose={this.handleClose.bind(this)}
+        aria-labelledby="edit-event-dialog"
+        open={this.props.open}
+        maxWidth={false}
+      >
+        <DialogTitle>Add/Remove Events</DialogTitle>
+        <LogInOut
+          isAuthenticated={this.props.isAuthenticated}
+          logIn={this.props.logIn}
+          logOut={this.props.logOut}
+        />
+        {this.props.isAuthenticated ? (
+          <div>
+            <SelectCal>Select Calendar:</SelectCal>
+            <StyleSelect
+              value={
+                this.props.chosenCal == null ? "None" : this.props.chosenCal
+              }
+              onChange={this.handleSelect.bind(this)}
+              sytle={{ display: "inline-block" }}
+            >
+              <MenuItem key={-1} value={"None"}>
+                <p>None</p>
+              </MenuItem>
+              {this.props.calendars.map((cal, i) => (
+                <MenuItem key={i} value={cal.id}>
+                  <p>{cal.name}</p>
                 </MenuItem>
-                {this.props.calendars.map((cal, i) => (
-                  <MenuItem key={i} value={cal.id}>
-                    <p>{cal.name}</p>
-                  </MenuItem>
-                ))}
-              </StyleSelect>
-            </div>
-          ) : null}
-          <Table size={"small"} style={{ width: 800 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Action</TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Start Time</TableCell>
-                <TableCell>End Time</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.props.events.map((event, i) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    {event.local ? (
-                      <Delete onClick={() => this.props.removeEvent(i)} />
-                    ) : null}
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    {event.title}
-                  </TableCell>
-                  <TableCell>{event.location}</TableCell>
-                  <TableCell>{event.start.toString()}</TableCell>
-                  <TableCell>{event.end.toString()}</TableCell>
-                </TableRow>
               ))}
-              {this.state.add ? (
-                <TableRow>
-                  <TableCell>
-                    <Save onClick={() => this.send()} />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      onChange={e => this.setState({ title: e.target.value })}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      onChange={e =>
-                        this.setState({ location: e.target.value })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <input
-                      type="date"
-                      onChange={e => this.setState({ start: e.target.value })}
-                    />
-                    <input
-                      type="time"
-                      onChange={e =>
-                        this.setState({ startTime: e.target.value })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <input
-                      type="date"
-                      onChange={e => this.setState({ end: e.target.value })}
-                    />
-                    <input
-                      type="time"
-                      onChange={e => this.setState({ endTime: e.target.value })}
-                    />
-                  </TableCell>
-                </TableRow>
-              ) : (
-                <TableRow>
-                  <TableCell>
-                    <Add onClick={() => this.setState({ add: true })} />
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Dialog>
-      </EditContainer>
+            </StyleSelect>
+          </div>
+        ) : null}
+        <Table size={"small"} style={{ width: 800 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Action</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Start Time</TableCell>
+              <TableCell>End Time</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.props.events.map((event, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  {event.local ? (
+                    <Delete onClick={() => this.props.removeEvent(i)} />
+                  ) : null}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {event.title}
+                </TableCell>
+                <TableCell>{event.location}</TableCell>
+                <TableCell>{event.start.toString()}</TableCell>
+                <TableCell>{event.end.toString()}</TableCell>
+              </TableRow>
+            ))}
+            {this.state.add ? (
+              <TableRow>
+                <TableCell>
+                  <Save onClick={() => this.send()} />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    onChange={e => this.setState({ title: e.target.value })}
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    onChange={e => this.setState({ location: e.target.value })}
+                  />
+                </TableCell>
+                <TableCell>
+                  <input
+                    type="date"
+                    onChange={e => this.setState({ start: e.target.value })}
+                  />
+                  <input
+                    type="time"
+                    onChange={e => this.setState({ startTime: e.target.value })}
+                  />
+                </TableCell>
+                <TableCell>
+                  <input
+                    type="date"
+                    onChange={e => this.setState({ end: e.target.value })}
+                  />
+                  <input
+                    type="time"
+                    onChange={e => this.setState({ endTime: e.target.value })}
+                  />
+                </TableCell>
+              </TableRow>
+            ) : (
+              <TableRow>
+                <TableCell>
+                  <Add onClick={() => this.setState({ add: true })} />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </Dialog>
     );
   }
 }
