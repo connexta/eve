@@ -327,7 +327,6 @@ class EventComponent extends React.Component {
       if (this.state.isAuthenticated && this.state.chosenCal)
         this.getCalendarEvents(this.state.chosenCal);
     }, CALL_FREQ);
-
     window.addEventListener("resize", this.handleResize.bind(this));
   }
 
