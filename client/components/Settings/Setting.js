@@ -57,7 +57,6 @@ class Setting extends React.Component {
   }
 
   render() {
-    console.log(this.props.currentWallboard);
     return (
       <FabContainer>
         <ThemeProvider theme={settingTheme}>

@@ -61,7 +61,7 @@ class SOAESBWallboard extends React.Component {
         <RightBox item>
           <BuildAF
             style={StyleBuildStatus}
-            type={["LINK", "URL", "NAME"]}
+            type={["URL", "NAME"]}
             name="BuildAF"
           />
           <Github style={StyleGithub} type={["REPOPATH"]} name="Github" />

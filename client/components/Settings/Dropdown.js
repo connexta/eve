@@ -12,65 +12,51 @@ class Dropdown extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            channelData: "",
-            jenkinstData: ""
+            data: ""
         }
     }
 
-    handleChange(event, type) {
-        
+    handleChange(type, event) {
+        this.setState({data: event.target.value});
         switch (type) {
             case "CHANNEL":
-                this.setState({channelData: event.target.value})
                 this.props.handleChannelChange(event.target.value.id);
                 break;
-            case "URL":
-                this.setState({jenkinsData: event.target.value})
-                this.props.handleJenkinsChange(event.target.value.name);
+            case "MAINURL":
+                this.props.handleJenkinsNameChange(event.target.value, this.props.index);
+                break;
+            case "SUBURL":
+                this.props.handleJenkinsURLChange(event.target.value, this.props.index);
                 break;
         }
     }
 
+    //based on the input type, display different format of menu item.
     displayMenuItems(type){
         switch (type){
             case "CHANNEL":
+            case "MAINURL":
+            case "SUBURL":
                 return (
-                    this.props.channelList.map(channelData => (
-                    <MenuItem key={channelData.name} value={channelData}>
-                        {channelData.name}
+                    this.props.list ?
+                    this.props.list.map(data => (
+                    <MenuItem key={data.name} value={data}>
+                        {data.name}
                     </MenuItem>
-                )))
-            case "URL":
-                console.log("INSIDE DROPDOWN");
-                console.log(this.props.jenkinsList);
-                return (
-                    this.props.jenkinsList.map(jenkinsData => (
-                        <MenuItem key={jenkinsData.name} value={jenkinsData}>
-                            {jenkinsData.name}
-                        </MenuItem>
-                )))
+                ))
+                :
+                <MenuItem/>
+                )
             default:
                 return undefined;
         }
-        // return (
-        // this.props.channelList ?
-        //     this.props.channelList.map(channelData => (
-        //         <MenuItem key={channelData.name} value={channelData}>
-        //             {channelData.name}
-        //         </MenuItem>
-        //     ))
-        //     :
-        //     undefined
-        // )
     }
 
     render() {
-        console.log("WHATS B TYPE")
-        console.log(this.props.type)
         return (
             <StyleFormControl>
             <Select
-                value={this.state.channelData}
+                value={this.state.data}
                 onChange={this.handleChange.bind(this, this.props.type)}
             >   
                 {this.displayMenuItems(this.props.type)}

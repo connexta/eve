@@ -38,16 +38,13 @@ const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
 const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 
 /* CRON JOB */
-//CRON JOB for SOAESB grafana
-// if (prod) {
-  //grafana cron job
-  // app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-  // cron.grafanaCron(prod, app, soaesb_url);
+// grafana cron job
+app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+cron.grafanaCron(prod, app, soaesb_url);
 
-  //jenkins cron job
-  app.set("JENKINS", jenkins.getJenkinsList());
-  cron.jenkinsCron(app);
-// }
+//jenkins cron job
+app.set("JENKINS", jenkins.getJenkinsList()); //initial run
+cron.jenkinsCron(app);
 
 // Create storage for media images
 const storage = multer.diskStorage({
@@ -271,12 +268,7 @@ app.get("/display", async (req, res) => {
 });
 
 app.get("/jenkinslist", async function(req, res) {
-  let jenkinslist = await app.get("JENKINS");
-  console.log(jenkinslist);
-  // res.writeHead(200, {
-  //   "Content-Type": "application/json",
-  // });
-  res.send(jenkinslist);
+  res.send(await app.get("JENKINS"));
 })
 
 app.get("*", (req, res) => {

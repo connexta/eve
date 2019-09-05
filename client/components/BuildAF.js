@@ -65,7 +65,7 @@ class BuildAF extends React.Component {
   //fetch
   async updateBuildStatus() {
     this.trashableFetchPromise = makeTrashable(
-      fetch(this.props.content[0].URL + "runs/")
+      fetch(this.props.content[0].URL + "/runs/")
     );
 
     await this.trashableFetchPromise

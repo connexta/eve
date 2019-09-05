@@ -1,5 +1,9 @@
 # Components
 
+## Banner
+
+Displays banner in the top screen. It contains Logo and Clocks.
+
 ## BuildStatus
 
 Displays the health of builds as reported by Jenkins and toggles between the health of the most recent build and the health of the 5 most recent builds.
@@ -71,6 +75,7 @@ Take and display screenshot of grafana dashboard.
 ## Settings
 
 Once the user clicks the setting icon, the user enters an edit mode where the user can select a component from the current screen/wallboard to edit the contents of the component. Currently, the user can modify the color of the banner in the Home screen, slack channel of the SlackComponent, repo path of the Github, jenkins url of the BuildStatus, jenkins url of the BuildAF. The directory contains Setting.js which contains the setting icon container, and componentHOC.js which creates a HOC of editable components.
+ColorPicker.js for Banner color picking UI and Dropdown.js for URL (of BuildStatus, BuildAF) UI.
 
 
 ## MediaComponent

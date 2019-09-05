@@ -150,10 +150,10 @@ class BuildStatus extends React.Component {
     if (item) {
       overallData[index] = {
         displayName: name,
-        oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
-        fiveScore: item.weatherScore,
-        oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
-        fiveSubtitle: this.getFiveSubtitle(item)
+        oneScore: item.latestRun ? (item.latestRun.result === "SUCCESS" ? 100 : 0) : 0,
+        fiveScore: item.weatherScore ? item.weatherScore : 0,
+        oneSubtitle: item.latestRun ? (getRelativeTime(new Date(item.latestRun.startTime))) : "No Data",
+        fiveSubtitle: item.latestRun ? this.getFiveSubtitle(item) : "No Data"
       };
     } else {
       overallData[index] = {

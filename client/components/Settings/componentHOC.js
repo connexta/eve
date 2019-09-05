@@ -76,30 +76,14 @@ const componentHOC = WrappedComponent => {
         metSaveRequirement: false,
         isLoading: true,
         edit: this.props.disable ? false : this.props.edit,
-        default: this.props.default || DefaultData[this.props.name]
+        default: this.props.default || DefaultData[this.props.name],
+        dropDownSelectedName: []
       };
     }
 
     async componentDidMount() {
       await this.initialUpdateContent(this.props.name, this.state.default);
-      let jenkinsList = await fetch("/jenkinslist")
-        // {
-        //   method: "GET",
-        //   headers: { "Content-Type": "application/json" }
-        // })
-        .then(response => {
-          console.log(response);
-          return response.json();
-        })
-        .catch(err => {
-          console.log("Unable to retrieve data from backend ", err);
-        });
-        // {
-        //   method: "GET",
-        //   headers: { "Content-Type": "application/json" }
-        // });
-      console.log(jenkinsList);
-      this.setState({jenkinsList: jenkinsList});
+      await this.initialFetchJenkinslist(); 
       this.setState({ isLoading: false });
     }
 
@@ -109,6 +93,8 @@ const componentHOC = WrappedComponent => {
       }
     }
 
+    //initially update the content of all components from backend data.
+    //if not available, set it to defaultData
     async initialUpdateContent(component, defaultData) {
       let retrieved = false;
       await fetch(
@@ -140,6 +126,18 @@ const componentHOC = WrappedComponent => {
       }
     }
 
+    //initially obtain jenkins list for BuildStatus.
+    async initialFetchJenkinslist(){
+      let jenkinsList = await fetch("/jenkinslist")
+        .then(response => response.json())
+        .catch(err => {
+          console.log("Unable to retrieve jenkins data from backend ", err);
+        });
+      this.setState({jenkinsList: jenkinsList});
+    }
+
+    //Update the newly changed data to backend based on if the input format is single (i.e. string) or multiple input.
+    //isArray is true if input is expected to be multiple
     updateContent(content, index, isArray) {
       if (isArray) {
         this.partialUpdate(content, index);
@@ -150,27 +148,36 @@ const componentHOC = WrappedComponent => {
 
     //if the data is an array type (multiple elements), partially update the data
     partialUpdate(content, index) {
-      let temp = this.state.content.slice();
-      temp[index] = content;
-      this.setState({ content: temp });
+      this.setState({ 
+        content: this.insertElementIntoArray(this.state.content, content, index) 
+      });
     }
 
-    //this.setState({ [e.target.name]: e.target.value 
-    //handle onChange of child component ColorPicker
+    //handle color change in child component ColorPicker
     handleColorChange(color){
       this.setState({COLOR:color.hex});
     }
 
+    //handle channel change in child component Dropdown
     handleChannelChange(channelID){
       this.setState({CHANNEL: channelID})
     }
 
-    handleJenkinsChange(jenkinsSubBranch){
-      let url = JENKINSROOTURL + jenkinsSubBranch;
-      console.log(url)
-        this.setState({URL:url})
+    //handle initial dropdown selection for jenkins in child component Dropdown
+    handleJenkinsNameChange(selectedName, index){
+      this.setState({dropDownSelectedName: this.insertElementIntoArray(this.state.dropDownSelectedName, selectedName, index)});
     }
 
+    //handle second dropdown selection for jenkins in child component Dropdown
+    handleJenkinsURLChange(data, index){
+      this.setState({
+        URL:this.insertElementIntoArray(this.state.URL, data.url, index), 
+        NAME:this.insertElementIntoArray(this.state.NAME, this.state.dropDownSelectedName[index].name, index), 
+        LINK:this.insertElementIntoArray(this.state.LINK, data.link, index)
+      })
+    }
+
+    //update channel list for dropdown. Remove any archived channel.
     updateChannelList(channelList){
       this.setState({channelList: channelList.filter(channelData => !channelData.is_archived)});
     }
@@ -179,8 +186,6 @@ const componentHOC = WrappedComponent => {
     metRequirement(type, text) {
       if (text === undefined) return false;
       switch (type) {
-        case "CHANNEL":
-          return this.slackRequirement(text);
         case "REPOPATH":
           return this.githubRequirement(text);
         case "TYPE_NOT_PROVIDED":
@@ -188,13 +193,6 @@ const componentHOC = WrappedComponent => {
         default:
           return true;
       }
-    }
-
-    //matches to slack channel
-    //i.e. ABC123DEF
-    slackRequirement(text) {
-      let regexp = /^[A-Z0-9]{9}$/;
-      return regexp.test(text);
     }
 
     //matches to repo path
@@ -208,8 +206,19 @@ const componentHOC = WrappedComponent => {
       this.setState({ open: true });
     }
 
+    //close the dialog and clear out the textfields
     handleClose() {
-      this.setState({ open: false });
+      this.setState({ 
+        open: false,
+        dropDownSelectedName: []
+       });
+    }
+
+    //insert element into array[index]
+    insertElementIntoArray(array, element, index) {
+      let tmp = array ? array.slice() : [];
+      tmp[index] = element;
+      return tmp;
     }
 
     //if it's Banner, always Post it to HOME since Getting Banner data always come from HOME
@@ -220,6 +229,7 @@ const componentHOC = WrappedComponent => {
       );
     }
 
+    //post the data to the backend. If it's Banner, call bannerPost to select HOME wallboard.
     postData() {
       let dataToUpdate = this.state.content;
       fetch(this.bannerPost(this.props.name === "Banner"), {
@@ -231,14 +241,17 @@ const componentHOC = WrappedComponent => {
 
     //handle saving the contents to the state and to the backend
     //saving method differs whether the data is a string or an array (checked by isArray)
+    //index loops around the data
+    //jndex loops around the input type
     async handleMultipleSave(e, row, column) {
       let metOneRequirement = false;
       let isArray = !(row == 1 && column == 1);
       for (let index = 0; index < row; index++) {
         let metSaveRequirement = true;
-        //check if valid response has been inputted
+        
+        // check if valid response has been inputted: requires all the fields to be filled for the row
         for (let jndex = 0; jndex < column; jndex++) {
-          let inputData = isArray ? this.state[this.props.type[jndex] + index] : this.state[this.props.type[jndex]];
+          let inputData = isArray ? this.state[this.props.type[jndex]][index] : this.state[this.props.type[jndex]];
           metSaveRequirement =
             metSaveRequirement &&
             this.metRequirement(this.props.type[jndex], inputData);
@@ -247,7 +260,7 @@ const componentHOC = WrappedComponent => {
           let sendData;
           for (let jndex = 0; jndex < column; jndex++) {
             let inputName = this.props.type[jndex];
-            let inputData = isArray ? this.state[this.props.type[jndex] + index] : this.state[this.props.type[jndex]];
+            let inputData = isArray ? this.state[this.props.type[jndex]][index] : this.state[this.props.type[jndex]];
             sendData = isArray
               ? { ...sendData, ...{ [inputName]: inputData } }
               : inputData;
@@ -293,27 +306,44 @@ const componentHOC = WrappedComponent => {
         case "CHANNEL":
           return <Dropdown 
                     type="CHANNEL"
-                    channelList={this.state.channelList} 
+                    list={this.state.channelList} 
                     handleChannelChange={this.handleChannelChange.bind(this)} />
-        case "URL":
-          // let jenkinsList = await jenkinsListCreator();
-
-          console.log("BEFORE DROP{");
-          console.log(this.state.jenkinsList);
-          return (<><Dropdown
+        case "URL": //URL is splited into two dropdowns. First for initial selection of projects, Second for corresponding branches from the first selection
+          return <><Dropdown
                     type="MAINURL"
-                    jenkinsList={this.state.jenkinsList}
-                    handleJenkinsChange={this.handleJenkinsChange.bind(this)} />
+                    index={index}
+                    list={this.state.jenkinsList}
+                    handleJenkinsNameChange={this.handleJenkinsNameChange.bind(this)} />
                   <Dropdown
                     type="SUBURL"
-                    channelList={this.state.jenkinsList}
-                    handleJenkinsChange={this.handleJenkinsChange.bind(this)} /></>)
+                    index={index}
+                    list={this.state.dropDownSelectedName[index] ? this.state.dropDownSelectedName[index].branch : undefined}
+                    handleJenkinsURLChange={this.handleJenkinsURLChange.bind(this)} /></>
+
+        case "NAME":
+          return (
+            <TextField
+              name={type + index}
+              value={this.state.dropDownSelectedName && this.state.dropDownSelectedName[index] ? this.state.dropDownSelectedName[index].name : ""}
+              onChange={e=>{
+                // let tmp = this.state[type] ? this.state[type].slice() : [];
+                // let tmpMain = this.state.dropDownSelectedName ? this.state.dropDownSelectedName.slice() : [];
+                // tmp[index] = e.target.value;
+                // tmpMain[index] = {...tmpMain[index], name: e.target.value}
+                this.setState({
+                  [type]: this.insertElementIntoArray(this.state[type], e.target.value, index), 
+                  dropDownSelectedName: this.insertElementIntoArray(this.state.dropDownSelectedName, {...this.state.dropDownSelectedName[index], name: e.target.value}, index)});
+              }}
+            />
+          )
         default:
           return (
             <TextField
             name={type + index}
             onChange={e => {
-              this.setState({ [e.target.name]: e.target.value });
+              // let tmp = this.state[type] ? this.state[type].slice() : [];
+              // tmp[index] = e.target.value;
+              this.setState({ [type]: this.insertElementIntoArray(this.state[type], e.target.value, index)});
             }}
           />)
       }
