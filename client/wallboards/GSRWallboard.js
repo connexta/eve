@@ -83,7 +83,11 @@ class GSRWallboard extends React.Component {
               name="BuildStatus"
               default={GSRUrlList}
             />
-            <ReleaseVersion style={StyleRelease} name="ReleaseVersion" />
+            <ReleaseVersion
+              style={StyleRelease}
+              name="ReleaseVersion"
+              disableEffect
+            />
           </Grid>
           <Grid
             container

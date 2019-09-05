@@ -288,7 +288,7 @@ class EventComponent extends React.Component {
 
   // Adjusts number of events to display based on size of container
   handleResize() {
-    if (this.divRef && this.divRef != null) {
+    if (this.divRef.current && this.divRef.current != null) {
       this.setState({
         numEvents: this.getNumEvents(this.divRef.current.clientHeight)
       });
@@ -311,7 +311,7 @@ class EventComponent extends React.Component {
 
   // Refresh user information/calendar events
   async componentDidMount() {
-    if (this.divRef && this.divRef != null) {
+    if (this.divRef.current && this.divRef.current != null) {
       this.setState({
         numEvents: this.getNumEvents(this.divRef.current.clientHeight)
       });
