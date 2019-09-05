@@ -3,12 +3,12 @@ import Grid from "@material-ui/core/Grid";
 import { IONURL } from "../utils/Link";
 import { connect } from "react-redux";
 import { updateCurrentWallboard, leaveEdit } from "../actions";
-import EventComponent from "../components/EventComponent";
+import MediaComponent from "../components/MediaComponent";
 import Github from "../components/Github";
 import SlackComponent from "../components/SlackComponent";
 import TeamBuildStatus from "../components/TeamBuildStatus";
 import { RightBox } from "../styles/WallboardStyles";
-import { SLACK_REPLICATION_CHANNEL } from "../utils/Config";
+import { SLACK_WALLBOARD_CHANNEL } from "../utils/Config";
 
 const GITHUB_HEIGHT = 400;
 const DEV_SPACE = 60;
@@ -19,7 +19,7 @@ const StyleBuildStatus = {
   margin: `20px 10px 20px 20px`
 };
 
-const StyleEvent = {
+const StyleMedia = {
   height: `calc(100% - ${DEV_SPACE}px - 20px)`,
   width: `calc(33% - 30px)`,
   margin: `20px 10px 20px 10px`
@@ -69,17 +69,13 @@ class I2OWallboard extends React.Component {
           listvert
           disable
         />
-        <EventComponent
-          style={StyleEvent}
-          wallboard={"I2O"}
-          name="EventComponent"
-        />
+        <MediaComponent style={StyleMedia} wallboard={"I2O"} name="MediaComponent" />
         <RightBox item>
           <SlackComponent
             style={StyleSlack}
             type={["CHANNEL"]}
             name="SlackComponent"
-            default={SLACK_REPLICATION_CHANNEL}
+            default={SLACK_WALLBOARD_CHANNEL}
           />
           <Github
             style={StyleGithub}
