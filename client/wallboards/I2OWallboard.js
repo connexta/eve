@@ -2,13 +2,13 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import { connect } from "react-redux";
 import { updateCurrentWallboard, leaveEdit } from "../actions";
-import EventComponent from "../components/EventComponent";
+import MediaComponent from "../components/MediaComponent";
 import Github from "../components/Github";
 import SlackComponent from "../components/SlackComponent";
 import BuildStatus from "../components/BuildStatus";
 import { RightBox } from "../styles/WallboardStyles";
-import { SLACK_REPLICATION_CHANNEL } from "../utils/Config";
 import { createJenkinslistFromRoot } from "../utils/Utils";
+import { SLACK_WALLBOARD_CHANNEL } from "../utils/Config";
 
 const GITHUB_HEIGHT = 400;
 const DEV_SPACE = 60;
@@ -19,7 +19,7 @@ const StyleBuildStatus = {
   margin: `20px 10px 20px 20px`
 };
 
-const StyleEvent = {
+const StyleMedia = {
   height: `calc(100% - ${DEV_SPACE}px - 20px)`,
   width: `calc(33% - 30px)`,
   margin: `20px 10px 20px 10px`
@@ -69,13 +69,13 @@ class I2OWallboard extends React.Component {
           listvert
           disable
         />
-        <EventComponent style={StyleEvent} wallboard={"I2O"} disableEffect />
+        <MediaComponent style={StyleMedia} wallboard={"I2O"} disableEffect />
         <RightBox item>
           <SlackComponent
             style={StyleSlack}
             type={["CHANNEL"]}
             name="SlackComponent"
-            default={SLACK_REPLICATION_CHANNEL}
+            default={SLACK_WALLBOARD_CHANNEL}
           />
           <Github
             style={StyleGithub}
