@@ -109,12 +109,12 @@ class GSRWallboard extends React.Component {
             name="SlackComponent"
             default={SLACK_GSR_DEV_CHANNEL}
           />
-          <Github
+          {/* <Github
             style={StyleGithub}
             type={["REPOPATH"]}
             name="Github"
             default="connexta/gsr-yorktown"
-          />
+          /> */}
         </RightBox>
       </Grid>
     );

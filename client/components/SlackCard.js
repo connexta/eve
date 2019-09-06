@@ -244,8 +244,11 @@ class SlackCard extends React.Component {
     }
 
     let message = this.props.messages[index];
-    let msgTime =
-      message.attachments == undefined ? message.ts : message.attachments[0].ts;
+    let msgTime = !message
+      ? 0
+      : message.attachments == undefined
+      ? message.ts
+      : message.attachments[0].ts;
     msgTime = msgTime == undefined ? message.ts : msgTime;
 
     return getRelativeTime(new Date(msgTime * 1000)); // convert sec to ms for date obj
@@ -259,13 +262,13 @@ class SlackCard extends React.Component {
 
     // check if author is bot or unknown
     let author =
-      message.attachments == undefined
+      !message || message.attachments == undefined
         ? this.userIdToName(message.user)
         : message.attachments[0].author_name;
     // Got rid of bot check, since all wallboard posts come from bot
     if (author == undefined) {
       if (
-        message.bot_id ||
+        (message && message.bot_id) ||
         (message.attachments && message.attachments.bot_id)
       ) {
         author = "Bot";
@@ -276,6 +279,7 @@ class SlackCard extends React.Component {
 
     // check for additional footer info
     let footer =
+      !message ||
       message.attachments == undefined ||
       message.attachments[0].footer == undefined
         ? ""
@@ -293,7 +297,7 @@ class SlackCard extends React.Component {
 
     let author;
     let avatar;
-    if (message != undefined) {
+    if (message) {
       // check if author is bot or unknown
       author =
         message.attachments == undefined
@@ -319,10 +323,11 @@ class SlackCard extends React.Component {
     }
 
     // account for message being shared message
-    let messageText =
-      message.attachments == undefined
-        ? message.text
-        : message.attachments[0].text;
+    let messageText = !message
+      ? ""
+      : message.attachments == undefined
+      ? message.text
+      : message.attachments[0].text;
     return this.getSlackStyleMessage(messageText);
   }
 
@@ -330,10 +335,11 @@ class SlackCard extends React.Component {
     let message = this.props.messages[index];
 
     // check if message has attachments (message is link to another message)
-    let media =
-      message.attachments == undefined
-        ? message.image_url
-        : message.attachments[0].image_url;
+    let media = !message
+      ? null
+      : message.attachments == undefined
+      ? message.image_url
+      : message.attachments[0].image_url;
 
     // check if message has media, creating html snippet if it does
     media =
@@ -343,12 +349,12 @@ class SlackCard extends React.Component {
 
     // check if message has file, creating html snippet if it does
     media =
-      message.files == undefined
+      !message || message.files == undefined
         ? media
         : `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.files[0].url_private} alt="file" /></div>`;
 
     // check if message attachment has file to share
-    if (message.attachments && message.attachments[0].files) {
+    if (message && message.attachments && message.attachments[0].files) {
       media = `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.attachments[0].files[0].url_private} alt="file" /></div>`;
     }
 

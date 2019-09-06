@@ -25,6 +25,7 @@ import {
 } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
 import componentHOC from "./Settings/componentHOC";
+import { callbackify } from "util";
 
 const ROTATE_FREQ = time({ seconds: 15 });
 export const MEDIA_EVENT_CARD_HEIGHT = 696;
@@ -48,7 +49,7 @@ const CarouselContentLink = styled(CarouselContent)`
 
 const CarouselMedia = styled.img`
   max-width: calc(100% - 48px);
-  max-height: calc(100% - 120px);
+  /* max-height: calc(100% - 120px); */
   border-radius: 4px;
 `;
 
@@ -391,6 +392,9 @@ class MediaComponent extends React.Component {
     } else {
       let card = this.state.carousel[this.state.displayIndex];
 
+      let imageHeight =
+        card.title == null && card.body == null ? "100%" : "calc(100% - 120px)";
+
       return (
         <>
           <BoxHeader style={{ width: "100%" }}>
@@ -407,6 +411,7 @@ class MediaComponent extends React.Component {
               {this.state.carousel[this.state.displayIndex].media ==
               null ? null : (
                 <CarouselMedia
+                  style={{ maxHeight: imageHeight }}
                   src={"/" + this.state.carousel[this.state.displayIndex].media}
                 ></CarouselMedia>
               )}
