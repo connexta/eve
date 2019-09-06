@@ -91,8 +91,16 @@ class TVWallboard extends React.Component {
             direction="row"
             style={{ height: "calc(100% - 260px)" }}
           >
-            <MediaComponent style={StyleMedia} wallboard={"tv"} disableEffect />
-            <EventComponent style={StyleEvent} wallboard={"tv"} disableEffect />
+            <MediaComponent
+              style={StyleMedia}
+              wallboard={"tv"}
+              name="MediaComponent"
+            />
+            <EventComponent
+              style={StyleEvent}
+              wallboard={"tv"}
+              name="EventComponent"
+            />
           </Grid>
         </LeftBox>
         <RightBox item>

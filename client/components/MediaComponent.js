@@ -85,7 +85,6 @@ class MediaEdit extends React.Component {
     this.inputRef = React.createRef();
 
     this.state = {
-      open: false,
       add: false,
       title: null,
       body: null,
@@ -95,12 +94,8 @@ class MediaEdit extends React.Component {
     };
   }
 
-  handleClickOpen() {
-    this.setState({ open: true });
-  }
-
   handleClose() {
-    this.setState({ open: false });
+    this.props.close();
   }
 
   // checks if image type is valid
@@ -165,15 +160,10 @@ class MediaEdit extends React.Component {
   render() {
     return (
       <div style={{ display: "inline-block", position: "absolute", right: 0 }}>
-        {this.props.edit ? (
-          <Edit onClick={this.handleClickOpen.bind(this)} />
-        ) : (
-          undefined
-        )}
         <Dialog
           onClose={this.handleClose.bind(this)}
           aria-labelledby="edit-media-dialog"
-          open={this.state.open}
+          open={this.props.open}
           maxWidth={false}
         >
           <DialogTitle>Add/Remove Media</DialogTitle>
@@ -271,7 +261,8 @@ class MediaComponent extends React.Component {
     this.state = {
       carousel: [],
       displayIndex: 0,
-      numCards: 0
+      numCards: 0,
+      open: false
     };
   }
 
@@ -374,19 +365,32 @@ class MediaComponent extends React.Component {
     });
   }
 
+  handleClickOpen() {
+    this.props.edit ? this.setState({ open: true }) : null;
+  }
+
+  handleClose() {
+    this.setState({ open: false });
+  }
+
   render() {
     if (this.state.numCards <= 0) {
       return (
         <>
-          <BoxHeader style={{ width: "100%" }}>
-            Company Media
-            <MediaEdit
-              media={this.state.carousel}
-              remove={this.removeMedia.bind(this)}
-              addMedia={this.addMedia.bind(this)}
-              edit={this.props.edit}
-            />
-          </BoxHeader>
+          <MediaEdit
+            media={this.state.carousel}
+            remove={this.removeMedia.bind(this)}
+            addMedia={this.addMedia.bind(this)}
+            edit={this.props.edit}
+            open={this.state.open}
+            close={this.handleClose.bind(this)}
+          />
+          <div
+            onClick={this.handleClickOpen.bind(this)}
+            style={{ zIndex: 5, height: "100%" }}
+          >
+            <BoxHeader style={{ width: "100%" }}>Company Media</BoxHeader>
+          </div>
         </>
       );
     } else {
@@ -397,67 +401,75 @@ class MediaComponent extends React.Component {
 
       return (
         <>
-          <BoxHeader style={{ width: "100%" }}>
-            Company Media
-            <MediaEdit
-              media={this.state.carousel}
-              remove={this.removeMedia.bind(this)}
-              addMedia={this.addMedia.bind(this)}
-              edit={this.props.edit}
-            />
-          </BoxHeader>
-          {card.link == null ? (
-            <CarouselContent>
-              {this.state.carousel[this.state.displayIndex].media ==
-              null ? null : (
-                <CarouselMedia
-                  style={{ maxHeight: imageHeight }}
-                  src={"/" + this.state.carousel[this.state.displayIndex].media}
-                ></CarouselMedia>
-              )}
-              <p>{card.title}</p>
-              <CarouselBody>{card.body}</CarouselBody>
-            </CarouselContent>
-          ) : (
-            <CarouselContentLink
-              onClick={() => {
-                window.open(card.link);
-              }}
-            >
-              {this.state.carousel[this.state.displayIndex].media ==
-              null ? null : (
-                <CarouselMedia
-                  src={"/" + this.state.carousel[this.state.displayIndex].media}
-                ></CarouselMedia>
-              )}
-              <p>{card.title}</p>
-              <CarouselBody>{card.body}</CarouselBody>
-            </CarouselContentLink>
-          )}
-          <StyledMobileStepper
-            activeStep={this.state.displayIndex}
-            steps={this.state.numCards}
-            variant={"dots"}
-            position={"static"}
-            nextButton={
-              <Button
-                size="small"
-                onClick={() => this.switchCard(this.state.displayIndex + 1)}
-              >
-                Next
-                <KeyboardArrowRight />
-              </Button>
-            }
-            backButton={
-              <Button
-                size="small"
-                onClick={() => this.switchCard(this.state.displayIndex - 1)}
-              >
-                <KeyboardArrowLeft />
-                Back
-              </Button>
-            }
+          <MediaEdit
+            media={this.state.carousel}
+            remove={this.removeMedia.bind(this)}
+            addMedia={this.addMedia.bind(this)}
+            edit={this.props.edit}
+            open={this.state.open}
+            close={this.handleClose.bind(this)}
           />
+          <div
+            onClick={this.handleClickOpen.bind(this)}
+            style={{ zIndex: 5, height: "100%" }}
+          >
+            <BoxHeader style={{ width: "100%" }}>Company Media</BoxHeader>
+            {card.link == null ? (
+              <CarouselContent>
+                {this.state.carousel[this.state.displayIndex].media ==
+                null ? null : (
+                  <CarouselMedia
+                    src={
+                      "/" + this.state.carousel[this.state.displayIndex].media
+                    }
+                  ></CarouselMedia>
+                )}
+                <p>{card.title}</p>
+                <CarouselBody>{card.body}</CarouselBody>
+              </CarouselContent>
+            ) : (
+              <CarouselContentLink
+                onClick={() => {
+                  window.open(card.link);
+                }}
+              >
+                {this.state.carousel[this.state.displayIndex].media ==
+                null ? null : (
+                  <CarouselMedia
+                    src={
+                      "/" + this.state.carousel[this.state.displayIndex].media
+                    }
+                  ></CarouselMedia>
+                )}
+                <p>{card.title}</p>
+                <CarouselBody>{card.body}</CarouselBody>
+              </CarouselContentLink>
+            )}
+            <StyledMobileStepper
+              activeStep={this.state.displayIndex}
+              steps={this.state.numCards}
+              variant={"dots"}
+              position={"static"}
+              nextButton={
+                <Button
+                  size="small"
+                  onClick={() => this.switchCard(this.state.displayIndex + 1)}
+                >
+                  Next
+                  <KeyboardArrowRight />
+                </Button>
+              }
+              backButton={
+                <Button
+                  size="small"
+                  onClick={() => this.switchCard(this.state.displayIndex - 1)}
+                >
+                  <KeyboardArrowLeft />
+                  Back
+                </Button>
+              }
+            />
+          </div>
         </>
       );
     }

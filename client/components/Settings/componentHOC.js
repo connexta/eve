@@ -348,7 +348,11 @@ const componentHOC = WrappedComponent => {
           raised={true}
           outline={!this.props.disableEffect ? "true" : undefined}
         >
-          <WrappedComponent {...this.props} content={this.state.content} />
+          <WrappedComponent
+            {...this.props}
+            content={this.state.content}
+            edit={this.state.edit}
+          />
         </ComponentWrapper>
       );
     }
@@ -370,6 +374,10 @@ const componentHOC = WrappedComponent => {
     render() {
       return this.state.isLoading ? (
         <></>
+      ) : this.props.name === "EventComponent" ||
+        this.props.name === "MediaComponent" ||
+        this.props.name === "ReleaseVersion" ? (
+        this.displayComponent()
       ) : (
         <>
           {this.props.name === "Banner"
