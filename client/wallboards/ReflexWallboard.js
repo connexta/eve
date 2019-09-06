@@ -81,12 +81,12 @@ class ReflexWallboard extends React.Component {
             <MediaComponent
               style={StyleMedia}
               wallboard={"reflex"}
-              disableEffect
+              name="MediaComponent"
             />
             <EventComponent
               style={StyleEvent}
               wallboard={"reflex"}
-              disableEffect
+              name="EventComponent"
             />
           </Grid>
         </LeftBox>
