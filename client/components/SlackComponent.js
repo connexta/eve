@@ -231,7 +231,7 @@ class SlackComponent extends React.Component {
     console.log("MAX_MSGS", MAX_MSGS);
 
     let cardList = [];
-    for (let i = 0; i < MAX_MSGS; i++) {
+    for (let i = 0; i < this.state.messages.legnth && i < MAX_MSGS; i++) {
       cardList.push(
         <SlackCard
           key={i}
