@@ -1,5 +1,8 @@
 # Wallboard Variants
 This directory contains all of the wallboard variants that are used. Each variant is built to serve specific team needs based on the feedback we have been given. Additionally, there are two special wallboard variants given below. The wallboad variants are served by routing.
+
+Each wallboard uses the same components stored in the `components` folder.  These components can be styled using wrapper classes to determine a component's width and height.
+
 ## Home
 This variant is the root of all routing and will be the first page the user sees. It allows the user to access any of the other variants through buttons. When new wallboard variants are added, `Home.js` needs to be updated to reflect the new variant option.
 

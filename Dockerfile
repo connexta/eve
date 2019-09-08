@@ -3,12 +3,10 @@ FROM node:latest as build
 
 ARG SLACK_CHANNEL
 ARG SLACK_TOKEN
-ARG GITHUB_CLIENT_ID
-ARG GITHUB_CLIENT_SECRET
+ARG GITHUB_TOKEN
 ENV SLACK_CHANNEL=$SLACK_CHANNEL \
     SLACK_TOKEN=$SLACK_TOKEN \
-    GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID \
-    GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET 
+    GITHUB_TOKEN=$GITHUB_TOKEN
 
 COPY . /app
 WORKDIR /app
@@ -40,6 +38,9 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 RUN mkdir -p /usr/src/app/server/target
 COPY --from=build /app/target /usr/src/app/server/target
+
+RUN mkdir -p /eve
+COPY --from=build /app/eve /eve
 
 WORKDIR /usr/src/app
 ADD ./server ./server

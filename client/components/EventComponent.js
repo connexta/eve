@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { withStyles } from "@material-ui/styles";
 import { BoxStyle, BoxHeader } from "../styles/styles";
+import { Divider } from "@material-ui/core";
 import {
   time,
   localizeTime,
@@ -11,32 +13,19 @@ import {
 import { callApi } from "./Calendar/GraphService";
 import config from "./Calendar/GraphConfig";
 import { UserAgentApplication } from "msal";
-import {
-  Dialog,
-  List,
-  ListItem,
-  ListItemText,
-  DialogTitle,
-  Button,
-  Divider
-} from "@material-ui/core";
 import makeTrashable from "trashable";
+import EventEdit from "./EventEdit";
+import componentHOC from "./Settings/componentHOC";
 
-const DAYS_AFTER = 7; // how many days in the future to grab events
+const MONTHS_AFTER = 2; // how many months in the future to grab events
 const NUM_EVENTS_GRAB = 50; //limit on number of events to grab from API
 const CALL_FREQ = time({ minutes: 30 }); //how often to refresh calendar events
-
-const ButtonContainer = styled.div`
-  width: 300px;
-  margin-left: calc(5% - 3px); /* 3 px to accomodate rbc-btn-group margins */
-  display: flex;
-  flex-direction: row;
-  position: absolute;
-  right: 0;
-`;
+const EVENT_HEIGHT = 110; //height of one event in pixels
 
 const EventContainer = styled.div`
-  margin-top: 72px;
+  position: absolute;
+  top: 72px;
+  width: 100%;
 `;
 
 const EventBlock = styled.div`
@@ -56,11 +45,6 @@ const EventDescription = styled.div`
   margin-left: 20px;
 `;
 
-const StyledButton = styled(Button)`
-  height: 32px;
-  vertical-align: top;
-`;
-
 export const CarouselContent = styled.div`
   text-align: center;
   cursor: pointer;
@@ -71,84 +55,25 @@ export const CarouselContent = styled.div`
   margin: 20px 0 0 0;
 `;
 
-export const MediaCard = styled(BoxStyle)`
-  width: calc((100% / 2) - 24px);
-  height: 100%;
-  margin: 0 0 0 24px;
+export const EventCard = styled(BoxStyle)`
   position: relative;
 `;
 
 const Header = styled(BoxHeader)`
   width: 100%;
-  display: flex;
-  flex-direction: row;
 `;
 
-// Function to toggle between log in / log out button depending on state
-export function LogInOut(props) {
-  return props.isAuthenticated ? (
-    <StyledButton variant={"outlined"} onClick={props.logOut}>
-      Log Out
-    </StyledButton>
-  ) : (
-    <StyledButton variant={"outlined"} onClick={props.logIn}>
-      Log In
-    </StyledButton>
-  );
-}
+const StyleDivider = withStyles({
+  root: {
+    width: "calc(100% - 40px)"
+  }
+})(Divider);
 
-export class DialogAndButton extends React.Component {
+class EventComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      open: false
-    };
-  }
-
-  handleClickOpen() {
-    this.setState({ open: true });
-  }
-
-  handleClose(value) {
-    this.setState({ open: false });
-    this.props.callback(value);
-  }
-
-  render() {
-    return (
-      <div>
-        <StyledButton
-          type="button"
-          variant={"outlined"}
-          onClick={this.handleClickOpen.bind(this)}
-        >
-          Select Calendar
-        </StyledButton>
-        <Dialog
-          onClose={this.handleClose.bind(this)}
-          aria-labelledby="select-calendar-dialog"
-          open={this.state.open}
-        >
-          <DialogTitle id="select-calendar-dialog-title">
-            Select Calendar
-          </DialogTitle>
-          <List>
-            {this.props.calendars.map((cal, i) => (
-              <ListItem button onClick={() => this.handleClose(cal.id)} key={i}>
-                <ListItemText primary={cal.name} />
-              </ListItem>
-            ))}
-          </List>
-        </Dialog>
-      </div>
-    );
-  }
-}
-
-export default class MediaComponent extends React.Component {
-  constructor(props) {
-    super(props);
+    this.divRef = React.createRef();
 
     // grab and store user credentials
     this.userAgentApplication = new UserAgentApplication({
@@ -163,7 +88,7 @@ export default class MediaComponent extends React.Component {
     });
 
     let user = this.userAgentApplication.getAccount();
-    let cal = localStorage.getItem("chosenCalendar");
+    let cal = localStorage.getItem("chosenCalendar" + this.props.wallboard);
 
     this.state = {
       displayIndex: 0,
@@ -171,25 +96,57 @@ export default class MediaComponent extends React.Component {
       events: [],
       calendars: [],
       chosenCal: cal,
-      height: window.innerHeight
+      numEvents: 0,
+      open: false
     };
+  }
 
-    if (user) {
-      this.getCalendars();
-    }
+  getNumEvents(height) {
+    return Math.floor(height / EVENT_HEIGHT);
+  }
 
-    if (cal) this.getCalendarEvents(cal);
+  async getDefaultEvents() {
+    let eventData = await fetch("/event?route=" + this.props.wallboard, {
+      method: "GET"
+    })
+      .catch(err => console.log(err))
+      .then(res => {
+        if (!res.ok) {
+          console.log("Failed to fetch event data from backend");
+          return;
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => res.events);
+
+    eventData = eventData.map(evt => {
+      return {
+        end: new Date(evt.end),
+        location: evt.location,
+        start: new Date(evt.start),
+        title: evt.title,
+        local: true
+      };
+    });
+
+    let sorted = eventData.sort((a, b) => {
+      return a.start.getTime() - b.start.getTime();
+    });
+
+    return sorted;
   }
 
   // clean up event data so it works with big-react-calendar
-  updateEvents(eventData) {
+  async updateEvents(eventData) {
     if (eventData != null && eventData.length > 0) {
       eventData = eventData.map(event => ({
         title: event.subject,
         start: event.start,
         end: event.end,
         bodyPreview: event.bodyPreview,
-        location: event.location.displayName
+        location: event.location.displayName,
+        local: false
       }));
 
       for (let i = 0; i < eventData.length; i++) {
@@ -203,18 +160,21 @@ export default class MediaComponent extends React.Component {
         );
       }
 
-      eventData.sort((a, b) => {
+      let temp = eventData.concat(this.state.events);
+
+      temp.sort((a, b) => {
         return a.start.getTime() - b.start.getTime();
       });
 
       this.setState({
         isAuthenticated: true,
-        events: eventData,
+        events: temp,
         error: null
       });
     } else {
       this.setState({
-        events: []
+        isAuthenticated: true,
+        error: null
       });
     }
   }
@@ -279,8 +239,8 @@ export default class MediaComponent extends React.Component {
   // stores chosenCal in state and in cache before calling getCalendarEvents()
   async changeState(cal) {
     this.setState({ chosenCal: cal });
-    localStorage.setItem("chosenCalendar", cal);
-    this.getCalendarEvents(cal);
+    localStorage.setItem("chosenCalendar" + this.props.wallboard, cal);
+    this.setEvents();
   }
 
   //Fetch event data for next DAYS_AFTER days
@@ -298,9 +258,12 @@ export default class MediaComponent extends React.Component {
         let startDate = new Date();
 
         let endDate = new Date();
-        let newDate = endDate.getDate() + DAYS_AFTER;
+        let newMonth = endDate.getMonth() + MONTHS_AFTER;
 
-        endDate.setDate(newDate > 32 ? newDate - 30 : newDate);
+        if (newMonth > 11) {
+          endDate.setMonth(newDate - 12);
+          endDate.setFullYear(endDate.getFullYear() + 1);
+        } else endDate.setMonth(newMonth);
 
         let call =
           "/me/calendars/" +
@@ -319,17 +282,47 @@ export default class MediaComponent extends React.Component {
     } catch (err) {
       console.log("Error retrieving Calendar Events");
       catchError(err);
+      await this.updateEvents([]);
     }
   }
 
+  // Adjusts number of events to display based on size of container
   handleResize() {
-    this.setState({ height: window.innerHeight });
+    if (this.divRef.current && this.divRef.current != null) {
+      this.setState({
+        numEvents: this.getNumEvents(this.divRef.current.clientHeight)
+      });
+    }
+  }
+
+  // Grabs default and (if applicable) calendar events
+  async setEvents() {
+    this.setState({ events: await this.getDefaultEvents() });
+
+    if (
+      this.state.isAuthenticated &&
+      this.state.chosenCal &&
+      this.state.chosenCal != "None" &&
+      this.state.chosenCal != null
+    ) {
+      this.getCalendarEvents(this.state.chosenCal);
+    }
   }
 
   // Refresh user information/calendar events
-  componentDidMount() {
-    if (this.state.isAuthenticated && this.state.chosenCal)
-      this.getCalendarEvents(this.state.chosenCal);
+  async componentDidMount() {
+    if (this.divRef.current && this.divRef.current != null) {
+      this.setState({
+        numEvents: this.getNumEvents(this.divRef.current.clientHeight)
+      });
+    }
+
+    if (this.state.isAuthenticated) {
+      this.getCalendars();
+    }
+
+    await this.setEvents();
+
     this.timerIntervalID = setInterval(() => {
       if (this.state.isAuthenticated && this.state.chosenCal)
         this.getCalendarEvents(this.state.chosenCal);
@@ -343,79 +336,137 @@ export default class MediaComponent extends React.Component {
     if (this.trashableAccessToken) this.trashableAccessToken.trash();
     if (this.trashableAPICall) this.trashableAPICall.trash();
     if (this.trashableLogIn) this.trashableLogIn.trash();
+
+    window.removeEventListener("resize", this.handleResize.bind(this));
   }
 
+  // Text to display if there are no events loaded
   noEventMessage() {
     if (!this.state.isAuthenticated) {
-      return <div>Please sign in</div>;
+      return <div>Please sign in or add events in settings mode</div>;
     } else if (!this.state.chosenCal) {
-      return <div>Select calendar to display events</div>;
+      return (
+        <div>
+          Select calendar to display events or add events in settings mode
+        </div>
+      );
     } else if (this.state.events.length <= 0) {
-      return <div>No events to display</div>;
+      return <div>No events to display, please add some in settings mode</div>;
     } else {
       return <div>Trouble displaying events</div>;
     }
   }
 
+  // adds manual event to state and to back end list
+  addEvent(event) {
+    let temp = this.state.events;
+    temp.push(event);
+    temp.sort((a, b) => {
+      return a.start.getTime() - b.start.getTime();
+    });
+
+    this.setState({
+      events: temp
+    });
+
+    fetch("/event", {
+      method: "POST",
+      body: JSON.stringify({ route: this.props.wallboard, event: event }),
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
+  // removes event from state and from back end
+  removeEvent(num) {
+    let event = this.state.events[num];
+
+    fetch("/removeEvent", {
+      method: "POST",
+      body: JSON.stringify({ route: this.props.wallboard, event: event }),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    let temp = this.state.events.filter((evt, i) => i != num);
+
+    this.setState({ events: temp });
+  }
+
+  setOpen() {
+    this.props.edit ? this.setState({ open: true }) : null;
+  }
+
+  setClose() {
+    this.setState({ open: false });
+  }
+
   render() {
-    let numEvents = Math.floor((this.state.height - 480) / 110);
-    let eventData = this.state.events.slice(0, numEvents);
-
-    let calButton = this.state.isAuthenticated ? (
-      <DialogAndButton
-        calendars={this.state.calendars}
-        callback={this.changeState.bind(this)}
-      />
-    ) : null;
-
+    let eventData = this.state.events.slice(0, this.state.numEvents);
     return (
-      <MediaCard raised={true}>
-        <Header>
-          Company Events
-          <ButtonContainer>
-            <LogInOut
-              isAuthenticated={this.state.isAuthenticated}
-              logIn={this.login.bind(this)}
-              logOut={this.logout.bind(this)}
-            />
-            {calButton}
-          </ButtonContainer>
-        </Header>
-        {this.state.events.length <= 0 ? (
-          this.noEventMessage()
-        ) : (
-          <EventContainer>
-            <Divider />
-            {eventData.map((event, i) => {
-              let day = getDayofWeek(event.start.getDay());
-              let date =
-                event.start.getMonth() + 1 + "/" + event.start.getDate();
+      <div style={{ height: "100%", width: "100%" }}>
+        <div
+          onClick={() =>
+            this.props.edit ? this.setState({ open: true }) : null
+          }
+          style={{ zIndex: 5, height: "100%", width: "100%" }}
+        >
+          <Header>Company Events</Header>
+          <div
+            style={{ height: "calc(100% - 90px)", width: "100%" }}
+            ref={this.divRef}
+          >
+            {this.state.events.length <= 0 ? (
+              this.noEventMessage()
+            ) : (
+              <EventContainer>
+                <StyleDivider />
+                {eventData.map((evt, i) => {
+                  let day = getDayofWeek(evt.start.getDay());
+                  let date =
+                    evt.start.getMonth() + 1 + "/" + evt.start.getDate();
 
-              let startTime = getTimeString(event.start);
-              let endTime = getTimeString(event.end);
+                  let startTime = getTimeString(evt.start);
+                  let endTime = getTimeString(evt.end);
 
-              return (
-                <div key={i}>
-                  <Divider />
-                  <EventBlock>
-                    <EventTime>
-                      <div>{day + " " + date}</div>
-                      <div>{startTime + " -"}</div>
-                      <div>{endTime}</div>
-                    </EventTime>
-                    <EventDescription>
-                      <div>{event.title}</div>
-                      <div>{event.location}</div>
-                    </EventDescription>
-                  </EventBlock>
-                  <Divider />
-                </div>
-              );
-            })}
-            <Divider />
-          </EventContainer>
-        )}
-      </MediaCard>
+                  return (
+                    <div key={i}>
+                      <StyleDivider />
+                      <EventBlock>
+                        <EventTime>
+                          <div>{day + " " + date}</div>
+                          <div>{startTime + " -"}</div>
+                          <div>{endTime}</div>
+                        </EventTime>
+                        <EventDescription>
+                          <div>{evt.title}</div>
+                          <div>{evt.location}</div>
+                        </EventDescription>
+                      </EventBlock>
+                      <StyleDivider />
+                    </div>
+                  );
+                })}
+                <StyleDivider />
+              </EventContainer>
+            )}
+          </div>
+        </div>
+        <EventEdit
+          isAuthenticated={this.state.isAuthenticated}
+          logIn={this.login.bind(this)}
+          logOut={this.logout.bind(this)}
+          chosenCal={this.state.chosenCal}
+          calendars={this.state.calendars}
+          callback={this.changeState.bind(this)}
+          events={this.state.events}
+          addEvent={this.addEvent.bind(this)}
+          removeEvent={this.removeEvent.bind(this)}
+          open={this.state.open}
+          close={() => this.setState({ open: false })}
+        />
+      </div>
     );
   }
 }
+
+const WrappedComponent = componentHOC(EventComponent);
+export default WrappedComponent;
