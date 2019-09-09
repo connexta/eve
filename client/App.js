@@ -12,7 +12,6 @@ import NullWallboard from "./wallboards/NullWallboard";
 import Setting from "./components/Settings/Setting";
 import Banner from "./components/Banner";
 import Grid from "@material-ui/core/Grid";
-
 import { StylesProvider } from "@material-ui/styles";
 
 const RootGrid = styled(Grid)`

@@ -1,13 +1,13 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import { IONURL } from "../utils/Link";
 import { connect } from "react-redux";
 import { updateCurrentWallboard, leaveEdit } from "../actions";
 import MediaComponent from "../components/MediaComponent";
 import Github from "../components/Github";
 import SlackComponent from "../components/SlackComponent";
-import TeamBuildStatus from "../components/TeamBuildStatus";
+import BuildStatus from "../components/BuildStatus";
 import { RightBox } from "../styles/WallboardStyles";
+import { createJenkinslistFromRoot } from "../utils/Utils";
 import { SLACK_WALLBOARD_CHANNEL } from "../utils/Config";
 
 const GITHUB_HEIGHT = 400;
@@ -47,6 +47,11 @@ class I2OWallboard extends React.Component {
 
   async componentDidMount() {
     await this.props.updateCurrentWallboard("I2O");
+    this.I2ODefaultData = await createJenkinslistFromRoot(
+      "ION",
+      "bitbucket",
+      "ion-"
+    );
     this.setState({ isLoading: false });
   }
 
@@ -60,16 +65,19 @@ class I2OWallboard extends React.Component {
       <></>
     ) : (
       <Grid container style={{ height: "100%" }} direction={"row"} spacing={0}>
-        <TeamBuildStatus
+        <BuildStatus
           style={StyleBuildStatus}
           type={["URL", "NAME"]}
-          rootURL={IONURL}
-          teamName="ION"
           name="BuildStatus"
+          default={this.I2ODefaultData}
           listvert
           disable
         />
-        <MediaComponent style={StyleMedia} wallboard={"I2O"} name="MediaComponent" />
+        <MediaComponent
+          style={StyleMedia}
+          wallboard={"I2O"}
+          name="MediaComponent"
+        />
         <RightBox item>
           <SlackComponent
             style={StyleSlack}
