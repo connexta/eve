@@ -4,7 +4,6 @@ import {
   Button,
   Dialog,
   DialogTitle,
-  DialogContent,
   Table,
   TableBody,
   TableCell,
@@ -14,7 +13,7 @@ import {
   Select,
   MenuItem
 } from "@material-ui/core";
-import { Edit, Add, Delete, Save } from "@material-ui/icons";
+import { Add, Delete, Save } from "@material-ui/icons";
 import { withStyles } from "@material-ui/core/styles";
 
 const StyledButton = styled(Button)`
@@ -25,12 +24,6 @@ const StyledButton = styled(Button)`
   top: 20px;
   right: 20px;
   vertical-align: top;
-`;
-
-const EditContainer = styled.div`
-  display: inline-block;
-  position: absolute;
-  right: 20px;
 `;
 
 const SelectCal = withStyles({
@@ -108,7 +101,8 @@ export default class EventEdit extends React.Component {
       end: this.getDateObject(this.state.end, this.state.endTime),
       location: this.state.location,
       start: this.getDateObject(this.state.start, this.state.startTime),
-      title: this.state.title
+      title: this.state.title,
+      local: true
     });
 
     this.setState({

@@ -11,6 +11,7 @@ import componentHOC from "./Settings/componentHOC";
 const TOKEN = process.env.SLACK_TOKEN;
 const MAX_MSGS = 10;
 const ROTATE_INTERVAL = time({ seconds: 30 });
+const NUM_MSG_GRAB = 500;
 
 const CardContainer = styled.div`
   display: flex;
@@ -31,7 +32,7 @@ const SlackCardContainer = styled.div`
 const GradientBlock = styled.div`
   height: 15%;
   width: 100%;
-  bottom: -20px; /*go down below as much as the padding*/
+  bottom: 12px; /*go down below as much as the padding*/
   background: linear-gradient(transparent, ${CX_OFF_WHITE});
   position: absolute;
   z-index: 2;
@@ -41,7 +42,7 @@ const WhiteBlock = styled.div`
   position: absolute;
   height: 12px;
   width: 100%;
-  bottom: -20px;
+  bottom: 0;
   background: ${CX_OFF_WHITE};
   z-index: 3;
 `;
@@ -128,7 +129,9 @@ class SlackComponent extends React.Component {
       "https://slack.com/api/channels.history?token=" +
         TOKEN +
         "&channel=" +
-        this.props.content
+        this.props.content +
+        "&count=" +
+        NUM_MSG_GRAB
     );
     this.trashableRequestList[0] = makeTrashable(this.fetchData(url));
     try {
@@ -226,7 +229,7 @@ class SlackComponent extends React.Component {
   //create state with a arraylist consisting of SlackCard component with unique keys/index up to MAX_MSGS.
   setSlackMsg() {
     let cardList = [];
-    for (let i = 0; i < MAX_MSGS; i++) {
+    for (let i = 0; i < this.state.messages.length && i < MAX_MSGS; i++) {
       cardList.push(
         <SlackCard
           key={i}
