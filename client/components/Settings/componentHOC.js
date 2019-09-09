@@ -550,6 +550,10 @@ const componentHOC = WrappedComponent => {
     render() {
       return this.state.isLoading ? (
         <></>
+      ) : this.props.name === "EventComponent" ||
+        this.props.name === "MediaComponent" ||
+        this.props.name === "ReleaseVersion" ? (
+        this.displayComponent()
       ) : (
         <>
           {this.props.name === "Banner"

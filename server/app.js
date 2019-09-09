@@ -36,6 +36,7 @@ const themeFileLocation = prod ? "/eve/theme.json" : "eve/theme.json";
 const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
 const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
 const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
+const eventFile = prod ? "/eve/event.json" : "eve/event.json";
 
 /* CRON JOB */
 // grafana cron job
@@ -157,6 +158,77 @@ app.post("/remove", function(req, res) {
   }
 
   res.end("No card to delete");
+});
+
+app.get("/event", function(req, res) {
+  if (fs.existsSync(eventFile)) {
+    let content = JSON.parse(fs.readFileSync(eventFile));
+
+    let route = content.routes.find(item => item.route === req.query.route);
+
+    if (route == undefined) res.send({ events: [] });
+    else res.send({ events: route.events });
+  } else res.send({ events: [] });
+});
+
+app.post("/event", function(req, res) {
+  if (fs.existsSync(eventFile)) {
+    let content = JSON.parse(fs.readFileSync(eventFile));
+
+    let index;
+    let route = content.routes.find((item, i) => {
+      index = i;
+      return item.route === req.body.route;
+    });
+    if (content.routes == undefined) {
+      content = {
+        routes: [{ route: req.body.route, events: [req.body.event] }]
+      };
+    } else if (route == undefined) {
+      content.routes.push({ route: req.body.route, events: [req.body.event] });
+    } else {
+      route.events.push(req.body.event);
+      content.routes[index] = route;
+    }
+
+    fs.writeFileSync(eventFile, JSON.stringify(content));
+    res.end("Data sent successfully");
+  } else {
+    content = {
+      routes: [{ route: req.body.route, events: [req.body.event] }]
+    };
+
+    fs.writeFileSync(eventFile, JSON.stringify(content));
+    res.end("Data sent successfully");
+  }
+});
+
+app.post("/removeEvent", function(req, res) {
+  if (fs.existsSync(eventFile)) {
+    let content = JSON.parse(fs.readFileSync(eventFile));
+    let removed = req.body.event;
+    let index;
+
+    let route = content.routes.find((item, i) => {
+      index = i;
+      return item.route === req.body.route;
+    });
+
+    if (route != undefined) {
+      content.routes[index].events = route.events.filter(
+        event =>
+          !(
+            event.title == removed.title &&
+            event.location == removed.location &&
+            event.startTime == removed.startTime &&
+            event.endTime == removed.endTime
+          )
+      );
+
+      fs.writeFileSync(eventFile, JSON.stringify(content));
+    }
+  }
+  res.end("Data removed successfully");
 });
 
 // Reads version data and sends to client

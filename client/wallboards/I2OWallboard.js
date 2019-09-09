@@ -73,7 +73,7 @@ class I2OWallboard extends React.Component {
           listvert
           disable
         />
-        <MediaComponent style={StyleMedia} wallboard={"I2O"} disableEffect />
+        <MediaComponent style={StyleMedia} wallboard={"I2O"} name="MediaComponent" />
         <RightBox item>
           <SlackComponent
             style={StyleSlack}
