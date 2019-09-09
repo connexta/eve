@@ -9,7 +9,8 @@ import { connect } from "react-redux";
 import { toggleEdit } from "../../actions";
 
 const StyleFab = styled(Fab)`
-  visibility: ${props => (props.currentwallboard === "TV" ? "hidden" : "visible")};
+  visibility: ${props =>
+    props.currentwallboard === "TV" ? "hidden" : "visible"};
   opacity: ${props => (props.currentwallboard === "TV" ? 0 : 1)};
   transition: visibility 0.5s, opacity 0.5s linear;
 `;

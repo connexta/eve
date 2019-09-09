@@ -129,8 +129,8 @@ class BuildStatus extends React.Component {
 
   fetchD(URL) {
     return fetch(URL)
-    .then(response => response.json())
-    .catch(e => console.log("error", e));
+      .then(response => response.json())
+      .catch(e => console.log("error", e));
   }
 
   //fetch data from the jenkin url
@@ -150,9 +150,15 @@ class BuildStatus extends React.Component {
     if (item) {
       overallData[index] = {
         displayName: name,
-        oneScore: item.latestRun ? (item.latestRun.result === "SUCCESS" ? 100 : 0) : 0,
+        oneScore: item.latestRun
+          ? item.latestRun.result === "SUCCESS"
+            ? 100
+            : 0
+          : 0,
         fiveScore: item.weatherScore ? item.weatherScore : 0,
-        oneSubtitle: item.latestRun ? (getRelativeTime(new Date(item.latestRun.startTime))) : "No Data",
+        oneSubtitle: item.latestRun
+          ? getRelativeTime(new Date(item.latestRun.startTime))
+          : "No Data",
         fiveSubtitle: item.latestRun ? this.getFiveSubtitle(item) : "No Data"
       };
     } else {

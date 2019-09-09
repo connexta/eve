@@ -72,18 +72,19 @@ const componentHOC = WrappedComponent => {
       this.state = {
         open: false, //for first Dialog (user input)
         resultsOpen: false, //for Second Dialog (Success/Failure Results)
-        key: Date.now(),
-        metSaveRequirement: false,
-        isLoading: true,
-        edit: this.props.disable ? false : this.props.edit,
-        default: this.props.default || DefaultData[this.props.name],
-        dropDownSelectedName: []
+        key: Date.now(), //to reload the component once the changes has been applied
+        metSaveRequirement: false, //to validate input entry
+        isLoading: true, //for waiting initial data fetch
+        edit: this.props.disable ? false : this.props.edit, //edit state
+        default: this.props.default || DefaultData[this.props.name], //default data
+        dropDownSelectedName: [], //for maintaining the subsequent list from first selection.
+        dropDownSelectedNameSecond: [] //for maintaining the subsequent list from second selection (dropDownSelectedName).
       };
     }
 
     async componentDidMount() {
       await this.initialUpdateContent(this.props.name, this.state.default);
-      await this.initialFetchJenkinslist(); 
+      await this.initialFetchJenkinslist();
       this.setState({ isLoading: false });
     }
 
@@ -127,13 +128,13 @@ const componentHOC = WrappedComponent => {
     }
 
     //initially obtain jenkins list for BuildStatus.
-    async initialFetchJenkinslist(){
+    async initialFetchJenkinslist() {
       let jenkinsList = await fetch("/jenkinslist")
         .then(response => response.json())
         .catch(err => {
           console.log("Unable to retrieve jenkins data from backend ", err);
         });
-      this.setState({jenkinsList: jenkinsList});
+      this.setState({ jenkinsList: jenkinsList });
     }
 
     //Update the newly changed data to backend based on if the input format is single (i.e. string) or multiple input.
@@ -148,38 +149,70 @@ const componentHOC = WrappedComponent => {
 
     //if the data is an array type (multiple elements), partially update the data
     partialUpdate(content, index) {
-      this.setState({ 
-        content: this.insertElementIntoArray(this.state.content, content, index) 
+      this.setState({
+        content: this.insertElementIntoArray(this.state.content, content, index)
       });
     }
 
     //handle color change in child component ColorPicker
-    handleColorChange(color){
-      this.setState({COLOR:color.hex});
+    handleColorChange(color) {
+      this.setState({ COLOR: color.hex });
     }
 
     //handle channel change in child component Dropdown
-    handleChannelChange(channelID){
-      this.setState({CHANNEL: channelID})
+    handleChannelChange(channelID) {
+      this.setState({ CHANNEL: channelID.id });
     }
 
     //handle initial dropdown selection for jenkins in child component Dropdown
-    handleJenkinsNameChange(selectedName, index){
-      this.setState({dropDownSelectedName: this.insertElementIntoArray(this.state.dropDownSelectedName, selectedName, index)});
+    //Update the first entry, dropDownSelectedName; and removed second entry, dropDownSelectedNameSecond to clear it out.
+    handleJenkinsFirstChange(selectedName, index) {
+      this.setState({
+        dropDownSelectedName: this.insertElementIntoArray(
+          this.state.dropDownSelectedName,
+          selectedName,
+          index
+        ),
+        dropDownSelectedNameSecond: this.insertElementIntoArray(
+          this.state.dropDownSelectedNameSecond,
+          undefined,
+          index
+        ),
+        URL: [],
+        NAME: [],
+        LINK: []
+      });
     }
 
-    //handle second dropdown selection for jenkins in child component Dropdown
-    handleJenkinsURLChange(data, index){
+    //handle subsequent dropdown selection for jenkins in child component Dropdown
+    //Update the second entry only if it is not the last Dropdown selection
+    handleJenkinsDataChange(data, index, last) {
+      last
+        ? undefined
+        : this.setState({
+            dropDownSelectedNameSecond: this.insertElementIntoArray(
+              this.state.dropDownSelectedNameSecond,
+              data,
+              index
+            )
+          });
+
       this.setState({
-        URL:this.insertElementIntoArray(this.state.URL, data.url, index), 
-        NAME:this.insertElementIntoArray(this.state.NAME, this.state.dropDownSelectedName[index].name, index), 
-        LINK:this.insertElementIntoArray(this.state.LINK, data.link, index)
-      })
+        URL: this.insertElementIntoArray(this.state.URL, data.url, index),
+        NAME: this.insertElementIntoArray(
+          this.state.NAME,
+          this.state.dropDownSelectedName[index].name,
+          index
+        ),
+        LINK: this.insertElementIntoArray(this.state.LINK, data.link, index)
+      });
     }
 
     //update channel list for dropdown. Remove any archived channel.
-    updateChannelList(channelList){
-      this.setState({channelList: channelList.filter(channelData => !channelData.is_archived)});
+    updateChannelList(channelList) {
+      this.setState({
+        channelList: channelList.filter(channelData => !channelData.is_archived)
+      });
     }
 
     //check if text is valid based on its type.
@@ -208,10 +241,11 @@ const componentHOC = WrappedComponent => {
 
     //close the dialog and clear out the textfields
     handleClose() {
-      this.setState({ 
+      this.setState({
         open: false,
-        dropDownSelectedName: []
-       });
+        dropDownSelectedName: [],
+        dropDownSelectedNameSecond: []
+      });
     }
 
     //insert element into array[index]
@@ -248,10 +282,13 @@ const componentHOC = WrappedComponent => {
       let isArray = !(row == 1 && column == 1);
       for (let index = 0; index < row; index++) {
         let metSaveRequirement = true;
-        
+
         // check if valid response has been inputted: requires all the fields to be filled for the row
         for (let jndex = 0; jndex < column; jndex++) {
-          let inputData = isArray ? this.state[this.props.type[jndex]][index] : this.state[this.props.type[jndex]];
+          let inputData =
+            isArray && this.state[this.props.type[jndex]]
+              ? this.state[this.props.type[jndex]][index]
+              : this.state[this.props.type[jndex]];
           metSaveRequirement =
             metSaveRequirement &&
             this.metRequirement(this.props.type[jndex], inputData);
@@ -260,7 +297,10 @@ const componentHOC = WrappedComponent => {
           let sendData;
           for (let jndex = 0; jndex < column; jndex++) {
             let inputName = this.props.type[jndex];
-            let inputData = isArray ? this.state[this.props.type[jndex]][index] : this.state[this.props.type[jndex]];
+            let inputData =
+              isArray && this.state[this.props.type[jndex]]
+                ? this.state[this.props.type[jndex]][index]
+                : this.state[this.props.type[jndex]];
             sendData = isArray
               ? { ...sendData, ...{ [inputName]: inputData } }
               : inputData;
@@ -302,50 +342,96 @@ const componentHOC = WrappedComponent => {
     displaySelectionByType(type, index) {
       switch (type) {
         case "COLOR":
-          return <ColorPicker handleColorChange={this.handleColorChange.bind(this)} />
+          return (
+            <ColorPicker
+              handleColorChange={this.handleColorChange.bind(this)}
+            />
+          );
         case "CHANNEL":
-          return <Dropdown 
-                    type="CHANNEL"
-                    list={this.state.channelList} 
-                    handleChannelChange={this.handleChannelChange.bind(this)} />
-        case "URL": //URL is splited into two dropdowns. First for initial selection of projects, Second for corresponding branches from the first selection
-          return <><Dropdown
-                    type="MAINURL"
-                    index={index}
-                    list={this.state.jenkinsList}
-                    handleJenkinsNameChange={this.handleJenkinsNameChange.bind(this)} />
-                  <Dropdown
-                    type="SUBURL"
-                    index={index}
-                    list={this.state.dropDownSelectedName[index] ? this.state.dropDownSelectedName[index].branch : undefined}
-                    handleJenkinsURLChange={this.handleJenkinsURLChange.bind(this)} /></>
-
+          return (
+            <Dropdown
+              type="CHANNEL"
+              list={this.state.channelList}
+              handleChange={this.handleChannelChange.bind(this)}
+            />
+          );
+        //URL is splited into at most three dropdowns. First for initial selection of projects, Second and Third for corresponding branches from the first selection
+        //Third Dropdown appears only if the Second Dropdown selection shows that it has additional branch.
+        case "URL":
+          return (
+            <>
+              <Dropdown
+                type="MAINURL"
+                index={index}
+                list={this.state.jenkinsList}
+                handleChange={this.handleJenkinsFirstChange.bind(this)}
+              />
+              <Dropdown
+                type="SUBURL"
+                index={index}
+                list={
+                  this.state.dropDownSelectedName[index]
+                    ? this.state.dropDownSelectedName[index].branch
+                    : undefined
+                }
+                handleChange={this.handleJenkinsDataChange.bind(this)}
+              />
+              <Dropdown
+                type="LASTURL"
+                index={index}
+                list={
+                  this.state.dropDownSelectedNameSecond[index]
+                    ? this.state.dropDownSelectedNameSecond[index].branch
+                    : undefined
+                }
+                handleChange={this.handleJenkinsDataChange.bind(this)}
+              />
+            </>
+          );
         case "NAME":
           return (
             <TextField
               name={type + index}
-              value={this.state.dropDownSelectedName && this.state.dropDownSelectedName[index] ? this.state.dropDownSelectedName[index].name : ""}
-              onChange={e=>{
-                // let tmp = this.state[type] ? this.state[type].slice() : [];
-                // let tmpMain = this.state.dropDownSelectedName ? this.state.dropDownSelectedName.slice() : [];
-                // tmp[index] = e.target.value;
-                // tmpMain[index] = {...tmpMain[index], name: e.target.value}
+              value={
+                this.state.dropDownSelectedName &&
+                this.state.dropDownSelectedName[index]
+                  ? this.state.dropDownSelectedName[index].name
+                  : ""
+              }
+              onChange={e => {
                 this.setState({
-                  [type]: this.insertElementIntoArray(this.state[type], e.target.value, index), 
-                  dropDownSelectedName: this.insertElementIntoArray(this.state.dropDownSelectedName, {...this.state.dropDownSelectedName[index], name: e.target.value}, index)});
+                  [type]: this.insertElementIntoArray(
+                    this.state[type],
+                    e.target.value,
+                    index
+                  ),
+                  dropDownSelectedName: this.insertElementIntoArray(
+                    this.state.dropDownSelectedName,
+                    {
+                      ...this.state.dropDownSelectedName[index],
+                      name: e.target.value
+                    },
+                    index
+                  )
+                });
               }}
             />
-          )
+          );
         default:
           return (
             <TextField
-            name={type + index}
-            onChange={e => {
-              // let tmp = this.state[type] ? this.state[type].slice() : [];
-              // tmp[index] = e.target.value;
-              this.setState({ [type]: this.insertElementIntoArray(this.state[type], e.target.value, index)});
-            }}
-          />)
+              name={type + index}
+              onChange={e => {
+                this.setState({
+                  [type]: this.insertElementIntoArray(
+                    this.state[type],
+                    e.target.value,
+                    index
+                  )
+                });
+              }}
+            />
+          );
       }
     }
 
@@ -438,10 +524,11 @@ const componentHOC = WrappedComponent => {
           raised={true}
           outline={!this.props.disableEffect ? "true" : undefined}
         >
-          <WrappedComponent 
-            {...this.props} 
+          <WrappedComponent
+            {...this.props}
             content={this.state.content}
-            updateChannelList={this.updateChannelList.bind(this)} />
+            updateChannelList={this.updateChannelList.bind(this)}
+          />
         </ComponentWrapper>
       );
     }

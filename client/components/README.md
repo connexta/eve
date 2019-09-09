@@ -2,11 +2,11 @@
 
 ## Banner
 
-Displays banner in the top screen. It contains Logo and Clocks.
+Displays banner in the top screen. It contains Logo and Clocks. With the react-color library UI, the color of the baner is edditable in edit mode. Details can be found in Settings/componentHOC.js and Settings/ColorPicker.js
 
 ## BuildStatus
 
-Displays the health of builds as reported by Jenkins and toggles between the health of the most recent build and the health of the 5 most recent builds.
+Displays the health of builds as reported by Jenkins and toggles between the health of the most recent build and the health of the 5 most recent builds. With the dropdown UI, the build status is editable in edit mode.
 
 #### Packages:
 - **Material UI**: Uses Card, CardContent, and Button from Material UI
@@ -52,7 +52,7 @@ Displays time for timezones pertinent to Connexta: Phoenix (MST), Denver (MDT), 
 
 ## Github
 
-Displays the 5 most recent pull requests for a specified repository.  For each pull request, it displays the title, pull request number, excerpt from the description, number of approvals, and any pertinent status checks (such as Jenkins build status).  The component is clickable to navigate to the displayed PR.
+Displays the 5 most recent pull requests for a specified repository.  For each pull request, it displays the title, pull request number, excerpt from the description, number of approvals, and any pertinent status checks (such as Jenkins build status).  The component is clickable to navigate to the displayed PR. With the textfield, the github repopath is editable in edit mode.
 
 #### Props:
 - **content**: the path to reach the desired repository during API calls.  Typically takes the form of `[ORGANIZATION]/[REPOSITORY]`.  See [GitHub API documentation](https://developer.github.com/v3/repos/) for more details.
@@ -84,6 +84,7 @@ Rotates through media to be displayed on the Wallboard.  Each media consists of 
 
 ## SlackComponent
 Displays the 10 most recent slack messages, rotating through the messages on a set interval. The slack widget is a fixed size and will only show as many messages as can fit. The component is currently not interactive in any way.
+With the dropdown UI, the channel is editable in edit mode.
 
 #### API:  
 Multiple API calls are made to the Slack API for different information. The API calls rely on the `SLACK_TOKEN` and `SLACK_CHANNEL` environment variables being set. Here is the list of the API calls made...  

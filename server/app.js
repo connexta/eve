@@ -269,7 +269,7 @@ app.get("/display", async (req, res) => {
 
 app.get("/jenkinslist", async function(req, res) {
   res.send(await app.get("JENKINS"));
-})
+});
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, targetPath, "index.html"));

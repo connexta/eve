@@ -47,7 +47,11 @@ class I2OWallboard extends React.Component {
 
   async componentDidMount() {
     await this.props.updateCurrentWallboard("I2O");
-    this.I2ODefaultData = await createJenkinslistFromRoot("ION", "ion-");
+    this.I2ODefaultData = await createJenkinslistFromRoot(
+      "ION",
+      "bitbucket",
+      "ion-"
+    );
     this.setState({ isLoading: false });
   }
 
