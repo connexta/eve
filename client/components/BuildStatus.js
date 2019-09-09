@@ -92,8 +92,7 @@ class BuildStatus extends React.Component {
       this.trashableRequestList = [];
       for (let index in this.props.content) {
         this.trashableRequestList.push(
-          // makeTrashable(this.fetchData(this.props.content[index].URL))
-          makeTrashable(this.fetchD(this.props.content[index].URL))
+          makeTrashable(this.fetchData(this.props.content[index].URL))
         );
       }
       //fetch and update jenkins information for all team
@@ -125,12 +124,6 @@ class BuildStatus extends React.Component {
   clearTimer() {
     clearInterval(this.toggleId);
     this.toggleId = setInterval(() => this.toggle(), TOGGLE_INTERVAL);
-  }
-
-  fetchD(URL) {
-    return fetch(URL)
-      .then(response => response.json())
-      .catch(e => console.log("error", e));
   }
 
   //fetch data from the jenkin url
@@ -193,27 +186,30 @@ class BuildStatus extends React.Component {
   //if this.state.toggle === true, return list of current build
   //else, list of last 5 builds
   getBuildDisplay() {
-    const display = this.state.toggle
-      ? this.state.currentData.map((item, index) => {
-          return (
-            <BuildIcon
-              score={item.oneScore}
-              name={item.displayName}
-              key={Date.now() + index + "A" + item.oneSubtitle}
-              subtitle={item.oneSubtitle}
-            />
-          );
-        })
-      : this.state.currentData.map((item, index) => {
-          return (
-            <BuildIcon
-              score={item.fiveScore}
-              name={item.displayName}
-              key={Date.now() + index + "B" + item.fiveSubtitle}
-              subtitle={item.fiveSubtitle}
-            />
-          );
-        });
+    const display =
+      this.state.currentData && this.state.currentData.length
+        ? this.state.toggle
+          ? this.state.currentData.map((item, index) => {
+              return (
+                <BuildIcon
+                  score={item.oneScore}
+                  name={item.displayName}
+                  key={Date.now() + index + "A" + item.oneSubtitle}
+                  subtitle={item.oneSubtitle}
+                />
+              );
+            })
+          : this.state.currentData.map((item, index) => {
+              return (
+                <BuildIcon
+                  score={item.fiveScore}
+                  name={item.displayName}
+                  key={Date.now() + index + "B" + item.fiveSubtitle}
+                  subtitle={item.fiveSubtitle}
+                />
+              );
+            })
+        : "No Data to show";
     return display;
   }
 

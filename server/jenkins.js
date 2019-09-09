@@ -13,43 +13,50 @@ const APIPOSTFIX = "api/json";
 //[{name: <name>, leaf: false, branch: [{name: <name>, link: <link>, url: <url>, leaf: true}]}]
 module.exports = {
   getJenkinsList: async function() {
-    let jenkinsList = await getSubBranch(
-      ROOTURL + APIPOSTFIX,
-      JENKINSROOTURL,
-      true
-    );
-    for (let key in Object.keys(jenkinsList)) {
-      let suburl = ROOTURL + "job/" + jenkinsList[key].name + "/" + APIPOSTFIX;
-      let subdataurl = JENKINSROOTURL + jenkinsList[key].name + "/";
-      let secondList = await getSubBranch(suburl, subdataurl, false);
-      jenkinsList[key] = { ...jenkinsList[key], branch: secondList };
-      for (let keyTwo in Object.keys(jenkinsList[key].branch)) {
-        if (!jenkinsList[key].branch[keyTwo].leaf) {
-          let name = jenkinsList[key].branch[keyTwo].name;
-          let finalurl =
-            ROOTURL +
-            "job/" +
-            jenkinsList[key].name +
-            "/" +
-            "job/" +
-            name +
-            "/" +
-            APIPOSTFIX;
-          let finaldataurl =
-            JENKINSROOTURL + jenkinsList[key].name + "/" + name + "/";
-          let finalList = await getSubBranch(finalurl, finaldataurl, false);
+    let jenkinsList;
+    try {
+      jenkinsList = await getSubBranch(
+        ROOTURL + APIPOSTFIX,
+        JENKINSROOTURL,
+        true
+      );
+      for (let key in Object.keys(jenkinsList)) {
+        let suburl =
+          ROOTURL + "job/" + jenkinsList[key].name + "/" + APIPOSTFIX;
+        let subdataurl = JENKINSROOTURL + jenkinsList[key].name + "/";
+        let secondList = await getSubBranch(suburl, subdataurl, false);
+        jenkinsList[key] = { ...jenkinsList[key], branch: secondList };
+        for (let keyTwo in Object.keys(jenkinsList[key].branch)) {
+          if (!jenkinsList[key].branch[keyTwo].leaf) {
+            let name = jenkinsList[key].branch[keyTwo].name;
+            let finalurl =
+              ROOTURL +
+              "job/" +
+              jenkinsList[key].name +
+              "/" +
+              "job/" +
+              name +
+              "/" +
+              APIPOSTFIX;
+            let finaldataurl =
+              JENKINSROOTURL + jenkinsList[key].name + "/" + name + "/";
+            let finalList = await getSubBranch(finalurl, finaldataurl, false);
 
-          if (finalList.length != 0) {
-            jenkinsList[key].branch[keyTwo] = {
-              ...jenkinsList[key].branch[keyTwo],
-              branch: finalList
-            };
-          } else {
-            jenkinsList[key].branch[keyTwo].leaf = true;
+            if (finalList.length != 0) {
+              jenkinsList[key].branch[keyTwo] = {
+                ...jenkinsList[key].branch[keyTwo],
+                branch: finalList
+              };
+            } else {
+              jenkinsList[key].branch[keyTwo].leaf = true;
+            }
           }
         }
       }
+    } catch (error) {
+      jenkinsList = [];
     }
+
     return jenkinsList;
   }
 };

@@ -16,24 +16,34 @@ export async function createJenkinslistFromRoot(
     });
 
   //extract root matched project jenkins data
-  let targetJenkinsList = Object.values(jenkinsList).filter((item, index) => {
-    return item.name === root;
-  });
-  targetJenkinsList = targetJenkinsList ? targetJenkinsList[0].branch : [];
+  let finalTargetJenkinsList = [];
+  try {
+    let targetJenkinsList = Object.values(jenkinsList).filter((item, index) => {
+      return item.name === root;
+    });
+    targetJenkinsList =
+      targetJenkinsList && targetJenkinsList.length
+        ? targetJenkinsList[0].branch
+        : [];
 
-  //remove branch of matching branchToRemove and given charactersToRemove from the name if exists.
-  let finalTargetJenkinsList = targetJenkinsList;
-  if (charactersToRemove && targetJenkinsList.length != 0) {
-    finalTargetJenkinsList = targetJenkinsList
-      .filter(item => !item.name.includes(branchToRemove))
-      .map((item, index) => {
-        let url =
-          item.branch &&
-          item.branch.filter(item => item.name.includes("master")).length
-            ? item.url + "master/"
-            : item.branch[0].url;
-        return { NAME: item.name.replace(charactersToRemove, ""), URL: url };
-      });
+    //remove branch of matching branchToRemove and given charactersToRemove from the name if exists.
+    finalTargetJenkinsList = targetJenkinsList;
+    if (charactersToRemove && targetJenkinsList.length) {
+      finalTargetJenkinsList = targetJenkinsList
+        .filter(item => !item.name.includes(branchToRemove))
+        .map((item, index) => {
+          let url =
+            item.branch &&
+            item.branch.filter(item => item.name.includes("master")).length
+              ? item.url + "master/"
+              : item.branch[0].url;
+          return { NAME: item.name.replace(charactersToRemove, ""), URL: url };
+        });
+    }
+  } catch (error) {
+    console.log("Unable to extract data from backend");
+    finalTargetJenkinsList = [];
   }
+
   return finalTargetJenkinsList;
 }
