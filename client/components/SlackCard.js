@@ -50,7 +50,8 @@ const CardText = styled.div`
 const AvatarStyle = styled.img`
   border-radius: 8%;
   margin: 5px 10px 0 0;
-  display: inline;
+  height: 48px;	
+  width: 48px;
   display: inline-block;
   vertical-align: top;
 `;
