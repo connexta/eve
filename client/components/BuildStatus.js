@@ -143,10 +143,16 @@ class BuildStatus extends React.Component {
     if (item) {
       overallData[index] = {
         displayName: name,
-        oneScore: item.latestRun.result === "SUCCESS" ? 100 : 0,
-        fiveScore: item.weatherScore,
-        oneSubtitle: getRelativeTime(new Date(item.latestRun.startTime)),
-        fiveSubtitle: this.getFiveSubtitle(item)
+        oneScore: item.latestRun
+          ? item.latestRun.result === "SUCCESS"
+            ? 100
+            : 0
+          : 0,
+        fiveScore: item.weatherScore ? item.weatherScore : 0,
+        oneSubtitle: item.latestRun
+          ? getRelativeTime(new Date(item.latestRun.startTime))
+          : "No Data",
+        fiveSubtitle: item.latestRun ? this.getFiveSubtitle(item) : "No Data"
       };
     } else {
       overallData[index] = {
@@ -180,27 +186,30 @@ class BuildStatus extends React.Component {
   //if this.state.toggle === true, return list of current build
   //else, list of last 5 builds
   getBuildDisplay() {
-    const display = this.state.toggle
-      ? this.state.currentData.map((item, index) => {
-          return (
-            <BuildIcon
-              score={item.oneScore}
-              name={item.displayName}
-              key={Date.now() + index + "A" + item.oneSubtitle}
-              subtitle={item.oneSubtitle}
-            />
-          );
-        })
-      : this.state.currentData.map((item, index) => {
-          return (
-            <BuildIcon
-              score={item.fiveScore}
-              name={item.displayName}
-              key={Date.now() + index + "B" + item.fiveSubtitle}
-              subtitle={item.fiveSubtitle}
-            />
-          );
-        });
+    const display =
+      this.state.currentData && this.state.currentData.length
+        ? this.state.toggle
+          ? this.state.currentData.map((item, index) => {
+              return (
+                <BuildIcon
+                  score={item.oneScore}
+                  name={item.displayName}
+                  key={Date.now() + index + "A" + item.oneSubtitle}
+                  subtitle={item.oneSubtitle}
+                />
+              );
+            })
+          : this.state.currentData.map((item, index) => {
+              return (
+                <BuildIcon
+                  score={item.fiveScore}
+                  name={item.displayName}
+                  key={Date.now() + index + "B" + item.fiveSubtitle}
+                  subtitle={item.fiveSubtitle}
+                />
+              );
+            })
+        : "No Data to show";
     return display;
   }
 
