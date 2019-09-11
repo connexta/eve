@@ -106,8 +106,10 @@ Required build setup:
 - Environment variable setup: In the Jenkins service website, Create secret text in Credentials (i.e. SLACK_TOKEN)
 
 ### Admin Status
-With login feature, user can use Microsoft account to login, and customize their own unique wallboard, which would be stored in backend associated to the user's account ID. There can be one unique Admin Role which enables the admin user to modify components with `AdminOnly` prop (i.e. EventComponent, MediaComponent and ReleaseVersion). The Admin role can be setup by creating a Jenkins credentials for environment variable with key name `WALLBOARDADMIN` with value name being user's Microsoft ID (which can be identified in Account Info of Login icon after user logged in). Such environment variable will be verified to see if it matches to the logged in user's ID in login.js.
-If such Jenkins credentials have not been setup, then, as a default, everyone will receive a Admin role to be able to modify any components.
+With login feature, user can use Microsoft account to login, and customize their own unique wallboard, which would be stored in backend associated to the user's account ID. Specifically, `admin.json` file in eve would be responsible for the list of admin users. The format should follow
+as `{"admin":["123123","<anyMicrosoftID>"]}`. You can check your Microsoft ID in wallboard Account Info after you sign-in with Microsoft account.
+Since eve folder would be in a persistent state in deployment, it is recommended to modify the file directly in deployment.
+If the file doesn't exist, everyone including guests will receive an Admin role as a default.
 
 ### How to add new Wallboard & new Components
 
