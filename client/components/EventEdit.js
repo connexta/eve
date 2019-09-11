@@ -76,7 +76,8 @@ export default class EventEdit extends React.Component {
       end: this.getDateObject(this.state.end, this.state.endTime),
       location: this.state.location,
       start: this.getDateObject(this.state.start, this.state.startTime),
-      title: this.state.title
+      title: this.state.title,
+      local: true
     });
 
     this.setState({

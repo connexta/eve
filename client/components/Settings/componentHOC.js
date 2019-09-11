@@ -36,7 +36,7 @@ const componentHOC = WrappedComponent => {
     cursor: ${props => props.edit && props.outline && css`pointer`};
     outline: ${props =>
       props.edit && props.outline
-        ? css`10px solid ${CX_DARK_BLUE}`
+        ? css`6px solid ${CX_DARK_BLUE}`
         : css`0px solid`};
   `;
 

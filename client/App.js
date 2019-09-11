@@ -44,7 +44,7 @@ const StyledDevMsg = styled.div`
 const StyledSettings = styled.div`
   bottom: 0;
   right: 0;
-  margin-right: 10px;
+  margin-right: 20px;
   margin-bottom: 10px;
   position: absolute;
 `;
