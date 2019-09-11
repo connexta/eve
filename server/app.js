@@ -41,8 +41,8 @@ const adminFile = prod ? "/eve/admin.json" : "eve/admin.json";
 
 /* CRON JOB */
 // grafana cron job
-// app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-// cron.grafanaCron(prod, app, soaesb_url);
+app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+cron.grafanaCron(prod, app, soaesb_url);
 
 //jenkins cron job
 app.set("JENKINS", jenkins.getJenkinsList()); //initial run
