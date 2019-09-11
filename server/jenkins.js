@@ -25,35 +25,39 @@ module.exports = {
           ROOTURL + "job/" + jenkinsList[key].name + "/" + APIPOSTFIX;
         let subdataurl = JENKINSROOTURL + jenkinsList[key].name + "/";
         let secondList = await getSubBranch(suburl, subdataurl, false);
-        jenkinsList[key] = { ...jenkinsList[key], branch: secondList };
-        for (let keyTwo in Object.keys(jenkinsList[key].branch)) {
-          if (!jenkinsList[key].branch[keyTwo].leaf) {
-            let name = jenkinsList[key].branch[keyTwo].name;
-            let finalurl =
-              ROOTURL +
-              "job/" +
-              jenkinsList[key].name +
-              "/" +
-              "job/" +
-              name +
-              "/" +
-              APIPOSTFIX;
-            let finaldataurl =
-              JENKINSROOTURL + jenkinsList[key].name + "/" + name + "/";
-            let finalList = await getSubBranch(finalurl, finaldataurl, false);
+        //if branch is to be undefined, skip it.
+        if (secondList && secondList.length != 0) {
+          jenkinsList[key] = { ...jenkinsList[key], branch: secondList };
+          for (let keyTwo in Object.keys(jenkinsList[key].branch)) {
+            if (!jenkinsList[key].branch[keyTwo].leaf) {
+              let name = jenkinsList[key].branch[keyTwo].name;
+              let finalurl =
+                ROOTURL +
+                "job/" +
+                jenkinsList[key].name +
+                "/" +
+                "job/" +
+                name +
+                "/" +
+                APIPOSTFIX;
+              let finaldataurl =
+                JENKINSROOTURL + jenkinsList[key].name + "/" + name + "/";
+              let finalList = await getSubBranch(finalurl, finaldataurl, false);
 
-            if (finalList.length != 0) {
-              jenkinsList[key].branch[keyTwo] = {
-                ...jenkinsList[key].branch[keyTwo],
-                branch: finalList
-              };
-            } else {
-              jenkinsList[key].branch[keyTwo].leaf = true;
+              if (finalList && finalList.length != 0) {
+                jenkinsList[key].branch[keyTwo] = {
+                  ...jenkinsList[key].branch[keyTwo],
+                  branch: finalList
+                };
+              } else {
+                jenkinsList[key].branch[keyTwo].leaf = true;
+              }
             }
           }
         }
       }
     } catch (error) {
+      console.log("error in getting jenkins list ", error);
       jenkinsList = [];
     }
 

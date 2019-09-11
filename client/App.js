@@ -10,9 +10,11 @@ import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { wallboards } from "./wallboards/Home";
 import NullWallboard from "./wallboards/NullWallboard";
 import Setting from "./components/Settings/Setting";
+import Login from "./components/Settings/Login";
 import Banner from "./components/Banner";
 import Grid from "@material-ui/core/Grid";
 import { StylesProvider } from "@material-ui/styles";
+import Welcome from "./components/Welcome";
 
 const RootGrid = styled(Grid)`
   height: 100%;
@@ -47,6 +49,14 @@ const StyledSettings = styled.div`
   position: absolute;
 `;
 
+const StyledLogin = styled.div`
+  bottom: 0;
+  right: 60px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  position: absolute;
+`;
+
 export default class App extends React.Component {
   render() {
     return (
@@ -69,6 +79,10 @@ export default class App extends React.Component {
               <StyledSettings>
                 <Setting />
               </StyledSettings>
+              <StyledLogin>
+                <Login />
+              </StyledLogin>
+              <Welcome />
             </BottomGrid>
           </RootGrid>
         </Router>

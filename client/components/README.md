@@ -41,6 +41,7 @@ Before you can use the API, you must create an application in the [Azure Active 
 ### GraphConfig
 
 Describes the configuration of the Microsoft Graph API calls.  Namely, the scope of permissions the user is granting by logging in, which authority is authenticating the user, and the ID of the Azure Application with which we are authenticating.
+The file contains userAgentApplication and account information such as ID or name to be used in various other components such as EventComponent.js, Login.js
 
 ### GraphService
 
@@ -74,9 +75,12 @@ Take and display screenshot of grafana dashboard.
   
 ## Settings
 
+- Settings Icon
 Once the user clicks the setting icon, the user enters an edit mode where the user can select a component from the current screen/wallboard to edit the contents of the component. Currently, the user can modify the color of the banner in the Home screen, slack channel of the SlackComponent, repo path of the Github, jenkins url of the BuildStatus, jenkins url of the BuildAF. The directory contains Setting.js which contains the setting icon container, and componentHOC.js which creates a HOC of editable components.
 ColorPicker.js for Banner color picking UI and Dropdown.js for URL (of BuildStatus, BuildAF) UI.
 
+- Login Icon
+Once the user clicks the login icon, the user can login to their Microsoft account. Once logged in, any wallboard customization will be stored in the backend associated to user's ID; hence, each user can have their own unique customization. When the user clicks the login icon again, the user can either logout or can see their account info (from Microsoft account).
 
 ## MediaComponent
 
@@ -101,3 +105,6 @@ This component holds an individual slack message to be used in the collection of
   * **messages**: list of pulled messages
   * **slackUsers**: List of pulled slack users
   * **emojis**: List of pulled emojis
+
+### Welcome
+Simple component to display Dialog (with user's name) whenever the logged in user enters the website.

@@ -9,7 +9,6 @@ function getAuthenticatedClient(accessToken) {
       done(null, accessToken.accessToken);
     }
   });
-
   return client;
 }
 

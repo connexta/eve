@@ -65,6 +65,7 @@ class TVWallboard extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.leaveEdit();
     await this.props.updateCurrentWallboard("TV");
     this.setState({ isLoading: false });
   }
@@ -95,11 +96,15 @@ class TVWallboard extends React.Component {
               style={StyleMedia}
               wallboard={"tv"}
               name="MediaComponent"
+              AdminOnly
+              disablePopup
             />
             <EventComponent
               style={StyleEvent}
               wallboard={"tv"}
               name="EventComponent"
+              AdminOnly
+              disablePopup
             />
           </Grid>
         </LeftBox>
