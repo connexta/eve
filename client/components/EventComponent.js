@@ -11,8 +11,7 @@ import {
   catchError
 } from "../utils/TimeUtils";
 import { callApi } from "./Calendar/GraphService";
-import config from "./Calendar/GraphConfig";
-import { UserAgentApplication } from "msal";
+import { userAgentApplication, config, user } from "./Calendar/GraphConfig";
 import makeTrashable from "trashable";
 import EventEdit from "./EventEdit";
 import componentHOC from "./Settings/componentHOC";
@@ -75,19 +74,6 @@ class EventComponent extends React.Component {
 
     this.divRef = React.createRef();
 
-    // grab and store user credentials
-    this.userAgentApplication = new UserAgentApplication({
-      auth: {
-        clientId: config.appId,
-        authority: config.authority
-      },
-      cache: {
-        cacheLocation: "localStorage",
-        storeAuthStateInCookie: true
-      }
-    });
-
-    let user = this.userAgentApplication.getAccount();
     let cal = localStorage.getItem("chosenCalendar" + this.props.wallboard);
 
     this.state = {
@@ -179,42 +165,11 @@ class EventComponent extends React.Component {
     }
   }
 
-  // Pop up to log in user and acquire credentials
-  async login() {
-    try {
-      this.trashableLogIn = makeTrashable(
-        this.userAgentApplication.loginPopup({
-          scopes: config.scopes,
-          prompt: "select_account"
-        })
-      );
-
-      await this.trashableLogIn;
-
-      await this.getCalendars();
-
-      document.location.reload();
-    } catch (err) {
-      console.log("Error Logging In");
-      catchError(err);
-
-      this.setState({
-        isAuthenticated: false,
-        events: []
-      });
-    }
-  }
-
-  // logs out user, will refresh page
-  async logout() {
-    this.userAgentApplication.logout();
-  }
-
   // grabs list of calendars from Microsft Graph API
   async getCalendars() {
     try {
       this.trashableAccessToken = makeTrashable(
-        this.userAgentApplication.acquireTokenSilent({
+        userAgentApplication.acquireTokenSilent({
           scopes: config.scopes
         })
       );
@@ -247,7 +202,7 @@ class EventComponent extends React.Component {
   async getCalendarEvents(cal) {
     try {
       this.trashableAccessToken = makeTrashable(
-        this.userAgentApplication.acquireTokenSilent({
+        userAgentApplication.acquireTokenSilent({
           scopes: config.scopes
         })
       );
@@ -453,8 +408,6 @@ class EventComponent extends React.Component {
         </div>
         <EventEdit
           isAuthenticated={this.state.isAuthenticated}
-          logIn={this.login.bind(this)}
-          logOut={this.logout.bind(this)}
           chosenCal={this.state.chosenCal}
           calendars={this.state.calendars}
           callback={this.changeState.bind(this)}

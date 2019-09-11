@@ -60,6 +60,7 @@ class GSRWallboard extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.leaveEdit();
     await this.props.updateCurrentWallboard("GSR");
     this.setState({ isLoading: false });
   }
@@ -87,6 +88,8 @@ class GSRWallboard extends React.Component {
               style={StyleRelease}
               name="ReleaseVersion"
               disableEffect
+              AdminOnly
+              disablePopup
             />
           </Grid>
           <Grid
@@ -98,11 +101,15 @@ class GSRWallboard extends React.Component {
               style={StyleMedia}
               wallboard={"gsr"}
               name="MediaComponent"
+              AdminOnly
+              disablePopup
             />
             <EventComponent
               style={StyleEvent}
               wallboard={"gsr"}
               name="EventComponent"
+              AdminOnly
+              disablePopup
             />
           </Grid>
         </LeftBox>

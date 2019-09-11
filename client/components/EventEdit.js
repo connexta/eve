@@ -1,7 +1,5 @@
 import React from "react";
-import styled from "styled-components";
 import {
-  Button,
   Dialog,
   DialogTitle,
   Table,
@@ -16,16 +14,6 @@ import {
 import { Add, Delete, Save } from "@material-ui/icons";
 import { withStyles } from "@material-ui/core/styles";
 
-const StyledButton = styled(Button)`
-  height: 32px;
-  width: 100px;
-  display: inline-block;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  vertical-align: top;
-`;
-
 const SelectCal = withStyles({
   root: {
     display: "inline-block",
@@ -38,19 +26,6 @@ const StyleSelect = withStyles({
     height: "30px"
   }
 })(Select);
-
-// Function to toggle between log in / log out button depending on state
-export function LogInOut(props) {
-  return props.isAuthenticated ? (
-    <StyledButton variant={"outlined"} onClick={props.logOut}>
-      Log Out
-    </StyledButton>
-  ) : (
-    <StyledButton variant={"outlined"} onClick={props.logIn}>
-      Log In
-    </StyledButton>
-  );
-}
 
 export default class EventEdit extends React.Component {
   constructor(props) {
@@ -129,11 +104,6 @@ export default class EventEdit extends React.Component {
         maxWidth={false}
       >
         <DialogTitle>Add/Remove Events</DialogTitle>
-        <LogInOut
-          isAuthenticated={this.props.isAuthenticated}
-          logIn={this.props.logIn}
-          logOut={this.props.logOut}
-        />
         {this.props.isAuthenticated ? (
           <div>
             <SelectCal>Select Calendar:</SelectCal>

@@ -46,6 +46,7 @@ class I2OWallboard extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.leaveEdit();
     await this.props.updateCurrentWallboard("I2O");
     this.I2ODefaultData = await createJenkinslistFromRoot(
       "ION",
@@ -77,6 +78,8 @@ class I2OWallboard extends React.Component {
           style={StyleMedia}
           wallboard={"I2O"}
           name="MediaComponent"
+          AdminOnly
+          disablePopup
         />
         <RightBox item>
           <SlackComponent
