@@ -8,6 +8,19 @@ import { getEmoji } from "../utils/emojis/emojiUtil";
 
 const SLACK_FONT_SIZE = "20px";
 
+const imgTypeList = [
+  "jpeg",
+  "jpg",
+  "gif",
+  "png",
+  "apng",
+  "svg",
+  "bmp",
+  "ico",
+  "tiff",
+  "webp"
+];
+
 const StyledCard = styled.div`
   padding-bottom: 10px;
   margin: 0 0 5px 0;
@@ -37,9 +50,8 @@ const CardText = styled.div`
 const AvatarStyle = styled.img`
   border-radius: 8%;
   margin: 5px 10px 0 0;
-  display: inline;
-  height: 50px;
-  width: 50px;
+  height: 48px;	
+  width: 48px;
   display: inline-block;
   vertical-align: top;
 `;
@@ -244,9 +256,11 @@ class SlackCard extends React.Component {
     }
 
     let message = this.props.messages[index];
-    let msgTime =
-      message.attachments == undefined ? message.ts : message.attachments[0].ts;
-    msgTime = msgTime == undefined ? message.ts : msgTime;
+    let msgTime = !message
+      ? 0
+      : message.attachments == undefined
+      ? message.ts
+      : message.attachments[0].ts;
 
     return getRelativeTime(new Date(msgTime * 1000)); // convert sec to ms for date obj
   }
@@ -259,13 +273,13 @@ class SlackCard extends React.Component {
 
     // check if author is bot or unknown
     let author =
-      message.attachments == undefined
+      !message || message.attachments == undefined
         ? this.userIdToName(message.user)
         : message.attachments[0].author_name;
     // Got rid of bot check, since all wallboard posts come from bot
     if (author == undefined) {
       if (
-        message.bot_id ||
+        (message && message.bot_id) ||
         (message.attachments && message.attachments.bot_id)
       ) {
         author = "Bot";
@@ -276,6 +290,7 @@ class SlackCard extends React.Component {
 
     // check for additional footer info
     let footer =
+      !message ||
       message.attachments == undefined ||
       message.attachments[0].footer == undefined
         ? ""
@@ -293,7 +308,7 @@ class SlackCard extends React.Component {
 
     let author;
     let avatar;
-    if (message != undefined) {
+    if (message) {
       // check if author is bot or unknown
       author =
         message.attachments == undefined
@@ -319,10 +334,11 @@ class SlackCard extends React.Component {
     }
 
     // account for message being shared message
-    let messageText =
-      message.attachments == undefined
-        ? message.text
-        : message.attachments[0].text;
+    let messageText = !message
+      ? ""
+      : message.attachments == undefined
+      ? message.text
+      : message.attachments[0].text;
     return this.getSlackStyleMessage(messageText);
   }
 
@@ -330,10 +346,11 @@ class SlackCard extends React.Component {
     let message = this.props.messages[index];
 
     // check if message has attachments (message is link to another message)
-    let media =
-      message.attachments == undefined
-        ? message.image_url
-        : message.attachments[0].image_url;
+    let media = !message
+      ? null
+      : message.attachments == undefined
+      ? message.image_url
+      : message.attachments[0].image_url;
 
     // check if message has media, creating html snippet if it does
     media =
@@ -341,14 +358,21 @@ class SlackCard extends React.Component {
         ? ""
         : `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${media} alt="media"/></div>`;
 
-    // check if message has file, creating html snippet if it does
+    // check if message has image file, creating html snippet if it does
     media =
-      message.files == undefined
-        ? media
-        : `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.files[0].url_private} alt="file" /></div>`;
+      message &&
+      message.files &&
+      imgTypeList.includes(message.files[0].filetype)
+        ? `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.files[0].url_private} alt="file" /></div>`
+        : media;
 
-    // check if message attachment has file to share
-    if (message.attachments && message.attachments[0].files) {
+    // check if message attachment has image file to share
+    if (
+      message &&
+      message.attachments &&
+      message.attachments[0].files &&
+      imgTypeList.includes(message.attachments[0].files[0].filetype)
+    ) {
       media = `<div style="${cardMedia}"><img style="${fileImgStyle}" src=${message.attachments[0].files[0].url_private} alt="file" /></div>`;
     }
 
