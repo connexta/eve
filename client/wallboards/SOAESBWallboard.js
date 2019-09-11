@@ -37,6 +37,7 @@ class SOAESBWallboard extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.leaveEdit();
     await this.props.updateCurrentWallboard("SOAESB");
     this.setState({ isLoading: false });
   }

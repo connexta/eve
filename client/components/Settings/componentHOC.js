@@ -23,6 +23,7 @@ import { Save, Cancel } from "@material-ui/icons";
 import { time } from "../../utils/TimeUtils";
 import ColorPicker from "./ColorPicker";
 import Dropdown from "./Dropdown";
+import { userID } from "../Calendar/GraphConfig";
 
 const componentHOC = WrappedComponent => {
   const ComponentWrapper = styled(BoxStyle)`
@@ -75,6 +76,7 @@ const componentHOC = WrappedComponent => {
         key: Date.now(), //to reload the component once the changes has been applied
         metSaveRequirement: false, //to validate input entry
         isLoading: true, //for waiting initial data fetch
+        editable: true, //for verifying if the component can be editable
         edit: this.props.disable ? false : this.props.edit, //edit state
         default: this.props.default || DefaultData[this.props.name], //default data
         dropDownSelectedName: [], //for maintaining the subsequent list from first selection.
@@ -85,6 +87,7 @@ const componentHOC = WrappedComponent => {
     async componentDidMount() {
       await this.initialUpdateContent(this.props.name, this.state.default);
       await this.initialFetchJenkinslist();
+      await this.initialEditableCheck();
       this.setState({ isLoading: false });
     }
 
@@ -92,6 +95,38 @@ const componentHOC = WrappedComponent => {
       if (this.props.edit !== prevProps.edit) {
         this.setState({ edit: this.props.disable ? false : this.props.edit });
       }
+    }
+
+    //initially check if the component is editable.
+    //Two criterias: check if disable prop exists, and check if user is Admin in case of AdminOnly props
+    async initialEditableCheck() {
+      let editable =
+        !this.props.disable && (await this.checkAdmin(this.props.AdminOnly));
+      this.setState({ editable: editable });
+    }
+
+    async checkAdmin(AdminOnly) {
+      let isAdmin = false;
+      if (AdminOnly) {
+        await fetch("/checkadmin?id=" + userID, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" }
+        })
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            if (data && Object.keys(data).length) {
+              isAdmin = data.result;
+            }
+          })
+          .catch(err => {
+            console.log("Unable to verify admin role from backend ", err);
+          });
+      } else {
+        isAdmin = true;
+      }
+      return isAdmin;
     }
 
     //initially update the content of all components from backend data.
@@ -102,7 +137,9 @@ const componentHOC = WrappedComponent => {
         "/theme?wallboard=" +
           this.props.currentWallboard +
           "&component=" +
-          component,
+          component +
+          "&id=" +
+          userID,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" }
@@ -259,7 +296,12 @@ const componentHOC = WrappedComponent => {
     bannerPost(isBanner) {
       let curWallboard = isBanner ? "HOME" : this.props.currentWallboard;
       return (
-        "/theme?wallboard=" + curWallboard + "&component=" + this.props.name
+        "/theme?wallboard=" +
+        curWallboard +
+        "&component=" +
+        this.props.name +
+        "&id=" +
+        userID
       );
     }
 
@@ -511,21 +553,19 @@ const componentHOC = WrappedComponent => {
     }
 
     displayComponent() {
+      let edit = this.state.edit && this.state.editable;
       return (
         <ComponentWrapper
           style={this.props.style}
-          edit={this.state.edit ? "true" : undefined}
-          onClick={
-            this.state.edit && !this.props.disableEffect
-              ? this.handleClick.bind(this)
-              : undefined
-          }
+          edit={edit ? "true" : undefined}
+          onClick={edit ? this.handleClick.bind(this) : undefined}
           key={this.state.key}
           raised={true}
           outline={!this.props.disableEffect ? "true" : undefined}
         >
           <WrappedComponent
             {...this.props}
+            edit={edit}
             content={this.state.content}
             updateChannelList={this.updateChannelList.bind(this)}
           />
@@ -534,12 +574,12 @@ const componentHOC = WrappedComponent => {
     }
 
     displayBanner() {
-      let editable = this.state.edit;
+      let edit = this.state.edit;
       return (
         <BannerWrapper
-          edit={editable ? "true" : undefined}
+          edit={edit ? "true" : undefined}
           content={this.state.content}
-          onClick={editable ? this.handleClick.bind(this) : undefined}
+          onClick={edit ? this.handleClick.bind(this) : undefined}
           key={this.state.key}
         >
           <WrappedComponent {...this.props} />
@@ -550,16 +590,12 @@ const componentHOC = WrappedComponent => {
     render() {
       return this.state.isLoading ? (
         <></>
-      ) : this.props.name === "EventComponent" ||
-        this.props.name === "MediaComponent" ||
-        this.props.name === "ReleaseVersion" ? (
-        this.displayComponent()
       ) : (
         <>
           {this.props.name === "Banner"
             ? this.displayBanner()
             : this.displayComponent()}
-          {this.displayDialog()}
+          {!this.props.disablePopup ? this.displayDialog() : undefined}
           {this.state.resultsOpen ? this.displaySaveResults() : undefined}
         </>
       );

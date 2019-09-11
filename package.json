@@ -18,6 +18,7 @@
   "dependencies": {
     "@material-ui/core": "^4.2.1",
     "@material-ui/icons": "^4.2.1",
+    "@material-ui/lab": "^4.0.0-alpha.26",
     "@microsoft/microsoft-graph-client": "^1.7.0",
     "css-loader": "^3.1.0",
     "html-react-parser": "^0.7.1",

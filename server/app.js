@@ -5,6 +5,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
 const jenkins = require("./jenkins");
+const login = require("./login");
 const fs = require("fs");
 const cron = require("./cron");
 const fetch = require("node-fetch");
@@ -40,8 +41,8 @@ const eventFile = prod ? "/eve/event.json" : "eve/event.json";
 
 /* CRON JOB */
 // grafana cron job
-app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-cron.grafanaCron(prod, app, soaesb_url);
+// app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+// cron.grafanaCron(prod, app, soaesb_url);
 
 //jenkins cron job
 app.set("JENKINS", jenkins.getJenkinsList()); //initial run
@@ -256,13 +257,13 @@ app.get("/theme", function(req, res) {
   try {
     const wallboard = req.query.wallboard;
     const component = req.query.component;
-
+    const id = req.query.id;
     //check if file exists
     if (fs.existsSync(themeFileLocation)) {
       let data = JSON.parse(fs.readFileSync(themeFileLocation));
       let filteredData;
-      if (data && wallboard && component && data[wallboard]) {
-        filteredData = data[wallboard][component];
+      if (data && wallboard && component && data[id] && data[id][wallboard]) {
+        filteredData = data[id][wallboard][component];
       } else {
         filteredData = undefined;
       }
@@ -279,21 +280,35 @@ app.get("/theme", function(req, res) {
 app.post("/theme", function(req, res) {
   const wallboard = req.query.wallboard;
   const component = req.query.component;
+  const id = req.query.id;
+
   if (wallboard && component) {
     //case: invalid update input
     let finalData;
     if (fs.existsSync(themeFileLocation)) {
       let data = JSON.parse(fs.readFileSync(themeFileLocation));
-      if (!data[wallboard]) {
-        //case: wallboard data doesn't exist at all
-        let addedData = { [wallboard]: { [component]: req.body.data } };
+
+      //case: user data doesn't exist
+      if (!data[id]) {
+        let addedData = {
+          [id]: { [wallboard]: { [component]: req.body.data } }
+        };
         finalData = { ...addedData, ...data };
-      } else {
-        data[wallboard][component] = req.body.data;
+      }
+      //case: user's wallboard data doesn't exist
+      else if (!data[id][wallboard]) {
+        let tmp = data[id];
+        tmp = { ...tmp, ...{ [wallboard]: { [component]: req.body.data } } };
+        data[id] = tmp;
+        finalData = data;
+      }
+      //case: user's component data doesn't exist or data already exists
+      else {
+        data[id][wallboard][component] = req.body.data;
         finalData = data;
       }
     } else {
-      finalData = { [wallboard]: { [component]: req.body.data } };
+      finalData = { [id]: { [wallboard]: { [component]: req.body.data } } };
     }
     fs.writeFileSync(themeFileLocation, JSON.stringify(finalData), function(
       err
@@ -341,6 +356,10 @@ app.get("/display", async (req, res) => {
 
 app.get("/jenkinslist", async function(req, res) {
   res.send(await app.get("JENKINS"));
+});
+
+app.get("/checkadmin", function(req, res) {
+  res.send({ result: login.checkAdmin(req.query.id) });
 });
 
 app.get("*", (req, res) => {

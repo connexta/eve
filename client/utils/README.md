@@ -21,3 +21,6 @@ Whenever a function requires time in ms to be given as a parameter, use `TimeUti
 
 ## Utils.js
 General Utils functions
+
+## DefaultData.js
+Stores default data for components to fall back to, when there is no user's data in the backend.
