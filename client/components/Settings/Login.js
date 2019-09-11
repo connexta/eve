@@ -13,7 +13,6 @@ import {
 import {
   userAgentApplication,
   config,
-  userID,
   userName
 } from "../Calendar/GraphConfig";
 import Fab from "@material-ui/core/Fab";
@@ -77,7 +76,7 @@ class Login extends React.Component {
   //check user's admin status.
   async checkAdmin() {
     let isAdmin = false;
-    await fetch("/checkadmin?id=" + userID, {
+    await fetch("/checkadmin?name=" + userName, {
       method: "GET",
       headers: { "Content-Type": "application/json" }
     })
@@ -114,7 +113,7 @@ class Login extends React.Component {
 
   //Function to toggle between log in / log out button depending on state
   LogInOut() {
-    return userID !== "Guest" ? (
+    return userName !== "Guest" ? (
       <>
         <StyledButton variant={"outlined"} onClick={this.logout.bind(this)}>
           Log Out
@@ -207,9 +206,6 @@ class Login extends React.Component {
           <TableBody>
             <TableRow>
               <TableCell>User's name: {userName}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>User's ID: {userID}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>

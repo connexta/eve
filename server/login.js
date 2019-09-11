@@ -1,9 +1,9 @@
-//If adminIDList has not been setup, always return true
-//If adminIDList has been setup, check if userID matches to it.
+//If adminNameList has not been setup, always return true
+//If adminNameList has been setup, check if userName matches to it.
 module.exports = {
-  checkAdmin: function(userID, adminIDList) {
-    if (adminIDList) {
-      return adminIDList.includes(userID);
+  checkAdmin: function(userName, adminNameList) {
+    if (adminNameList) {
+      return adminNameList.includes(userName);
     } else return true;
   }
 };

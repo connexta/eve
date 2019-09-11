@@ -24,9 +24,9 @@ describe("GET ", () => {
       });
   });
   describe("/checkadmin ", () => {
-    test("with non-existing query (id)", async () => {
+    test("with non-existing query (name)", async () => {
       const response = await request(app).get(
-        "/checkadmin?id=c2a366b7-3eb2-43d4-9b1b-8a28bbd7b27c"
+        "/checkadmin?name=Fake Name"
       );
       expect(response.body).toEqual({ result: false });
       expect(response.statusCode).toBe(200);

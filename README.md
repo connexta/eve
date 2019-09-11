@@ -106,8 +106,8 @@ Required build setup:
 - Environment variable setup: In the Jenkins service website, Create secret text in Credentials (i.e. SLACK_TOKEN)
 
 ### Admin Status
-With login feature, user can use Microsoft account to login, and customize their own unique wallboard, which would be stored in backend associated to the user's account ID. Specifically, `admin.json` file in eve would be responsible for the list of admin users. The format should follow
-as `{"admin":["123123","<anyMicrosoftID>"]}`. You can check your Microsoft ID in wallboard Account Info after you sign-in with Microsoft account.
+With login feature, user can use Microsoft account to login, and customize their own unique wallboard, which would be stored in backend associated to the user's full name (case sensitive). Specifically, `admin.json` file in eve would be responsible for the list of admin users. The format should follow
+as `{"admin":["John Smith","<Full Name>"]}`. You can check your registered name in Microsoft in wallboard Account Info after you sign-in with Microsoft account.
 Since eve folder would be in a persistent state in deployment, it is recommended to modify the file directly in deployment.
 If the file doesn't exist, everyone including guests will receive an Admin role as a default.
 

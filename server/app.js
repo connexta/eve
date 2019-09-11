@@ -36,7 +36,7 @@ const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
 const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 const eventFile = prod ? "/eve/event.json" : "eve/event.json";
 //expected content format of adminFile would be as such
-//{"admin":["123123","<anyMicrosoftID>"]}
+//{"admin":["John Smith","anyMicrosoft Name"]}
 const adminFile = prod ? "/eve/admin.json" : "eve/admin.json";
 
 /* CRON JOB */
@@ -362,7 +362,7 @@ app.get("/checkadmin", function(req, res) {
   let isAdmin = true;
   if (fs.existsSync(adminFile) && fs.readFileSync(adminFile).length) {
     let adminNameList = JSON.parse(fs.readFileSync(adminFile));
-    isAdmin = login.checkAdmin(req.query.id, adminNameList.admin);
+    isAdmin = login.checkAdmin(req.query.name, adminNameList.admin);
   }
   res.send({ result: isAdmin });
 });
