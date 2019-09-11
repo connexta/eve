@@ -127,17 +127,17 @@ class Login extends React.Component {
         </StyledButton>
       </>
     ) : (
-    <>
-      <StyledButton variant={"outlined"} onClick={this.login.bind(this)}>
-        Log In
-      </StyledButton>
-        <StyledButton
-        variant={"outlined"}
-        onClick={() => this.setState({ userDialogOpen: true })}
-        >
-            Account Info
+      <>
+        <StyledButton variant={"outlined"} onClick={this.login.bind(this)}>
+          Log In
         </StyledButton>
-    </>
+        <StyledButton
+          variant={"outlined"}
+          onClick={() => this.setState({ userDialogOpen: true })}
+        >
+          Account Info
+        </StyledButton>
+      </>
     );
   }
 

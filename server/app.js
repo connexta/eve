@@ -15,7 +15,8 @@ dotenv.config();
 const app = express();
 
 /* URL */
-const soaesb_url = "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/";
+const soaesb_url =
+  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/";
 
 app.use(express.static("target"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -361,9 +362,9 @@ app.get("/checkadmin", function(req, res) {
   let isAdmin = false;
   if (fs.existsSync(adminFile) && fs.readFileSync(adminFile).length) {
     let adminNameList = JSON.parse(fs.readFileSync(adminFile));
-    isAdmin = login.checkAdmin(req.query.id, adminNameList.admin)
+    isAdmin = login.checkAdmin(req.query.id, adminNameList.admin);
   }
-  res.send({ result: isAdmin});
+  res.send({ result: isAdmin });
 });
 
 app.get("*", (req, res) => {
