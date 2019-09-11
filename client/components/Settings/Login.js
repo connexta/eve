@@ -114,7 +114,7 @@ class Login extends React.Component {
 
   //Function to toggle between log in / log out button depending on state
   LogInOut() {
-    return userID !== "default" ? (
+    return userID !== "Guest" ? (
       <>
         <StyledButton variant={"outlined"} onClick={this.logout.bind(this)}>
           Log Out
@@ -127,9 +127,17 @@ class Login extends React.Component {
         </StyledButton>
       </>
     ) : (
+    <>
       <StyledButton variant={"outlined"} onClick={this.login.bind(this)}>
         Log In
       </StyledButton>
+        <StyledButton
+        variant={"outlined"}
+        onClick={() => this.setState({ userDialogOpen: true })}
+        >
+            Account Info
+        </StyledButton>
+    </>
     );
   }
 

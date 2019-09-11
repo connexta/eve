@@ -52,7 +52,7 @@ const StyledSettings = styled.div`
 const StyledLogin = styled.div`
   bottom: 0;
   right: 60px;
-  margin-right: 10px;
+  margin-right: 20px;
   margin-bottom: 10px;
   position: absolute;
 `;

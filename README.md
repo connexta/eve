@@ -37,7 +37,7 @@ This project is built using ReactJS and NodeJS.
 ### Setting up Enviornment Variables
 The Github component requires ```GITHUB_TOKEN```.
 The Slack component requires ```SLACK_CHANNEL``` and ```SLACK_TOKEN```.
-The Grafana component requires ```SOAESB_BEARER_TOKEN```.
+The Grafana component requires ```SOAESB_LOGIN_USERNAME``` and ```SOAESB_LOGIN_PASSWORD```.
 
 Place the environment variables in the .env file
 Example: ```SLACK_CHANNEL=ABC123```

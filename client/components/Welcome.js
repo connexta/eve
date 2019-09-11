@@ -13,7 +13,7 @@ class Welcome extends React.Component {
   }
 
   componentDidMount() {
-    if (userName !== "default") {
+    if (userName !== "Guest") {
       this.setState({ open: true });
     }
   }

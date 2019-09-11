@@ -15,11 +15,7 @@ dotenv.config();
 const app = express();
 
 /* URL */
-const soaesb_url =
-  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
-const urlList = {
-  SOAESB: soaesb_url
-};
+const soaesb_url = "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/";
 
 app.use(express.static("target"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,11 +34,14 @@ const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
 const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
 const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 const eventFile = prod ? "/eve/event.json" : "eve/event.json";
+//expected content format of adminFile would be as such
+//{"admin":["123123","<anyMicrosoftID>"]}
+const adminFile = prod ? "/eve/admin.json" : "eve/admin.json";
 
 /* CRON JOB */
 // grafana cron job
-app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-cron.grafanaCron(prod, app, soaesb_url);
+// app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+// cron.grafanaCron(prod, app, soaesb_url);
 
 //jenkins cron job
 app.set("JENKINS", jenkins.getJenkinsList()); //initial run
@@ -359,7 +358,12 @@ app.get("/jenkinslist", async function(req, res) {
 });
 
 app.get("/checkadmin", function(req, res) {
-  res.send({ result: login.checkAdmin(req.query.id) });
+  let isAdmin = false;
+  if (fs.existsSync(adminFile) && fs.readFileSync(adminFile).length) {
+    let adminNameList = JSON.parse(fs.readFileSync(adminFile));
+    isAdmin = login.checkAdmin(req.query.id, adminNameList.admin)
+  }
+  res.send({ result: isAdmin});
 });
 
 app.get("*", (req, res) => {

@@ -80,7 +80,7 @@ Once the user clicks the setting icon, the user enters an edit mode where the us
 ColorPicker.js for Banner color picking UI and Dropdown.js for URL (of BuildStatus, BuildAF) UI.
 
 - Login Icon
-Once the user clicks the login icon, the user can login to their Microsoft account. Once logged in, any wallboard customization will be stored in the backend associated to user's ID; hence, each user can have their own unique customization. When the user clciks again the login icon, the user can either logout or can see their account info (from Microsoft account).
+Once the user clicks the login icon, the user can login to their Microsoft account. Once logged in, any wallboard customization will be stored in the backend associated to user's ID; hence, each user can have their own unique customization. When the user clicks the login icon again, the user can either logout or can see their account info (from Microsoft account).
 
 ## MediaComponent
 

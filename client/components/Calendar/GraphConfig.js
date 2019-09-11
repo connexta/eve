@@ -18,5 +18,5 @@ export const userAgentApplication = new UserAgentApplication({
 });
 
 export const user = userAgentApplication.getAccount();
-export const userID = user ? user.accountIdentifier : "default";
-export const userName = user ? user.name : "default";
+export const userID = user ? user.accountIdentifier : "Guest";
+export const userName = user ? user.name : "Guest";

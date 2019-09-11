@@ -131,7 +131,7 @@ class MediaEdit extends React.Component {
       } else await this.formRef.current.submit();
     }
 
-    if (this.state.link != null && !this.isValidLink(this.state.link)) {
+    if (this.state.link && !this.isValidLink(this.state.link)) {
       alert("Link invalid");
       return;
     }
