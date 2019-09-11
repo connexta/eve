@@ -23,7 +23,7 @@ import { connect } from "react-redux";
 
 const StyledButton = styled(Button)`
   width: 70%;
-  margin: auto;
+  margin: 10px;
 `;
 
 const StyleFab = styled(Fab)`
@@ -221,7 +221,8 @@ class Login extends React.Component {
 
   render() {
     return (
-      <>
+    this.props.currentWallboard === "HOME" || this.props.currentWallboard === "TV" ?
+        <>
         <FabContainer>
           <ThemeProvider theme={settingTheme}>
             <StyleFab
@@ -240,6 +241,8 @@ class Login extends React.Component {
         {this.displayDialog()}
         {this.displayAccount()}
       </>
+    :
+    <></>
     );
   }
 }
