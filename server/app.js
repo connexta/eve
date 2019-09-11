@@ -359,7 +359,7 @@ app.get("/jenkinslist", async function(req, res) {
 });
 
 app.get("/checkadmin", function(req, res) {
-  let isAdmin = false;
+  let isAdmin = true;
   if (fs.existsSync(adminFile) && fs.readFileSync(adminFile).length) {
     let adminNameList = JSON.parse(fs.readFileSync(adminFile));
     isAdmin = login.checkAdmin(req.query.id, adminNameList.admin);
