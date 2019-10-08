@@ -21,6 +21,9 @@ import Button from "@material-ui/core/Button";
 import { DefaultData } from "../../utils/DefaultData";
 import { Save, Cancel } from "@material-ui/icons";
 import { time } from "../../utils/TimeUtils";
+import ColorPicker from "./ColorPicker";
+import Dropdown from "./Dropdown";
+import { userName, userID } from "../Calendar/GraphConfig";
 
 const componentHOC = WrappedComponent => {
   const ComponentWrapper = styled(BoxStyle)`
@@ -33,7 +36,7 @@ const componentHOC = WrappedComponent => {
     cursor: ${props => props.edit && props.outline && css`pointer`};
     outline: ${props =>
       props.edit && props.outline
-        ? css`10px solid ${CX_DARK_BLUE}`
+        ? css`6px solid ${CX_DARK_BLUE}`
         : css`0px solid`};
   `;
 
@@ -70,16 +73,21 @@ const componentHOC = WrappedComponent => {
       this.state = {
         open: false, //for first Dialog (user input)
         resultsOpen: false, //for Second Dialog (Success/Failure Results)
-        key: Date.now(),
-        metSaveRequirement: false,
-        isLoading: true,
-        edit: this.props.disable ? false : this.props.edit,
-        default: this.props.default || DefaultData[this.props.name]
+        key: Date.now(), //to reload the component once the changes has been applied
+        metSaveRequirement: false, //to validate input entry
+        isLoading: true, //for waiting initial data fetch
+        editable: true, //for verifying if the component can be editable
+        edit: this.props.disable ? false : this.props.edit, //edit state
+        default: this.props.default || DefaultData[this.props.name], //default data
+        dropDownSelectedName: [], //for maintaining the subsequent list from first selection.
+        dropDownSelectedNameSecond: [] //for maintaining the subsequent list from second selection (dropDownSelectedName).
       };
     }
 
     async componentDidMount() {
       await this.initialUpdateContent(this.props.name, this.state.default);
+      await this.initialFetchJenkinslist();
+      await this.initialEditableCheck();
       this.setState({ isLoading: false });
     }
 
@@ -89,13 +97,49 @@ const componentHOC = WrappedComponent => {
       }
     }
 
+    //initially check if the component is editable.
+    //Two criterias: check if disable prop exists, and check if user is Admin in case of AdminOnly props
+    async initialEditableCheck() {
+      let editable =
+        !this.props.disable && (await this.checkAdmin(this.props.AdminOnly));
+      this.setState({ editable: editable });
+    }
+
+    async checkAdmin(AdminOnly) {
+      let isAdmin = false;
+      if (AdminOnly) {
+        await fetch("/checkadmin?name=" + userName, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" }
+        })
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            if (data && Object.keys(data).length) {
+              isAdmin = data.result;
+            }
+          })
+          .catch(err => {
+            console.log("Unable to verify admin role from backend ", err);
+          });
+      } else {
+        isAdmin = true;
+      }
+      return isAdmin;
+    }
+
+    //initially update the content of all components from backend data.
+    //if not available, set it to defaultData
     async initialUpdateContent(component, defaultData) {
       let retrieved = false;
       await fetch(
         "/theme?wallboard=" +
           this.props.currentWallboard +
           "&component=" +
-          component,
+          component +
+          "&id=" +
+          userID,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" }
@@ -120,6 +164,18 @@ const componentHOC = WrappedComponent => {
       }
     }
 
+    //initially obtain jenkins list for BuildStatus.
+    async initialFetchJenkinslist() {
+      let jenkinsList = await fetch("/jenkinslist")
+        .then(response => response.json())
+        .catch(err => {
+          console.log("Unable to retrieve jenkins data from backend ", err);
+        });
+      this.setState({ jenkinsList: jenkinsList });
+    }
+
+    //Update the newly changed data to backend based on if the input format is single (i.e. string) or multiple input.
+    //isArray is true if input is expected to be multiple
     updateContent(content, index, isArray) {
       if (isArray) {
         this.partialUpdate(content, index);
@@ -130,33 +186,83 @@ const componentHOC = WrappedComponent => {
 
     //if the data is an array type (multiple elements), partially update the data
     partialUpdate(content, index) {
-      let temp = this.state.content.slice();
-      temp[index] = content;
-      this.setState({ content: temp });
+      this.setState({
+        content: this.insertElementIntoArray(this.state.content, content, index)
+      });
+    }
+
+    //handle color change in child component ColorPicker
+    handleColorChange(color) {
+      this.setState({ COLOR: color.hex });
+    }
+
+    //handle channel change in child component Dropdown
+    handleChannelChange(channelID) {
+      this.setState({ CHANNEL: channelID.id });
+    }
+
+    //handle initial dropdown selection for jenkins in child component Dropdown
+    //Update the first entry, dropDownSelectedName; and removed second entry, dropDownSelectedNameSecond to clear it out.
+    handleJenkinsFirstChange(selectedName, index) {
+      this.setState({
+        dropDownSelectedName: this.insertElementIntoArray(
+          this.state.dropDownSelectedName,
+          selectedName,
+          index
+        ),
+        dropDownSelectedNameSecond: this.insertElementIntoArray(
+          this.state.dropDownSelectedNameSecond,
+          undefined,
+          index
+        ),
+        URL: [],
+        NAME: [],
+        LINK: []
+      });
+    }
+
+    //handle subsequent dropdown selection for jenkins in child component Dropdown
+    //Update the second entry only if it is not the last Dropdown selection
+    handleJenkinsDataChange(data, index, last) {
+      last
+        ? undefined
+        : this.setState({
+            dropDownSelectedNameSecond: this.insertElementIntoArray(
+              this.state.dropDownSelectedNameSecond,
+              data,
+              index
+            )
+          });
+
+      this.setState({
+        URL: this.insertElementIntoArray(this.state.URL, data.url, index),
+        NAME: this.insertElementIntoArray(
+          this.state.NAME,
+          this.state.dropDownSelectedName[index].name,
+          index
+        ),
+        LINK: this.insertElementIntoArray(this.state.LINK, data.link, index)
+      });
+    }
+
+    //update channel list for dropdown. Remove any archived channel.
+    updateChannelList(channelList) {
+      this.setState({
+        channelList: channelList.filter(channelData => !channelData.is_archived)
+      });
     }
 
     //check if text is valid based on its type.
     metRequirement(type, text) {
       if (text === undefined) return false;
       switch (type) {
-        case "CHANNEL":
-          return this.slackRequirement(text);
         case "REPOPATH":
           return this.githubRequirement(text);
-        case "COLOR":
-          return this.colorRequirement(text);
         case "TYPE_NOT_PROVIDED":
           return false;
         default:
           return true;
       }
-    }
-
-    //matches to slack channel
-    //i.e. ABC123DEF
-    slackRequirement(text) {
-      let regexp = /^[A-Z0-9]{9}$/;
-      return regexp.test(text);
     }
 
     //matches to repo path
@@ -166,29 +272,40 @@ const componentHOC = WrappedComponent => {
       return regexp.test(text);
     }
 
-    //matches to color
-    //i.e. #AAA123
-    colorRequirement(text) {
-      let regexp = /^#\w{6}$/;
-      return regexp.test(text);
-    }
-
     handleClick() {
       this.setState({ open: true });
     }
 
+    //close the dialog and clear out the textfields
     handleClose() {
-      this.setState({ open: false });
+      this.setState({
+        open: false,
+        dropDownSelectedName: [],
+        dropDownSelectedNameSecond: []
+      });
+    }
+
+    //insert element into array[index]
+    insertElementIntoArray(array, element, index) {
+      let tmp = array ? array.slice() : [];
+      tmp[index] = element;
+      return tmp;
     }
 
     //if it's Banner, always Post it to HOME since Getting Banner data always come from HOME
     bannerPost(isBanner) {
       let curWallboard = isBanner ? "HOME" : this.props.currentWallboard;
       return (
-        "/theme?wallboard=" + curWallboard + "&component=" + this.props.name
+        "/theme?wallboard=" +
+        curWallboard +
+        "&component=" +
+        this.props.name +
+        "&id=" +
+        userID
       );
     }
 
+    //post the data to the backend. If it's Banner, call bannerPost to select HOME wallboard.
     postData() {
       let dataToUpdate = this.state.content;
       fetch(this.bannerPost(this.props.name === "Banner"), {
@@ -200,14 +317,20 @@ const componentHOC = WrappedComponent => {
 
     //handle saving the contents to the state and to the backend
     //saving method differs whether the data is a string or an array (checked by isArray)
+    //index loops around the data
+    //jndex loops around the input type
     async handleMultipleSave(e, row, column) {
       let metOneRequirement = false;
       let isArray = !(row == 1 && column == 1);
       for (let index = 0; index < row; index++) {
         let metSaveRequirement = true;
-        //check if valid response has been inputted
+
+        // check if valid response has been inputted: requires all the fields to be filled for the row
         for (let jndex = 0; jndex < column; jndex++) {
-          let inputData = this.state[this.props.type[jndex] + index];
+          let inputData =
+            isArray && this.state[this.props.type[jndex]]
+              ? this.state[this.props.type[jndex]][index]
+              : this.state[this.props.type[jndex]];
           metSaveRequirement =
             metSaveRequirement &&
             this.metRequirement(this.props.type[jndex], inputData);
@@ -216,7 +339,10 @@ const componentHOC = WrappedComponent => {
           let sendData;
           for (let jndex = 0; jndex < column; jndex++) {
             let inputName = this.props.type[jndex];
-            let inputData = this.state[this.props.type[jndex] + index];
+            let inputData =
+              isArray && this.state[this.props.type[jndex]]
+                ? this.state[this.props.type[jndex]][index]
+                : this.state[this.props.type[jndex]];
             sendData = isArray
               ? { ...sendData, ...{ [inputName]: inputData } }
               : inputData;
@@ -254,6 +380,103 @@ const componentHOC = WrappedComponent => {
       );
     }
 
+    //display input selection based on the type
+    displaySelectionByType(type, index) {
+      switch (type) {
+        case "COLOR":
+          return (
+            <ColorPicker
+              handleColorChange={this.handleColorChange.bind(this)}
+            />
+          );
+        case "CHANNEL":
+          return (
+            <Dropdown
+              type="CHANNEL"
+              list={this.state.channelList}
+              handleChange={this.handleChannelChange.bind(this)}
+            />
+          );
+        //URL is splited into at most three dropdowns. First for initial selection of projects, Second and Third for corresponding branches from the first selection
+        //Third Dropdown appears only if the Second Dropdown selection shows that it has additional branch.
+        case "URL":
+          return (
+            <>
+              <Dropdown
+                type="MAINURL"
+                index={index}
+                list={this.state.jenkinsList}
+                handleChange={this.handleJenkinsFirstChange.bind(this)}
+              />
+              <Dropdown
+                type="SUBURL"
+                index={index}
+                list={
+                  this.state.dropDownSelectedName[index]
+                    ? this.state.dropDownSelectedName[index].branch
+                    : undefined
+                }
+                handleChange={this.handleJenkinsDataChange.bind(this)}
+              />
+              <Dropdown
+                type="LASTURL"
+                index={index}
+                list={
+                  this.state.dropDownSelectedNameSecond[index]
+                    ? this.state.dropDownSelectedNameSecond[index].branch
+                    : undefined
+                }
+                handleChange={this.handleJenkinsDataChange.bind(this)}
+              />
+            </>
+          );
+        case "NAME":
+          return (
+            <TextField
+              name={type + index}
+              value={
+                this.state.dropDownSelectedName &&
+                this.state.dropDownSelectedName[index]
+                  ? this.state.dropDownSelectedName[index].name
+                  : ""
+              }
+              onChange={e => {
+                this.setState({
+                  [type]: this.insertElementIntoArray(
+                    this.state[type],
+                    e.target.value,
+                    index
+                  ),
+                  dropDownSelectedName: this.insertElementIntoArray(
+                    this.state.dropDownSelectedName,
+                    {
+                      ...this.state.dropDownSelectedName[index],
+                      name: e.target.value
+                    },
+                    index
+                  )
+                });
+              }}
+            />
+          );
+        default:
+          return (
+            <TextField
+              name={type + index}
+              onChange={e => {
+                this.setState({
+                  [type]: this.insertElementIntoArray(
+                    this.state[type],
+                    e.target.value,
+                    index
+                  )
+                });
+              }}
+            />
+          );
+      }
+    }
+
     getMultipleCells(row, column, typeArray) {
       let tables = [];
       for (let index = 0; index < row; index++) {
@@ -265,12 +488,7 @@ const componentHOC = WrappedComponent => {
                 {row > 1 ? typeArray[jndex] + index : typeArray[jndex]}
               </TableCell>
               <TableCell>
-                <TextField
-                  name={typeArray[jndex] + index}
-                  onChange={e => {
-                    this.setState({ [e.target.name]: e.target.value });
-                  }}
-                ></TextField>
+                {this.displaySelectionByType(typeArray[jndex], index)}
               </TableCell>
             </React.Fragment>
           );
@@ -335,35 +553,33 @@ const componentHOC = WrappedComponent => {
     }
 
     displayComponent() {
+      let edit = this.state.edit && this.state.editable;
       return (
         <ComponentWrapper
           style={this.props.style}
-          edit={this.state.edit ? "true" : undefined}
-          onClick={
-            this.state.edit && !this.props.disableEffect
-              ? this.handleClick.bind(this)
-              : undefined
-          }
+          edit={edit ? "true" : undefined}
+          onClick={edit ? this.handleClick.bind(this) : undefined}
           key={this.state.key}
           raised={true}
           outline={!this.props.disableEffect ? "true" : undefined}
         >
           <WrappedComponent
             {...this.props}
+            edit={edit}
             content={this.state.content}
-            edit={this.state.edit}
+            updateChannelList={this.updateChannelList.bind(this)}
           />
         </ComponentWrapper>
       );
     }
 
     displayBanner() {
-      let editable = this.state.edit;
+      let edit = this.state.edit;
       return (
         <BannerWrapper
-          edit={editable ? "true" : undefined}
+          edit={edit ? "true" : undefined}
           content={this.state.content}
-          onClick={editable ? this.handleClick.bind(this) : undefined}
+          onClick={edit ? this.handleClick.bind(this) : undefined}
           key={this.state.key}
         >
           <WrappedComponent {...this.props} />
@@ -374,16 +590,12 @@ const componentHOC = WrappedComponent => {
     render() {
       return this.state.isLoading ? (
         <></>
-      ) : this.props.name === "EventComponent" ||
-        this.props.name === "MediaComponent" ||
-        this.props.name === "ReleaseVersion" ? (
-        this.displayComponent()
       ) : (
         <>
           {this.props.name === "Banner"
             ? this.displayBanner()
             : this.displayComponent()}
-          {this.displayDialog()}
+          {!this.props.disablePopup ? this.displayDialog() : undefined}
           {this.state.resultsOpen ? this.displaySaveResults() : undefined}
         </>
       );

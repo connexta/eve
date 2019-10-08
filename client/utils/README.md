@@ -18,3 +18,9 @@ Contains useful links for use with the jenkins API calls.
 ## TimeUtils.js
 Contains helper functions and constants for dealing with time. Included are constants for converting ms to seconds, minutes, or hours. Also included are functions for calculating relative time difference between a start and end as well as other helper functions.
 Whenever a function requires time in ms to be given as a parameter, use `TimeUtils.js`.
+
+## Utils.js
+General Utils functions
+
+## DefaultData.js
+Stores default data for components to fall back to, when there is no user's data in the backend.

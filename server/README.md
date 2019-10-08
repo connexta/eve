@@ -17,6 +17,12 @@ Main entry file for backend side server (NodeJS) to host the server and any back
 - **port**: in final production level, it'll pick up process.env.EVE_PORT from dcos service which is set to 3000.
 - **static files**: front end files are statically read by NodeJS from compacted folder `target` created by webpack.
 
+## cron
+Cron tasks to retrieve and save data in specific interval.
+
+## jenkins
+Create Json data of all projects along with its name, URL and Links of associated branches. 
+
 ## grafana
 Use Puppeteer library to take a screenshot of grafana dashboard
 

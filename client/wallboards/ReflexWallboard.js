@@ -52,6 +52,7 @@ class ReflexWallboard extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.leaveEdit();
     await this.props.updateCurrentWallboard("Reflex");
     this.setState({ isLoading: false });
   }
@@ -82,11 +83,15 @@ class ReflexWallboard extends React.Component {
               style={StyleMedia}
               wallboard={"reflex"}
               name="MediaComponent"
+              AdminOnly
+              disablePopup
             />
             <EventComponent
               style={StyleEvent}
               wallboard={"reflex"}
               name="EventComponent"
+              AdminOnly
+              disablePopup
             />
           </Grid>
         </LeftBox>

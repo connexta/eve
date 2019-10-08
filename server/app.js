@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
+const jenkins = require("./jenkins");
+const login = require("./login");
 const fs = require("fs");
 const cron = require("./cron");
 const fetch = require("node-fetch");
@@ -14,10 +16,7 @@ const app = express();
 
 /* URL */
 const soaesb_url =
-  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
-const urlList = {
-  SOAESB: soaesb_url
-};
+  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/";
 
 app.use(express.static("target"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,13 +35,18 @@ const versionFileLocation = prod ? "/eve/versions.json" : "eve/versions.json";
 const mediaFolder = prod ? "/eve/carouselMedia" : "eve/carouselMedia";
 const mediaFile = prod ? "/eve/carousel.json" : "eve/carousel.json";
 const eventFile = prod ? "/eve/event.json" : "eve/event.json";
+//expected content format of adminFile would be as such
+//{"admin":["John Smith","anyMicrosoft Name"]}
+const adminFile = prod ? "/eve/admin.json" : "eve/admin.json";
 
 /* CRON JOB */
-//CRON JOB for SOAESB grafana
-if (prod) {
-  app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
-  cron.grafanaCron(prod, app, soaesb_url);
-}
+// grafana cron job
+app.set("SOAESB", grafana.getScreenshot(prod, soaesb_url)); //initial run
+cron.grafanaCron(prod, app, soaesb_url);
+
+//jenkins cron job
+app.set("JENKINS", jenkins.getJenkinsList()); //initial run
+cron.jenkinsCron(app);
 
 // Create storage for media images
 const storage = multer.diskStorage({
@@ -253,13 +257,13 @@ app.get("/theme", function(req, res) {
   try {
     const wallboard = req.query.wallboard;
     const component = req.query.component;
-
+    const id = req.query.id;
     //check if file exists
     if (fs.existsSync(themeFileLocation)) {
       let data = JSON.parse(fs.readFileSync(themeFileLocation));
       let filteredData;
-      if (data && wallboard && component && data[wallboard]) {
-        filteredData = data[wallboard][component];
+      if (data && wallboard && component && data[id] && data[id][wallboard]) {
+        filteredData = data[id][wallboard][component];
       } else {
         filteredData = undefined;
       }
@@ -276,21 +280,35 @@ app.get("/theme", function(req, res) {
 app.post("/theme", function(req, res) {
   const wallboard = req.query.wallboard;
   const component = req.query.component;
+  const id = req.query.id;
+
   if (wallboard && component) {
     //case: invalid update input
     let finalData;
     if (fs.existsSync(themeFileLocation)) {
       let data = JSON.parse(fs.readFileSync(themeFileLocation));
-      if (!data[wallboard]) {
-        //case: wallboard data doesn't exist at all
-        let addedData = { [wallboard]: { [component]: req.body.data } };
+
+      //case: user data doesn't exist
+      if (!data[id]) {
+        let addedData = {
+          [id]: { [wallboard]: { [component]: req.body.data } }
+        };
         finalData = { ...addedData, ...data };
-      } else {
-        data[wallboard][component] = req.body.data;
+      }
+      //case: user's wallboard data doesn't exist
+      else if (!data[id][wallboard]) {
+        let tmp = data[id];
+        tmp = { ...tmp, ...{ [wallboard]: { [component]: req.body.data } } };
+        data[id] = tmp;
+        finalData = data;
+      }
+      //case: user's component data doesn't exist or data already exists
+      else {
+        data[id][wallboard][component] = req.body.data;
         finalData = data;
       }
     } else {
-      finalData = { [wallboard]: { [component]: req.body.data } };
+      finalData = { [id]: { [wallboard]: { [component]: req.body.data } } };
     }
     fs.writeFileSync(themeFileLocation, JSON.stringify(finalData), function(
       err
@@ -334,6 +352,19 @@ app.get("/display", async (req, res) => {
   } catch (error) {
     console.log("Error in /display ", error);
   }
+});
+
+app.get("/jenkinslist", async function(req, res) {
+  res.send(await app.get("JENKINS"));
+});
+
+app.get("/checkadmin", function(req, res) {
+  let isAdmin = true;
+  if (fs.existsSync(adminFile) && fs.readFileSync(adminFile).length) {
+    let adminNameList = JSON.parse(fs.readFileSync(adminFile));
+    isAdmin = login.checkAdmin(req.query.name, adminNameList.admin);
+  }
+  res.send({ result: isAdmin });
 });
 
 app.get("*", (req, res) => {

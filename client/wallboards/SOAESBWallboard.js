@@ -37,6 +37,7 @@ class SOAESBWallboard extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.leaveEdit();
     await this.props.updateCurrentWallboard("SOAESB");
     this.setState({ isLoading: false });
   }
@@ -61,7 +62,7 @@ class SOAESBWallboard extends React.Component {
         <RightBox item>
           <BuildAF
             style={StyleBuildStatus}
-            type={["LINK", "URL", "NAME"]}
+            type={["URL", "NAME"]}
             name="BuildAF"
           />
           <Github style={StyleGithub} type={["REPOPATH"]} name="Github" />

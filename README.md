@@ -37,7 +37,7 @@ This project is built using ReactJS and NodeJS.
 ### Setting up Enviornment Variables
 The Github component requires ```GITHUB_TOKEN```.
 The Slack component requires ```SLACK_CHANNEL``` and ```SLACK_TOKEN```.
-The Grafana component requires ```SOAESB_BEARER_TOKEN```.
+The Grafana component requires ```SOAESB_LOGIN_USERNAME``` and ```SOAESB_LOGIN_PASSWORD```.
 
 Place the environment variables in the .env file
 Example: ```SLACK_CHANNEL=ABC123```
@@ -105,6 +105,12 @@ Required build setup:
 - Jenkins setup: In the Jenkins service website, create multibranch pipeline project to detect github SCM repo.
 - Environment variable setup: In the Jenkins service website, Create secret text in Credentials (i.e. SLACK_TOKEN)
 
+### Admin Status
+With login feature, user can use Microsoft account to login, and customize their own unique wallboard, which would be stored in backend associated to the user's full name (case sensitive). Specifically, `admin.json` file in eve would be responsible for the list of admin users. The format should follow
+as `{"admin":["John Smith","<Full Name>"]}`. You can check your registered name in Microsoft in wallboard Account Info after you sign-in with Microsoft account.
+Since eve folder would be in a persistent state in deployment, it is recommended to modify the file directly in deployment.
+If the file doesn't exist, everyone including guests will receive an Admin role as a default.
+
 ### How to add new Wallboard & new Components
 
 #### Adding new Wallboard
@@ -122,7 +128,9 @@ Required build setup:
   - default : (optional) overrides the existing default (client/utils/DefaultData.js) (format needs to match. If in doubt, check out DefaultData.js)
   - disable : (optional) disable any edit interaction
   - disableEffect : (optional) disable effect of edit mode (i.e. outline expansion) but still be able to interact in edit mode
-  - listvert : (optional) specific for BuildStatus or TeamBuildStatus component to vertically display content
+  - disablePopup : (optional) disable dialog to be popup. Currently used for EventComponents, MediaComponents and ReleaseVersion as they have either inherent dialog or no need for a dialog.
+  - listvert : (optional) specific for BuildStatus component to vertically display content
+  - AdminOnly : (optional) make it editable only if the user is Admin.
 
 #### Adding new Component
 1. Create a `<component>.js` in client/components with appropriate functions

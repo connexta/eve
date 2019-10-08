@@ -18,7 +18,6 @@ import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
 import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
-  Edit,
   Add,
   Delete,
   Save
@@ -48,7 +47,6 @@ const CarouselContentLink = styled(CarouselContent)`
 
 const CarouselMedia = styled.img`
   max-width: calc(100% - 48px);
-  max-height: calc(100% - 120px);
   border-radius: 4px;
 `;
 
@@ -133,7 +131,7 @@ class MediaEdit extends React.Component {
       } else await this.formRef.current.submit();
     }
 
-    if (this.state.link != null && !this.isValidLink(this.state.link)) {
+    if (this.state.link && !this.isValidLink(this.state.link)) {
       alert("Link invalid");
       return;
     }

@@ -1,8 +1,12 @@
 # Components
 
+## Banner
+
+Displays banner in the top screen. It contains Logo and Clocks. With the react-color library UI, the color of the baner is edditable in edit mode. Details can be found in Settings/componentHOC.js and Settings/ColorPicker.js
+
 ## BuildStatus
 
-Displays the health of builds as reported by Jenkins and toggles between the health of the most recent build and the health of the 5 most recent builds.
+Displays the health of builds as reported by Jenkins and toggles between the health of the most recent build and the health of the 5 most recent builds. With the dropdown UI, the build status is editable in edit mode.
 
 #### Packages:
 - **Material UI**: Uses Card, CardContent, and Button from Material UI
@@ -37,6 +41,7 @@ Before you can use the API, you must create an application in the [Azure Active 
 ### GraphConfig
 
 Describes the configuration of the Microsoft Graph API calls.  Namely, the scope of permissions the user is granting by logging in, which authority is authenticating the user, and the ID of the Azure Application with which we are authenticating.
+The file contains userAgentApplication and account information such as ID or name to be used in various other components such as EventComponent.js, Login.js
 
 ### GraphService
 
@@ -48,7 +53,7 @@ Displays time for timezones pertinent to Connexta: Phoenix (MST), Denver (MDT), 
 
 ## Github
 
-Displays the 5 most recent pull requests for a specified repository.  For each pull request, it displays the title, pull request number, excerpt from the description, number of approvals, and any pertinent status checks (such as Jenkins build status).  The component is clickable to navigate to the displayed PR.
+Displays the 5 most recent pull requests for a specified repository.  For each pull request, it displays the title, pull request number, excerpt from the description, number of approvals, and any pertinent status checks (such as Jenkins build status).  The component is clickable to navigate to the displayed PR. With the textfield, the github repopath is editable in edit mode.
 
 #### Props:
 - **content**: the path to reach the desired repository during API calls.  Typically takes the form of `[ORGANIZATION]/[REPOSITORY]`.  See [GitHub API documentation](https://developer.github.com/v3/repos/) for more details.
@@ -70,8 +75,12 @@ Take and display screenshot of grafana dashboard.
   
 ## Settings
 
+- Settings Icon
 Once the user clicks the setting icon, the user enters an edit mode where the user can select a component from the current screen/wallboard to edit the contents of the component. Currently, the user can modify the color of the banner in the Home screen, slack channel of the SlackComponent, repo path of the Github, jenkins url of the BuildStatus, jenkins url of the BuildAF. The directory contains Setting.js which contains the setting icon container, and componentHOC.js which creates a HOC of editable components.
+ColorPicker.js for Banner color picking UI and Dropdown.js for URL (of BuildStatus, BuildAF) UI.
 
+- Login Icon
+Once the user clicks the login icon, the user can login to their Microsoft account. Once logged in, any wallboard customization will be stored in the backend associated to user's ID; hence, each user can have their own unique customization. When the user clicks the login icon again, the user can either logout or can see their account info (from Microsoft account).
 
 ## MediaComponent
 
@@ -79,6 +88,7 @@ Rotates through media to be displayed on the Wallboard.  Each media consists of 
 
 ## SlackComponent
 Displays the 10 most recent slack messages, rotating through the messages on a set interval. The slack widget is a fixed size and will only show as many messages as can fit. The component is currently not interactive in any way.
+With the dropdown UI, the channel is editable in edit mode.
 
 #### API:  
 Multiple API calls are made to the Slack API for different information. The API calls rely on the `SLACK_TOKEN` and `SLACK_CHANNEL` environment variables being set. Here is the list of the API calls made...  
@@ -95,3 +105,6 @@ This component holds an individual slack message to be used in the collection of
   * **messages**: list of pulled messages
   * **slackUsers**: List of pulled slack users
   * **emojis**: List of pulled emojis
+
+### Welcome
+Simple component to display Dialog (with user's name) whenever the logged in user enters the website.

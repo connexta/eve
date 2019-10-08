@@ -3,7 +3,10 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 //GRAFANA SETUP
-const auth_header = "Bearer " + process.env.SOAESB_BEARER_TOKEN;
+const USERNAME = process.env.SOAESB_LOGIN_USERNAME;
+const PASSWORD = process.env.SOAESB_LOGIN_PASSWORD;
+const auth_string = USERNAME + ":" + PASSWORD;
+const auth_header = "Basic " + new Buffer.from(auth_string).toString("base64");
 
 //use Puppeteer to take screenshot and write it to the respond url.
 module.exports = {
