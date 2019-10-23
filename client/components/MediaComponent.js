@@ -47,6 +47,7 @@ const CarouselContentLink = styled(CarouselContent)`
 
 const CarouselMedia = styled.img`
   max-width: calc(100% - 48px);
+  max-height: 100%;
   border-radius: 4px;
 `;
 
