@@ -126,7 +126,7 @@ class SlackComponent extends React.Component {
   async setMessages() {
     console.log("Fetching latest slack messages...");
     const url = encodeURIComponent(
-      "https://slack.com/api/channels.history?token=" +
+      "https://slack.com/api/conversations.history?token=" +
         TOKEN +
         "&channel=" +
         this.props.content +
