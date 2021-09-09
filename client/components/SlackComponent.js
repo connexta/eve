@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import SlackCard from "./SlackCard";
-import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants";
+import { O_FROST, O_FONT } from "../utils/Constants";
 import { BoxHeader } from "../styles/styles";
 import { minute, time } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
@@ -21,7 +21,7 @@ const CardContainer = styled.div`
 `;
 
 const CardHeader = styled(BoxHeader)`
-  font-family: ${CX_FONT};
+  font-family: ${O_FONT};
   height: 40px;
 `;
 
@@ -33,7 +33,7 @@ const GradientBlock = styled.div`
   height: 15%;
   width: 100%;
   bottom: 12px; /*go down below as much as the padding*/
-  background: linear-gradient(transparent, ${CX_OFF_WHITE});
+  background: linear-gradient(transparent, ${O_FROST});
   position: absolute;
   z-index: 2;
 `;
@@ -43,7 +43,7 @@ const WhiteBlock = styled.div`
   height: 12px;
   width: 100%;
   bottom: 0;
-  background: ${CX_OFF_WHITE};
+  background: ${O_FROST};
   z-index: 3;
 `;
 

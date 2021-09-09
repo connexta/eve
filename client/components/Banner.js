@@ -1,9 +1,18 @@
 import React from "react";
 import styled from "styled-components";
-import logo from "../../resources/logo-offwhite.png";
+import logo from "../../resources/Octo-Logo-2021.png";
 import Clock from "../components/Clock";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import componentHOC from "./Settings/componentHOC";
+import O_FONT from "../utils/Constants";
+import WebFont from 'webfontloader';
+
+WebFont.load({
+   google: {
+     //families: [{O_FONT}]
+     families: ['Roboto', 'sans-serif']
+   }
+});
 
 const StyledLogo = styled.img`
   margin: 0 0 12px 0;
@@ -21,9 +30,9 @@ class Banner extends React.Component {
           <Logo />
         </Link>
 
-        <Clock timezone="US/Arizona" place="PHX" />
-        <Clock timezone="US/Mountain" place="DEN" />
-        <Clock timezone="US/Eastern" place="BOS" />
+        <Clock timezone="US/Arizona" place="AZ" />
+        <Clock timezone="US/Mountain" place="MT" />
+        <Clock timezone="US/Eastern" place="ET" />
         <Clock timezone="Europe/London" place="LON" />
         <Clock timezone="Australia/Melbourne" place="MEL" />
       </>

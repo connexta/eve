@@ -14,7 +14,7 @@ import {
   TableRow,
   TextField
 } from "@material-ui/core";
-import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
+import { O_ORANGE, O_FROST } from "../utils/Constants.js";
 import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
@@ -63,7 +63,7 @@ const CarouselBody = styled.p`
 
 const StyledMobileStepper = withStyles({
   root: {
-    backgroundColor: CX_OFF_WHITE,
+    backgroundColor: O_FROST,
     height: "20px",
     width: "calc(100% - " + MEDIA_CARD_MARGINS + "px)",
     position: "absolute",
@@ -71,7 +71,7 @@ const StyledMobileStepper = withStyles({
     left: "0px"
   },
   dotActive: {
-    backgroundColor: CX_GRAY_BLUE
+    backgroundColor: O_ORANGE
   }
 })(MobileStepper);
 

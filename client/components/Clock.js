@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { CX_OFF_WHITE, CX_FONT } from "../utils/Constants.js";
+import { O_FROST, O_FONT } from "../utils/Constants.js";
 import LiveClock from "react-live-clock";
 
 const ClockFullStyle = styled.div`
   display: flex;
   font-style: bold;
-  color: ${CX_OFF_WHITE};
-  font-family: ${CX_FONT};
+  color: ${O_FROST};
+  font-family: ${O_FONT};
 `;
 
 const ClockHrStyle = styled.div`
