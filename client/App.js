@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import {
-  CX_GRAY_BLUE,
-  CX_FONT,
-  CX_OFF_WHITE,
+  O_ORANGE,
+  O_FONT,
+  O_FROST,
   BANNER_HEIGHT
 } from "./utils/Constants";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
@@ -21,12 +21,12 @@ const RootGrid = styled(Grid)`
   position: absolute;
   top: 0;
   bottom: 0;
-  font-family: ${CX_FONT};
-  background: ${CX_GRAY_BLUE};
+  font-family: ${O_FONT};
+  background: ${O_ORANGE};
 `;
 
 const BottomGrid = styled(Grid)`
-  background: ${CX_GRAY_BLUE};
+  background: ${O_ORANGE};
   width: 100%;
   position: absolute;
   top: ${BANNER_HEIGHT}px;
@@ -34,7 +34,7 @@ const BottomGrid = styled(Grid)`
 `;
 
 const StyledDevMsg = styled.div`
-  color: ${CX_OFF_WHITE};
+  color: ${O_FROST};
   font-size: 20px;
   position: absolute;
   bottom: 0;
@@ -73,7 +73,7 @@ export default class App extends React.Component {
               </Switch>
               <StyledDevMsg>
                 <p>
-                  Work in Progress, contact @vina, @matt or join #wallboard-dev
+                  Work in progress, join #wallboard-dev on Slack to discuss ideas
                 </p>
               </StyledDevMsg>
               <StyledSettings>

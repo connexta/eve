@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BATMAN_GRAY } from "../utils/Constants.js";
+import { O_SMOKE } from "../utils/Constants.js";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { hour, parseTimeString } from "../utils/TimeUtils.js";
 import { BoxHeader } from "../styles/styles";
@@ -23,12 +23,12 @@ const StyleListItemIcon = styled(ListItemIcon)`
 `;
 
 const ListItemTextDots = styled(ListItemText)`
-  color: ${BATMAN_GRAY};
+  color: ${O_SMOKE};
   text-align: center;
 `;
 
 const Subline = styled.div`
-  color: ${BATMAN_GRAY};
+  color: ${O_SMOKE};
   font-size: 20px;
   font-style: italic;
 `;

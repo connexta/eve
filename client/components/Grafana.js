@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { time, minute } from "../utils/TimeUtils";
 import throttle from "lodash.throttle";
 import { DotLoader } from "react-spinners";
-import { CX_LIGHT_BLUE } from "../utils/Constants";
+import { O_GRAPEFRUIT } from "../utils/Constants";
 import { Card } from "@material-ui/core";
 
 const GrafanaContainer = styled.div`
@@ -117,7 +117,7 @@ export default class Grafana extends React.Component {
   displayContent() {
     return this.state.isLoading ? (
       <DotLoaderContainer>
-        <DotLoader color={CX_LIGHT_BLUE} loading={this.state.isLoading} />
+        <DotLoader color={O_GRAPEFRUIT} loading={this.state.isLoading} />
       </DotLoaderContainer>
     ) : (
       <StyleCard raised={true}>

@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import styled, { css } from "styled-components";
 import {
-  CX_DARK_BLUE,
-  BATMAN_GRAY,
+  O_GUNMETAL,
+  O_SMOKE,
   BANNER_HEIGHT
 } from "../../utils/Constants";
 import { BoxStyle } from "../../styles/styles";
@@ -36,7 +36,7 @@ const componentHOC = WrappedComponent => {
     cursor: ${props => props.edit && props.outline && css`pointer`};
     outline: ${props =>
       props.edit && props.outline
-        ? css`6px solid ${CX_DARK_BLUE}`
+        ? css`6px solid ${O_GUNMETAL}`
         : css`0px solid`};
   `;
 
@@ -54,7 +54,7 @@ const componentHOC = WrappedComponent => {
     -webkit-transition: box-shadow 0.6s linear;
     cursor: ${props => props.edit && css`pointer`};
     box-shadow: ${props =>
-      props.edit ? css`0px 10px 10px ${BATMAN_GRAY}` : css`0px 0px 0px`};
+      props.edit ? css`0px 10px 10px ${O_SMOKE}` : css`0px 0px 0px`};
     z-index: 1;
     position: relative;
   `;

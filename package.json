@@ -34,7 +34,8 @@
     "react-spinners": "^0.5.12",
     "redux": "^4.0.4",
     "style-loader": "^0.23.1",
-    "trashable": "^1.0.7"
+    "trashable": "^1.0.7",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

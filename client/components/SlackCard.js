@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Parser from "html-react-parser";
 import square_logo from "../../resources/square_logo.png";
 import { getRelativeTime } from "../utils/TimeUtils";
-import { CX_FONT } from "../utils/Constants";
+import { O_FONT } from "../utils/Constants";
 import { getEmoji } from "../utils/emojis/emojiUtil";
 
 const SLACK_FONT_SIZE = "20px";
@@ -24,7 +24,7 @@ const imgTypeList = [
 const StyledCard = styled.div`
   padding-bottom: 10px;
   margin: 0 0 5px 0;
-  font-family: ${CX_FONT};
+  font-family: ${O_FONT};
   font-size: ${SLACK_FONT_SIZE};
   position: relative;
 `;

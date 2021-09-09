@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { CX_DARK_BLUE } from "../utils/Constants";
+import { O_GUNMETAL } from "../utils/Constants";
 import BuildIcon from "./BuildIcon";
 import { CardContent } from "@material-ui/core";
 import { BoxHeader } from "../styles/styles";
@@ -49,10 +49,10 @@ const ButtonDefault = styled(Button)`
 
 const ButtonSelected = styled(Button)`
   float: right;
-  text-decoration: underline ${CX_DARK_BLUE};
+  text-decoration: underline ${O_GUNMETAL};
 
   &:hover {
-    text-decoration: underline ${CX_DARK_BLUE};
+    text-decoration: underline ${O_GUNMETAL};
   }
 `;
 

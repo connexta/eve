@@ -8,7 +8,7 @@ import {
   Button
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { CX_GRAY_BLUE, CX_OFF_WHITE } from "../utils/Constants.js";
+import { O_ORANGE, O_FROST } from "../utils/Constants.js";
 import { BoxHeader, BOX_HEADER_SIZE } from "../styles/styles";
 import PullRequest from "../../resources/pullRequest.png";
 import { getRelativeTime, hour, time } from "../utils/TimeUtils";
@@ -51,7 +51,7 @@ const PRTitle = styled.span`
 `;
 
 const PRNumber = styled.em`
-  color: ${CX_GRAY_BLUE};
+  color: ${O_ORANGE};
   vertical-align: "bottom";
 `;
 
@@ -79,12 +79,12 @@ const LinkText = styled.span`
 
 const StyledMobileStepper = withStyles({
   root: {
-    backgroundColor: CX_OFF_WHITE,
+    backgroundColor: O_FROST,
     height: "20px",
     width: "calc(100% - 20px)"
   },
   dotActive: {
-    backgroundColor: CX_GRAY_BLUE
+    backgroundColor: O_ORANGE
   }
 })(MobileStepper);
 
