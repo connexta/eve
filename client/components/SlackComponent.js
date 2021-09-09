@@ -130,7 +130,7 @@ class SlackComponent extends React.Component {
         TOKEN +
         "&channel=" +
         this.props.content +
-        "&count=" +
+        "&limit=" +
         NUM_MSG_GRAB
     );
     this.trashableRequestList[0] = makeTrashable(this.fetchData(url));
@@ -190,7 +190,7 @@ class SlackComponent extends React.Component {
 
   async setChannels() {
     console.log("Fetching slack channels...");
-    const url = "https://slack.com/api/channels.list?token=" + TOKEN;
+    const url = "https://slack.com/api/conversations.list?token=" + TOKEN;
     this.trashableRequestList[3] = makeTrashable(this.fetchData(url));
     try {
       const data = await this.trashableRequestList[3];
