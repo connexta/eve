@@ -130,7 +130,7 @@ class SlackComponent extends React.Component {
         TOKEN +
         "&channel=" +
         this.props.content +
-        "&count=" +
+        "&limit=" +
         NUM_MSG_GRAB
     );
     this.trashableRequestList[0] = makeTrashable(this.fetchData(url));
