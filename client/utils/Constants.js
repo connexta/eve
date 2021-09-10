@@ -33,8 +33,8 @@ export const O_CHARCOAL = "#231F20";
 
 export const settingTheme = createMuiTheme({
   palette: {
-    primary: { main: O_ROYAL_BLUE },
-    secondary: { main: O_ORANGE },
-    default: { main: O_GUNMETAL }
+    primary: { main: O_GUNMETAL },
+    secondary: { main: O_GOLDENROD },
+    default: { main: O_ROYAL_BLUE }
   }
 });

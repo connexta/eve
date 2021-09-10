@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import logo from "../../resources/Octo-Logo-2021.png";
+import logo from "../../resources/Octo-Logo-2021-White.png";
 import Clock from "../components/Clock";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import componentHOC from "./Settings/componentHOC";
@@ -10,7 +10,7 @@ import WebFont from 'webfontloader';
 WebFont.load({
    google: {
      //families: [{O_FONT}]
-     families: ['Roboto', 'sans-serif']
+     families: ['Roboto', 'Aaux Next']
    }
 });
 

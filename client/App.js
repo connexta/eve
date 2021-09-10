@@ -2,8 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import {
   O_ORANGE,
-  O_FONT,
+  O_GOLDENROD,
   O_FROST,
+  O_GUNMETAL,
+  O_SMOKE,
+  O_FONT,
   BANNER_HEIGHT
 } from "./utils/Constants";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
@@ -22,11 +25,11 @@ const RootGrid = styled(Grid)`
   top: 0;
   bottom: 0;
   font-family: ${O_FONT};
-  background: ${O_ORANGE};
+  background: ${O_GOLDENROD};
 `;
 
 const BottomGrid = styled(Grid)`
-  background: ${O_ORANGE};
+  background: ${O_GOLDENROD};
   width: 100%;
   position: absolute;
   top: ${BANNER_HEIGHT}px;

@@ -1,4 +1,4 @@
-import { O_GUNMETAL } from "./Constants";
+import { O_ROYAL_BLUE } from "./Constants";
 import { jenkinsURLList, AFJenkinLink, AFURL, AFpipeline } from "./Link";
 
 const buildAFList = [
@@ -10,7 +10,7 @@ const buildAFList = [
 ];
 
 export const DefaultData = {
-  Banner: O_GUNMETAL,
+  Banner: O_ROYAL_BLUE,
   SlackComponent: process.env.SLACK_CHANNEL,
   BuildStatus: jenkinsURLList,
   Github: "codice/ddf",
