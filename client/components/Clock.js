@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { O_FROST, O_FONT } from "../utils/Constants.js";
+import { O_GRAPEFRUIT, O_FONT } from "../utils/Constants.js";
 import LiveClock from "react-live-clock";
 
 const ClockFullStyle = styled.div`
   display: flex;
   font-style: bold;
-  color: ${O_FROST};
+  color: ${O_GRAPEFRUIT};
   font-family: ${O_FONT};
 `;
 

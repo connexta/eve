@@ -1,5 +1,8 @@
 import {
   O_FROST,
+  O_GUNMETAL,
+  O_ROYAL_BLUE,
+  O_GOLDENROD,
   O_ORANGE,
   O_SMOKE,
   O_FONT
@@ -14,7 +17,7 @@ export const BoxStyle = styled(Card)`
   height: 100%;
   font-size: 20px;
   color: ${O_SMOKE};
-  background-color: ${O_FROST};
+  background-color: ${O_GUNMETAL};
   font-family: ${O_FONT};
   padding: 20px;
   box-sizing: border-box;
@@ -22,7 +25,7 @@ export const BoxStyle = styled(Card)`
 
 export const BoxHeader = styled.div`
   font-size: 32px;
-  color: ${O_ORANGE};
+  color: ${O_GOLDENROD};
   margin-bottom: 12px;
   float: left;
   position: relative;
@@ -43,7 +46,7 @@ export const FlexRowCardContent = styled(CardContent)`
 `;
 
 export const FlexRowSubHeading = styled.div`
-  background: ${O_FROST};
+  background: ${O_GUNMETAL};
   font-size: 20px;
   color: ${O_SMOKE};
   font-family: ${O_FONT};
