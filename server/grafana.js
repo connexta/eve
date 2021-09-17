@@ -20,7 +20,8 @@ module.exports = {
               "--no-sandbox",
               "--disable-setuid-sandbox",
               "--disable-dev-shm-usage",
-              "--headless"
+              "--headless",
+              "--ignore-certificate-errors"
             ],
             env: {
               TZ: "America/Phoenix"
@@ -29,7 +30,7 @@ module.exports = {
         : await puppeteer.launch({
             defaultViewport: null,
             headless: false,
-            args: ["--start-maximized", "--disable-dev-shm-usage"],
+            args: ["--start-maximized", "--disable-dev-shm-usage", "--ignore-certificate-errors"],
             env: {
               TZ: "America/Phoenix"
             }

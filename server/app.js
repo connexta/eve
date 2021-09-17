@@ -16,7 +16,7 @@ const app = express();
 
 /* URL */
 const soaesb_url =
-  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/";
+  "https://c4large3.phx.connexta.com:3000/grafana/d/6hIxKFVZk/";
 
 app.use(express.static("target"));
 app.use(bodyParser.urlencoded({ extended: true }));
