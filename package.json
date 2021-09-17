@@ -18,7 +18,8 @@
   "dependencies": {
     "@material-ui/core": "^4.2.1",
     "@material-ui/icons": "^4.2.1",
-    "@microsoft/microsoft-graph-client": "^1.7.0",
+    "@microsoft/microsoft-graph-client": "^3.0.0",
+    "@microsoft/teams-js": "^1.10.0",
     "css-loader": "^3.1.0",
     "html-react-parser": "^0.7.1",
     "lodash.throttle": "^4.1.1",

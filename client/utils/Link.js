@@ -67,4 +67,4 @@ export const AFURL =
 
 /* Grafana */
 export const SOAESB_GRAFANA_URL =
-  "http://haart-kube.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
+  "https://c4large3.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
