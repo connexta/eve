@@ -30,7 +30,7 @@ module.exports = {
     new CronJob(
       "0 * * * * *", //every minute
       function() {
-        console.log("running wespire cron job for every one hour");
+        console.log("running wespire cron job for every minute, while testing");
         app.set("WESPIRE", wespire.getRecentBlogs(prod, url));
       },
       null,
