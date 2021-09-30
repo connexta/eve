@@ -5,6 +5,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
 const jenkins = require("./jenkins");
+const wespire = require("./wespire");
 const login = require("./login");
 const fs = require("fs");
 const cron = require("./cron");
@@ -17,6 +18,8 @@ const app = express();
 /* URL */
 const soaesb_url =
   "https://c4large3.phx.connexta.com:3000/grafana/d/6hIxKFVZk/";
+const wespire_url =
+  "https://octo.wespire.com/blogs/";
 
 app.use(express.static("target"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -47,6 +50,10 @@ cron.grafanaCron(prod, app, soaesb_url);
 //jenkins cron job
 app.set("JENKINS", jenkins.getJenkinsList()); //initial run
 cron.jenkinsCron(app);
+
+//wespire cron job
+app.set("WESPIRE", wespire.getRecentBlogs(prod, wespire_url)); //initial run
+cron.wespireCron(prod, app, wespire_url);
 
 // Create storage for media images
 const storage = multer.diskStorage({
