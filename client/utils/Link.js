@@ -68,3 +68,7 @@ export const AFURL =
 /* Grafana */
 export const SOAESB_GRAFANA_URL =
   "https://c4large3.phx.connexta.com:3000/grafana/d/6hIxKFVZk/soa_dashboard?orgId=1";
+
+/* Wespire */
+export const WESPIRE_URL =
+  "https://octo.wespire.com/blogs/";
