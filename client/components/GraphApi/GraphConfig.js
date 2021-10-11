@@ -3,7 +3,7 @@ import { UserAgentApplication } from "msal";
 export const config = {
   appId: "63595ad7-d372-4227-9ede-590410f05977",
   authority: "https://login.microsoftonline.com/organizations/",
-  scopes: ["user.read", "calendars.readwrite"]
+  scopes: ["user.read", "calendars.readwrite", "sites.read.all"]
 };
 
 export const userAgentApplication = new UserAgentApplication({

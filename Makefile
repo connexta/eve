@@ -15,9 +15,12 @@ help: ## Display help.
 .PHONY: image
 image: ## Build docker image
 	@echo "\nBuilding image: $(BUILD_TAG):$(GIT_BRANCH)\n"
-	@docker build --pull -t $(BUILD_TAG):$(GIT_BRANCH) --build-arg SLACK_CHANNEL=$(SLACK_CHANNEL) --build-arg SLACK_TOKEN=$(SLACK_TOKEN) \
-	--build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) --build-arg NODE_ENV=production --build-arg SOAESB_LOGIN_USERNAME=$(SOAESB_LOGIN_USERNAME) \
-	--build-arg SOAESB_LOGIN_PASSWORD=$(SOAESB_LOGIN_PASSWORD) .
+	@docker build --pull -t $(BUILD_TAG):$(GIT_BRANCH) --build-arg NODE_ENV=production \
+        --build-arg SLACK_CHANNEL=$(SLACK_CHANNEL) --build-arg SLACK_TOKEN=$(SLACK_TOKEN) \
+	--build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) \
+        --build-arg SOAESB_LOGIN_USERNAME=$(SOAESB_LOGIN_USERNAME) --build-arg SOAESB_LOGIN_PASSWORD=$(SOAESB_LOGIN_PASSWORD) \
+	--build-arg MSGRAPH_TENANT=$(MSGRAPH_TENANT) --build-arg MSGRAPH_CLIENTID=$(MSGRAPH_CLIENTID) --build-arg MSGRAPH_TOKEN=$(MSGRAPH_TOKEN) \
+	--build-arg TEAMS_TEAMID=$(TEAMS_TEAMID) --build-arg TEAMS_CHANID=$(TEAMS_CHANID) .
 
 .PHONY: push
 push: ## Push docker image

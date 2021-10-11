@@ -28,13 +28,23 @@ pipeline {
           string(credentialsId: 'SLACK_CHANNEL', variable: 'SLACK_CHANNEL'),
           string(credentialsId: 'SOAESB_LOGIN_USERNAME', variable: 'SOAESB_LOGIN_USERNAME'),
           string(credentialsId: 'SOAESB_LOGIN_PASSWORD', variable: 'SOAESB_LOGIN_PASSWORD'),
-          string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')
+          string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN'),
+          string(credentialsId: 'MSGRAPH_TENANT', variable: 'MSGRAPH_TENANT'),
+          string(credentialsId: 'MSGRAPH_CLIENTID', variable: 'MSGRAPH_CLIENTID'),
+          string(credentialsId: 'MSGRAPH_TOKEN', variable: 'MSGRAPH_TOKEN'),
+          string(credentialsId: 'TEAMS_TEAMID', variable: 'TEAMS_TEAMID'),
+          string(credentialsId: 'TEAMS_CHANID', variable: 'TEAMS_CHANID')
         ]) {
           sh 'make image SLACK_TOKEN=${SLACK_TOKEN} \
           SLACK_CHANNEL=${SLACK_CHANNEL} \
           GITHUB_TOKEN=${GITHUB_TOKEN} \
           SOAESB_LOGIN_USERNAME=${SOAESB_LOGIN_USERNAME} \
           SOAESB_LOGIN_PASSWORD=${SOAESB_LOGIN_PASSWORD} \
+          MSGRAPH_TENANT=${MSGRAPH_TENANT} \
+          MSGRAPH_CLIENTID=${MSGRAPH_CLIENTID} \
+          MSGRAPH_TOKEN=${MSGRAPH_TOKEN} \
+          TEAMS_TEAMID=${TEAMS_TEAMID} \
+          TEAMS_CHANID=${TEAMS_CHANID} \
           GIT_BRANCH=' + env.BRANCH_NAME
         }
       }

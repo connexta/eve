@@ -14,7 +14,7 @@ import {
   userAgentApplication,
   config,
   userName
-} from "../Calendar/GraphConfig";
+} from "../GraphApi/GraphConfig";
 import Fab from "@material-ui/core/Fab";
 import { AccountCircle, Cancel } from "@material-ui/icons";
 import { ThemeProvider } from "@material-ui/styles";

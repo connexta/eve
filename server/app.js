@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
+const sharepoint = require("./sharepoint");
+const teams = require("./teams");
 const jenkins = require("./jenkins");
 const login = require("./login");
 const fs = require("fs");
@@ -47,6 +49,14 @@ cron.grafanaCron(prod, app, soaesb_url);
 //jenkins cron job
 app.set("JENKINS", jenkins.getJenkinsList()); //initial run
 cron.jenkinsCron(app);
+
+//sharepoint cron job
+app.set("SHAREPOINT", sharepoint.getPages()); //initial run
+cron.sharepointCron(app);
+
+//teams cron job
+app.set("TEAMS", teams.getMessages()); //initial run
+cron.teamsCron(app);
 
 // Create storage for media images
 const storage = multer.diskStorage({
@@ -356,6 +366,14 @@ app.get("/display", async (req, res) => {
 
 app.get("/jenkinslist", async function(req, res) {
   res.send(await app.get("JENKINS"));
+});
+
+app.get("/sharepointlist", async function(req, res) {
+  res.send(await app.get("SHAREPOINT"));
+});
+
+app.get("/teamslist", async function(req, res) {
+  res.send(await app.get("TEAMS"));
 });
 
 app.get("/checkadmin", function(req, res) {
