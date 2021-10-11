@@ -11,6 +11,8 @@
     "up": "cd server && yarn install",
     "serve": "node server/server.js",
     "server": "yarn up && yarn serve",
+    "serve-dev": "node --inspect server/server.js",
+    "server-dev": "yarn up && yarn serve-dev",
     "jest": "jest",
     "jest-coverage": "yarn jest --coverage",
     "https": "yarn server https"

@@ -43,40 +43,26 @@ module.exports = {
 
       await page.setDefaultNavigationTimeout(0);
       await page.goto(url, { waitUntil: "networkidle0" });
-      const content = await page.content();
 
-            let results = [];
-            let blogs = await page.evaluate(() => {
-                let results = [];
-                let items = document.querySelectorAll('blog-card');
-                items.forEach((item) => {
-                    let style = item.getAttribute('style');
-                    console.log(style);
-                    let date = item.querySelector('h5').getAttribute('data-date');
-                    console.log(date);
-                    let link = item.querySelector('a').getAttribute('href');
-                    console.log(link);
-                    let text = item.querySelector('a').getAttribute('href').innerHTML;
-                    console.log(text);
-           
-                    results.push({
-                        style: style,
-                        date:  date,
-                        link:  link,
-                        text:  text,
-                    });
-                });
-            })
+      const blogCards = await page.$$eval('div.blog-card',
+        cards => {
+          return cards.map(
+            card => {
+              let style = card.querySelector("div.image-container").getAttribute("style")
+              let date = card.querySelector("h5").getAttribute("data-date")
+              let link = card.querySelector('a').getAttribute('href')
+              let text = card.querySelector('a').innerHTML;
 
-      /*
-      blog.forEach((results) => {
-        console.log(blog);
+              return {
+                style: style,
+                date: date,
+                link: link,
+                text: text}
+            }).slice(0,5)
       })
-      */
 
       await browser.close();
-      //console.log(content);
-      return screenshotBuffer;
+      return blogCards;
     } catch (error) {
       console.log(error);
     }
