@@ -28,11 +28,15 @@ pipeline {
           string(credentialsId: 'SLACK_CHANNEL', variable: 'SLACK_CHANNEL'),
           string(credentialsId: 'SOAESB_LOGIN_USERNAME', variable: 'SOAESB_LOGIN_USERNAME'),
           string(credentialsId: 'SOAESB_LOGIN_PASSWORD', variable: 'SOAESB_LOGIN_PASSWORD'),
-          string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')
+          string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN'),
+          string(credentialsId: 'WESPIRE_TOKEN', variable: 'WESPIRE_TOKEN'),
+          string(credentialsId: 'MSGRAPH_TOKEN', variable: 'MSGRAPH_TOKEN')
         ]) {
           sh 'make image SLACK_TOKEN=${SLACK_TOKEN} \
           SLACK_CHANNEL=${SLACK_CHANNEL} \
           GITHUB_TOKEN=${GITHUB_TOKEN} \
+          WESPIRE_TOKEN=${WESPIRE_TOKEN} \
+          MSGRAPH_TOKEN=${MSGRAPH_TOKEN} \
           SOAESB_LOGIN_USERNAME=${SOAESB_LOGIN_USERNAME} \
           SOAESB_LOGIN_PASSWORD=${SOAESB_LOGIN_PASSWORD} \
           GIT_BRANCH=' + env.BRANCH_NAME
