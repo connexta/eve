@@ -33,11 +33,14 @@ pipeline {
           string(credentialsId: 'MSGRAPH_CLIENTID', variable: 'MSGRAPH_CLIENTID'),
           string(credentialsId: 'MSGRAPH_TOKEN', variable: 'MSGRAPH_TOKEN'),
           string(credentialsId: 'TEAMS_TEAMID', variable: 'TEAMS_TEAMID'),
-          string(credentialsId: 'TEAMS_CHANID', variable: 'TEAMS_CHANID')
+          string(credentialsId: 'TEAMS_CHANID', variable: 'TEAMS_CHANID'),
+          string(credentialsId: 'WESPIRE_TOKEN', variable: 'WESPIRE_TOKEN')
         ]) {
           sh 'make image SLACK_TOKEN=${SLACK_TOKEN} \
           SLACK_CHANNEL=${SLACK_CHANNEL} \
           GITHUB_TOKEN=${GITHUB_TOKEN} \
+          WESPIRE_TOKEN=${WESPIRE_TOKEN} \
+          MSGRAPH_TOKEN=${MSGRAPH_TOKEN} \
           SOAESB_LOGIN_USERNAME=${SOAESB_LOGIN_USERNAME} \
           SOAESB_LOGIN_PASSWORD=${SOAESB_LOGIN_PASSWORD} \
           MSGRAPH_TENANT=${MSGRAPH_TENANT} \

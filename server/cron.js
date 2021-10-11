@@ -2,6 +2,7 @@ const grafana = require("./grafana");
 const jenkins = require("./jenkins");
 const sharepoint = require("./sharepoint");
 const teams = require("./teams");
+const wespire = require("./wespire");
 const CronJob = require("cron").CronJob;
 
 module.exports = {
@@ -44,6 +45,17 @@ module.exports = {
       function() {
         console.log("running teams cron job for every one hour");
         app.set("TEAMS", teams.getMessages());
+      },
+      null,
+      true
+    );
+  },
+  wespireCron: function(prod, app, url) {
+    new CronJob(
+      "0 0 */1 * * *", //every hour
+      function() {
+        console.log("running wespire cron job for every one hour");
+        app.set("WESPIRE", wespire.getRecentBlogs(prod, url));
       },
       null,
       true

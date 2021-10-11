@@ -38,6 +38,8 @@ This project is built using ReactJS and NodeJS.
 The Github component requires ```GITHUB_TOKEN```.
 The Slack component requires ```SLACK_CHANNEL``` and ```SLACK_TOKEN```.
 The Grafana component requires ```SOAESB_LOGIN_USERNAME``` and ```SOAESB_LOGIN_PASSWORD```.
+The WeSpire component requires ```WESPIRE_TOKEN```.
+The Sharepoint and Teams components require ```MSGRAPH_TOKEN```.
 
 Place the environment variables in the .env file
 Example: ```SLACK_CHANNEL=ABC123```

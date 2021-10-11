@@ -7,6 +7,7 @@ const grafana = require("./grafana");
 const sharepoint = require("./sharepoint");
 const teams = require("./teams");
 const jenkins = require("./jenkins");
+const wespire = require("./wespire");
 const login = require("./login");
 const fs = require("fs");
 const cron = require("./cron");
@@ -19,6 +20,7 @@ const app = express();
 /* URL */
 const soaesb_url =
   "https://c4large3.phx.connexta.com:3000/grafana/d/6hIxKFVZk/";
+const wespire_url = "https://octo.wespire.com/blogs/";
 
 app.use(express.static("target"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -58,6 +60,10 @@ cron.sharepointCron(app);
 app.set("TEAMS", teams.getMessages()); //initial run
 cron.teamsCron(app);
 
+//wespire cron job
+app.set("WESPIRE", wespire.getRecentBlogs(prod, wespire_url)); //initial run
+cron.wespireCron(prod, app, wespire_url);
+
 // Create storage for media images
 const storage = multer.diskStorage({
   destination: function(req, file, callback) {
@@ -65,12 +71,12 @@ const storage = multer.diskStorage({
   },
   filename: function(req, file, callback) {
     callback(null, file.originalname);
-  }
+  },
 });
 
 // Multer package handles image storage
 const upload = multer({
-  storage: storage
+  storage: storage,
 }).array("imgUploader", 3);
 
 /* ROUTE */
@@ -79,7 +85,7 @@ app.get("/carousel", function(req, res) {
   if (fs.existsSync(mediaFile)) {
     let content = JSON.parse(fs.readFileSync(mediaFile));
 
-    let route = content.routes.find(item => item.route === req.query.route);
+    let route = content.routes.find((item) => item.route === req.query.route);
 
     if (route == undefined) res.send({ cards: [] });
     else res.send({ cards: route.cards });
@@ -108,7 +114,7 @@ app.post("/carousel", function(req, res) {
     res.end("Data sent successfully");
   } else {
     let content = {
-      routes: [{ route: req.body.route, cards: [req.body.card] }]
+      routes: [{ route: req.body.route, cards: [req.body.card] }],
     };
 
     fs.writeFileSync(mediaFile, JSON.stringify(content));
@@ -143,7 +149,7 @@ app.post("/remove", function(req, res) {
 
     if (route != undefined) {
       content.routes[index].cards = route.cards.filter(
-        card =>
+        (card) =>
           !(
             card.body == removed.body &&
             card.title == removed.title &&
@@ -175,7 +181,7 @@ app.get("/event", function(req, res) {
   if (fs.existsSync(eventFile)) {
     let content = JSON.parse(fs.readFileSync(eventFile));
 
-    let route = content.routes.find(item => item.route === req.query.route);
+    let route = content.routes.find((item) => item.route === req.query.route);
 
     if (route == undefined) res.send({ events: [] });
     else res.send({ events: route.events });
@@ -193,7 +199,7 @@ app.post("/event", function(req, res) {
     });
     if (content.routes == undefined) {
       content = {
-        routes: [{ route: req.body.route, events: [req.body.event] }]
+        routes: [{ route: req.body.route, events: [req.body.event] }],
       };
     } else if (route == undefined) {
       content.routes.push({ route: req.body.route, events: [req.body.event] });
@@ -206,7 +212,7 @@ app.post("/event", function(req, res) {
     res.end("Data sent successfully");
   } else {
     content = {
-      routes: [{ route: req.body.route, events: [req.body.event] }]
+      routes: [{ route: req.body.route, events: [req.body.event] }],
     };
 
     fs.writeFileSync(eventFile, JSON.stringify(content));
@@ -227,7 +233,7 @@ app.post("/removeEvent", function(req, res) {
 
     if (route != undefined) {
       content.routes[index].events = route.events.filter(
-        event =>
+        (event) =>
           !(
             event.title == removed.title &&
             event.location == removed.location &&
@@ -301,7 +307,7 @@ app.post("/theme", function(req, res) {
       //case: user data doesn't exist
       if (!data[id]) {
         let addedData = {
-          [id]: { [wallboard]: { [component]: req.body.data } }
+          [id]: { [wallboard]: { [component]: req.body.data } },
         };
         finalData = { ...addedData, ...data };
       }
@@ -353,7 +359,7 @@ app.get("/display", async (req, res) => {
     if (screenshotBuffer) {
       res.writeHead(200, {
         "Content-Type": "image/png",
-        "Content-Length": screenshotBuffer.length
+        "Content-Length": screenshotBuffer.length,
       });
       res.end(screenshotBuffer);
     } else {
@@ -383,6 +389,11 @@ app.get("/checkadmin", function(req, res) {
     isAdmin = login.checkAdmin(req.query.name, adminNameList.admin);
   }
   res.send({ result: isAdmin });
+});
+
+app.get("/wespireblog", async (req, res) => {
+  const blogs = await app.get("WESPIRE");
+  res.send(blogs);
 });
 
 app.get("*", (req, res) => {

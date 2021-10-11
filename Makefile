@@ -20,7 +20,8 @@ image: ## Build docker image
 	--build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) \
         --build-arg SOAESB_LOGIN_USERNAME=$(SOAESB_LOGIN_USERNAME) --build-arg SOAESB_LOGIN_PASSWORD=$(SOAESB_LOGIN_PASSWORD) \
 	--build-arg MSGRAPH_TENANT=$(MSGRAPH_TENANT) --build-arg MSGRAPH_CLIENTID=$(MSGRAPH_CLIENTID) --build-arg MSGRAPH_TOKEN=$(MSGRAPH_TOKEN) \
-	--build-arg TEAMS_TEAMID=$(TEAMS_TEAMID) --build-arg TEAMS_CHANID=$(TEAMS_CHANID) .
+	--build-arg TEAMS_TEAMID=$(TEAMS_TEAMID) --build-arg TEAMS_CHANID=$(TEAMS_CHANID) \
+  --build-arg WESPIRE_TOKEN=$(WESPIRE_TOKEN) .
 
 .PHONY: push
 push: ## Push docker image
