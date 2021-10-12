@@ -18,6 +18,9 @@ const GSRURL =
 const SOAESBURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/HAART-Jobs/pipelines/SOAESB_Nightly_Release_Builder/";
 
+const ACTIVEMQURL =
+    "https://builds.apache.org/blue/rest/organizations/jenkins/pipelines/ActiveMQ/pipelines/ActiveMQ/branches/main/";
+
 //URL for the REFLEX team main repo to keep track of
 const REFLEXURL =
   "http://jenkins.phx.connexta.com/service/jenkins/blue/rest/organizations/jenkins/pipelines/reflex-jobs/pipelines/Nightly/pipelines/reflex-nightly/";
@@ -32,7 +35,7 @@ export const GSRPIPELINEURL =
 export const jenkinsURLList = [
   { NAME: "Alliance", URL: AllianceURL },
   { NAME: "DDF", URL: DDFURL },
-  { NAME: "DIB", URL: DIBURL },
+  { NAME: "ActiveMQ", URL: ACTIVEMQURL },
   { NAME: "GSR", URL: GSRURL },
   { NAME: "SOAESB", URL: SOAESBURL },
   { NAME: "REFLEX", URL: REFLEXURL }
