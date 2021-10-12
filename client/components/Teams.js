@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import moment from "moment";
+import Parser from "html-react-parser";
 
 import componentHOC from "./Settings/componentHOC";
 import { BoxHeader } from "../styles/styles";
@@ -34,57 +35,23 @@ const StyledMobileStepper = withStyles({
   },
 })(MobileStepper);
 
-const fallbackPages = [
-  {
-    title: "A New HRIS is Coming!!",
-    createdBy: "Ethan Meurlin",
-    date: "2021-08-26T19:34:06Z",
-    link: "SitePages/A-New-HRIS-is-Coming!!.aspx",
-  },
-  {
-    title: "August New Hire Bios",
-    createdBy: "Mary Catherine McAllister",
-    date: "2021-09-09T15:35:56Z",
-    link: "SitePages/August-New-Hire-Bios.aspx",
-  },
-  {
-    title: "Employee Engagement & CSR Updates 9.22",
-    createdBy: "Vanessa Davis",
-    date: "2021-09-22T23:44:15Z",
-    link: "SitePages/Employee-Engagement-&-CSR-Updates-9.22.aspx",
-  },
-  {
-    title: "Hackathon 2021 is Coming! Enter to Win $10,000!",
-    createdBy: "Ethan Meurlin",
-    date: "2021-08-16T18:19:51Z",
-    link: "SitePages/Hackathon-2021-is-Coming!-Get-your-details-here!.aspx",
-  },
-  {
-    title: "OC 1",
-    createdBy: "Hanh Duong",
-    date: "2021-03-13T00:11:50Z",
-    link: "SitePages/Home-1.aspx",
-  },
-];
-
-const Sharepoint = (props) => {
+const Teams = (props) => {
   const [pageItems, setPageItems] = useState([]);
   const [pageIndex, setPageIndex] = useState(0);
 
   const getPages = async () => {
     try {
-      const res = await fetch("/sharepointlist");
+      const res = await fetch("/teamslist");
 
       if (!res.ok) {
-        console.log("Error fetching /sharepointlist");
+        console.log("Error fetching /teamslist");
         return;
       }
 
       const pages = await res.json();
       setPageItems(pages);
     } catch (e) {
-      console.log("Error fetching /pages. Caught an exception", e);
-      setPageItems(fallbackPages);
+      console.log("Error fetching /teamslist. Caught an exception", e);
     }
   };
 
@@ -129,15 +96,14 @@ const Sharepoint = (props) => {
     return (
       <>
         <BoxHeader style={{ width: "100%", display: "block", flex: 1 }}>
-          OctoConnect
+          Teams
         </BoxHeader>
         <div>LOADING ...</div>
       </>
     );
   }
 
-  const { title, createdBy, date, link } = currentPage;
-  const url = `https://octoconsulting.sharepoint.com/${link}`;
+  const { user, content, date, url } = currentPage;
 
   return (
     <div
@@ -150,22 +116,34 @@ const Sharepoint = (props) => {
       }}
     >
       <BoxHeader style={{ width: "100%", display: "block", flex: 1 }}>
-        OctoConnect
+        Teams
       </BoxHeader>
-      <Typography variant="h4" align="center" style={{ flex: 2 }}>
-        {title}
-      </Typography>
-
-      <Typography variant="h5" align="center" style={{ flex: 2 }}>
-        created by: {createdBy} {moment(date).format("MMM DD YYYY")}
-      </Typography>
-
-      <Typography gutterBottom variant="h5" align="center" style={{ flex: 2 }}>
-        <Link target="_blank" href={url} color={O_ORANGE} underline="always">
-          {link}
-        </Link>
-      </Typography>
-
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          boxSizing: "border-box",
+          alignSelf: "flex-end",
+          flex: 1,
+          alignItems: "flex-end",
+          color: `${O_ORANGE}`,
+        }}
+      >
+        posted by: {user} {moment(date).format("MMM DD YYYY")}
+      </div>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          boxSizing: "border-box",
+          borderRadius: "4px",
+          flex: 8,
+          marginBottom: "20px",
+          overflow: "auto",
+        }}
+      >
+        {Parser(content)}
+      </div>
       <StyledMobileStepper
         activeStep={pageIndex}
         steps={pageItems.length}
@@ -188,5 +166,5 @@ const Sharepoint = (props) => {
   );
 };
 
-const WrappedComponent = componentHOC(Sharepoint);
+const WrappedComponent = componentHOC(Teams);
 export default WrappedComponent;

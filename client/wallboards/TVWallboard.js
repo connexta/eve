@@ -11,6 +11,7 @@ import { updateCurrentWallboard, leaveEdit } from "../actions";
 import WespireComponent from "../components/Wespire";
 import { WESPIRE_URL } from "../utils/Link";
 import SharepointComponent from "../components/Sharepoint";
+import TeamsComponent from "../components/Teams";
 
 const GITHUB_HEIGHT = 400;
 const DEV_SPACE = 60;
@@ -103,10 +104,10 @@ class TVWallboard extends React.Component {
             direction="row"
             style={{ height: "calc(100% - 260px)" }}
           >
-            <SharepointComponent
+            <TeamsComponent
               style={SharepointMedia}
               wallboard={"tv"}
-              name="SharepointComponent"
+              name="TeamsComponent"
               AdminOnly
               disablePopup
             />
@@ -120,10 +121,10 @@ class TVWallboard extends React.Component {
           </Grid>
         </LeftBox>
         <RightBox item>
-          <SlackComponent
+          <SharepointComponent
             style={StyleSlack}
             type={["CHANNEL"]}
-            name="SlackComponent"
+            name="SharepointComponent"
           />
           <Github style={StyleGithub} type={["REPOPATH"]} name="Github" />
         </RightBox>

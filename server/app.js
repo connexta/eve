@@ -380,7 +380,8 @@ app.get("/sharepointlist", async (req, res) => {
 });
 
 app.get("/teamslist", async function(req, res) {
-  res.send(await app.get("TEAMS"));
+  const teamslist = await app.get("TEAMS")
+  res.send(teamslist);
 });
 
 app.get("/checkadmin", function(req, res) {
