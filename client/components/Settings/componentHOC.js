@@ -23,7 +23,7 @@ import { Save, Cancel } from "@material-ui/icons";
 import { time } from "../../utils/TimeUtils";
 import ColorPicker from "./ColorPicker";
 import Dropdown from "./Dropdown";
-import { userName, userID } from "../Calendar/GraphConfig";
+import { userName, userID } from "../GraphApi/GraphConfig";
 
 const componentHOC = WrappedComponent => {
   const ComponentWrapper = styled(BoxStyle)`

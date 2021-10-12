@@ -4,12 +4,14 @@ import SlackComponent from "../components/SlackComponent";
 import Github from "../components/Github";
 import { LeftBox, RightBox } from "../styles/WallboardStyles";
 import Grid from "@material-ui/core/Grid";
-import MediaComponent from "../components/MediaComponent";
+//import MediaComponent from "../components/MediaComponent";
 //import EventComponent from "../components/EventComponent";
 import { connect } from "react-redux";
 import { updateCurrentWallboard, leaveEdit } from "../actions";
 import WespireComponent from "../components/Wespire";
 import { WESPIRE_URL } from "../utils/Link";
+import SharepointComponent from "../components/Sharepoint";
+import TeamsComponent from "../components/Teams";
 
 const GITHUB_HEIGHT = 400;
 const DEV_SPACE = 60;
@@ -34,7 +36,15 @@ const StyleBuildStatus = {
   margin: `20px 10px 10px 20px`
 };
 
+/*
 const StyleMedia = {
+  height: `100%`,
+  width: `calc(50% - 25px)`,
+  margin: `10px 10px 20px 20px`
+};
+*/
+
+const SharepointMedia = {
   height: `100%`,
   width: `calc(50% - 25px)`,
   margin: `10px 10px 20px 20px`
@@ -94,10 +104,10 @@ class TVWallboard extends React.Component {
             direction="row"
             style={{ height: "calc(100% - 260px)" }}
           >
-            <MediaComponent
-              style={StyleMedia}
+            <TeamsComponent
+              style={SharepointMedia}
               wallboard={"tv"}
-              name="MediaComponent"
+              name="TeamsComponent"
               AdminOnly
               disablePopup
             />
@@ -111,10 +121,10 @@ class TVWallboard extends React.Component {
           </Grid>
         </LeftBox>
         <RightBox item>
-          <SlackComponent
+          <SharepointComponent
             style={StyleSlack}
             type={["CHANNEL"]}
-            name="SlackComponent"
+            name="SharepointComponent"
           />
           <Github style={StyleGithub} type={["REPOPATH"]} name="Github" />
         </RightBox>

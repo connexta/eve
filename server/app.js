@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const dotenv = require("dotenv");
 const grafana = require("./grafana");
+const sharepoint = require("./sharepoint");
+const teams = require("./teams");
 const jenkins = require("./jenkins");
 const wespire = require("./wespire");
 const login = require("./login");
@@ -49,6 +51,14 @@ cron.grafanaCron(prod, app, soaesb_url);
 //jenkins cron job
 app.set("JENKINS", jenkins.getJenkinsList()); //initial run
 cron.jenkinsCron(app);
+
+//sharepoint cron job
+app.set("SHAREPOINT", sharepoint.getPages()); //initial run
+cron.sharepointCron(app);
+
+//teams cron job
+app.set("TEAMS", teams.getMessages()); //initial run
+cron.teamsCron(app);
 
 //wespire cron job
 app.set("WESPIRE", wespire.getRecentBlogs(prod, wespire_url)); //initial run
@@ -362,6 +372,16 @@ app.get("/display", async (req, res) => {
 
 app.get("/jenkinslist", async function(req, res) {
   res.send(await app.get("JENKINS"));
+});
+
+app.get("/sharepointlist", async (req, res) => {
+  const list = await app.get("SHAREPOINT");
+  res.send(list);
+});
+
+app.get("/teamslist", async function(req, res) {
+  const teamslist = await app.get("TEAMS")
+  res.send(teamslist);
 });
 
 app.get("/checkadmin", function(req, res) {

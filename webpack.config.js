@@ -45,7 +45,12 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.SLACK_TOKEN": JSON.stringify(process.env.SLACK_TOKEN),
       "process.env.SLACK_CHANNEL": JSON.stringify(process.env.SLACK_CHANNEL),
-      "process.env.GITHUB_TOKEN": JSON.stringify(process.env.GITHUB_TOKEN)
+      "process.env.GITHUB_TOKEN": JSON.stringify(process.env.GITHUB_TOKEN),
+      "process.env.MSGRAPH_TENANT": JSON.stringify(process.env.MSGRAPH_TENANT),
+      "process.env.MSGRAPH_CLIENTID": JSON.stringify(process.env.MSGRAPH_CLIENTID),
+      "process.env.MSGRAPH_TOKEN": JSON.stringify(process.env.MSGRAPH_TOKEN),
+      "process.env.TEAMS_TEAMID": JSON.stringify(process.env.TEAMS_TEAMID),
+      "process.env.TEAMS_CHANID": JSON.stringify(process.env.TEAMS_CHANID)
     })
   ],
   devServer: {

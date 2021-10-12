@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogTitle } from "@material-ui/core";
-import { userName } from "./Calendar/GraphConfig";
+import { userName } from "./GraphApi/GraphConfig";
 import { time } from "../utils/TimeUtils";
 
 //display Welcome dialog when sign-in user enter the website

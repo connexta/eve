@@ -1,15 +1,15 @@
-import { callApi } from "./GraphService";
+import { callApi } from "./GraphApi/GraphService";
 import styled from "styled-components";
-import config from "./GraphConfig";
+import config from "./GraphApi/GraphConfig";
 import { UserAgentApplication } from "msal";
 import React from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import "!style-loader!css-loader!../../styles/Calendar.css";
-import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../../styles/styles";
-import { time, hour, localizeTime, catchError } from "../../utils/TimeUtils";
+import "!style-loader!css-loader!../styles/Calendar.css";
+import { BoxStyle, BoxHeader, CARD_SIDE_MARGINS } from "../styles/styles";
+import { time, hour, localizeTime, catchError } from "../utils/TimeUtils";
 import makeTrashable from "trashable";
-import { LogInOut, DialogAndButton } from "../EventComponent";
+import { LogInOut, DialogAndButton } from "./EventComponent";
 
 const TIME_BEFORE = 1; //num months before to grab events
 const TIME_AFTER = 1; //num months after to grab events

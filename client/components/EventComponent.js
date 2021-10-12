@@ -10,8 +10,8 @@ import {
   getTimeString,
   catchError
 } from "../utils/TimeUtils";
-import { callApi } from "./Calendar/GraphService";
-import { userAgentApplication, config, user } from "./Calendar/GraphConfig";
+import { callApi } from "./GraphApi/GraphService";
+import { userAgentApplication, config, user } from "./GraphApi/GraphConfig";
 import makeTrashable from "trashable";
 import EventEdit from "./EventEdit";
 import componentHOC from "./Settings/componentHOC";

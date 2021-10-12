@@ -15,7 +15,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { withStyles } from "@material-ui/styles";
 
 export const MEDIA_CARD_MARGINS = 20;
-const SLIDE_INTERVAL = time({ seconds: 15 });
+const SLIDE_INTERVAL = time({ seconds: 10 });
 
 const StyledMobileStepper = withStyles({
   root: {
@@ -131,7 +131,14 @@ const Wespire = (props) => {
 
   const currentBlog = blogItems[blogIndex];
   if (currentBlog == null) {
-    return <div>LOADING ...</div>;
+    return (
+      <>
+        <BoxHeader style={{ width: "100%", display: "block", flex: 1 }}>
+          Octo Impact Hub
+        </BoxHeader>
+        <div>LOADING ...</div>
+      </>
+    );
   }
 
   const { text, style } = currentBlog;
