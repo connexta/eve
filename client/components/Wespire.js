@@ -131,7 +131,14 @@ const Wespire = (props) => {
 
   const currentBlog = blogItems[blogIndex];
   if (currentBlog == null) {
-    return <div>LOADING ...</div>;
+    return (
+      <>
+      <BoxHeader style={{ width: "100%", display: "block", flex: 1 }}>
+        Octo Impact Hub
+      </BoxHeader>
+    <div>LOADING ...</div>
+      </>
+    )
   }
 
   const { text, style } = currentBlog;

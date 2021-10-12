@@ -374,8 +374,9 @@ app.get("/jenkinslist", async function(req, res) {
   res.send(await app.get("JENKINS"));
 });
 
-app.get("/sharepointlist", async function(req, res) {
-  res.send(await app.get("SHAREPOINT"));
+app.get("/sharepointlist", async (req, res) => {
+  const list = await app.get("SHAREPOINT");
+  res.send(list);
 });
 
 app.get("/teamslist", async function(req, res) {
