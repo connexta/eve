@@ -85,22 +85,26 @@ export default class Grafana extends React.Component {
   //return promise with boolean value with true if url is image.
   async checkImageExist(url) {
     return new Promise(function(resolve, reject) {
-      let contentIsImage = false;
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (this.readyState == this.DONE) {
-          if (xhr.getResponseHeader("Content-Type")) {
-            contentIsImage = xhr
-              .getResponseHeader("Content-Type")
-              .includes("image");
-            resolve(contentIsImage);
-          } else {
-            reject(false);
+      try {
+        let contentIsImage = false;
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (this.readyState == this.DONE) {
+            if (xhr.getResponseHeader("Content-Type")) {
+              contentIsImage = xhr
+                .getResponseHeader("Content-Type")
+                .includes("image");
+              resolve(contentIsImage);
+            } else {
+              reject(false);
+            }
           }
-        }
-      };
-      xhr.open("HEAD", url, true);
-      xhr.send();
+        };
+        xhr.open("HEAD", url, true);
+        xhr.send();
+     } catch (error) {
+       reject(error);
+     }
     });
   }
 
