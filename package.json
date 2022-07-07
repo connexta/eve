@@ -22,7 +22,7 @@
     "css-loader": "^3.1.0",
     "html-react-parser": "^0.7.1",
     "lodash.throttle": "^4.1.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "msal": "^1.0.2",
     "react": "^16.8.6",
     "react-big-calendar": "^0.22.0",
